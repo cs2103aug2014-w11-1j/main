@@ -5,7 +5,7 @@ public class TaskManager {
         print("Welcome to Taskline.");
 		print("");
 		
-		printInput("add lunch with Jim at \"Café 5 O’clock\" on Tuesday 12 PM");
+		printInput("add lunch with Jim at \"Cafe 5 O'clock\" on Tuesday 12 PM");
 		print("New task recorded!");
 		print("  Time: 12:00 PM 17/02/15");
 		print("  Task: lunch with Jim at Cafe 5 O'clock");
