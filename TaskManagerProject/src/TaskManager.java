@@ -1,3 +1,4 @@
+import java.util.Scanner;
 
 public class TaskManager {
     public static void main(String[] args) {
@@ -13,12 +14,14 @@ public class TaskManager {
 		print("");
 		
 		printInput("show");
-		print("1) Task: lunch with Jim at Café 5 O’clock");
+		print("1) Task: lunch with Jim at Cafe 5 O'clock");
 		print("   Date/Time: 12:00 PM 17/02/15");
 		print("   Tagged: taskline, lunch");
 		print("   Priority: High");
 		print("");
-		printInput("");
+
+		System.out.print("> ");
+		(new Scanner(System.in)).next();
 		/*
 		System.out.println("Hello world!");
         System.out.println("I am a task manager!");
