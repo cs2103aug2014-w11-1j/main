@@ -9,7 +9,6 @@ public class SearchManager extends AbstractManager {
 
     public SearchManager(FileInputOutput fileInputOutput, TaskData taskData) {
         super(fileInputOutput, taskData);
-        // TODO Auto-generated constructor stub
     }
 
     public Result searchTasks(Filter[] filters) {
