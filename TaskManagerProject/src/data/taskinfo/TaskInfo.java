@@ -11,4 +11,9 @@ public class TaskInfo {
     Tag[] tags;
     Priority priority;
     Status status;
+    
+    int numberOfTimes;
+    int repeatIntervalDays;
+    
+    public static final int REPEAT_INDEFINITELY = -1;
 }
