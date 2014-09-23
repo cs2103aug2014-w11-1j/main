@@ -133,6 +133,10 @@ public class Task {
     public void setRepeatIntervalDays(int repeatIntervalDays) {
         taskInfo.repeatIntervalDays = repeatIntervalDays;
     }
+    
+    public void setAllInfo(TaskInfo taskInfo) {
+        taskInfo = new TaskInfo(taskInfo);
+    }
 
 
     private int findIndexOfTag(Tag tag) {

@@ -3,10 +3,10 @@ package data;
 public class TaskId implements Comparable<TaskId> {
     
     /**
-     * TRANSLATE_PRIME must be coprime to MAX_ID.
-     * We can ensure this by simply meeting the below two conditions:
-     * 1) TRANSLATE_PRIME > MAX_ID,
-     * 2) TRANSLATE_PRIME is prime.
+     * TRANSLATE_PRIME must be coprime to MAX_ID.<br>
+     * We can ensure this by simply meeting the below two conditions:<br>
+     * 1) TRANSLATE_PRIME > MAX_ID,<br>
+     * 2) TRANSLATE_PRIME is prime.<br>
      */
     private static final int TRANSLATE_PRIME = 363767;
     /**

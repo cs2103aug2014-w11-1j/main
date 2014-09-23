@@ -11,8 +11,8 @@ import data.taskinfo.TaskInfo;
 import data.taskinfo.Time;
 
 /**
- * Program memory for the tasks in the program.
- * It is the job of TaskData to ensure that the absolute index of each task
+ * Program memory for the tasks in the program.<br>
+ * It is the job of TaskData to ensure that the absolute index of each task<br>
  * remains the same even after deletion / addition of tasks.
  * 
  * @author Oh
@@ -27,6 +27,8 @@ public class TaskData {
     private ArrayList<Integer> previousTaskList;
     private LinkedList<Integer> freeSlotList;
     
+    private UndoSnapshot undoSnapshot;
+    
     private int firstTask = NO_TASK;
     private int lastTask = NO_TASK;
     
@@ -37,6 +39,8 @@ public class TaskData {
         freeSlotList = new LinkedList<>();
         nextTaskList = new ArrayList<>();
         previousTaskList = new ArrayList<>();
+        
+        undoSnapshot = new UndoSnapshot();
     }
 
     public int getFirst() {
@@ -69,6 +73,8 @@ public class TaskData {
     }
 
     public boolean setTaskName (TaskId taskId, String name) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -88,6 +94,8 @@ public class TaskData {
     }
     
     public boolean setTaskStartTime (TaskId taskId, Time time) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -107,6 +115,8 @@ public class TaskData {
     }
     
     public boolean setTaskEndTime (TaskId taskId, Time time) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -126,6 +136,8 @@ public class TaskData {
     }
 
     public boolean setTaskDate (TaskId taskId, Date date) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -145,6 +157,8 @@ public class TaskData {
     }
 
     public boolean setTaskDetails (TaskId taskId, String details) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -165,6 +179,8 @@ public class TaskData {
 
 
     public boolean setTaskPriority (TaskId taskId, Priority priority) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -184,6 +200,8 @@ public class TaskData {
     }
 
     public boolean setTaskStatus (TaskId taskId, Status status) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -203,6 +221,8 @@ public class TaskData {
     }
     
     public boolean addTag(TaskId taskId, Tag tag) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -212,6 +232,8 @@ public class TaskData {
     }
     
     public boolean removeTag(TaskId taskId, Tag tag) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -221,6 +243,8 @@ public class TaskData {
     }
     
     public boolean clearTags(TaskId taskId) {
+        addToSnapshot(taskId);
+        
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
@@ -236,6 +260,18 @@ public class TaskData {
             return null;
         } else {
             return task.getTaskInfo();
+        }
+    }
+    
+    public boolean setTaskInfo(TaskId taskId, TaskInfo taskInfo) {
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setAllInfo(taskInfo);
+            return true;
         }
     }
 
@@ -296,9 +332,52 @@ public class TaskData {
         return deleteTask(taskId.id);
     }
     
+    /**
+     * Retrieves the undo snapshot holding the previous state of all tasks
+     * that were changed in the last action.<br>
+     * The undo snapshot is cleared (deleted) when this method is called.
+     * @return an UndoSnapshot holding the previous state of TaskData.
+     */
+    public UndoSnapshot retrieveUndoSnapshot() {
+        UndoSnapshot temp = undoSnapshot;
+        discardUndoSnapshot();
+        return temp;
+    }
+    
+    /**
+     * Used after an undo so that you don't undo an undo. :D
+     */
+    public void discardUndoSnapshot() {
+        undoSnapshot = new UndoSnapshot();
+    }
+    
     
     private int maxTasks() {
         return TaskId.MAX_ID;
+    }
+    
+    /**
+     * To save a snapshot of the task before a change is made.<br>
+     * If a snapshot has already been saved, does nothing.<br>
+     * Remember to call this BEFORE a task is modified!
+     * @param taskId the id of the task you want to add to snapshot.
+     */
+    private void addToSnapshot(TaskId taskId) {
+        Task task = getTask(taskId);
+        TaskInfo taskInfo = UndoTaskSnapshot.NO_TASK;
+        if (task != null) {
+            taskInfo = task.getTaskInfo();
+        }
+        
+        undoSnapshot.addTaskSnapshot(taskInfo, taskId);
+    }
+    
+    /**
+     * how do I reference the javadoc of addToSnapshot(TaskId taskId)?
+     * @param index the id of the task you want to add to snapshot.
+     */
+    private void addToSnapshot(int index) {
+        addToSnapshot(new TaskId(index));
     }
 
     private Task getTask(TaskId taskId) {
@@ -337,6 +416,7 @@ public class TaskData {
             throw new IllegalArgumentException("insertTask can only insert to empty slots!");
         }
         
+        addToSnapshot(newIndex);
         taskList.set(newIndex, task);
         
         setNext(newIndex, NO_TASK);
@@ -358,6 +438,8 @@ public class TaskData {
         
         if (taskList.get(index) == EMPTY_SLOT)
             return false;
+
+        addToSnapshot(index);
         
         if (index == firstTask) {
             firstTask = next(firstTask);
