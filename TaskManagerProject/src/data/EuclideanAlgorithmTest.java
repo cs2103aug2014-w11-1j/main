@@ -27,7 +27,7 @@ public class EuclideanAlgorithmTest {
         assertEquals(5, result.gcd);
 
         // Actual computation of reverse prime.
-        result = new EuclideanAlgorithm(363767, 46656);
+        result = new EuclideanAlgorithm(363767, 20280);
         System.out.println(result.m);
         
     }
