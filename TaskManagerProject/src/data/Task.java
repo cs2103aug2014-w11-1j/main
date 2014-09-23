@@ -12,6 +12,9 @@ public class Task {
     private TaskInfo taskInfo;
     private int id;
     
+    public Task (TaskInfo taskInfo) {
+        this.taskInfo = new TaskInfo(taskInfo);
+    }
 
     public TaskInfo getTaskInfo() {
         return new TaskInfo(taskInfo);

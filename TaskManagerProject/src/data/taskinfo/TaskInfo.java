@@ -19,6 +19,9 @@ public class TaskInfo {
 
     public static final int REPEAT_INDEFINITELY = -1;
     
+    public TaskInfo() {
+    }
+    
     /**
      * Copy constructor
      * @param taskInfo taskInfo to copy.
@@ -29,7 +32,10 @@ public class TaskInfo {
         this.endTime = taskInfo.endTime;
         this.date = taskInfo.date;
         this.details = taskInfo.details;
-        this.tags = Arrays.copyOf(taskInfo.tags, taskInfo.tags.length);
+        
+        if (taskInfo.tags != null)
+            this.tags = Arrays.copyOf(taskInfo.tags, taskInfo.tags.length);
+        
         this.priority = taskInfo.priority;
         this.status = taskInfo.status;
         this.numberOfTimes = taskInfo.numberOfTimes;

@@ -2,6 +2,7 @@ package data;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
 import data.taskinfo.Priority;
 import data.taskinfo.Tag;
@@ -10,76 +11,228 @@ import data.taskinfo.Time;
 
 /**
  * Program memory for the tasks in the program.
+ * It is the job of TaskData to ensure that the absolute index of each task
+ * remains the same even after deletion / addition of tasks.
  * 
  * @author Oh
  */
 public class TaskData {
     
-    private ArrayList<Task> taskList;
+    public static final int NO_TASK = -1;
+    private static final Task EMPTY_SLOT = null;
     
+    private ArrayList<Task> taskList;
+    private ArrayList<Integer> nextTaskList;
+    private ArrayList<Integer> previousTaskList;
+    private LinkedList<Integer> freeSlotList;
+    
+    private int firstTask = NO_TASK;
+    private int lastTask = NO_TASK;
+    
+    private int size = 0;
     
     public TaskData() {
         taskList = new ArrayList<>();
-    }
-    
-    public int next(int index) {
-        return 0;
-    }
-    
-    public int previous(int index) {
-        return 0;
+        freeSlotList = new LinkedList<>();
+        nextTaskList = new ArrayList<>();
+        previousTaskList = new ArrayList<>();
     }
 
+    public int getFirst() {
+        return firstTask;
+    }
+    
+    public int getLast() {
+        return lastTask;
+    }
+    
+    public int getSize() {
+        return size;
+    }
 
-    public String getTaskName (int index) {
+    public TaskId getNext(TaskId taskId) {
+        return new TaskId(next(taskId.id));
+    }
+    
+    public TaskId getPrevious(TaskId taskId) {
+        return new TaskId(previous(taskId.id));
+    }
+
+    public String getTaskName (TaskId taskId) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getName();
+        }
+    }
+    
+    public Time getTaskStartTime (TaskId taskId) {
         return null;
     }
     
-    public Time getTaskStartTime (int index) {
+    public Time getTaskEndTime (TaskId taskId) {
         return null;
     }
     
-    public Time getTaskEndTime (int index) {
+    public Date getTaskDate (TaskId taskId) {
         return null;
     }
     
-    public Date getTaskDate (int index) {
+    public String getTaskDetails (TaskId taskId) {
         return null;
     }
     
-    public String getTaskDetails (int index) {
+    public Priority getTaskPriority (TaskId taskId) {
         return null;
     }
     
-    public Priority getTaskPriority (int index) {
-        return null;
-    }
-    
-    public boolean getTaskDone (int index) {
+    public boolean getTaskDone (TaskId taskId) {
         return false;
     }
 
-    public Tag[] getTaskTags (int index) {
+    public Tag[] getTaskTags (TaskId taskId) {
         return null;
     }
     
-    public void addTag(int index, Tag tag) {
+    public void addTag(TaskId taskId, Tag tag) {
     }
     
-    public void removeTag(int index, Tag tag) {
+    public void removeTag(TaskId taskId, Tag tag) {
     }
     
-    public void clearTags(int index) {
+    public void clearTags(TaskId taskId) {
     }
 
-    public TaskInfo getTaskInfo(int index) {
+    public TaskInfo getTaskInfo(TaskId taskId) {
         return null;
     }
 
-
-
-    void updateTaskList(Task[] tasks) {
+    public void updateTaskList(Task[] tasks) {
     }
 
+    /**
+     * @param taskInfo information about a task.
+     * @return the generated taskId of the task.
+     * Returns null if unable to add new task.
+     */
+    public TaskId add(TaskInfo taskInfo) {
+        Task task = new Task(taskInfo);
+        int id = insertTask(task);
+        
+        if (id != NO_TASK) {
+            task.setId(id);
+            return new TaskId(id);
+        }
+        else {
+            return null;
+        }
+    }
+    
+    /**
+     * @param taskId id of the task you wish to remove.
+     * @return true iff the deletion is successful.
+     * Deletion can be unsuccessful if task does not exist.
+     */
+    public boolean remove(TaskId taskId) {
+        return deleteTask(taskId.id);
+    }
+    
+    
+    
+    private int maxTasks() {
+        return TaskId.MAX_ID;
+    }
+
+    private Task getTask(TaskId taskId) {
+        if (taskId.id < taskList.size()) {
+            return taskList.get(taskId.id);
+        }
+        return EMPTY_SLOT;
+    }
+    
+    private int insertTask(Task task) {
+        
+        if (taskList.size() < maxTasks()) {
+            taskList.add(EMPTY_SLOT);
+            nextTaskList.add(NO_TASK);
+            previousTaskList.add(NO_TASK);
+            
+            int newIndex = taskList.size()-1;
+            insertTask(task, newIndex);
+            return newIndex;
+            
+        } else {
+            
+            if (freeSlotList.isEmpty()) {
+                // No more slots to insert tasks. Task list full.
+                return NO_TASK;
+            }
+            
+            int newIndex = freeSlotList.removeFirst();
+            insertTask(task, newIndex);
+            return newIndex;
+        }
+    }
+
+    private void insertTask(Task task, int newIndex) {
+        taskList.set(newIndex, task);
+        
+        setNext(newIndex, NO_TASK);
+        setPrevious(newIndex, lastTask);
+        if (lastTask != NO_TASK)
+            setNext(lastTask, newIndex);
+
+        if (firstTask == NO_TASK) {
+            firstTask = newIndex;
+        }
+        
+        lastTask = newIndex;
+        
+        size++;
+    }
+    
+    private boolean deleteTask(int index) {
+        // Note: Uses lazy deletion to maintain index.
+        
+        if (taskList.get(index) == EMPTY_SLOT)
+            return false;
+        
+        if (index == firstTask) {
+            firstTask = next(firstTask);
+        }
+        if (index == lastTask) {
+            lastTask = previous(lastTask);
+        }
+        
+        taskList.set(index, null);
+        freeSlotList.addLast(index);
+        if (previous(index) != NO_TASK) {
+            setNext(previous(index), next(index));
+        }
+        if (next(index) != NO_TASK) {
+            setPrevious(next(index), previous(index));
+        }
+        
+        size--;
+        return true;
+    }
+    
+    private void setNext(int index, int next) {
+        nextTaskList.set(index, next);
+    }
+    
+    private void setPrevious(int index, int previous) {
+        previousTaskList.set(index, previous);
+    }
+
+    private int next(int index) {
+        return nextTaskList.get(index);
+    }
+    
+    private int previous(int index) {
+        return previousTaskList.get(index);
+    }
+    
     
 }
