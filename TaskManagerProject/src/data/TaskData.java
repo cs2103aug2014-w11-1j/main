@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import data.taskinfo.Priority;
+import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 import data.taskinfo.Time;
@@ -66,49 +67,184 @@ public class TaskData {
             return task.getName();
         }
     }
+
+    public boolean setTaskName (TaskId taskId, String name) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setName(name);
+            return true;
+        }
+    }
     
     public Time getTaskStartTime (TaskId taskId) {
-        return null;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getStartTime();
+        }
+    }
+    
+    public boolean setTaskStartTime (TaskId taskId, Time time) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setStartTime(time);
+            return true;
+        }
     }
     
     public Time getTaskEndTime (TaskId taskId) {
-        return null;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getEndTime();
+        }
+    }
+    
+    public boolean setTaskEndTime (TaskId taskId, Time time) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setEndTime(time);
+            return true;
+        }
     }
     
     public Date getTaskDate (TaskId taskId) {
-        return null;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getDate();
+        }
+    }
+
+    public boolean setTaskDate (TaskId taskId, Date date) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setDate(date);
+            return true;
+        }
     }
     
     public String getTaskDetails (TaskId taskId) {
-        return null;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getDetails();
+        }
+    }
+
+    public boolean setTaskDetails (TaskId taskId, String details) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setDetails(details);
+            return true;
+        }
     }
     
     public Priority getTaskPriority (TaskId taskId) {
-        return null;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getPriority();
+        }
+    }
+
+
+    public boolean setTaskPriority (TaskId taskId, Priority priority) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setPriority(priority);
+            return true;
+        }
     }
     
-    public boolean getTaskDone (TaskId taskId) {
-        return false;
+    public Status getTaskStatus (TaskId taskId) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getStatus();
+        }
+    }
+
+    public boolean setTaskStatus (TaskId taskId, Status status) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setStatus(status);
+            return true;
+        }
     }
 
     public Tag[] getTaskTags (TaskId taskId) {
-        return null;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getTags();
+        }
     }
     
-    public void addTag(TaskId taskId, Tag tag) {
+    public boolean addTag(TaskId taskId, Tag tag) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.addTag(tag);
+        }
     }
     
-    public void removeTag(TaskId taskId, Tag tag) {
+    public boolean removeTag(TaskId taskId, Tag tag) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.removeTag(tag);
+        }
     }
     
-    public void clearTags(TaskId taskId) {
+    public boolean clearTags(TaskId taskId) {
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.clearTags();
+            return true;
+        }
     }
 
     public TaskInfo getTaskInfo(TaskId taskId) {
-        return null;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getTaskInfo();
+        }
     }
 
+    /**
+     * Resets entire task list with a new list of tasks.
+     * @param tasks List of tasks as retrieved from file.
+     */
     public void updateTaskList(Task[] tasks) {
+        throw new UnsupportedOperationException("Not Implemented Yet");
     }
 
     /**
@@ -137,7 +273,6 @@ public class TaskData {
     public boolean remove(TaskId taskId) {
         return deleteTask(taskId.id);
     }
-    
     
     
     private int maxTasks() {

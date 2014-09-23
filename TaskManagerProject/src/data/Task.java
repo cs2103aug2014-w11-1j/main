@@ -9,6 +9,7 @@ import data.taskinfo.TaskInfo;
 import data.taskinfo.Time;
 
 public class Task {
+    private static final int NOT_FOUND = -1;
     private TaskInfo taskInfo;
     private int id;
     
@@ -71,9 +72,34 @@ public class Task {
     public Tag[] getTags() {
         return Arrays.copyOf(taskInfo.tags, taskInfo.tags.length);
     }
+
+    public boolean addTag(Tag tag) {
+        
+        if (findIndexOfTag(tag) == NOT_FOUND) {
+            Tag[] tags = Arrays.copyOf(taskInfo.tags, taskInfo.tags.length+1);
+            tags[tags.length-1] = tag;
+            taskInfo.tags = tags;
+            
+            return true;
+        } else {
+            return false;
+        }
+    }
     
-    public void setTags(Tag[] tags) {
+    public boolean removeTag(Tag tag) {
+        
+        int result = findIndexOfTag(tag);
+        if (result == NOT_FOUND)
+            return false;
+        
+        Tag[] tags = copyTagsIntoNewArray(result);
         taskInfo.tags = tags;
+        
+        return true;
+    }
+    
+    public void clearTags() {
+        taskInfo.tags = new Tag[0];
     }
     
     public Priority getPriority() {
@@ -107,4 +133,27 @@ public class Task {
     public void setRepeatIntervalDays(int repeatIntervalDays) {
         taskInfo.repeatIntervalDays = repeatIntervalDays;
     }
+
+
+    private int findIndexOfTag(Tag tag) {
+        for (int i = 0 ; i < taskInfo.tags.length; i++) {
+            if (tag.equals(taskInfo.tags[i])) {
+                return i;
+            }
+        }
+        return NOT_FOUND;
+    }
+
+    private Tag[] copyTagsIntoNewArray(int result) {
+        Tag[] tags = new Tag[taskInfo.tags.length-1];
+        int index = 0;
+        for (int i = 0; i < tags.length; i++) {
+            if (index == result)
+                index++;
+            tags[i] = taskInfo.tags[index];
+            index++;
+        }
+        return tags;
+    }
+    
 }
