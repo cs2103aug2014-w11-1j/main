@@ -246,6 +246,28 @@ public class TaskData {
     public void updateTaskList(Task[] tasks) {
         throw new UnsupportedOperationException("Not Implemented Yet");
     }
+    
+    /**
+     * Purpose is for the undo function to replace tasks to their original Id.
+     * Throws an exception if this is not possible.
+     * @param taskInfo
+     * @param taskId
+     */
+    public void addTaskWithSpecificId(TaskInfo taskInfo, TaskId taskId) {
+        if (getTask(taskId) != EMPTY_SLOT) {
+            throw new IllegalArgumentException("Unable to add task with id = " + taskId);
+        }
+
+        int insertIndex = taskId.id;
+
+        if (!freeSlotList.remove(new Integer(insertIndex))) {
+            throw new IllegalArgumentException("Unable to remove id from free slot list.");
+        }
+
+        Task task = new Task(taskInfo);
+        insertTask(task, insertIndex);
+        task.setId(insertIndex);
+    }
 
     /**
      * @param taskInfo information about a task.
@@ -311,6 +333,10 @@ public class TaskData {
     }
 
     private void insertTask(Task task, int newIndex) {
+        if (taskList.get(newIndex) != EMPTY_SLOT) {
+            throw new IllegalArgumentException("insertTask can only insert to empty slots!");
+        }
+        
         taskList.set(newIndex, task);
         
         setNext(newIndex, NO_TASK);

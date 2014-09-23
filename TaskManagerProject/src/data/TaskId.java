@@ -49,6 +49,11 @@ public class TaskId implements Comparable<TaskId> {
         return id - o.id;
     }
     
+    @Override
+    public String toString() {
+        return toStringId(id);
+    }
+    
     /**
      * Converts a numeric task ID to a string task ID
      * @param indexId numeric task ID
