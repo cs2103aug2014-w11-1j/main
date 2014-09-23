@@ -2,8 +2,8 @@ package manager.datamanager;
 
 import io.FileInputOutput;
 import data.TaskData;
-import manager.Result;
 import manager.datamanager.searchfilter.Filter;
+import manager.result.Result;
 
 public class SearchManager extends AbstractManager {
 

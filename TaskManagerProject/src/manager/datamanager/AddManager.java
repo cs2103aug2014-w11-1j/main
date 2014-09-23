@@ -1,7 +1,7 @@
 package manager.datamanager;
 
 import io.FileInputOutput;
-import manager.Result;
+import manager.result.Result;
 import data.TaskData;
 import data.taskinfo.TaskInfo;
 

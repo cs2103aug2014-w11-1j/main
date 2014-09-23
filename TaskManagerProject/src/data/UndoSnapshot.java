@@ -25,6 +25,10 @@ public class UndoSnapshot {
         }
     }
     
+    public boolean hasChanges() {
+        return !taskSnapshotList.isEmpty();
+    }
+    
     /**
      * Extracts all the individual task snapshots at once from the UndoSnapshot.<br>
      * This can only be done once.

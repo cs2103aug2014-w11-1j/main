@@ -62,8 +62,12 @@ public class TaskData {
     public TaskId getPrevious(TaskId taskId) {
         return new TaskId(previous(taskId.id));
     }
+    
+    public boolean taskExists(TaskId taskId) {
+        return getTask(taskId) != EMPTY_SLOT;
+    }
 
-    public String getTaskName (TaskId taskId) {
+    public String getTaskName(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -72,7 +76,7 @@ public class TaskData {
         }
     }
 
-    public boolean setTaskName (TaskId taskId, String name) {
+    public boolean setTaskName(TaskId taskId, String name) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -84,7 +88,7 @@ public class TaskData {
         }
     }
     
-    public Time getTaskStartTime (TaskId taskId) {
+    public Time getTaskStartTime(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -93,7 +97,7 @@ public class TaskData {
         }
     }
     
-    public boolean setTaskStartTime (TaskId taskId, Time time) {
+    public boolean setTaskStartTime(TaskId taskId, Time time) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -105,7 +109,7 @@ public class TaskData {
         }
     }
     
-    public Time getTaskEndTime (TaskId taskId) {
+    public Time getTaskEndTime(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -114,7 +118,7 @@ public class TaskData {
         }
     }
     
-    public boolean setTaskEndTime (TaskId taskId, Time time) {
+    public boolean setTaskEndTime(TaskId taskId, Time time) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -126,7 +130,7 @@ public class TaskData {
         }
     }
     
-    public Date getTaskDate (TaskId taskId) {
+    public Date getTaskDate(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -135,7 +139,7 @@ public class TaskData {
         }
     }
 
-    public boolean setTaskDate (TaskId taskId, Date date) {
+    public boolean setTaskDate(TaskId taskId, Date date) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -147,7 +151,7 @@ public class TaskData {
         }
     }
     
-    public String getTaskDetails (TaskId taskId) {
+    public String getTaskDetails(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -156,7 +160,7 @@ public class TaskData {
         }
     }
 
-    public boolean setTaskDetails (TaskId taskId, String details) {
+    public boolean setTaskDetails(TaskId taskId, String details) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -168,7 +172,7 @@ public class TaskData {
         }
     }
     
-    public Priority getTaskPriority (TaskId taskId) {
+    public Priority getTaskPriority(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -178,7 +182,7 @@ public class TaskData {
     }
 
 
-    public boolean setTaskPriority (TaskId taskId, Priority priority) {
+    public boolean setTaskPriority(TaskId taskId, Priority priority) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -190,7 +194,7 @@ public class TaskData {
         }
     }
     
-    public Status getTaskStatus (TaskId taskId) {
+    public Status getTaskStatus(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -199,7 +203,7 @@ public class TaskData {
         }
     }
 
-    public boolean setTaskStatus (TaskId taskId, Status status) {
+    public boolean setTaskStatus(TaskId taskId, Status status) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -211,7 +215,7 @@ public class TaskData {
         }
     }
 
-    public Tag[] getTaskTags (TaskId taskId) {
+    public Tag[] getTaskTags(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
