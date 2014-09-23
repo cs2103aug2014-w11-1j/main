@@ -8,9 +8,6 @@ public class TaskIdTest {
 
     @Test
     public void test() {
-        for (int i = 0; i < TaskId.MAX_ID; i++)
-            testIndexConvert(i);
-        
         for (int i = 0; i < TaskId.MAX_ID; i++) {
             testStringConvert(i);
         }
@@ -27,15 +24,6 @@ public class TaskIdTest {
         
     }
     
-    private void testIndexConvert(int a) {
-        int b = TaskId.numberTranslateForward(a);
-        int c = TaskId.numberTranslateInverse(b);
-        assertEquals(a, c);
-
-        b = TaskId.numberTranslateInverse(a);
-        c = TaskId.numberTranslateForward(b);
-        assertEquals(a, c);
-    }
     
     private void testStringConvert(int a) {
         String stringId = TaskId.toStringId(a);
@@ -44,6 +32,7 @@ public class TaskIdTest {
         int c = TaskId.toIntId(stringId);
         assertEquals(a, c);
     }
+    
     
     private void testIntConvert(String stringId) {
         int intId = TaskId.toIntId(stringId);

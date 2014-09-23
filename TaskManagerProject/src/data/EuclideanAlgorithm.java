@@ -10,11 +10,11 @@ public class EuclideanAlgorithm {
     
     public EuclideanAlgorithm(int n, int p) {
         if (n < p) {
-            compute(p,n);
+            compute(p, n);
             swapResults();
         }
         else {
-            compute(n,p);
+            compute(n, p);
         }
     }
     
@@ -27,8 +27,8 @@ public class EuclideanAlgorithm {
      */
     private void compute(int n, int p) {
         // n - pr = s;
-        int s = n%p;
-        int r = n/p;
+        int s = n % p;
+        int r = n / p;
         
         if (s == 0) {
             // If s == 0, (Terminal condition)
@@ -52,7 +52,7 @@ public class EuclideanAlgorithm {
             // m = rM+Q, q = M
             // M = q, Q = m - rq.
             int M = q;
-            int Q = m-r*q;
+            int Q = m - r * q;
             m = M;
             q = Q;
         }

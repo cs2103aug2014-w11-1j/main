@@ -2,8 +2,8 @@ package data;
 
 public class TaskId implements Comparable<TaskId> {
     
-    /*
-     * Condition: TRANSLATE_PRIME must be coprime to MAX_ID.
+    /**
+     * TRANSLATE_PRIME must be coprime to MAX_ID.
      * We can ensure this by simply meeting the below two conditions:
      * 1) TRANSLATE_PRIME > MAX_ID,
      * 2) TRANSLATE_PRIME is prime.
@@ -16,8 +16,11 @@ public class TaskId implements Comparable<TaskId> {
     private static final int TRANSLATE_SHIFT = 4789;
     public static final int MAX_ID = 20280;
     
-    
     public final int id;
+
+    public TaskId(int id) {
+        this.id = id;
+    }
     
     @Override
     public int hashCode() {
@@ -40,40 +43,41 @@ public class TaskId implements Comparable<TaskId> {
             return false;
         return true;
     }
-    
-    public TaskId(int id) {
-        this.id = id;
+
+    @Override
+    public int compareTo(TaskId o) {
+        return id - o.id;
     }
     
+    /**
+     * Converts a numeric task ID to a string task ID
+     * @param indexId numeric task ID
+     * @return string task ID
+     */
     public static String toStringId(int indexId) {
         if (indexId >= MAX_ID)
             throw new IllegalArgumentException("index ID exceeds range");
         
         int translatedIndex = numberTranslateForward(indexId);
         
-        int numberPosition = translatedIndex%3;
+        int numberPosition = translatedIndex % 3;
         translatedIndex /= 3;
-        int number = translatedIndex%10;
+        int number = translatedIndex % 10;
         translatedIndex /= 10;
-        char character1 = (char)(translatedIndex%26 + 'a');
+        char character1 = (char)(translatedIndex % 26 + 'a');
         translatedIndex /= 26;
         char character2 = (char)(translatedIndex + 'a');
         
-        String result = "";
-        if (numberPosition == 0) {
-            result = "" + number + character1 + character2;
-            
-        } else if (numberPosition == 1) {
-            result = "" + character1 + number + character2;
-            
-        } else if (numberPosition == 2) {
-            result = "" + character1 + character2 + number;
-            
-        }
+        String result = toStringId(numberPosition, number, character1, character2);
         
         return result;
     }
     
+    /**
+     * Converts a string task ID to a numeric task ID
+     * @param stringId string task ID
+     * @return numeric task ID
+     */
     public static int toIntId(String stringId) {
         int numberPosition;
         int number;
@@ -105,6 +109,35 @@ public class TaskId implements Comparable<TaskId> {
             throw new IllegalArgumentException("Invalid string input: " + stringId);
         }
         
+        int result = toIntId(numberPosition, number, character1, character2);
+        
+        result = numberTranslateInverse(result);
+        
+        return result;
+    }
+
+
+    private static String toStringId(int numberPosition, int number,
+            char character1, char character2) {
+        
+        String result = "";
+        if (numberPosition == 0) {
+            result = "" + number + character1 + character2;
+            
+        } else if (numberPosition == 1) {
+            result = "" + character1 + number + character2;
+            
+        } else if (numberPosition == 2) {
+            result = "" + character1 + character2 + number;
+            
+        }
+        return result;
+    }
+
+
+    private static int toIntId(int numberPosition, int number, char character1,
+            char character2) {
+        
         int result = (int)(character2 - 'a');
         result *= 26;
         result += (int)(character1 - 'a');
@@ -112,9 +145,6 @@ public class TaskId implements Comparable<TaskId> {
         result += number;
         result *= 3;
         result += numberPosition;
-        
-        result = numberTranslateInverse(result);
-        
         return result;
     }
     
@@ -122,7 +152,7 @@ public class TaskId implements Comparable<TaskId> {
         return (c >= '0' && c <= '9');
     }
     
-    public static int numberTranslateForward(int index) {
+    private static int numberTranslateForward(int index) {
         long longIndex = index;
         longIndex += TRANSLATE_SHIFT;
         longIndex *= TRANSLATE_PRIME;
@@ -135,7 +165,7 @@ public class TaskId implements Comparable<TaskId> {
         return (int)longIndex;
     }
 
-    public static int numberTranslateInverse(int index) {
+    private static int numberTranslateInverse(int index) {
         long longIndex = index;
         longIndex -= TRANSLATE_SHIFT;
         longIndex *= TRANSLATE_REVERSE_PRIME;
@@ -146,11 +176,6 @@ public class TaskId implements Comparable<TaskId> {
             longIndex += MAX_ID;
         }
         return (int)longIndex;
-    }
-
-    @Override
-    public int compareTo(TaskId o) {
-        return id - o.id;
     }
     
     
