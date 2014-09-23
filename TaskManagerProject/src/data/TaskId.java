@@ -51,7 +51,14 @@ public class TaskId implements Comparable<TaskId> {
     
     @Override
     public String toString() {
+        if (isInvalid()) {
+            return "NO_TASK";
+        }
         return toStringId(id);
+    }
+    
+    public boolean isInvalid() {
+        return (id == TaskData.NO_TASK);
     }
     
     /**

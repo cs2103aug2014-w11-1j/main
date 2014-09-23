@@ -43,12 +43,12 @@ public class TaskData {
         undoSnapshot = new UndoSnapshot();
     }
 
-    public int getFirst() {
-        return firstTask;
+    public TaskId getFirst() {
+        return new TaskId(firstTask);
     }
     
-    public int getLast() {
-        return lastTask;
+    public TaskId getLast() {
+        return new TaskId(lastTask);
     }
     
     public int getSize() {

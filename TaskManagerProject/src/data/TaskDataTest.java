@@ -16,29 +16,30 @@ public class TaskDataTest {
         TaskData taskData = new TaskData();
         
         assertEquals(0, taskData.getSize());
+        testSizeAndIteration(taskData, 0);
         
         TaskId id1 = taskData.add(dummyTask);
-        assertEquals(1, taskData.getSize());
+        testSizeAndIteration(taskData, 1);
         assertEquals("testname1", taskData.getTaskName(id1));
 
         dummyTask.name = "testname2";
         TaskId id2 = taskData.add(dummyTask);
-        assertEquals(2, taskData.getSize());
+        testSizeAndIteration(taskData, 2);
         assertEquals("testname2", taskData.getTaskName(id2));
 
         dummyTask.name = "testname3";
         TaskId id3 = taskData.add(dummyTask);
-        assertEquals(3, taskData.getSize());
+        testSizeAndIteration(taskData, 3);
         assertEquals("testname3", taskData.getTaskName(id3));
 
         dummyTask.name = "testname4";
         TaskId id4 = taskData.add(dummyTask);
-        assertEquals(4, taskData.getSize());
+        testSizeAndIteration(taskData, 4);
         assertEquals("testname4", taskData.getTaskName(id4));
 
 
         assertEquals(true, taskData.remove(id2));
-        assertEquals(3, taskData.getSize());
+        testSizeAndIteration(taskData, 3);
         assertEquals("testname1", taskData.getTaskName(id1));
         assertEquals(null, taskData.getTaskName(id2));
         assertEquals("testname3", taskData.getTaskName(id3));
@@ -47,7 +48,7 @@ public class TaskDataTest {
 
         dummyTask.name = "testname5";
         TaskId id5 = taskData.add(dummyTask);
-        assertEquals(4, taskData.getSize());
+        testSizeAndIteration(taskData, 4);
         assertEquals("testname1", taskData.getTaskName(id1));
         assertEquals(null, taskData.getTaskName(id2));
         assertEquals("testname3", taskData.getTaskName(id3));
@@ -56,7 +57,7 @@ public class TaskDataTest {
 
 
         assertEquals(false, taskData.remove(id2));
-        assertEquals(4, taskData.getSize());
+        testSizeAndIteration(taskData, 4);
         assertEquals("testname1", taskData.getTaskName(id1));
         assertEquals(null, taskData.getTaskName(id2));
         assertEquals("testname3", taskData.getTaskName(id3));
@@ -65,7 +66,7 @@ public class TaskDataTest {
 
 
         assertEquals(true, taskData.remove(id5));
-        assertEquals(3, taskData.getSize());
+        testSizeAndIteration(taskData, 3);
         assertEquals("testname1", taskData.getTaskName(id1));
         assertEquals(null, taskData.getTaskName(id2));
         assertEquals("testname3", taskData.getTaskName(id3));
@@ -74,7 +75,7 @@ public class TaskDataTest {
 
 
         assertEquals(true, taskData.remove(id4));
-        assertEquals(2, taskData.getSize());
+        testSizeAndIteration(taskData, 2);
         assertEquals("testname1", taskData.getTaskName(id1));
         assertEquals(null, taskData.getTaskName(id2));
         assertEquals("testname3", taskData.getTaskName(id3));
@@ -84,7 +85,7 @@ public class TaskDataTest {
         
         dummyTask.name = "testname6";
         TaskId id6 = taskData.add(dummyTask);
-        assertEquals(3, taskData.getSize());
+        testSizeAndIteration(taskData, 3);
         assertEquals("testname1", taskData.getTaskName(id1));
         assertEquals(null, taskData.getTaskName(id2));
         assertEquals("testname3", taskData.getTaskName(id3));
@@ -104,10 +105,11 @@ public class TaskDataTest {
         assertEquals(false, taskData.remove(id6));
 
         assertEquals(0, taskData.getSize());
+        testSizeAndIteration(taskData, 0);
         
         dummyTask.name = "testname7";
         TaskId id7 = taskData.add(dummyTask);
-        assertEquals(1, taskData.getSize());
+        testSizeAndIteration(taskData, 1);
         assertEquals(null, taskData.getTaskName(id1));
         assertEquals(null, taskData.getTaskName(id2));
         assertEquals(null, taskData.getTaskName(id3));
@@ -130,44 +132,73 @@ public class TaskDataTest {
         // Fill up entire task data list.
         TaskId resultId = testId1;
         while (resultId != null) {
+            taskData.discardUndoSnapshot();
             resultId = taskData.add(dummyTask);
         }
         
-        assertEquals(TaskId.MAX_ID, taskData.getSize());
+        testSizeAndIteration(taskData, TaskId.MAX_ID);
         taskData.remove(testId1);
         taskData.remove(testId4);
-        assertEquals(TaskId.MAX_ID-2, taskData.getSize());
+        testSizeAndIteration(taskData, TaskId.MAX_ID-2);
         taskData.remove(testId4);
-        assertEquals(TaskId.MAX_ID-2, taskData.getSize());
+        testSizeAndIteration(taskData, TaskId.MAX_ID-2);
 
         
         dummyTask.name = "testId5";
         TaskId testId5 = taskData.add(dummyTask);
         assertTrue(testId5 != null);
-        assertEquals(TaskId.MAX_ID-1, taskData.getSize());
+        testSizeAndIteration(taskData, TaskId.MAX_ID-1);
         assertEquals("testId5", taskData.getTaskName(testId5));
         
         
         taskData.remove(testId2);
-        assertEquals(TaskId.MAX_ID-2, taskData.getSize());
+        testSizeAndIteration(taskData, TaskId.MAX_ID-2);
         assertEquals("testId5", taskData.getTaskName(testId5));
         
 
         dummyTask.name = "testId6";
         TaskId testId6 = taskData.add(dummyTask);
         assertTrue(testId6 != null);
-        assertEquals(TaskId.MAX_ID-1, taskData.getSize());
+        testSizeAndIteration(taskData, TaskId.MAX_ID-1);
         assertEquals("testId5", taskData.getTaskName(testId5));
         assertEquals("testId6", taskData.getTaskName(testId6));
         
 
         TaskId testId7 = taskData.add(dummyTask);
         assertTrue(testId7 != null);
-        assertEquals(TaskId.MAX_ID, taskData.getSize());
+        testSizeAndIteration(taskData, TaskId.MAX_ID);
         
         TaskId testId8 = taskData.add(dummyTask);
         assertTrue(testId8 == null);
-        assertEquals(TaskId.MAX_ID, taskData.getSize());
+        testSizeAndIteration(taskData, TaskId.MAX_ID);
+    }
+
+    /**
+     * Checks whether the size of taskData matches size, and checks whether
+     * the taskData is able to iterate through the list through next / previous
+     * methods properly.
+     * 
+     * @param taskData taskData to test
+     * @param size expected size of taskData.
+     */
+    private void testSizeAndIteration(TaskData taskData, int size) {
+        assertEquals(size, taskData.getSize());
+        
+        if (size == 0) {
+            assertTrue(taskData.getFirst().isInvalid());
+            assertTrue(taskData.getLast().isInvalid());
+            
+        } else {
+            TaskId current = taskData.getFirst();
+            
+            for (int i=0; i<size-1; i++) {
+                TaskId next = taskData.getNext(current);
+                assertEquals(current, taskData.getPrevious(next));
+                current = next;
+            }
+            assertEquals(current, taskData.getLast());
+            assertTrue(taskData.getNext(current).isInvalid());
+        }
     }
 
 }
