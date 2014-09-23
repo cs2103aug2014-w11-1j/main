@@ -1,5 +1,6 @@
 package data;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import data.taskinfo.Priority;
@@ -8,10 +9,18 @@ import data.taskinfo.TaskInfo;
 import data.taskinfo.Time;
 
 /**
+ * Program memory for the tasks in the program.
  * 
  * @author Oh
  */
 public class TaskData {
+    
+    private ArrayList<Task> taskList;
+    
+    
+    public TaskData() {
+        taskList = new ArrayList<>();
+    }
     
     public int next(int index) {
         return 0;
