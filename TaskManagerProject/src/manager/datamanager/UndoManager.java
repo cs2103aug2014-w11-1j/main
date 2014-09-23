@@ -3,7 +3,7 @@ package manager.datamanager;
 import io.FileInputOutput;
 
 import java.util.ArrayList;
-import java.util.Stack;
+import java.util.LinkedList;
 
 import manager.result.Result;
 import manager.result.SimpleResult;
@@ -14,11 +14,12 @@ import data.UndoTaskSnapshot;
 import data.taskinfo.TaskInfo;
 
 public class UndoManager extends AbstractManager {
-    private Stack<UndoSnapshot> undoHistory;
+    private static int UNDO_LIMIT = 100;
+    private LinkedList<UndoSnapshot> undoHistory;
 
     public UndoManager(FileInputOutput fileInputOutput, TaskData taskData) {
         super(fileInputOutput, taskData);
-        undoHistory = new Stack<>();
+        undoHistory = new LinkedList<>();
     }
 
     public void clearUndoHistory() {
@@ -29,6 +30,8 @@ public class UndoManager extends AbstractManager {
         UndoSnapshot undoSnapshot = taskData.retrieveUndoSnapshot();
         if (undoSnapshot.hasChanges()) {
             undoHistory.push(undoSnapshot);
+            if (undoHistory.size() > UNDO_LIMIT)
+                undoHistory.removeLast();
         }
     }
     
