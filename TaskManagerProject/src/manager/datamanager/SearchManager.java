@@ -1,9 +1,10 @@
 package manager.datamanager;
 
 import io.FileInputOutput;
-import data.TaskData;
 import manager.datamanager.searchfilter.Filter;
 import manager.result.Result;
+import data.TaskData;
+import data.TaskId;
 
 public class SearchManager extends AbstractManager {
 
@@ -13,5 +14,9 @@ public class SearchManager extends AbstractManager {
 
     public Result searchTasks(Filter[] filters) {
         throw new UnsupportedOperationException("Not Implemented Yet");
+    }
+    
+    public TaskId getAbsoluteIndex(int relativeIndex) {
+        return null;
     }
 }
