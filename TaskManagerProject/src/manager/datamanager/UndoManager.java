@@ -40,6 +40,8 @@ public class UndoManager extends AbstractManager {
             return new SimpleResult(Result.Type.UNDO_FAILURE);
         }
         
+        readFromFile();
+        
         UndoSnapshot undoSnapshot = undoHistory.pop();
         
         ArrayList<UndoTaskSnapshot> taskSnapshotList = undoSnapshot.retrieveTaskSnapshots();
@@ -48,6 +50,8 @@ public class UndoManager extends AbstractManager {
         }
         
         taskData.discardUndoSnapshot();
+        
+        writeToFile();
         return new SimpleResult(Result.Type.UNDO_SUCCESS);
     }
 
