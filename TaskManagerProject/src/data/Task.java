@@ -1,12 +1,13 @@
 package data;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Date;
 
 import data.taskinfo.Priority;
 import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
-import data.taskinfo.Time;
 
 public class Task {
     private static final int NOT_FOUND = -1;
@@ -37,28 +38,28 @@ public class Task {
         taskInfo.name = name;
     }
     
-    public Time getStartTime() {
-        return taskInfo.startTime;
+    public Duration getDuration() {
+        return taskInfo.duration;
     }
     
-    public void setStartTime(Time startTime) {
-        taskInfo.startTime = startTime;
+    public void setDuration(Duration duration) {
+        taskInfo.duration = duration;
     }
     
-    public Time getEndTime() {
+    public LocalTime getEndTime() {
         return taskInfo.endTime;
     }
     
-    public void setEndTime(Time endTime) {
+    public void setEndTime(LocalTime endTime) {
         taskInfo.endTime = endTime;
     }
     
-    public Date getDate() {
-        return taskInfo.date;
+    public LocalDate getEndDate() {
+        return taskInfo.endDate;
     }
     
-    public void setDate(Date date) {
-        taskInfo.date = date;
+    public void setEndDate(LocalDate endDate) {
+        taskInfo.endDate = endDate;
     }
     
     public String getDetails() {
@@ -126,12 +127,12 @@ public class Task {
         taskInfo.numberOfTimes = numberOfTimes;
     }
     
-    public int getRepeatIntervalDays() {
-        return taskInfo.repeatIntervalDays;
+    public Duration getRepeatIntervalDays() {
+        return taskInfo.repeatInterval;
     }
     
-    public void setRepeatIntervalDays(int repeatIntervalDays) {
-        taskInfo.repeatIntervalDays = repeatIntervalDays;
+    public void setRepeatIntervalDays(Duration repeatInterval) {
+        taskInfo.repeatInterval = repeatInterval;
     }
     
     public void setAllInfo(TaskInfo taskInfo) {

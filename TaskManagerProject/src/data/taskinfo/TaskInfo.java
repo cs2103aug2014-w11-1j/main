@@ -11,14 +11,14 @@ public class TaskInfo {
     public Duration duration;
     public LocalTime endTime;
     public LocalDate endDate;
-    public Duration repeatInterval;
+
     public String details;
     public Tag[] tags;
     public Priority priority;
     public Status status;
 
     public int numberOfTimes;
-    public int repeatIntervalDays;
+    public Duration repeatInterval;
 
     public static final int REPEAT_INDEFINITELY = -1;
 
@@ -43,7 +43,7 @@ public class TaskInfo {
         this.priority = taskInfo.priority;
         this.status = taskInfo.status;
         this.numberOfTimes = taskInfo.numberOfTimes;
-        this.repeatIntervalDays = taskInfo.repeatIntervalDays;
+        this.repeatInterval = taskInfo.repeatInterval;
     }
 
 }
