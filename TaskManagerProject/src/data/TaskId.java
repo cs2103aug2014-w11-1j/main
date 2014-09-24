@@ -1,5 +1,9 @@
 package data;
 
+/**
+ * Immutable.
+ * @author Oh
+ */
 public class TaskId implements Comparable<TaskId> {
     
     /**

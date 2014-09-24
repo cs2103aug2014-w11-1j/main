@@ -3,6 +3,7 @@ package data;
 import data.taskinfo.TaskInfo;
 
 /**
+ * Immutable. Done by restricting access to taskInfo attribute<br>
  * This class stores a snapshot of a task before a modification.<br>
  * It is used to undo changes.<br>
  * <br>
@@ -14,8 +15,8 @@ public class UndoTaskSnapshot {
 
     public static TaskInfo NO_TASK = null;
     
-    public final TaskInfo taskInfo;
-    public final TaskId taskId;
+    private final TaskInfo taskInfo;
+    private final TaskId taskId;
     
     public UndoTaskSnapshot(TaskInfo taskInfo, TaskId taskId) {
         this.taskInfo = taskInfo;
@@ -45,6 +46,17 @@ public class UndoTaskSnapshot {
         } else if (!taskId.equals(other.taskId))
             return false;
         return true;
+    }
+
+    /**
+     * @return copy of stored TaskInfo for immutability.
+     */
+    public TaskInfo getTaskInfo() {
+        return new TaskInfo(taskInfo);
+    }
+
+    public TaskId getTaskId() {
+        return taskId;
     }
     
 }

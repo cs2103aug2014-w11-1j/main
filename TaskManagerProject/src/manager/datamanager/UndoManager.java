@@ -56,11 +56,11 @@ public class UndoManager extends AbstractManager {
     }
 
     private void undoTaskChange(UndoTaskSnapshot undoTaskSnapshot) {
-        TaskId taskId = undoTaskSnapshot.taskId;
-        TaskInfo taskInfo = undoTaskSnapshot.taskInfo;
+        TaskId taskId = undoTaskSnapshot.getTaskId();
+        TaskInfo taskInfo = undoTaskSnapshot.getTaskInfo();
         
         if (taskInfo == UndoTaskSnapshot.NO_TASK) {
-            taskData.remove(undoTaskSnapshot.taskId);
+            taskData.remove(taskId);
             
         } else {
             if (taskData.taskExists(taskId)) {
