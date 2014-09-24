@@ -1,18 +1,23 @@
 package manager.datamanager;
 
 import io.FileInputOutput;
-import data.TaskData;
-import manager.Result;
 import manager.datamanager.searchfilter.Filter;
+import manager.result.Result;
+import data.TaskData;
+import data.TaskId;
 
 public class SearchManager extends AbstractManager {
 
     public SearchManager(FileInputOutput fileInputOutput, TaskData taskData) {
         super(fileInputOutput, taskData);
-        // TODO Auto-generated constructor stub
     }
 
     public Result searchTasks(Filter[] filters) {
         throw new UnsupportedOperationException("Not Implemented Yet");
+    }
+    
+    public TaskId getAbsoluteIndex(int relativeIndex) {
+        // THIS IS A PLACEHOLDER! returns the first task in taskData.
+        return taskData.getFirst();
     }
 }

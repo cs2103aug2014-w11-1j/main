@@ -12,11 +12,11 @@ public abstract class AbstractManager {
         this.taskData = taskData;
     }
     
-    protected boolean read() {
+    protected boolean readFromFile() {
         return fileInputOutput.read();
     }
 
-    protected boolean write() {
+    protected boolean writeToFile() {
         return fileInputOutput.write();
     }
 }

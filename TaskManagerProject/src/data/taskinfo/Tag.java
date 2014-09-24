@@ -2,8 +2,11 @@ package data.taskinfo;
 
 public class Tag {
     
-    public String tag;
+    public final String tag;
     
+    public Tag(String tag) {
+        this.tag = tag;
+    }
     
     @Override
     public int hashCode() {

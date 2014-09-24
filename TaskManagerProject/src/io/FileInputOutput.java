@@ -3,17 +3,21 @@ package io;
 public class FileInputOutput {
     private String fileName;
     
+    private String fileHash;
+    
     /**
-     * @return true for success.
+     * @return true iff there is a change in the file.
      */
     public boolean read() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return false;
+        //throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
      * @return true for success.
      */
     public boolean write() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return false;
+        //throw new UnsupportedOperationException("Not implemented yet");
     }
 }

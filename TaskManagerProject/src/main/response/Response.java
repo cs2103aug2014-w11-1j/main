@@ -7,7 +7,8 @@ public interface Response {
         MESSAGE,        // print only displayed message
         ENUM_MESSAGE,    // print the message type stored in the enum.
         SEARCH_RESULTS,
-        EDITMODE
+        EDITMODE,
+        CANNOT_EXECUTE_COMMAND,
     }
     
     public Type getType();
