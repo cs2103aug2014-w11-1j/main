@@ -1,7 +1,7 @@
 package main.command;
-
-import manager.Result;
+import main.response.Response;
 
 public interface Command {
-    public Result execute();
+    
+    public Response execute();
 }
