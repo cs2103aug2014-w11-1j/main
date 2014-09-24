@@ -20,7 +20,8 @@ public class AddCommand implements Command {
     }
 
     private TaskInfo parse(String args) {
-        return new TaskInfo();
+        TaskInfo newTask = CommandParser.parseTask(args);
+        return newTask;
     }
 
     @Override
