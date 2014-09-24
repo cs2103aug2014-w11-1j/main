@@ -17,6 +17,7 @@ public class SearchManager extends AbstractManager {
     }
     
     public TaskId getAbsoluteIndex(int relativeIndex) {
-        return null;
+        // THIS IS A PLACEHOLDER! returns the first task in taskData.
+        return taskData.getFirst();
     }
 }
