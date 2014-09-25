@@ -25,8 +25,7 @@ public class UndoCommand implements Command {
             return response;
             
         } else {
-            return new EnumResponse(
-                    EnumResponse.MessageType.CANNOT_EXECUTE_COMMAND);
+            return EnumResponse.cannotExecuteCommand();
         }
     }
 

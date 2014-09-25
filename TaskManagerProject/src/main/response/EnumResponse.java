@@ -8,6 +8,10 @@ public class EnumResponse implements Response{
     
     MessageType messageType;
     
+    public static EnumResponse cannotExecuteCommand() {
+        return new EnumResponse(MessageType.CANNOT_EXECUTE_COMMAND);
+    }
+    
     public EnumResponse(MessageType messageType) {
         this.messageType = messageType;
     }

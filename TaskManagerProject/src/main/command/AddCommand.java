@@ -33,8 +33,7 @@ public class AddCommand implements Command {
             Response response = stateManager.update(result);
             return response;
         } else {
-            return new EnumResponse(
-                    EnumResponse.MessageType.CANNOT_EXECUTE_COMMAND);
+            return EnumResponse.cannotExecuteCommand();
         }
     }
 
