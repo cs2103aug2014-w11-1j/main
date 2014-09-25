@@ -3,21 +3,30 @@ package io;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonWriter;
+import javax.json.stream.JsonGenerator;
 
 import data.TaskData;
+import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 public class FileInputOutput {
 
+    private static final String JSON_TASKS = "tasks";
     private static final String JSON_NAME = "name";
     private static final String JSON_DURATION = "duration";
     private static final String JSON_END_TIME = "endTime";
@@ -179,20 +188,57 @@ public class FileInputOutput {
         return duration;
     }
     
+    public static String tasksToJson(TaskInfo[] taskInfos) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        
+        JsonArrayBuilder taskInfoArrayJson = Json.createArrayBuilder();
+        for (TaskInfo taskInfo : taskInfos) {
+            taskInfoArrayJson.add(createJsonObjectBuilder(taskInfo));
+        }
+        
+        builder.add(JSON_TASKS, taskInfoArrayJson);
+        
+        JsonObject jsonObject = builder.build();
+        String prettyPrint = prettyPrintString(jsonObject);
+        
+        return prettyPrint;
+    }
     
-    public static String taskToJson(TaskInfo taskInfo) {
+    public static JsonObjectBuilder createJsonObjectBuilder(TaskInfo taskInfo) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add(JSON_NAME, taskInfo.name);
         builder.add(JSON_DURATION, durationToString(taskInfo.duration));
         builder.add(JSON_END_TIME, localTimeToString(taskInfo.endTime));
         builder.add(JSON_END_DATE, localDateToString(taskInfo.endDate));
-        builder.add(JSON_DETAILS, taskInfo.name);
-        builder.add(JSON_TAGS, taskInfo.name);
-        builder.add(JSON_PRIORITY, taskInfo.name);
-        builder.add(JSON_STATUS, taskInfo.name);
-        //builder.add(JSON_NUMBER_OF_TIMES, taskInfo.name);
-        //builder.add(JSON_REPEAT_INTERVAL, taskInfo.name);
-        return "JSON!!";
+        builder.add(JSON_DETAILS, taskInfo.details);
+        
+        JsonArrayBuilder tagArrayJson = Json.createArrayBuilder();
+        for (Tag tag : taskInfo.tags) {
+            tagArrayJson.add(tag.toString());
+        }
+        
+        builder.add(JSON_TAGS, tagArrayJson);
+        builder.add(JSON_PRIORITY, taskInfo.priority.name());
+        builder.add(JSON_STATUS, taskInfo.status.name());
+        
+        // PENDING IMPLEMENTATION
+        //builder.add(JSON_NUMBER_OF_TIMES, taskInfo.numberOfTimes);
+        //builder.add(JSON_REPEAT_INTERVAL, taskInfo.repeatInterval);
+        
+        return builder;
+    }
+
+    private static String prettyPrintString(JsonObject jsonObject) {
+        StringWriter sw = new StringWriter();
+        
+        Map<String, Object> properties = new HashMap<>(1);
+        properties.put(JsonGenerator.PRETTY_PRINTING, true);
+        
+        JsonWriter jsonWriter = Json.createWriterFactory(properties).createWriter(sw);
+        jsonWriter.writeObject(jsonObject);
+        jsonWriter.close();
+
+        return sw.toString();
     }
 
     private TaskInfo[] readTasksFromFile() {

@@ -11,14 +11,38 @@ import java.time.LocalTime;
 
 import org.junit.Test;
 
+import data.taskinfo.Priority;
+import data.taskinfo.Status;
+import data.taskinfo.Tag;
+import data.taskinfo.TaskInfo;
+
 public class FileInputOutputTest {
 
     @Test
     public void test() {
         //testFileHash();
-        testDateTimeConversion();
+        //testDateTimeConversion();
+        testJsonParsing();
     }
     
+    private void testJsonParsing() {
+        TaskInfo taskInfo = new TaskInfo();
+        taskInfo.name = "A little boy going to the market";
+        taskInfo.details = "The market is very big.";
+        taskInfo.duration = Duration.ofHours(2);
+        taskInfo.endDate = LocalDate.now();
+        taskInfo.endTime = LocalTime.of(14, 0, 0);
+        taskInfo.priority = Priority.MEDIUM;
+        taskInfo.status = Status.DONE;
+        taskInfo.tags = new Tag[]{new Tag("boy"), new Tag("market")};
+        
+        TaskInfo[] taskInfos = new TaskInfo[1];
+        taskInfos[0] = taskInfo;
+
+        String json = FileInputOutput.tasksToJson(taskInfos);
+        System.out.println(json);
+    }
+
     private void testDateTimeConversion() {
         Duration duration;
         String durationString;
