@@ -1,6 +1,6 @@
 package main.command;
 
-import main.response.CannotExecuteCommandResponse;
+import main.response.EnumResponse;
 import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
@@ -33,7 +33,8 @@ public class AddCommand implements Command {
             Response response = stateManager.update(result);
             return response;
         } else {
-            return new CannotExecuteCommandResponse();
+            return new EnumResponse(
+                    EnumResponse.MessageType.CANNOT_EXECUTE_COMMAND);
         }
     }
 
