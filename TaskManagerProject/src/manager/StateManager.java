@@ -18,94 +18,46 @@ public class StateManager {
 
     private final FileInputOutput fileInputOutput;
 	private final UndoManager undoManager;
+	private State currentState;
 
-	// Availability of command. True for able, false for unable
-	private boolean addCheck;
-	private boolean deleteCheck;
-	private boolean searchCheck;
-	private boolean undoCheck;
-	private boolean editCheck;
+	private enum State {
+	    AVAILABLE,
+	    EDIT_MODE,
+	}
 
 	public StateManager(FileInputOutput fileInputOutput, UndoManager undoManager) {
 	    this.fileInputOutput = fileInputOutput;
 		this.undoManager = undoManager;
-		addCheck = true;
-		deleteCheck = true;
-		searchCheck = true;
-		undoCheck = true;
-		editCheck = true;
 	}
 
 	public boolean canAdd() {
-		return addCheck;
+		return currentState == State.AVAILABLE;
 	}
 
 	public boolean canSearch() {
-		return searchCheck;
+        return currentState == State.AVAILABLE;
 	}
 
 	public boolean canEdit() {
-		return editCheck;
+        return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
 	}
 
 	public boolean canDelete() {
-		return deleteCheck;
+        return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
 	}
 
 	public boolean canUndo() {
-		return undoCheck;
-	}
-
-	public void enterAddMode() {
-		addCheck = false;
-	}
-
-	public void enterSearchMode() {
-		searchCheck = false;
-	}
-
-	public void enterEditMode() {
-		editCheck = false;
-	}
-
-	public void enterDeleteMode() {
-		deleteCheck = false;
-	}
-
-	public void enterUndoMode() {
-		undoCheck = false;
-	}
-
-	public void exitAddMode() {
-		addCheck = true;
-	}
-
-	public void exitSearchMode() {
-		searchCheck = true;
-	}
-
-	public void exitDeleteMode() {
-		searchCheck = true;
-	}
-
-	public void exitUndoMode() {
-		undoCheck = true;
-	}
-
-	public void exitEditMode() {
-		editCheck = true;
+        return currentState == State.AVAILABLE;
 	}
 	
-	/**
-	 * This method is called just before every command execution.
-	 */
-	public void beforeCommandExecutionUpdate() {
-	    boolean fileChanged = readFromFile();
-	    
-	    if (fileChanged) {
-	        undoManager.clearUndoHistory();
-	    }
+	private void setState(State newState) {
+	    currentState = newState;
 	}
+	
+	private boolean inState(State state) {
+	    return (currentState == state);
+	}
+    
 
 	/**
 	 * Updates the program's state using the result obtained from the managers.
@@ -118,24 +70,39 @@ public class StateManager {
         undoManager.retrieveUndoSnapshot();
         
         switch (result.getType()){
-        case ADD_SUCCESS: exitEditMode();
-        			 //return
-        		     break;
-        case ADD_FAILURE: exitEditMode();
-        		     //return
-        		     break;
-        case DELETE_SUCCESS: exitDeleteMode();
-        		     //return
-        		     break;
-        case DELETE_FAILURE: exitDeleteMode();
-        		     //return
-        		     break;
-        default: break;
+            case EDIT_MODE_START :
+                setState(State.EDIT_MODE);
+                break;
+                
+            case EDIT_MODE_END :
+                setState(State.AVAILABLE);
+                break;
+                
+            case DELETE_SUCCESS :
+                if (inState(State.EDIT_MODE)) {
+                    setState(State.AVAILABLE);
+                }
+                break;
+        		     
+            default:
+                break;
         }
         
 
         writeToFile();
         throw new UnsupportedOperationException("Not Implemented Yet");    
+    }
+
+    
+    /**
+     * This method is called just before every command execution.
+     */
+    public void beforeCommandExecutionUpdate() {
+        boolean fileChanged = readFromFile();
+        
+        if (fileChanged) {
+            undoManager.clearUndoHistory();
+        }
     }
 
     private boolean readFromFile() {

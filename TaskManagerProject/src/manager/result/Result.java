@@ -8,6 +8,8 @@ public interface Result {
         DELETE_FAILURE,
         UNDO_SUCCESS,
         UNDO_FAILURE,
+        EDIT_MODE_START,
+        EDIT_MODE_END,
         EDIT_SUCCESS,
         EDIT_FAILURE,
     }
