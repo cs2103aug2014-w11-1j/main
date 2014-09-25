@@ -62,7 +62,7 @@ public class CommandParser {
     }
 
     private static LocalDate parseDate(String dateString) {
-        if (dateFormatPatterns == null &&
+        if (dateFormatPatterns == null ||
                 shouldUpdateDatePatterns()) {
             buildDatePatternHashMap();
         }
@@ -91,6 +91,7 @@ public class CommandParser {
     }
 
     private static LocalDate parseAbsoluteDate(String dateString) {
+        // TODO Fix bug where a string can match numerous patterns.
         LocalDate date = null;
 
         Iterator<Entry<DateTimeFormatter, String>> i =
