@@ -33,6 +33,8 @@ import data.taskinfo.TaskInfo;
 
 public class JsonFileFormatter {
 
+    private static final String FORMAT_TIME = "%02d:%02d:%02d";
+    private static final String FORMAT_DATE = "%d-%02d-%02d";
     private static final String ERROR_WRONG_EVENT = "Wrong event: ";
     private static final String ERROR_UNKNOWN_ELEMENT = "Unknown element: ";
     private static final String STRING_EMPTY = "";
@@ -113,7 +115,7 @@ public class JsonFileFormatter {
         if (time == null)
             return STRING_NULL;
         
-        return String.format("%02d:%02d:%02d", time.getHour(),
+        return String.format(FORMAT_TIME, time.getHour(),
                 time.getMinute(), time.getSecond());
     }
     
@@ -139,7 +141,7 @@ public class JsonFileFormatter {
         if (date == null)
             return STRING_NULL;
         
-        return String.format("%d-%02d-%02d", date.getYear(),
+        return String.format(FORMAT_DATE, date.getYear(),
                 date.getMonthValue(), date.getDayOfMonth());
     }
     
@@ -362,7 +364,7 @@ public class JsonFileFormatter {
         builder.add(JSON_TASKS, taskInfoArrayJson);
         
         JsonObject jsonObject = builder.build();
-        prettyPrintString(writer, jsonObject);
+        writePrettyPrint(writer, jsonObject);
     }
     
     private static TaskInfo[] jsonToTasks(Reader reader)
@@ -412,7 +414,7 @@ public class JsonFileFormatter {
         return taskInfos;
     }
     
-    private static void prettyPrintString(Writer writer, JsonObject jsonObject) {
+    private static void writePrettyPrint(Writer writer, JsonObject jsonObject) {
         Map<String, Object> properties = new HashMap<>(1);
         properties.put(JsonGenerator.PRETTY_PRINTING, true);
         

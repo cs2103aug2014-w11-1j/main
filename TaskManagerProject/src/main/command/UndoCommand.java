@@ -20,6 +20,8 @@ public class UndoCommand implements Command {
     public Response execute() {
         
         if (stateManager.canUndo()) {
+            stateManager.beforeCommandExecutionUpdate();
+            
             Result result = undoManager.undo();
             Response response = stateManager.update(result);
             return response;
