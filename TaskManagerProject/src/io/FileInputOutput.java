@@ -47,13 +47,19 @@ public class FileInputOutput {
      * @return true for success.
      */
     public boolean write() {
-        boolean result = writeTasksToFile();
-        
-        if (result == true) {
-            fileHash = computeHash(fileName);
-        } 
-        
-        return result;
+        if (taskData.hasUnsavedChanges()) {
+            boolean result = writeTasksToFile();
+            
+            if (result == true) {
+                fileHash = computeHash(fileName);
+                taskData.saveSuccessful();
+            } 
+            
+            return result;
+            
+        } else {
+            return true;
+        }
     }
     
     

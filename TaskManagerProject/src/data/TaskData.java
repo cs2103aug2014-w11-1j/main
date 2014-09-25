@@ -35,6 +35,8 @@ public class TaskData {
     
     private int size = 0;
     
+    private boolean hasUnsavedChanges;
+    
     public TaskData() {
         initializeTaskData();
     }
@@ -356,6 +358,18 @@ public class TaskData {
         undoSnapshot = new UndoSnapshot();
     }
     
+    /**
+     * Call this whenever a save is successful so that TaskData knows it no
+     * longer has any unsaved changes.
+     */
+    public void saveSuccessful() {
+        hasUnsavedChanges = false;
+    }
+    
+    public boolean hasUnsavedChanges() {
+        return hasUnsavedChanges;
+    }
+    
     private void initializeTaskData() {
         taskList = new ArrayList<>();
         freeSlotList = new LinkedList<>();
@@ -364,6 +378,7 @@ public class TaskData {
         
         undoSnapshot = new UndoSnapshot();
         size = 0;
+        hasUnsavedChanges = false;
     }
     
     
@@ -378,6 +393,8 @@ public class TaskData {
      * @param taskId the id of the task you want to add to snapshot.
      */
     private void addToSnapshot(TaskId taskId) {
+        hasUnsavedChanges = true;
+        
         Task task = getTask(taskId);
         TaskInfo taskInfo = UndoTaskSnapshot.NO_TASK;
         if (task != null) {
