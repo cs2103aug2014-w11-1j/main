@@ -27,6 +27,13 @@ public class EditManager extends AbstractManager {
     	
     }
     
+    /**
+     * This method is to modify origin task with some changes specified
+     * in modifTask, and return the modified task
+     * @param originTask task to modify
+     * @param modifTask changes to be modified
+     * @return modified TaskInfo
+     */
     public TaskInfo mergeTasks(TaskInfo originTask, TaskInfo modifTask){
     	TaskInfo mergedTask = new TaskInfo(originTask);
     	if (modifTask.name != null){
