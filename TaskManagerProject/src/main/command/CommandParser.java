@@ -62,8 +62,7 @@ public class CommandParser {
     }
 
     private static LocalDate parseDate(String dateString) {
-        if (dateFormatPatterns == null ||
-                shouldUpdateDatePatterns()) {
+        if (shouldUpdateDatePatterns()) {
             buildDatePatternHashMap();
         }
 
@@ -131,7 +130,8 @@ public class CommandParser {
     }
 
     private static boolean shouldUpdateDatePatterns() {
-        return !datePatternsLastUpdate.equals(LocalDate.now());
+        return dateFormatPatterns == null ||
+               !datePatternsLastUpdate.equals(LocalDate.now());
     }
 
     private static void mapPattern(Map<DateTimeFormatter, String> map,
