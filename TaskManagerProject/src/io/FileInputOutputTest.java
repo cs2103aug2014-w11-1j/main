@@ -35,10 +35,21 @@ public class FileInputOutputTest {
         taskInfo.priority = Priority.MEDIUM;
         taskInfo.status = Status.DONE;
         taskInfo.tags = new Tag[]{new Tag("boy"), new Tag("market")};
-        
-        TaskInfo[] taskInfos = new TaskInfo[1];
-        taskInfos[0] = taskInfo;
 
+        TaskInfo taskInfo2 = new TaskInfo();
+        taskInfo2.name = "kasjfklaf\n\n\n^%#^#$%@%lkA<FZ>>>>???>></////||||||()()()%%%DDDD\r\n";
+        taskInfo2.details = null;
+        taskInfo2.duration = null;
+        taskInfo2.endDate = null;
+        taskInfo2.endTime = null;
+        taskInfo2.priority = null;
+        taskInfo2.status = null;
+        taskInfo2.tags = null;
+        
+        TaskInfo[] taskInfos = new TaskInfo[2];
+        taskInfos[0] = taskInfo;
+        taskInfos[1] = taskInfo2;
+        
         String json = FileInputOutput.tasksToJson(taskInfos);
         System.out.println(json);
     }
