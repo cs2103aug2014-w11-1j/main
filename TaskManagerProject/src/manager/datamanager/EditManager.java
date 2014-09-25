@@ -8,6 +8,12 @@ import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+/**
+ * This is a edit manager that enables editing a certain TaskInfo with specific 
+ * taskId in the taskData.
+ * @author BRUCE
+ *
+ */
 public class EditManager extends AbstractManager {
 
     public EditManager(FileInputOutput fileInputOutput, TaskData taskData) {

@@ -8,6 +8,13 @@ import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+
+/**
+ * This is an add manager that enables creating a new task with given
+ * taskInfo in the TaskData.
+ * @author BRUCE
+ *
+ */
 public class AddManager extends AbstractManager {
 	
 	private TaskId id = null;
