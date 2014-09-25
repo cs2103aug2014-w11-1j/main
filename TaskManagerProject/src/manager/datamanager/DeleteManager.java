@@ -7,6 +7,13 @@ import manager.result.SimpleResult;
 import data.TaskData;
 import data.TaskId;
 
+
+/**
+ * This is a delete manager that enables deletion of a task with specified
+ * taskId inside the taskData.
+ * @author BRUCE
+ *
+ */
 public class DeleteManager extends AbstractManager {
 
     public DeleteManager(FileInputOutput fileInputOutput, TaskData taskData) {
