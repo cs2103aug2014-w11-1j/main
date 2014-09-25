@@ -20,8 +20,8 @@ public class FileInputOutputTest {
 
     @Test
     public void test() {
-        //testFileHash();
-        //testDateTimeConversion();
+        testFileHash();
+        testDateTimeConversion();
         testJsonParsing();
     }
     
@@ -45,13 +45,71 @@ public class FileInputOutputTest {
         taskInfo2.priority = null;
         taskInfo2.status = null;
         taskInfo2.tags = null;
+
+        TaskInfo taskInfo3 = new TaskInfo();
+        taskInfo2.name = "";
+        taskInfo2.details = "";
+        taskInfo2.duration = null;
+        taskInfo.endDate = LocalDate.of(160, 2, 29);
+        taskInfo2.endTime = null;
+        taskInfo2.priority = null;
+        taskInfo2.status = null;
+        taskInfo2.tags = new Tag[0];
+
+        TaskInfo taskInfo4 = new TaskInfo();
+        taskInfo.name = "null";
+        taskInfo.details = "null";
+        taskInfo.duration = Duration.ofHours(2);
+        taskInfo.endDate = LocalDate.of(1, 1, 1);
+        taskInfo.endTime = LocalTime.of(0, 59, 59);
+        taskInfo.priority = null;
+        taskInfo.status = Status.UNDONE;
+        taskInfo.tags = new Tag[]{new Tag("boy"), new Tag("market"),
+                new Tag("market"), new Tag("market"), new Tag("market"),
+                new Tag("market"), new Tag("boy"), new Tag("market"),
+                new Tag("market")};
+        
+        
         
         TaskInfo[] taskInfos = new TaskInfo[2];
         taskInfos[0] = taskInfo;
         taskInfos[1] = taskInfo2;
+        testJsonParsing(taskInfos);
+
         
+        taskInfos = new TaskInfo[0];
+        testJsonParsing(taskInfos);
+        
+
+        taskInfos = new TaskInfo[20];
+        for (int i = 0; i < 5; i++) {
+            taskInfos[4 * i + 0] = taskInfo;
+            taskInfos[4 * i + 1] = taskInfo2;
+            taskInfos[4 * i + 2] = taskInfo3;
+            taskInfos[4 * i + 3] = taskInfo4;
+        }
+        
+        testJsonParsing(taskInfos);
+    }
+
+    private void testJsonParsing(TaskInfo[] taskInfos) {
         String json = FileInputOutput.tasksToJson(taskInfos);
-        System.out.println(json);
+
+        TaskInfo[] loadTaskInfos = null;
+        try {
+            loadTaskInfos = FileInputOutput.jsonToTasks(json);
+        } catch (InvalidFileFormatException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(taskInfos.length, loadTaskInfos.length);
+        for (int i = 0; i < taskInfos.length; i++) {
+            assertEquals(taskInfos[i], loadTaskInfos[i]);
+        }
+        
+        
+        String json2 = FileInputOutput.tasksToJson(loadTaskInfos);
+        assertEquals(json, json2);
     }
 
     private void testDateTimeConversion() {

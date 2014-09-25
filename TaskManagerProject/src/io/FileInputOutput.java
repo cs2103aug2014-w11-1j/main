@@ -3,6 +3,7 @@ package io;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,14 +12,21 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Queue;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
 import javax.json.stream.JsonGenerator;
+import javax.json.stream.JsonParser;
+import javax.json.stream.JsonParser.Event;
+import javax.json.stream.JsonParsingException;
 
 import data.TaskData;
 import data.taskinfo.Priority;
@@ -28,6 +36,8 @@ import data.taskinfo.TaskInfo;
 
 public class FileInputOutput {
 
+    private static final String ERROR_WRONG_EVENT = "Wrong event: ";
+    private static final String ERROR_UNKNOWN_ELEMENT = "Unknown element: ";
     private static final String STRING_EMPTY = "";
     private static final String STRING_NULL = "null";
     
@@ -249,6 +259,11 @@ public class FileInputOutput {
         return jsonString;
     }
     
+    /**
+     * @param taskInfos an Array of TaskInfo to be converted into a string.
+     * @return a String containing all the data from the taskInfos array,
+     * in JSON format, pretty printed.
+     */
     public static String tasksToJson(TaskInfo[] taskInfos) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         
@@ -265,8 +280,152 @@ public class FileInputOutput {
         return prettyPrint;
     }
     
+    /**
+     * @param jsonString A string formatted in Json storing the TaskInfos
+     * @return an array of TaskInfos extracted from jsonString
+     * @throws InvalidFileFormatException
+     * thrown when an error occurred during the parsing of the string.
+     */
+    public static TaskInfo[] jsonToTasks(String jsonString)
+            throws InvalidFileFormatException {
+        
+        Queue<TaskInfo> taskInfoQueue = new LinkedList<>();
+        
+        JsonParser parser = Json.createParser(new StringReader(jsonString));
+        try {
+            Event event = parser.next();
+            
+            while (!(event == Event.KEY_NAME && parser.getString().equals(JSON_TASKS))) {
+                event = parser.next();
+            }
+            
+            event = parser.next();
+            if (event != Event.START_ARRAY) {
+                throw new InvalidFileFormatException("Tasks is not an array.");
+            }
+            
+            event = parser.next();
+            while (event == Event.START_OBJECT) {
+                taskInfoQueue.offer(parseTaskInfo(parser));
+                event = parser.next();
+            } 
+            
+            if (event == Event.END_ARRAY) {
+                parser.close();
+                
+            } else {
+                throw new InvalidFileFormatException("End of tasks array not found");
+            }
+            
+        } catch (NoSuchElementException e) {
+            throw new InvalidFileFormatException("Reached end of file unexpectedly.");
+        } catch (JsonParsingException e) {
+            throw new InvalidFileFormatException("Invalid JSON encountered.");
+        } catch (JsonException e) {
+            throw new InvalidFileFormatException("Unable to read file.");
+        }
+        
+        TaskInfo[] taskInfos = new TaskInfo[taskInfoQueue.size()];
+        for (int i = 0; i < taskInfos.length; i++) {
+            taskInfos[i] = taskInfoQueue.poll();
+        }
+        
+        return taskInfos;
+    }
     
-    public static JsonObjectBuilder createJsonObjectBuilder(TaskInfo taskInfo) {
+    
+    private static TaskInfo parseTaskInfo(JsonParser parser)
+            throws InvalidFileFormatException{
+        
+        TaskInfo taskInfo = new TaskInfo();
+        
+        Event event = parser.next();
+        while (event != Event.END_OBJECT) {
+            
+            if (event != Event.KEY_NAME) {
+                throw new InvalidFileFormatException(ERROR_WRONG_EVENT + event.name());
+            }
+            String key = parser.getString();
+            
+            event = parser.next();
+            if (event == Event.VALUE_STRING) {
+                String value = parser.getString();
+                readKeyValuePair(taskInfo, key, value);
+                
+            } else if (event == Event.START_ARRAY) {
+                readKeyStringArrayPair(taskInfo, key, parser);
+            
+            } else {
+                throw new InvalidFileFormatException(ERROR_WRONG_EVENT + event.name());
+            }
+            
+            event = parser.next();
+        }
+        
+        return taskInfo;
+    }
+    
+    private static void readKeyValuePair(TaskInfo taskInfo,
+            String key, String value) throws InvalidFileFormatException {
+        
+        switch(key) {
+            case JSON_NAME :
+                taskInfo.name = jsonStringToString(value);
+                break;
+            case JSON_DURATION :
+                taskInfo.duration = stringToDuration(value);
+                break;
+            case JSON_END_TIME :
+                taskInfo.endTime = stringToLocalTime(value);
+                break;
+            case JSON_END_DATE :
+                taskInfo.endDate = stringToLocalDate(value);
+                break;
+            case JSON_TAGS :
+                if (isNullString(value))
+                    taskInfo.tags = null;
+                else
+                    throw new InvalidFileFormatException("Unable to read tags");
+                break;
+            case JSON_DETAILS :
+                taskInfo.details = jsonStringToString(value);
+                break;
+            case JSON_PRIORITY :
+                taskInfo.priority = stringToPriority(value);
+                break;
+            case JSON_STATUS :
+                taskInfo.status = stringToStatus(value);
+                break;
+            default :
+                throw new InvalidFileFormatException(ERROR_UNKNOWN_ELEMENT + key);
+        }
+    }
+    
+    private static void readKeyStringArrayPair(TaskInfo taskInfo, String key,
+            JsonParser parser) throws InvalidFileFormatException {
+        
+        Queue<String> stringQueue = new LinkedList<>();
+        
+        Event event = parser.next();
+        while (event != Event.END_ARRAY) {
+            stringQueue.offer(parser.getString());
+            event = parser.next();
+        }
+        
+        switch(key) {
+            case JSON_TAGS:
+                Tag[] tags = new Tag[stringQueue.size()];
+                for (int i = 0; i < tags.length; i++) {
+                    tags[i] = new Tag(stringQueue.poll());
+                }
+                taskInfo.tags = tags;
+                break;
+            default:
+                throw new InvalidFileFormatException(ERROR_UNKNOWN_ELEMENT + key);
+        }
+    }
+
+    private static JsonObjectBuilder createJsonObjectBuilder(TaskInfo taskInfo) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add(JSON_NAME, stringToJsonString(taskInfo.name));
         builder.add(JSON_DURATION, durationToString(taskInfo.duration));
