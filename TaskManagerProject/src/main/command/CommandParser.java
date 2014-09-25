@@ -15,7 +15,8 @@ import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 public class CommandParser {
-    private static Map<DateTimeFormatter, String> dateFormatPatterns;
+    private static Map<DateTimeFormatter, String> datePartialFormatPatterns;
+    private static Map<DateTimeFormatter, String> dateFullFormatPatterns;
     private static LocalDate datePatternsLastUpdate;
 
     private final static String SYMBOL_IGNORE = "\"";
@@ -90,48 +91,66 @@ public class CommandParser {
     }
 
     private static LocalDate parseAbsoluteDate(String dateString) {
-        // TODO Fix bug where a string can match numerous patterns.
-        LocalDate date = null;
-
-        Iterator<Entry<DateTimeFormatter, String>> i =
-            dateFormatPatterns.entrySet().iterator();
-        while (i.hasNext()) {
-            Entry<DateTimeFormatter, String> formatPattern = i.next();
-            DateTimeFormatter format = formatPattern.getKey();
-            String missingField = formatPattern.getValue();
-
-            try {
-                date = LocalDate.parse(dateString + missingField, format);
-            } catch (DateTimeParseException e) {
-                // do nothing
-            }
+        // match full before partial in order to prevent matching more than one.
+        LocalDate date = matchDatePatterns(dateFullFormatPatterns, dateString);
+        if (date == null) {
+            date = matchDatePatterns(datePartialFormatPatterns, dateString);
         }
 
         return date;
     }
 
+    private static LocalDate matchDatePatterns(
+            Map<DateTimeFormatter, String> dateMap, String dateString) {
+
+        Iterator<Entry<DateTimeFormatter, String>> i =
+            dateMap.entrySet().iterator();
+        while (i.hasNext()) {
+            Entry<DateTimeFormatter, String> formatPattern = i.next();
+
+            DateTimeFormatter format = formatPattern.getKey();
+            String missingField = formatPattern.getValue();
+
+            try {
+                return LocalDate.parse(dateString + missingField, format);
+            } catch (DateTimeParseException e) {
+                // do nothing
+            }
+        }
+
+        return null;
+    }
+
     private static void buildDatePatternHashMap() {
-        dateFormatPatterns = new HashMap<DateTimeFormatter, String>();
+        datePartialFormatPatterns = new HashMap<DateTimeFormatter, String>();
+        dateFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
 
         // 24 August
-        mapPattern(dateFormatPatterns,
+        mapPattern(datePartialFormatPatterns,
                 "d MMMM" + "y", String.valueOf(LocalDate.now().getYear()));
         // 24Aug
-        mapPattern(dateFormatPatterns,
+        mapPattern(datePartialFormatPatterns,
                 "dMMM" + "y", String.valueOf(LocalDate.now().getYear()));
+
         // 24Aug2014
-        mapPattern(dateFormatPatterns, "dMMMy", null);
+        mapPattern(dateFullFormatPatterns, "dMMMy");
         // 24Aug14
-        mapPattern(dateFormatPatterns, "dMMMyy", null);
+        mapPattern(dateFullFormatPatterns, "dMMMyy");
         // 24/8/14
-        mapPattern(dateFormatPatterns, "d/M/yy", null);
+        mapPattern(dateFullFormatPatterns, "d/M/yy");
 
         datePatternsLastUpdate = LocalDate.now();
     }
 
     private static boolean shouldUpdateDatePatterns() {
-        return dateFormatPatterns == null ||
+        return datePartialFormatPatterns == null ||
+               dateFullFormatPatterns == null ||
                !datePatternsLastUpdate.equals(LocalDate.now());
+    }
+
+    private static void mapPattern(Map<DateTimeFormatter, String> map,
+            String pattern) {
+        map.put(DateTimeFormatter.ofPattern(pattern), "");
     }
 
     private static void mapPattern(Map<DateTimeFormatter, String> map,
