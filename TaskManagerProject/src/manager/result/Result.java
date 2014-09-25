@@ -7,7 +7,9 @@ public interface Result {
         DELETE_SUCCESS,
         DELETE_FAILURE,
         UNDO_SUCCESS,
-        UNDO_FAILURE
+        UNDO_FAILURE,
+        EDIT_SUCCESS,
+        EDIT_FAILURE,
     }
 
     public Type getType();    // implement this with the correct type.
