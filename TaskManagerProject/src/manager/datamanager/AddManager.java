@@ -19,8 +19,8 @@ public class AddManager extends AbstractManager {
 	
 	private TaskId id = null;
     
-    public AddManager(FileInputOutput fileInputOutput, TaskData taskData) {
-        super(fileInputOutput, taskData);
+    public AddManager(TaskData taskData) {
+        super(taskData);
     }
 
     public Result addTask(TaskInfo taskInfo) {
@@ -29,15 +29,11 @@ public class AddManager extends AbstractManager {
     		return new SimpleResult(Result.Type.ADD_FAILURE);
     	}
     	
-    	readFromFile();
-    	
     	id = taskData.add(taskInfo);
     	
     	if (id == null){
     		return new SimpleResult(Result.Type.ADD_FAILURE);
     	}
-    	
-    	writeToFile();
     	
     	return new AddResult(Result.Type.ADD_SUCCESS, taskInfo, id);
     	

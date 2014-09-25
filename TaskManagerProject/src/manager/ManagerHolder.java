@@ -18,12 +18,12 @@ public class ManagerHolder {
     
 
     public ManagerHolder(TaskData taskData, FileInputOutput fileInputOutput) {
-        addManager = new AddManager(fileInputOutput, taskData);
-        searchManager = new SearchManager(fileInputOutput, taskData);
-        editManager = new EditManager(fileInputOutput, taskData);
-        deleteManager = new DeleteManager(fileInputOutput, taskData);
-        undoManager = new UndoManager(fileInputOutput, taskData);
-        stateManager = new StateManager(undoManager);
+        addManager = new AddManager(taskData);
+        searchManager = new SearchManager(taskData);
+        editManager = new EditManager(taskData);
+        deleteManager = new DeleteManager(taskData);
+        undoManager = new UndoManager(taskData);
+        stateManager = new StateManager(fileInputOutput, undoManager);
     }
 
     public StateManager getStateManager() {

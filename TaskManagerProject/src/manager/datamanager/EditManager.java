@@ -16,8 +16,8 @@ import data.taskinfo.TaskInfo;
  */
 public class EditManager extends AbstractManager {
 
-    public EditManager(FileInputOutput fileInputOutput, TaskData taskData) {
-        super(fileInputOutput, taskData);
+    public EditManager(TaskData taskData) {
+        super(taskData);
     }
 
     public Result editTask(TaskInfo taskInfo, TaskId taskId) {
@@ -26,16 +26,12 @@ public class EditManager extends AbstractManager {
     		return new SimpleResult(Result.Type.EDIT_FAILURE);
     	}
     	
-    	readFromFile();
-    	
     	TaskInfo originTask = taskData.getTaskInfo(taskId);
     	if (originTask == null){
     		return new SimpleResult(Result.Type.EDIT_FAILURE);
     	}
     	TaskInfo editedTask = mergeTasks(originTask, taskInfo);
     	taskData.setTaskInfo(taskId, editedTask);
-    	
-    	writeToFile();
     	
     	return new EditResult(Result.Type.EDIT_SUCCESS,editedTask, taskId);
     	

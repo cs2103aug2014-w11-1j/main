@@ -1,5 +1,6 @@
 package manager;
 
+import io.FileInputOutput;
 import main.response.Response;
 import manager.datamanager.UndoManager;
 import manager.result.Result;
@@ -15,6 +16,7 @@ import manager.result.Result;
  */
 public class StateManager {
 
+    private final FileInputOutput fileInputOutput;
 	private final UndoManager undoManager;
 
 	// Availability of command. True for able, false for unable
@@ -24,7 +26,8 @@ public class StateManager {
 	private boolean undoCheck;
 	private boolean editCheck;
 
-	public StateManager(UndoManager undoManager) {
+	public StateManager(FileInputOutput fileInputOutput, UndoManager undoManager) {
+	    this.fileInputOutput = fileInputOutput;
 		this.undoManager = undoManager;
 		addCheck = true;
 		deleteCheck = true;
@@ -92,6 +95,17 @@ public class StateManager {
 	public void exitEditMode() {
 		editCheck = true;
 	}
+	
+	/**
+	 * This method is called just before every command execution.
+	 */
+	public void beforeCommandExecutionUpdate() {
+	    boolean fileChanged = readFromFile();
+	    
+	    if (fileChanged) {
+	        undoManager.clearUndoHistory();
+	    }
+	}
 
 	/**
 	 * Updates the program's state using the result obtained from the managers.
@@ -120,7 +134,15 @@ public class StateManager {
         }
         
 
-        
+        writeToFile();
         throw new UnsupportedOperationException("Not Implemented Yet");    
+    }
+
+    private boolean readFromFile() {
+        return fileInputOutput.read();
+    }
+
+    private boolean writeToFile() {
+        return fileInputOutput.write();
     }
 }

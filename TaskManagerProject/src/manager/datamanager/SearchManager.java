@@ -8,8 +8,8 @@ import data.TaskId;
 
 public class SearchManager extends AbstractManager {
 
-    public SearchManager(FileInputOutput fileInputOutput, TaskData taskData) {
-        super(fileInputOutput, taskData);
+    public SearchManager(TaskData taskData) {
+        super(taskData);
     }
 
     public Result searchTasks(Filter[] filters) {
