@@ -27,6 +27,8 @@ public class AddCommand implements Command {
     @Override
     public Response execute() {
         if (stateManager.canAdd()) {
+            stateManager.beforeCommandExecutionUpdate();
+            
         	stateManager.enterAddMode();
             Result result = addManager.addTask(taskToAdd);
             Response response = stateManager.update(result);
