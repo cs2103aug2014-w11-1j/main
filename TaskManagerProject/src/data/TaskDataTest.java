@@ -185,8 +185,8 @@ public class TaskDataTest {
         assertEquals(size, taskData.getSize());
         
         if (size == 0) {
-            assertTrue(taskData.getFirst().isInvalid());
-            assertTrue(taskData.getLast().isInvalid());
+            assertFalse(taskData.getFirst().isValid());
+            assertFalse(taskData.getLast().isValid());
             
         } else {
             TaskId current = taskData.getFirst();
@@ -197,7 +197,7 @@ public class TaskDataTest {
                 current = next;
             }
             assertEquals(current, taskData.getLast());
-            assertTrue(taskData.getNext(current).isInvalid());
+            assertFalse(taskData.getNext(current).isValid());
         }
     }
 

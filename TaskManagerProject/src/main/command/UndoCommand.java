@@ -1,6 +1,6 @@
 package main.command;
 
-import main.response.CannotExecuteCommandResponse;
+import main.response.EnumResponse;
 import main.response.Response;
 import manager.StateManager;
 import manager.datamanager.UndoManager;
@@ -25,7 +25,7 @@ public class UndoCommand implements Command {
             return response;
             
         } else {
-            return new CannotExecuteCommandResponse();
+            return EnumResponse.cannotExecuteCommand();
         }
     }
 

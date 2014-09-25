@@ -1,14 +1,15 @@
 package data;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 
 import data.taskinfo.Priority;
 import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
-import data.taskinfo.Time;
 
 /**
  * Program memory for the tasks in the program.<br>
@@ -34,13 +35,10 @@ public class TaskData {
     
     private int size = 0;
     
+    private boolean hasUnsavedChanges;
+    
     public TaskData() {
-        taskList = new ArrayList<>();
-        freeSlotList = new LinkedList<>();
-        nextTaskList = new ArrayList<>();
-        previousTaskList = new ArrayList<>();
-        
-        undoSnapshot = new UndoSnapshot();
+        initializeTaskData();
     }
 
     public TaskId getFirst() {
@@ -88,28 +86,28 @@ public class TaskData {
         }
     }
     
-    public Time getTaskStartTime(TaskId taskId) {
+    public Duration getTaskDuration(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
         } else {
-            return task.getStartTime();
+            return task.getDuration();
         }
     }
     
-    public boolean setTaskStartTime(TaskId taskId, Time time) {
+    public boolean setTaskDuration(TaskId taskId, Duration duration) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setStartTime(time);
+            task.setDuration(duration);
             return true;
         }
     }
     
-    public Time getTaskEndTime(TaskId taskId) {
+    public LocalTime getTaskEndTime(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -118,7 +116,7 @@ public class TaskData {
         }
     }
     
-    public boolean setTaskEndTime(TaskId taskId, Time time) {
+    public boolean setTaskEndTime(TaskId taskId, LocalTime time) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -130,23 +128,23 @@ public class TaskData {
         }
     }
     
-    public Date getTaskDate(TaskId taskId) {
+    public LocalDate getTaskDate(TaskId taskId) {
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
         } else {
-            return task.getDate();
+            return task.getEndDate();
         }
     }
 
-    public boolean setTaskDate(TaskId taskId, Date date) {
+    public boolean setTaskDate(TaskId taskId, LocalDate date) {
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setDate(date);
+            task.setEndDate(date);
             return true;
         }
     }
@@ -283,8 +281,13 @@ public class TaskData {
      * Resets entire task list with a new list of tasks.
      * @param tasks List of tasks as retrieved from file.
      */
-    public void updateTaskList(Task[] tasks) {
-        throw new UnsupportedOperationException("Not Implemented Yet");
+    public void updateTaskList(TaskInfo[] tasks) {
+        initializeTaskData();
+        for (TaskInfo taskInfo : tasks) {
+            add(taskInfo);
+            discardUndoSnapshot();
+        }
+        discardUndoSnapshot();
     }
     
     /**
@@ -355,6 +358,29 @@ public class TaskData {
         undoSnapshot = new UndoSnapshot();
     }
     
+    /**
+     * Call this whenever a save is successful so that TaskData knows it no
+     * longer has any unsaved changes.
+     */
+    public void saveSuccessful() {
+        hasUnsavedChanges = false;
+    }
+    
+    public boolean hasUnsavedChanges() {
+        return hasUnsavedChanges;
+    }
+    
+    private void initializeTaskData() {
+        taskList = new ArrayList<>();
+        freeSlotList = new LinkedList<>();
+        nextTaskList = new ArrayList<>();
+        previousTaskList = new ArrayList<>();
+        
+        undoSnapshot = new UndoSnapshot();
+        size = 0;
+        hasUnsavedChanges = false;
+    }
+    
     
     private int maxTasks() {
         return TaskId.MAX_ID;
@@ -367,6 +393,8 @@ public class TaskData {
      * @param taskId the id of the task you want to add to snapshot.
      */
     private void addToSnapshot(TaskId taskId) {
+        hasUnsavedChanges = true;
+        
         Task task = getTask(taskId);
         TaskInfo taskInfo = UndoTaskSnapshot.NO_TASK;
         if (task != null) {

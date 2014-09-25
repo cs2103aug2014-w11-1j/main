@@ -17,8 +17,8 @@ public class UndoManager extends AbstractManager {
     private static int UNDO_LIMIT = 100;
     private LinkedList<UndoSnapshot> undoHistory;
 
-    public UndoManager(FileInputOutput fileInputOutput, TaskData taskData) {
-        super(fileInputOutput, taskData);
+    public UndoManager(TaskData taskData) {
+        super(taskData);
         undoHistory = new LinkedList<>();
     }
 
@@ -40,8 +40,6 @@ public class UndoManager extends AbstractManager {
             return new SimpleResult(Result.Type.UNDO_FAILURE);
         }
         
-        readFromFile();
-        
         UndoSnapshot undoSnapshot = undoHistory.pop();
         
         ArrayList<UndoTaskSnapshot> taskSnapshotList = undoSnapshot.retrieveTaskSnapshots();
@@ -51,7 +49,6 @@ public class UndoManager extends AbstractManager {
         
         taskData.discardUndoSnapshot();
         
-        writeToFile();
         return new SimpleResult(Result.Type.UNDO_SUCCESS);
     }
 

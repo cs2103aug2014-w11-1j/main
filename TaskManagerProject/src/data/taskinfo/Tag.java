@@ -1,7 +1,11 @@
 package data.taskinfo;
 
-public class Tag {
-    
+/**
+ * Immutable class. Stores tag as a string.
+ * @author Oh
+ */
+public final class Tag {
+
     public final String tag;
     
     public Tag(String tag) {
@@ -31,5 +35,10 @@ public class Tag {
         } else if (!tag.equals(other.tag))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return tag;
     }
 }

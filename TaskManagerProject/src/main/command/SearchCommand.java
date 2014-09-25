@@ -16,6 +16,9 @@ public class SearchCommand implements Command {
     @Override
     public Response execute() {
         // TODO Auto-generated method stub
+
+        stateManager.beforeCommandExecutionUpdate();
+        
         return null;
     }
 

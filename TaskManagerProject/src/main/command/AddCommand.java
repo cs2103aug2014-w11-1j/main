@@ -1,6 +1,6 @@
 package main.command;
 
-import main.response.CannotExecuteCommandResponse;
+import main.response.EnumResponse;
 import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
@@ -27,12 +27,13 @@ public class AddCommand implements Command {
     @Override
     public Response execute() {
         if (stateManager.canAdd()) {
-        	stateManager.enterAddMode();
+            stateManager.beforeCommandExecutionUpdate();
+            
             Result result = addManager.addTask(taskToAdd);
             Response response = stateManager.update(result);
             return response;
         } else {
-            return new CannotExecuteCommandResponse();
+            return EnumResponse.cannotExecuteCommand();
         }
     }
 
