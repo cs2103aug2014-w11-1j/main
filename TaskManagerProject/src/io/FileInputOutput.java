@@ -21,11 +21,16 @@ import javax.json.JsonWriter;
 import javax.json.stream.JsonGenerator;
 
 import data.TaskData;
+import data.taskinfo.Priority;
+import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 public class FileInputOutput {
 
+    private static final String STRING_EMPTY = "";
+    private static final String STRING_NULL = "null";
+    
     private static final String JSON_TASKS = "tasks";
     private static final String JSON_NAME = "name";
     private static final String JSON_DURATION = "duration";
@@ -133,11 +138,17 @@ public class FileInputOutput {
 
 
     public static String localTimeToString(LocalTime time) {
+        if (time == null)
+            return STRING_NULL;
+        
         return String.format("%02d:%02d:%02d", time.getHour(),
                 time.getMinute(), time.getSecond());
     }
     
     public static LocalTime stringToLocalTime(String timeString) {
+        if (isNullString(timeString))
+            return null;
+        
         String[] split = timeString.split(":");
         LocalTime time;
         try {
@@ -153,11 +164,17 @@ public class FileInputOutput {
     }
 
     public static String localDateToString(LocalDate date) {
+        if (date == null)
+            return STRING_NULL;
+        
         return String.format("%d-%02d-%02d", date.getYear(),
                 date.getMonthValue(), date.getDayOfMonth());
     }
     
     public static LocalDate stringToLocalDate(String dateString) {
+        if (isNullString(dateString))
+            return null;
+        
         String[] split = dateString.split("\\-");
         LocalDate date;
         try {
@@ -174,10 +191,16 @@ public class FileInputOutput {
     }
 
     public static String durationToString(Duration duration) {
+        if (duration == null)
+            return STRING_NULL;
+        
         return duration.toString();
     }
     
     public static Duration stringToDuration(String durationString) {
+        if (isNullString(durationString))
+            return null;
+        
         Duration duration;
         try {
             duration = Duration.parse(durationString);
@@ -186,6 +209,44 @@ public class FileInputOutput {
             return null;
         }
         return duration;
+    }
+    
+    public static String statusToString(Status status) {
+        if (status == null)
+            return STRING_NULL;
+        
+        return status.name();
+    }
+
+    public static String priorityToString(Priority priority) {
+        if (priority == null)
+            return STRING_NULL;
+        
+        return priority.name();
+    }
+
+    public static Status stringToStatus(String statusString) {
+        if (isNullString(statusString))
+            return null;
+        
+        return Status.valueOf(statusString);
+    }
+
+    public static Priority stringToPriority(String priorityString) {
+        if (isNullString(priorityString))
+            return null;
+        
+        return Priority.valueOf(priorityString);
+    }
+
+    public static String stringToJsonString(String string) {
+        if (string == null)
+            return STRING_EMPTY;
+        return string;
+    }
+    
+    public static String jsonStringToString(String jsonString) {
+        return jsonString;
     }
     
     public static String tasksToJson(TaskInfo[] taskInfos) {
@@ -204,28 +265,41 @@ public class FileInputOutput {
         return prettyPrint;
     }
     
+    
     public static JsonObjectBuilder createJsonObjectBuilder(TaskInfo taskInfo) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add(JSON_NAME, taskInfo.name);
+        builder.add(JSON_NAME, stringToJsonString(taskInfo.name));
         builder.add(JSON_DURATION, durationToString(taskInfo.duration));
         builder.add(JSON_END_TIME, localTimeToString(taskInfo.endTime));
         builder.add(JSON_END_DATE, localDateToString(taskInfo.endDate));
-        builder.add(JSON_DETAILS, taskInfo.details);
-        
-        JsonArrayBuilder tagArrayJson = Json.createArrayBuilder();
-        for (Tag tag : taskInfo.tags) {
-            tagArrayJson.add(tag.toString());
-        }
-        
-        builder.add(JSON_TAGS, tagArrayJson);
-        builder.add(JSON_PRIORITY, taskInfo.priority.name());
-        builder.add(JSON_STATUS, taskInfo.status.name());
+        builder.add(JSON_DETAILS, stringToJsonString(taskInfo.details));
+        builderAddTags(taskInfo.tags, builder);
+        builder.add(JSON_PRIORITY, priorityToString(taskInfo.priority));
+        builder.add(JSON_STATUS, statusToString(taskInfo.status));
         
         // PENDING IMPLEMENTATION
         //builder.add(JSON_NUMBER_OF_TIMES, taskInfo.numberOfTimes);
         //builder.add(JSON_REPEAT_INTERVAL, taskInfo.repeatInterval);
         
         return builder;
+    }
+
+    private static boolean isNullString(String value) {
+        return STRING_NULL.equals(value);
+    }
+
+    private static void builderAddTags(Tag[] tags, JsonObjectBuilder builder) {
+        if (tags == null) {
+            builder.add(JSON_TAGS, STRING_NULL);
+            
+        } else {
+            JsonArrayBuilder tagArrayJson = Json.createArrayBuilder();
+            for (Tag tag : tags) {
+                tagArrayJson.add(tag.toString());
+            }
+            
+            builder.add(JSON_TAGS, tagArrayJson);
+        }
     }
 
     private static String prettyPrintString(JsonObject jsonObject) {
