@@ -16,12 +16,20 @@ public class EditManager extends AbstractManager {
 
     public Result editTask(TaskInfo taskInfo, TaskId taskId) {
     	
+    	if (taskId == null){
+    		return new SimpleResult(Result.Type.EDIT_FAILURE);
+    	}
+    	
+    	readFromFile();
+    	
     	TaskInfo originTask = taskData.getTaskInfo(taskId);
     	if (originTask == null){
     		return new SimpleResult(Result.Type.EDIT_FAILURE);
     	}
     	TaskInfo editedTask = mergeTasks(originTask, taskInfo);
     	taskData.setTaskInfo(taskId, editedTask);
+    	
+    	writeToFile();
     	
     	return new EditResult(Result.Type.EDIT_SUCCESS,editedTask, taskId);
     	
