@@ -16,7 +16,7 @@ public class TaskLine {
     public static void main(String[] args) {
         
         TaskData taskData = new TaskData();
-        FileInputOutput fileInputOutput = new FileInputOutput(); 
+        FileInputOutput fileInputOutput = new FileInputOutput(taskData); 
         ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput);
         MainController mainController = new MainController(managerHolder);
         UIDisplay uiDisplay = new UIDisplay(mainController);

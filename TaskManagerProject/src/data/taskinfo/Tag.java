@@ -1,6 +1,6 @@
 package data.taskinfo;
 
-public class Tag {
+public final class Tag {
     
     public final String tag;
     

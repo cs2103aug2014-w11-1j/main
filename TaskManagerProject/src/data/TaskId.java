@@ -4,7 +4,7 @@ package data;
  * Immutable.
  * @author Oh
  */
-public class TaskId implements Comparable<TaskId> {
+public final class TaskId implements Comparable<TaskId> {
     
     /**
      * TRANSLATE_PRIME must be coprime to MAX_ID.<br>

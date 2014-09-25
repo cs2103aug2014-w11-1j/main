@@ -36,12 +36,7 @@ public class TaskData {
     private int size = 0;
     
     public TaskData() {
-        taskList = new ArrayList<>();
-        freeSlotList = new LinkedList<>();
-        nextTaskList = new ArrayList<>();
-        previousTaskList = new ArrayList<>();
-        
-        undoSnapshot = new UndoSnapshot();
+        initializeTaskData();
     }
 
     public TaskId getFirst() {
@@ -284,8 +279,13 @@ public class TaskData {
      * Resets entire task list with a new list of tasks.
      * @param tasks List of tasks as retrieved from file.
      */
-    public void updateTaskList(Task[] tasks) {
-        throw new UnsupportedOperationException("Not Implemented Yet");
+    public void updateTaskList(TaskInfo[] tasks) {
+        initializeTaskData();
+        for (TaskInfo taskInfo : tasks) {
+            add(taskInfo);
+            discardUndoSnapshot();
+        }
+        discardUndoSnapshot();
     }
     
     /**
@@ -354,6 +354,16 @@ public class TaskData {
      */
     public void discardUndoSnapshot() {
         undoSnapshot = new UndoSnapshot();
+    }
+    
+    private void initializeTaskData() {
+        taskList = new ArrayList<>();
+        freeSlotList = new LinkedList<>();
+        nextTaskList = new ArrayList<>();
+        previousTaskList = new ArrayList<>();
+        
+        undoSnapshot = new UndoSnapshot();
+        size = 0;
     }
     
     
