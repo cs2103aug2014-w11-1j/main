@@ -8,6 +8,7 @@ public interface Response {
         SEARCH_RESULTS,
         ADD_SUCCESSFUL,
         DELETE_SUCCESSFUL,
+        EDIT_SUCCESS,
         EDIT_MODE,
     }
     

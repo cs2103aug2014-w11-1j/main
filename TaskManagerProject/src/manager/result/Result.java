@@ -17,8 +17,5 @@ public interface Result {
         EDIT_FAILURE,
     }
 
-	public TaskInfo taskInfo = null;
-	public TaskId taskId = null;
-
     public Type getType();    // implement this with the correct type.
 }

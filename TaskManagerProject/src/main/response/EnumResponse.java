@@ -5,7 +5,8 @@ public class EnumResponse implements Response{
     public enum MessageType {
         CANNOT_EXECUTE_COMMAND,
         ADD_FAILURE,
-        DELETE_FAILURE
+        DELETE_FAILURE,
+        EDIT_FAILURE
     }
     
     MessageType messageType;
