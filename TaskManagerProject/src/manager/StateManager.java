@@ -1,5 +1,6 @@
 package manager;
 
+import data.TaskId;
 import io.FileInputOutput;
 import main.response.Response;
 import manager.datamanager.UndoManager;
@@ -19,10 +20,13 @@ public class StateManager {
     private final FileInputOutput fileInputOutput;
 	private final UndoManager undoManager;
 	private State currentState;
+	private TaskId editingTaskId;
 
-	private enum State {
-	    AVAILABLE,
-	    EDIT_MODE,
+	public enum State {
+	    AVAILABLE,      // Normal state
+	    EDIT_MODE,      // Can edit the same task without re-specifying task ID
+	    SEARCH_MODE,    // In search mode, searchAgain is called after each command
+	    LOCKED_MODE     // In locked mode, no modifying data is allowed
 	}
 
 	public StateManager(FileInputOutput fileInputOutput, UndoManager undoManager) {
@@ -54,10 +58,28 @@ public class StateManager {
 	    currentState = newState;
 	}
 	
-	private boolean inState(State state) {
+	public boolean inState(State state) {
 	    return (currentState == state);
 	}
     
+	public boolean enterEditMode(TaskId id){
+		if (currentState != State.AVAILABLE){
+			return false;
+		}else{
+			setState(State.EDIT_MODE);
+			editingTaskId = id;
+			return true;
+		}
+	}
+	
+	public boolean exitEditMode(){
+		if (currentState == State.EDIT_MODE){
+			setState(State.AVAILABLE);
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	/**
 	 * Updates the program's state using the result obtained from the managers.
@@ -77,10 +99,15 @@ public class StateManager {
             case EDIT_MODE_END :
                 setState(State.AVAILABLE);
                 break;
-                
+            case ADD_SUCCESS :
+            	
+           
             case DELETE_SUCCESS :
                 if (inState(State.EDIT_MODE)) {
                     setState(State.AVAILABLE);
+                }
+                if (inState(State.SEARCH_MODE)) {
+                	//searchManager.searchAgain();
                 }
                 break;
         		     
