@@ -8,18 +8,25 @@ public class TagFilter implements Filter{
         return Type.FILTER_TAG;
     }
     
-    Tag tag;
+    Tag[] tags;
     
-    public boolean filter(TaskInfo task) {
-        for (Tag taskTag : task.tags) {
-            if (taskTag.equals(tag)) {
-                return true;
+    public boolean filter(TaskInfo task) 
+    {
+        for (Tag filterTag : tags) {
+            boolean isExist = false;
+            for (Tag taskTag : task.tags) {
+                if (taskTag.equals(filterTag)) {
+                    isExist = true;
+                }
+            }
+            if (!isExist) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
     
-    public TagFilter(Tag tag) {
-        this.tag = tag;
+    public TagFilter(Tag[] tags) {
+        this.tags = tags;
     }
 }
