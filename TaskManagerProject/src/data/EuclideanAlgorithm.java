@@ -1,7 +1,9 @@
 package data;
 
 /**
- * returns m, q such that nm + pq = 1.
+ * Input n, p
+ * returns the gcd of n and p.
+ * returns m, q such that nm + pq = gcd(n,p).
  */
 public class EuclideanAlgorithm {
     public int m;
@@ -12,8 +14,7 @@ public class EuclideanAlgorithm {
         if (n < p) {
             compute(p, n);
             swapResults();
-        }
-        else {
+        } else {
             compute(n, p);
         }
     }
@@ -37,8 +38,7 @@ public class EuclideanAlgorithm {
             m = 0;
             q = 1;
             gcd = p;
-        }
-        else {
+        } else {
             compute(p, s);
             // After running compute, we have m,q such that:
             // pm + sq = gcd.

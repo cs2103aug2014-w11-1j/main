@@ -39,10 +39,12 @@ public class UndoTaskSnapshot {
             return false;
         if (getClass() != obj.getClass())
             return false;
+        
         UndoTaskSnapshot other = (UndoTaskSnapshot) obj;
         if (taskId == null) {
-            if (other.taskId != null)
+            if (other.taskId != null) {
                 return false;
+            }
         } else if (!taskId.equals(other.taskId))
             return false;
         return true;
