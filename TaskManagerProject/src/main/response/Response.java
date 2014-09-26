@@ -6,7 +6,9 @@ public interface Response {
         EMPTY_STRING,   // print no output
         ENUM_MESSAGE,    // print the message type stored in the enum.
         SEARCH_RESULTS,
-        EDITMODE,
+        ADD_SUCCESSFUL,
+        DELETE_SUCCESSFUL,
+        EDIT_MODE,
     }
     
     public Type getType();
