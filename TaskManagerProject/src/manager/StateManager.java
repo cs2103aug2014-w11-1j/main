@@ -2,6 +2,9 @@ package manager;
 
 import data.TaskId;
 import io.FileInputOutput;
+import main.response.AddSuccessResponse;
+import main.response.EnumResponse;
+import main.response.EnumResponse.MessageType;
 import main.response.Response;
 import manager.datamanager.UndoManager;
 import manager.result.Result;
@@ -100,8 +103,9 @@ public class StateManager {
                 setState(State.AVAILABLE);
                 break;
             case ADD_SUCCESS :
-            	
-           
+            	return new AddSuccessResponse(result.taskInfo, result.taskId);
+            case ADD_FAILURE : 
+            	return new EnumResponse(MessageType.ADD_FAILURE);
             case DELETE_SUCCESS :
                 if (inState(State.EDIT_MODE)) {
                     setState(State.AVAILABLE);
@@ -110,7 +114,8 @@ public class StateManager {
                 	//searchManager.searchAgain();
                 }
                 break;
-        		     
+            case DELETE_FAILURE : 
+            	return new EnumResponse(MessageType.DELETE_FAILURE);
             default:
                 break;
         }

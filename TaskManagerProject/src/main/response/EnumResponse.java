@@ -3,7 +3,9 @@ package main.response;
 public class EnumResponse implements Response{
     
     public enum MessageType {
-        CANNOT_EXECUTE_COMMAND
+        CANNOT_EXECUTE_COMMAND,
+        ADD_FAILURE,
+        DELETE_FAILURE
     }
     
     MessageType messageType;

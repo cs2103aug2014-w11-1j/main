@@ -1,5 +1,8 @@
 package manager.result;
 
+import data.TaskId;
+import data.taskinfo.TaskInfo;
+
 public interface Result {
     public enum Type {
         ADD_SUCCESS,
@@ -13,6 +16,9 @@ public interface Result {
         EDIT_SUCCESS,
         EDIT_FAILURE,
     }
+
+	public TaskInfo taskInfo = null;
+	public TaskId taskId = null;
 
     public Type getType();    // implement this with the correct type.
 }
