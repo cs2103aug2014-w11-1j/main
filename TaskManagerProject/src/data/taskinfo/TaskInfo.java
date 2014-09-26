@@ -65,7 +65,6 @@ public class TaskInfo {
         result = prime * result
                 + ((repeatInterval == null) ? 0 : repeatInterval.hashCode());
         result = prime * result + ((status == null) ? 0 : status.hashCode());
-        result = prime * result + Arrays.hashCode(tags);
         return result;
     }
 
