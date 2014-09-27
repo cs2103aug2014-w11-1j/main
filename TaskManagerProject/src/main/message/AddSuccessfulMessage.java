@@ -4,7 +4,7 @@ import data.taskinfo.TaskInfo;
 
 public class AddSuccessfulMessage implements Message {
 
-    TaskInfo task;
+    private TaskInfo task;
     
     public AddSuccessfulMessage(TaskInfo task) {
         this.task = task;
@@ -12,6 +12,10 @@ public class AddSuccessfulMessage implements Message {
     
     public Type getType() {
         return Type.ADD_SUCCESSFUL;
+    }
+    
+    public TaskInfo getTask() {
+        return task;
     }
 
 }

@@ -1,16 +1,23 @@
 package main.response;
 
-public interface Response {
+import main.message.Message;
+import main.modeinfo.ModeInfo;
 
-    public enum Type {
-        EMPTY_STRING,   // print no output
-        ENUM_MESSAGE,    // print the message type stored in the enum.
-        SEARCH_RESULTS,
-        ADD_SUCCESSFUL,
-        DELETE_SUCCESSFUL,
-        EDIT_SUCCESS,
-        EDIT_MODE,
+public class Response {
+
+    Message message;
+    ModeInfo modeInfo;
+    
+    public Response(Message message, ModeInfo modeInfo) {
+        this.message = message;
+        this.modeInfo = modeInfo;
     }
     
-    public Type getType();
+    public Message getMessage() {
+        return message;
+    }
+    
+    public ModeInfo getModeInfo() {
+        return modeInfo;
+    }
 }

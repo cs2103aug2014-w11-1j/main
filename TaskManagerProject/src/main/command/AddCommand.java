@@ -1,6 +1,7 @@
 package main.command;
 
-import main.response.EnumResponse;
+import main.message.EnumMessage;
+import main.modeinfo.EmptyModeInfo;
 import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
@@ -33,7 +34,9 @@ public class AddCommand implements Command {
             Response response = stateManager.update(result);
             return response;
         } else {
-            return EnumResponse.cannotExecuteCommand();
+            EnumMessage message = EnumMessage.cannotExecuteCommand();
+            EmptyModeInfo modeInfo = new EmptyModeInfo();
+            return new Response(message, modeInfo);
         }
     }
 
