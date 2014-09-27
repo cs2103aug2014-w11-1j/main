@@ -16,6 +16,10 @@ public class EnumMessage implements Message{
         this.messageType = messageType;
     }
     
+    public MessageType getMessageType() {
+        return messageType;
+    }
+    
     public static EnumMessage emptyString() {
         return new EnumMessage(MessageType.EMPTY_STRING);
     }

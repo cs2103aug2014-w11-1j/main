@@ -1,34 +1,86 @@
 package main.formatting;
 
-import java.util.ArrayList;
-
-import main.response.SearchResponse;
-import main.response.EnumResponse;
+import main.message.AddSuccessfulMessage;
+import main.message.DeleteSuccessfulMessage;
+import main.message.EditSuccessfulMessage;
+import main.message.EnumMessage;
+import main.message.Message;
+import main.modeinfo.EditModeInfo;
+import main.modeinfo.EmptyModeInfo;
+import main.modeinfo.ModeInfo;
+import main.modeinfo.SearchModeInfo;
 import main.response.Response;
-import data.taskinfo.TaskInfo;
+
 
 public class Formatter {
-    EnumFormatter enumFormatter;
-    SearchFormatter searchFormatter;
+    private AddSuccessfulFormatter addSuccessfulFormatter;
+    private DeleteSuccessfulFormatter deleteSuccessfulFormatter;
+    private EditSuccessfulFormatter editSuccessfulFormatter;
+    private EnumFormatter enumFormatter;
     
+    private EditModeFormatter editModeFormatter;
+    private SearchModeFormatter searchModeFormatter;
+    private EmptyModeFormatter emptyModeFormatter;
+
     public Formatter() {
+        addSuccessfulFormatter = new AddSuccessfulFormatter();
+        deleteSuccessfulFormatter = new DeleteSuccessfulFormatter();
+        editSuccessfulFormatter = new EditSuccessfulFormatter();
         enumFormatter = new EnumFormatter();
-        searchFormatter = new SearchFormatter();
+        
+        editModeFormatter = new EditModeFormatter();
+        searchModeFormatter = new SearchModeFormatter();
+        emptyModeFormatter = new EmptyModeFormatter();
+    }
+    
+    private String formatMessage(Message message) {
+        String formattedMessage = "";
+        switch(message.getType()) {
+            case ADD_SUCCESSFUL :
+                AddSuccessfulMessage addSuccessfulMessage = 
+                        (AddSuccessfulMessage)message;
+                formattedMessage = addSuccessfulFormatter.format(
+                        addSuccessfulMessage);
+                break;
+            case EDIT_SUCCESSFUL :
+                EditSuccessfulMessage editSuccessfulMessage =
+                        (EditSuccessfulMessage)message;
+                formattedMessage = editSuccessfulFormatter.format(
+                        editSuccessfulMessage);
+                break;
+            case DELETE_SUCCESSFUL :
+                DeleteSuccessfulMessage deleteSuccessfulMessage =
+                        (DeleteSuccessfulMessage)message;
+                formattedMessage = deleteSuccessfulFormatter.format(
+                        deleteSuccessfulMessage);
+                break;
+            case ENUM_MESSAGE :
+                EnumMessage enumMessage = (EnumMessage)message;
+                formattedMessage = enumFormatter.format(enumMessage);
+                break;
+        }
+        return formattedMessage;
+    }
+    
+    private String formatModeInfo(ModeInfo modeInfo) {
+        String formattedModeInfo = "";
+        switch (modeInfo.getType()) {
+            case EMPTY_MODE :
+                EmptyModeInfo emptyModeInfo = (EmptyModeInfo) modeInfo;
+                formattedModeInfo = emptyModeFormatter.format(emptyModeInfo);
+                break;
+            case EDIT_MODE :
+                EditModeInfo editModeInfo = (EditModeInfo) modeInfo;
+                formattedModeInfo = editModeFormatter.format(editModeInfo);
+            case SEARCH_MODE :
+                SearchModeInfo searchModeInfo = (SearchModeInfo) modeInfo;
+                formattedModeInfo = searchModeFormatter.format(searchModeInfo);
+        }
+        return formattedModeInfo;
     }
     
     public String format(Response response) {
-        String formattedResponse = "";
-        switch(response.getType()) {
-            case ENUM_MESSAGE :
-                EnumResponse enumResponse = (EnumResponse)response;
-                formattedResponse = enumFormatter.format(enumResponse);
-                break;
-            case SEARCH_RESULTS :
-                SearchResponse searchResponse = (SearchResponse)response;
-                formattedResponse = searchFormatter.format(searchResponse);
-            default : 
-                //TODO: implement other responses
-        }
-        return formattedResponse;
+        return formatMessage(response.getMessage()) + 
+                formatModeInfo(response.getModeInfo());
     }
 }
