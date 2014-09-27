@@ -1,9 +1,12 @@
 package main.command;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,26 +45,97 @@ public class CommandParser {
         // TODO Proper parsing.
     }
 
-    public static void parseDateTime(String args, TaskInfo task) {
-        // TODO Time parsing and duration
-        args = stripIgnoredSegments(args);
-        String[] words = args.split(" ");
+    public static void parseDateTime(String dateTimeString, TaskInfo task) {
+        // TODO extract datetime-related methods into a DateParser class
+        dateTimeString = stripIgnoredSegments(dateTimeString);
 
+        char delim = ' ';
+        // list for indices of the delimiter
+        List<Integer> delimIndices = new ArrayList<Integer>();
+        for (int i = 0; i > -1; i = dateTimeString.indexOf(delim, i + 1)) {
+            delimIndices.add(i);
+        }
+        delimIndices.add(dateTimeString.length());
+
+        List<LocalTime> times = new ArrayList<LocalTime>();
         List<LocalDate> dates = new ArrayList<LocalDate>();
 
-        for (String word : words) {
-            LocalDate d = parseDate(word);
-            if (d != null) {
-                dates.add(d);
+        // try to parse times and dates from every possible sequence of words
+        for (int i = 0; i < delimIndices.size(); i++) {
+            for (int j = i + 1; j < delimIndices.size(); j++) {
+                // if more than two times and dates, take the first two of each
+                if (times.size() > 1 && dates.size() > 1) {
+                    break;
+                }
+
+                int frontIdx = delimIndices.get(i);
+                int backIdx = delimIndices.get(j);
+                String wordSeq = dateTimeString.substring(frontIdx, backIdx)
+                                                   .trim();
+
+                LocalTime t = parseTime(wordSeq);
+                if (t != null) {
+                    times.add(t);
+                }
+                LocalDate d = parseDate(wordSeq);
+                if (d != null) {
+                    dates.add(d);
+                }
             }
         }
 
-        if (dates.size() == 1) {
-            task.endDate = dates.get(0);
+        // at least one time for each date, stop if otherwise
+        if (times.size() < dates.size()) {
+            return;
         }
-        if (dates.size() > 1) {
-            task.endDate = dates.get(1);
+
+        LocalDateTime dateTimeStart = null;
+        Duration dateTimeDiff = Duration.ZERO;
+
+        LocalTime timeA = null;
+        LocalTime timeB = null;
+
+        // date off for when no date specified + the first time will occur tmr.
+        int dateOffset = 0;
+
+        if (times.size() > 0) {
+            timeA = times.get(0);
+
+            // case: no specified dates
+            if (dates.isEmpty()) {
+                if (LocalTime.now().isAfter(timeA)) {
+                    ++dateOffset;
+                }
+                dateTimeStart = timeA.atDate(LocalDate.now());
+            } else {
+                dateTimeStart = LocalDateTime.of(dates.get(0), timeA);
+            }
         }
+
+        if (times.size() > 1) {
+            timeB = times.get(1);
+            dateTimeDiff = Duration.between(timeA, timeB);
+
+            // case: no specified dates
+            if (dates.size() <= 1) {
+                if (timeA.isAfter(timeB)) {
+                    dateTimeDiff = dateTimeDiff.plusDays(1);
+                }
+            } else {
+                dateTimeDiff = dateTimeDiff
+                        .plusDays(dates.get(0).until(dates.get(1), ChronoUnit.DAYS));
+            }
+        }
+
+        // check if there are any datetimes
+        if (dateTimeStart != null) {
+            task.endDate = dateTimeStart.plus(dateTimeDiff).plusDays(dateOffset)
+                    .toLocalDate();
+            task.endTime = dateTimeStart.plus(dateTimeDiff).plusDays(dateOffset)
+                    .toLocalTime();
+            task.duration = dateTimeDiff;
+        }
+
     }
 
     private static LocalDate parseDate(String dateString) {
