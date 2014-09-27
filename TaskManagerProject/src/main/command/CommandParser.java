@@ -1,6 +1,7 @@
 package main.command;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class CommandParser {
     private static Map<DateTimeFormatter, String> datePartialFormatPatterns;
     private static Map<DateTimeFormatter, String> dateFullFormatPatterns;
     private static LocalDate datePatternsLastUpdate;
+    private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
 
     private final static String SYMBOL_IGNORE = "\"";
     private final static String SYMBOL_TAG = "#";
@@ -141,6 +143,62 @@ public class CommandParser {
 
         datePatternsLastUpdate = LocalDate.now();
     }
+
+    public static LocalTime parseTime(String timeString) {
+        // TODO selective building based on full / partial matching?
+        buildTimePatternHashMap();
+
+        LocalTime t = parseRelativeTime(timeString);
+        if (t == null) {
+            t = parseAbsoluteTime(timeString);
+        }
+
+        return t;
+    }
+
+    private static LocalTime parseRelativeTime(String timeString) {
+        // TODO Support for relative times (+3h, -3h, now, etc)
+        return null;
+    }
+
+    private static LocalTime parseAbsoluteTime(String timeString) {
+        LocalTime time = matchTimePatterns(timeFullFormatPatterns, timeString);
+        return time;
+    }
+
+    private static LocalTime matchTimePatterns(
+            Map<DateTimeFormatter, String> timeMap, String timeString) {
+
+        Iterator<Entry<DateTimeFormatter, String>> i =
+                timeMap.entrySet().iterator();
+            while (i.hasNext()) {
+                Entry<DateTimeFormatter, String> formatPattern = i.next();
+
+                DateTimeFormatter format = formatPattern.getKey();
+                String missingField = formatPattern.getValue();
+
+                try {
+                    return LocalTime.parse(timeString + missingField, format);
+                } catch (DateTimeParseException e) {
+                    // do nothing
+                }
+            }
+
+        return null;
+    }
+
+    private static void buildTimePatternHashMap() {
+        timeFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
+
+        // 3:46 PM
+        mapPattern(timeFullFormatPatterns, "h:m a");
+        // 15:46
+        mapPattern(timeFullFormatPatterns, "H:m");
+        // 3 PM
+        mapPattern(timeFullFormatPatterns, "h a");
+    }
+
+
 
     private static boolean shouldUpdateDatePatterns() {
         return datePartialFormatPatterns == null ||
