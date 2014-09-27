@@ -15,6 +15,7 @@ public class SearchManager extends AbstractManager {
 
     TaskId[] lastSearchedTaskIds;
     TaskInfo[] lastSearchedTasks;
+    Filter[] lastSearchFilters;
     
     public SearchManager(TaskData taskData) {
         super(taskData);
@@ -52,10 +53,15 @@ public class SearchManager extends AbstractManager {
     }
 
     public Result searchTasks(Filter[] filters) {
+        lastSearchFilters = filters;
         updateLastSearched(filters);
         SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
                 lastSearchedTasks);
         return result;
+    }
+    
+    public Result redoLastSearch() {
+        return searchTasks(lastSearchFilters);
     }
     
     public TaskId getAbsoluteIndex(int relativeIndex) {
