@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import main.modeinfo.SearchModeInfo;
 import data.taskinfo.TaskInfo;
 
 public class SearchModeFormatter {
@@ -113,7 +114,8 @@ public class SearchModeFormatter {
         return result.toString();
     }
     
-    public String format(TaskInfo[] tasks) {
+    public String format(SearchModeInfo searchInfo) {
+        TaskInfo[] tasks = searchInfo.getTasks();
         ArrayList<String> formattedTaskArray = formatToArrayList(tasks);
         return arrayListToStringLines(formattedTaskArray);
     }
