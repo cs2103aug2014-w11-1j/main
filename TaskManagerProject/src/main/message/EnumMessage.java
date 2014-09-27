@@ -3,7 +3,10 @@ package main.message;
 public class EnumMessage implements Message{
     public enum MessageType {
         EMPTY_STRING,
-        CANNOT_EXECUTE_COMMAND
+        CANNOT_EXECUTE_COMMAND,
+        ADD_FAILED,
+        DELETE_FAILED,
+        EDIT_FAILED
     }
     
     MessageType messageType;
