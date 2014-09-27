@@ -5,6 +5,7 @@ import data.taskinfo.TaskInfo;
 public interface Filter {
     public enum Type {
         FILTER_TAG,
+        FILTER_TIME
     }
     
     public Type getType();
