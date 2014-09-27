@@ -15,6 +15,7 @@ public interface Result {
         EDIT_MODE_END,
         EDIT_SUCCESS,
         EDIT_FAILURE,
+        SEARCH_SUCCESS
     }
 
     public Type getType();    // implement this with the correct type.
