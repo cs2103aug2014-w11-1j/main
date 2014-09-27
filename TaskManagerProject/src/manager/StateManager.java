@@ -9,6 +9,7 @@ import main.modeinfo.EmptyModeInfo;
 import main.response.Response;
 import manager.datamanager.UndoManager;
 import manager.result.AddResult;
+import manager.result.EditResult;
 import manager.result.Result;
 import data.TaskId;
 
@@ -97,6 +98,8 @@ public class StateManager {
         
         undoManager.retrieveUndoSnapshot();
         
+        Response response = null;
+        
         switch (result.getType()){
             case EDIT_MODE_START :
                 setState(State.EDIT_MODE);
@@ -109,11 +112,11 @@ public class StateManager {
                 AddSuccessfulMessage addSuccessMessage = 
                         new AddSuccessfulMessage(((AddResult)result).getTaskInfo());
                 EmptyModeInfo addSuccessModeInfo = new EmptyModeInfo();
-            	return new Response(addSuccessMessage, addSuccessModeInfo);
+            	response = Response(addSuccessMessage, addSuccessModeInfo);
             case ADD_FAILURE : 
                 EnumMessage addFailMessage = new EnumMessage(EnumMessage.MessageType.ADD_FAILED);
                 EmptyModeInfo addFailModeInfo = new EmptyModeInfo();
-            	return new Response(addFailMessage, addFailModeInfo);
+                response = Response(addFailMessage, addFailModeInfo);
             case DELETE_SUCCESS :
                 if (inState(State.EDIT_MODE)) {
                     setState(State.AVAILABLE);
@@ -125,23 +128,27 @@ public class StateManager {
             case DELETE_FAILURE : 
                 EnumMessage deleteFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
                 EmptyModeInfo deleteFailModeInfo = new EmptyModeInfo();
-            	return new EnumResponse(deleteFailMessage, deleteFailModeInfo);
+                response = new Response(deleteFailMessage, deleteFailModeInfo);
             case EDIT_SUCCESS : 
                 EditSuccessfulMessage editSuccessMessage = 
                         new EditSuccessfulMessage(((EditResult)result).getTaskInfo());
                 EmptyModeInfo editSuccessModeInfo = new EmptyModeInfo();
-            	return new Response(editSuccessMessage, editSuccessModeInfo);
+                response = new Response(editSuccessMessage, editSuccessModeInfo);
             case EDIT_FAILURE : 
                 EnumMessage editFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
             	EmptyModeInfo editFailModeInfo = new EmptyModeInfo();
-            	return new Response(editFailMessage, editFailModeInfo);
+            	response = new Response(editFailMessage, editFailModeInfo);
             default:
                 break;
         }
         
 
         writeToFile();
-        throw new UnsupportedOperationException("Not Implemented Yet");    
+        if (response != null) {
+            return response;
+        } else {
+            throw new UnsupportedOperationException("Not Implemented Yet");    
+        }
     }
 
     
