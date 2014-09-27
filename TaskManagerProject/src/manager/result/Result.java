@@ -1,5 +1,8 @@
 package manager.result;
 
+import data.TaskId;
+import data.taskinfo.TaskInfo;
+
 public interface Result {
     public enum Type {
         ADD_SUCCESS,
