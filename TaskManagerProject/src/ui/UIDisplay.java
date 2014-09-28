@@ -8,6 +8,8 @@ public class UIDisplay {
     
     private final MainController mainController;
     
+    private final static String MESSAGE_WELCOME = "Welcome to Taskline.";
+    
     public UIDisplay(MainController mainController) {
         this.mainController = mainController;
         
@@ -19,6 +21,7 @@ public class UIDisplay {
      * Called from main
      */
     public void commandLoopIteration() {
+        userOutputWriter.printOutput(MESSAGE_WELCOME);
         while (!isReadyToExit()) {
             String input = userInputReader.readInput();
             String output = mainController.runCommand(input);

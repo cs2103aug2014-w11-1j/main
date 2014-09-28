@@ -112,11 +112,11 @@ public class StateManager {
                 AddSuccessfulMessage addSuccessMessage = 
                         new AddSuccessfulMessage(((AddResult)result).getTaskInfo());
                 EmptyModeInfo addSuccessModeInfo = new EmptyModeInfo();
-            	response = Response(addSuccessMessage, addSuccessModeInfo);
+            	response = new Response(addSuccessMessage, addSuccessModeInfo);
             case ADD_FAILURE : 
                 EnumMessage addFailMessage = new EnumMessage(EnumMessage.MessageType.ADD_FAILED);
                 EmptyModeInfo addFailModeInfo = new EmptyModeInfo();
-                response = Response(addFailMessage, addFailModeInfo);
+                response = new Response(addFailMessage, addFailModeInfo);
             case DELETE_SUCCESS :
                 if (inState(State.EDIT_MODE)) {
                     setState(State.AVAILABLE);
