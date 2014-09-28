@@ -60,7 +60,10 @@ public class CommandParser {
         // TODO extract datetime-related methods into a DateParser class
         dateTimeString = stripIgnoredSegments(dateTimeString);
 
-        char delim = ' ';
+        String delim = " ";
+        while (dateTimeString.contains(delim + delim)) {
+            dateTimeString = dateTimeString.replace(delim + delim, delim);
+        }
         // list for indices of the delimiter
         List<Integer> delimIndices = new ArrayList<Integer>();
         for (int i = 0; i > -1; i = dateTimeString.indexOf(delim, i + 1)) {
@@ -71,24 +74,41 @@ public class CommandParser {
         List<LocalTime> times = new ArrayList<LocalTime>();
         List<LocalDate> dates = new ArrayList<LocalDate>();
 
-        // try to parse times and dates from every possible sequence of words
-        for (int i = 0; i < delimIndices.size(); i++) {
-            for (int j = i + 1; j < delimIndices.size(); j++) {
+     // try to parse times and dates from every possible sequence of words
+        for (int offset = delimIndices.size() - 1; offset > 0; offset--) {
+            for (int i = 0; i + offset < delimIndices.size(); i++) {
                 // if more than two times and dates, take the first two of each
                 if (times.size() > 1 && dates.size() > 1) {
                     break;
                 }
 
                 int frontIdx = delimIndices.get(i);
-                int backIdx = delimIndices.get(j);
+                int backIdx = delimIndices.get(i + offset);
                 String wordSeq = dateTimeString.substring(frontIdx, backIdx)
                                                    .trim();
 
                 LocalTime t = parseTime(wordSeq);
+                LocalDate d = parseDate(wordSeq);
+
+                // remove sequence from String if it's parsed into a date or time
+                if (t != null || d != null) {
+                    dateTimeString = dateTimeString.substring(0, frontIdx) +
+                            dateTimeString.substring(backIdx, dateTimeString.length());
+
+                    // amend the delimIndices list for the new String
+                    int delimSize = delimIndices.size();
+                    int delimOffset = delimIndices.get(i + offset) - delimIndices.get(i);
+                    for (int j = i; j + offset < delimSize; j++) {
+                        delimIndices.set(j, delimIndices.get(j + offset) - delimOffset);
+                    }
+                    for (int j = 0; j < offset; j++) {
+                        delimIndices.remove(delimIndices.size() - 1);
+                    }
+                }
+                // and store it into the list
                 if (t != null) {
                     times.add(t);
                 }
-                LocalDate d = parseDate(wordSeq);
                 if (d != null) {
                     dates.add(d);
                 }
