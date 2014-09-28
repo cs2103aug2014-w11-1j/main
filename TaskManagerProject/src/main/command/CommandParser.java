@@ -138,7 +138,7 @@ public class CommandParser {
 
     }
 
-    private static LocalDate parseDate(String dateString) {
+    public static LocalDate parseDate(String dateString) {
         if (shouldUpdateDatePatterns()) {
             buildDatePatternHashMap();
         }
@@ -208,12 +208,15 @@ public class CommandParser {
         mapPattern(datePartialFormatPatterns,
                 "dMMM" + "y", String.valueOf(LocalDate.now().getYear()));
 
-        // 24Aug2014
-        mapPattern(dateFullFormatPatterns, "dMMMy");
-        // 24Aug14
-        mapPattern(dateFullFormatPatterns, "dMMMyy");
-        // 24/8/14
-        mapPattern(dateFullFormatPatterns, "d/M/yy");
+        // set if they weren't yet
+        if (datePatternsLastUpdate == null) {
+            // 24Aug2014
+            mapPattern(dateFullFormatPatterns, "dMMMy");
+            // 24Aug14
+            mapPattern(dateFullFormatPatterns, "dMMMyy");
+            // 24/8/14
+            mapPattern(dateFullFormatPatterns, "d/M/yy");
+        }
 
         datePatternsLastUpdate = LocalDate.now();
     }
@@ -301,28 +304,38 @@ public class CommandParser {
                 tags.add(new Tag(removeFirstChar(word)));
             }
         }
-        task.tags = (Tag[]) tags.toArray();
+        task.tags = tags.toArray(new Tag[tags.size()]);
     }
 
     public static void parsePriority(String args, TaskInfo task) {
         // TODO Care about efficiency.
         args = stripIgnoredSegments(args);
         String[] words = args.split(" ");
+
+        Priority p = null;
+
         for (String word : words) {
             if (word.startsWith(SYMBOL_PRIORITY)) {
-                Priority p = DEFAULT_PRIORITY;
-
                 String priorityLevel = removeFirstChar(word).toLowerCase();
+
                 if (priorityLevel.equals("high")) {
                     p = Priority.HIGH;
                 }
                 if (priorityLevel.equals("med")) {
                     p = Priority.MEDIUM;
                 }
+                if (priorityLevel.equals("low")){
+                    p = Priority.LOW;
+                }
 
                 task.priority = p;
             }
+            if (p != null) {
+                break;
+            }
         }
+
+        task.priority = p != null ? p : DEFAULT_PRIORITY;
     }
 
     private static String removeFirstChar(String s) {
