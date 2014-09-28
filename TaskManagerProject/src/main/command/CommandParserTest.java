@@ -3,6 +3,10 @@ package main.command;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import org.junit.Test;
 
 import data.taskinfo.Priority;
@@ -66,7 +70,20 @@ public class CommandParserTest {
 
     @Test
     public void testParseTask() {
-        fail("Not yet implemented");
+        String test1 = mergeStrings(new String[]{TERM_1, TERM_IGNORE_1, TERM_2,
+                TAG+TERM_7, TERM_3, TAG+TERM_4, PRI_HIGH,
+                TimeTest.ABS_12_HOURS_LONG.type, DateTest.ABS_DMMMY.type});
+        TaskInfo t = CommandParser.parseTask(test1);
+        assertEquals(t.name, test1);
+        assertEquals(t.endDate, LocalDate.of(2014, 8, 24));
+        assertEquals(t.endTime, LocalTime.of(15, 46));
+        assertEquals(t.duration, Duration.ZERO);
+        assertEquals(t.priority, Priority.HIGH);
+        StringBuilder result = new StringBuilder();
+        for (Tag tag : t.tags) {
+            result.append(tag.toString()).append(' ');
+        }
+        assertEquals(result.toString().trim(), TERM_7 + " " + TERM_4);
     }
 
     @Test
