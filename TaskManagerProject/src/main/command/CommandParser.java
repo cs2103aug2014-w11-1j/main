@@ -40,6 +40,17 @@ public class CommandParser {
         return task;
     }
 
+    public static void main(String[] args) {
+        TaskInfo t = parseTask("lunch with Jim #taskline  at \"Cafe 5 OÅfclock\" on Tuesday 12 PM #food +high");
+        System.out.println(t.name);
+        System.out.println(t.endDate);
+        System.out.println(t.endTime);
+        System.out.println(t.duration);
+        System.out.println(t.priority);
+        for (int i = 0; i < t.tags.length; i++)
+            System.out.println(t.tags[i]);
+    }
+
     public static void parseName(String args, TaskInfo task) {
         task.name = args;
         // TODO Proper parsing.
@@ -199,7 +210,6 @@ public class CommandParser {
 
     private static void buildDatePatternHashMap() {
         datePartialFormatPatterns = new HashMap<DateTimeFormatter, String>();
-        dateFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
 
         // 24 August
         mapPattern(datePartialFormatPatterns,
@@ -208,17 +218,21 @@ public class CommandParser {
         mapPattern(datePartialFormatPatterns,
                 "dMMM" + "y", String.valueOf(LocalDate.now().getYear()));
 
-        // set if they weren't yet
-        if (datePatternsLastUpdate == null) {
-            // 24Aug2014
-            mapPattern(dateFullFormatPatterns, "dMMMy");
-            // 24Aug14
-            mapPattern(dateFullFormatPatterns, "dMMMyy");
-            // 24/8/14
-            mapPattern(dateFullFormatPatterns, "d/M/yy");
+        datePatternsLastUpdate = LocalDate.now();
+
+        // partial / full divider, full only needs to be built once
+        if (dateFullFormatPatterns != null) {
+            return;
         }
 
-        datePatternsLastUpdate = LocalDate.now();
+        dateFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
+
+        // 24Aug2014
+        mapPattern(dateFullFormatPatterns, "dMMMy");
+        // 24Aug14
+        mapPattern(dateFullFormatPatterns, "dMMMyy");
+        // 24/8/14
+        mapPattern(dateFullFormatPatterns, "d/M/yy");
     }
 
     public static LocalTime parseTime(String timeString) {
@@ -265,12 +279,15 @@ public class CommandParser {
     }
 
     private static void buildTimePatternHashMap() {
+        if (timeFullFormatPatterns != null) {
+            return;
+        }
         timeFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
 
-        // 3:46 PM
-        mapPattern(timeFullFormatPatterns, "h:m a");
         // 15:46
         mapPattern(timeFullFormatPatterns, "H:m");
+        // 3:46 PM
+        mapPattern(timeFullFormatPatterns, "h:m a");
         // 3 PM
         mapPattern(timeFullFormatPatterns, "h a");
     }
@@ -347,8 +364,8 @@ public class CommandParser {
 
         boolean shouldCheckFurther;
         do {
-            int startIgnoreIdx = s.indexOf(SYMBOL_IGNORE);
-            int endIgnoreIdx = s.indexOf(SYMBOL_IGNORE, startIgnoreIdx + 1);
+            int startIgnoreIdx = sB.indexOf(SYMBOL_IGNORE);
+            int endIgnoreIdx = sB.indexOf(SYMBOL_IGNORE, startIgnoreIdx + 1);
 
             shouldCheckFurther = endIgnoreIdx > startIgnoreIdx;
             if (shouldCheckFurther) {
