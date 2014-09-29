@@ -2,13 +2,16 @@ package manager;
 
 import io.FileInputOutput;
 import main.message.AddSuccessfulMessage;
+import main.message.DeleteSuccessfulMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
 import main.message.EnumMessage.MessageType;
 import main.modeinfo.EmptyModeInfo;
 import main.response.Response;
+import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
 import manager.result.AddResult;
+import manager.result.DeleteResult;
 import manager.result.EditResult;
 import manager.result.Result;
 import data.TaskId;
@@ -26,6 +29,7 @@ public class StateManager {
 
     private final FileInputOutput fileInputOutput;
 	private final UndoManager undoManager;
+	private final SearchManager searchManager;
 	private State currentState;
 	private TaskId editingTaskId;
 
@@ -36,9 +40,10 @@ public class StateManager {
 	    LOCKED_MODE     // In locked mode, no modifying data is allowed
 	}
 
-	public StateManager(FileInputOutput fileInputOutput, UndoManager undoManager) {
+	public StateManager(FileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager) {
 	    this.fileInputOutput = fileInputOutput;
 		this.undoManager = undoManager;
+		this.searchManager = searchManager;
 	}
 
 	public boolean canAdd() {
@@ -100,6 +105,7 @@ public class StateManager {
         
         Response response = null;
         
+        // generate response
         switch (result.getType()){
             case EDIT_MODE_START :
                 setState(State.EDIT_MODE);
@@ -118,12 +124,10 @@ public class StateManager {
                 EmptyModeInfo addFailModeInfo = new EmptyModeInfo();
                 response = new Response(addFailMessage, addFailModeInfo);
             case DELETE_SUCCESS :
-                if (inState(State.EDIT_MODE)) {
-                    setState(State.AVAILABLE);
-                }
-                if (inState(State.SEARCH_MODE)) {
-                	//searchManager.searchAgain();
-                }
+                DeleteSuccessfulMessage deleteSuccessMessage = 
+                		new DeleteSuccessfulMessage(((DeleteResult)result).getTaskInfo());
+                EmptyModeInfo deleteSuccessModeInfo = new EmptyModeInfo();
+                response = new Response(deleteSuccessMessage, deleteSuccessModeInfo);
                 break;
             case DELETE_FAILURE : 
                 EnumMessage deleteFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
@@ -142,8 +146,22 @@ public class StateManager {
                 break;
         }
         
+         writeToFile();
+        
+        // handling search mode: search again after each successful command
+        if (inState(State.SEARCH_MODE)){
+        	switch (result.getType()){
+        		case DELETE_SUCCESS : 
+        			searchManager.searchAgain();
+        			break;
+        		case EDIT_SUCCESS : 
+        			searchManager.searchAgain();
+        			break;
+        		default :
+        			break;
+        	}
+        }
 
-        writeToFile();
         if (response != null) {
             return response;
         } else {

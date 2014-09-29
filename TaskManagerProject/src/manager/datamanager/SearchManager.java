@@ -67,4 +67,8 @@ public class SearchManager extends AbstractManager {
     public TaskId getAbsoluteIndex(int relativeIndex) {
         return lastSearchedTaskIds[relativeIndex - 1];
     }
+    
+    public void searchAgain(){
+    	// search again after each successfully executed command
+    }
 }
