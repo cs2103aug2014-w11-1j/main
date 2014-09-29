@@ -131,7 +131,7 @@ public class StateManager {
                 response = new Response(deleteFailMessage, deleteFailModeInfo);
             case EDIT_SUCCESS : 
                 EditSuccessfulMessage editSuccessMessage = 
-                        new EditSuccessfulMessage(((EditResult)result).getTaskInfo());
+                        new EditSuccessfulMessage(((EditResult)result).getTaskInfo(), editingTaskId, null);
                 EmptyModeInfo editSuccessModeInfo = new EmptyModeInfo();
                 response = new Response(editSuccessMessage, editSuccessModeInfo);
             case EDIT_FAILURE : 

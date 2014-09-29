@@ -1,15 +1,18 @@
 package manager.result;
 
 import data.TaskId;
+import data.taskinfo.TaskInfo;
 
 public class DeleteResult implements Result{
 	
 	private Type type;
 	private TaskId taskId;
+	private TaskInfo taskInfo;
 	
-	public DeleteResult(Type type, TaskId taskId){
+	public DeleteResult(Type type, TaskId taskId, TaskInfo taskInfo){
 		this.type = type;
 		this.taskId = taskId;
+		this.taskInfo = taskInfo;
 	}
 
 	@Override
@@ -21,5 +24,8 @@ public class DeleteResult implements Result{
 		return taskId;
 	}
 
+	public TaskInfo getTaskInfo(){
+		return taskInfo;
+	}
 	
 }
