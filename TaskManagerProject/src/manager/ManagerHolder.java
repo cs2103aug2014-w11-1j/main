@@ -23,7 +23,7 @@ public class ManagerHolder {
         editManager = new EditManager(taskData);
         deleteManager = new DeleteManager(taskData);
         undoManager = new UndoManager(taskData);
-        stateManager = new StateManager(fileInputOutput, undoManager);
+        stateManager = new StateManager(fileInputOutput, undoManager, searchManager);
     }
 
     public StateManager getStateManager() {
