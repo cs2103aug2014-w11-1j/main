@@ -56,7 +56,7 @@ public class SearchManager extends AbstractManager {
         lastSearchFilters = filters;
         updateLastSearched(filters);
         SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
-                lastSearchedTasks);
+                lastSearchedTasks, lastSearchedTaskIds);
         return result;
     }
     
