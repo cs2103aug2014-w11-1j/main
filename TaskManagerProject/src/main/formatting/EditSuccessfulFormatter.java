@@ -1,5 +1,6 @@
 package main.formatting;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -9,10 +10,27 @@ import data.taskinfo.Priority;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+/**
+ * Formatter for the EditSuccessfulMessage.
+ * Format example:
+ * Task name changed.
+ * 
+ * Task [a9f]
+ *    Name: eat apples for dinner
+ *    Time: 17:30 (PM)
+ *    Date: Tuesday, 17 Feb 2015
+ *    Tags: taskline, food
+ *    Priority: High
+ *    Description: I will die if I don't eat my apples!
+ *    
+ * @author Nathan
+ *
+ */
 public class EditSuccessfulFormatter {
-    private final static String FORMAT_ID = "Task []";
+    private final static String FORMAT_ID = "Task [%1$s]";
     private final static String FORMAT_NAME = "   Name: %1$s";
-    private final static String DATETIME_FORMAT_TIME = "HH:mm (a)";
+    private final static String FORMAT_TIME = "HH:mm (a)";
+    private final static String FORMAT_DATE = "EEEE, d MMM Y";
     private final static String FORMAT_TAGS = "Tags: %1$s";
     private final static String FORMAT_PRIORITY = "Priority: %1$s";
     private final static String FORMAT_DESCRIPTION = "Description: %1$s";
@@ -25,8 +43,14 @@ public class EditSuccessfulFormatter {
     
     private String formatTime(LocalTime time) {
         DateTimeFormatter formatter = 
-                DateTimeFormatter.ofPattern(DATETIME_FORMAT_TIME);
+                DateTimeFormatter.ofPattern(FORMAT_TIME);
         return formatter.format(time);
+    }
+    
+    private String formatDate(LocalDate date) {
+        DateTimeFormatter formatter = 
+                DateTimeFormatter.ofPattern(FORMAT_DATE);
+        return formatter.format(date);
     }
     
     private String buildTagsString(Tag[] tags) {
@@ -54,6 +78,15 @@ public class EditSuccessfulFormatter {
                 break;
         }
         return priorityString;
+    }
+    
+    private String addIndentation(String s, int numberOfSpaces) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < numberOfSpaces; i++) {
+            builder.append(" ");
+        }
+        builder.append(s);
+        return builder.toString();
     }
     
     private String getChangedFieldString(
@@ -88,13 +121,29 @@ public class EditSuccessfulFormatter {
         
         TaskInfo task = message.getTask();
         
-        result.add(FORMAT_ID);
-        result.add(String.format(FORMAT_NAME, task.name));
-        result.add(formatTime(task.endTime));
-        result.add(String.format(FORMAT_TAGS, buildTagsString(task.tags)));
-        result.add(String.format(FORMAT_PRIORITY, 
-                getPriorityString(task.priority)));
-        result.add(String.format(FORMAT_DESCRIPTION, task.details));
+        result.add(String.format(FORMAT_ID,message.getTaskId().toString()));
+        
+        String nameLine = String.format(FORMAT_NAME,  task.name);
+        result.add(addIndentation(nameLine, 3));
+        
+        String timeLine = formatTime(task.endTime);
+        result.add(addIndentation(timeLine, 3));
+        
+        String dateLine = formatDate(task.endDate);
+        result.add(addIndentation(dateLine, 3));
+        
+        String tagsLine = String.format(FORMAT_TAGS, 
+                buildTagsString(task.tags));
+        result.add(addIndentation(tagsLine, 3));
+        
+        
+        String priorityLine = String.format(FORMAT_PRIORITY, 
+                getPriorityString(task.priority));
+        result.add(addIndentation(priorityLine, 3));
+        
+        String descriptionLine = String.format(FORMAT_DESCRIPTION, 
+                task.details);
+        result.add(addIndentation(descriptionLine, 3));
         
         return result;
     }
