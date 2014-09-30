@@ -50,8 +50,10 @@ public class CommandParserTest {
         }
     }
 
-    private static final LocalTime TIME_1 = LocalTime.of(9, 46);
-    private static final LocalTime TIME_2 = LocalTime.of(15, 16);
+    private static final LocalTime TIME_LONG_1 = LocalTime.of(9, 46);
+    private static final LocalTime TIME_SHORT_1 = LocalTime.of(9, 0);
+    private static final LocalTime TIME_LONG_2 = LocalTime.of(15, 16);
+    private static final LocalTime TIME_SHORT_2 = LocalTime.of(15, 0);
 
     private enum DateTest {
         ABS_D_MMMM_1      ("24 August"),
@@ -91,7 +93,7 @@ public class CommandParserTest {
         TaskInfo t = CommandParser.parseTask(test1);
         assertEquals(t.name, test1);
         assertEquals(t.endDate, DATE_1);
-        assertEquals(t.endTime, TIME_1);
+        assertEquals(t.endTime, TIME_LONG_1);
         assertEquals(t.duration, Duration.ZERO);
         assertEquals(t.priority, Priority.HIGH);
         StringBuilder result = new StringBuilder();
@@ -132,12 +134,12 @@ public class CommandParserTest {
         // one time, zero date: next occurrence of time
         String test4 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_1.type});
         CommandParser.parseDateTime(test4, t);
-        if (LocalTime.now().isBefore(TIME_1)) {
+        if (LocalTime.now().isBefore(TIME_LONG_1)) {
             assertEquals(t.endDate, LocalDate.now());
         } else {
             assertEquals(t.endDate, LocalDate.now().plusDays(1));
         }
-        assertEquals(t.endTime, TIME_1);
+        assertEquals(t.endTime, TIME_LONG_1);
         assertEquals(t.duration, Duration.ZERO);
 
         t = new TaskInfo();
@@ -146,12 +148,12 @@ public class CommandParserTest {
                 TimeTest.ABS_24_HOURS_LONG_2.type});
         CommandParser.parseDateTime(test5, t);
         assertEquals(t.endDate, DATE_2);
-        assertEquals(t.endTime, TIME_2);
+        assertEquals(t.endTime, TIME_LONG_2);
         assertEquals(t.duration, Duration.ZERO);
 
         t = new TaskInfo();
         // one time, two date: null
-        String test6 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_2.type,
+        String test6 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_SHORT_2.type,
                 DateTest.ABS_D_MMMM_1.type, DateTest.ABS_DMMMYY_2.type});
         CommandParser.parseDateTime(test6, t);
         assertEquals(t.endDate, null);
@@ -161,26 +163,26 @@ public class CommandParserTest {
         t = new TaskInfo();
         // two time, zero date: next occurrence of first time
         String test7 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_2.type,
-                TimeTest.ABS_12_HOURS_LONG_1.type});
+                TimeTest.ABS_12_HOURS_SHORT_1.type});
         CommandParser.parseDateTime(test7, t);
-        if (LocalTime.now().isBefore(TIME_2)) {
-            if (TIME_2.isAfter(TIME_1)) {
+        if (LocalTime.now().isBefore(TIME_LONG_2)) {
+            if (TIME_LONG_2.isAfter(TIME_SHORT_1)) {
                 assertEquals(t.endDate, LocalDate.now().plusDays(1));
-                assertEquals(t.duration, Duration.between(TIME_2, TIME_1).plusDays(1));
+                assertEquals(t.duration, Duration.between(TIME_LONG_2, TIME_SHORT_1).plusDays(1));
             } else {
                 assertEquals(t.endDate, LocalDate.now());
-                assertEquals(t.duration, Duration.between(TIME_2, TIME_1).plusDays(1));
+                assertEquals(t.duration, Duration.between(TIME_LONG_2, TIME_SHORT_1).plusDays(1));
             }
         } else {
-            if (TIME_2.isAfter(TIME_1)) {
+            if (TIME_LONG_2.isAfter(TIME_SHORT_1)) {
                 assertEquals(t.endDate, LocalDate.now().plusDays(2));
-                assertEquals(t.duration, Duration.between(TIME_2, TIME_1).plusDays(1));
+                assertEquals(t.duration, Duration.between(TIME_LONG_2, TIME_SHORT_1).plusDays(1));
             } else {
                 assertEquals(t.endDate, LocalDate.now().plusDays(1));
-                assertEquals(t.duration, Duration.between(TIME_2, TIME_1).plusDays(1));
+                assertEquals(t.duration, Duration.between(TIME_LONG_2, TIME_SHORT_1).plusDays(1));
             }
         }
-        assertEquals(t.endTime, TIME_1);
+        assertEquals(t.endTime, TIME_SHORT_1);
 
 
     }
