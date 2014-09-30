@@ -40,17 +40,6 @@ public class CommandParser {
         return task;
     }
 
-    public static void main(String[] args) {
-        TaskInfo t = parseTask("lunch with Jim #taskline  at \"Cafe 5 OÅfclock\" on Tuesday 12 PM #food +high");
-        System.out.println(t.name);
-        System.out.println(t.endDate);
-        System.out.println(t.endTime);
-        System.out.println(t.duration);
-        System.out.println(t.priority);
-        for (int i = 0; i < t.tags.length; i++)
-            System.out.println(t.tags[i]);
-    }
-
     public static void parseName(String args, TaskInfo task) {
         task.name = args;
         // TODO Proper parsing.
@@ -66,8 +55,10 @@ public class CommandParser {
         }
         // list for indices of the delimiter
         List<Integer> delimIndices = new ArrayList<Integer>();
-        for (int i = 0; i > -1; i = dateTimeString.indexOf(delim, i + 1)) {
-            delimIndices.add(i);
+        delimIndices.add(0);
+        for (int i = dateTimeString.indexOf(delim, 1);
+                i > 0; i = dateTimeString.indexOf(delim, i + 1)) {
+            delimIndices.add(i + 1);
         }
         delimIndices.add(dateTimeString.length());
 
@@ -76,7 +67,7 @@ public class CommandParser {
 
      // try to parse times and dates from every possible sequence of words
         for (int offset = delimIndices.size() - 1; offset > 0; offset--) {
-            for (int i = 0; i + offset < delimIndices.size(); i++) {
+            for (int i = 0; !delimIndices.isEmpty() && i + offset < delimIndices.size(); i++) {
                 // if more than two times and dates, take the first two of each
                 if (times.size() > 1 && dates.size() > 1) {
                     break;
@@ -97,13 +88,15 @@ public class CommandParser {
 
                     // amend the delimIndices list for the new String
                     int delimSize = delimIndices.size();
-                    int delimOffset = delimIndices.get(i + offset) - delimIndices.get(i);
+                    int delimOffset = backIdx - frontIdx;
                     for (int j = i; j + offset < delimSize; j++) {
                         delimIndices.set(j, delimIndices.get(j + offset) - delimOffset);
                     }
                     for (int j = 0; j < offset; j++) {
                         delimIndices.remove(delimIndices.size() - 1);
                     }
+                    // don't move the iterator as we're deleting the current one
+                    --i;
                 }
                 // and store it into the list
                 if (t != null) {
@@ -198,6 +191,17 @@ public class CommandParser {
     }
 
     private static LocalDate parseAbsoluteDate(String dateString) {
+        // TODO extract method
+        // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
+        dateString = dateString.toUpperCase();
+        for (int i = 0; i < dateString.length(); i++) {
+            if (Character.isAlphabetic(dateString.charAt(i))) {
+                dateString = dateString.substring(0, i + 1) +
+                        dateString.substring(i + 1).toLowerCase();
+                break;
+            }
+        }
+
         // match full before partial in order to prevent matching more than one.
         LocalDate date = matchDatePatterns(dateFullFormatPatterns, dateString);
         if (date == null) {
@@ -219,7 +223,9 @@ public class CommandParser {
             String missingField = formatPattern.getValue();
 
             try {
-                return LocalDate.parse(dateString + missingField, format);
+                String test = dateString + missingField;
+                LocalDate d = LocalDate.parse(test, format);
+                return d;
             } catch (DateTimeParseException e) {
                 // do nothing
             }
