@@ -56,7 +56,7 @@ public class SearchManager extends AbstractManager {
         lastSearchFilters = filters;
         updateLastSearched(filters);
         SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
-                lastSearchedTasks);
+                lastSearchedTasks, lastSearchedTaskIds);
         return result;
     }
     
@@ -66,5 +66,9 @@ public class SearchManager extends AbstractManager {
     
     public TaskId getAbsoluteIndex(int relativeIndex) {
         return lastSearchedTaskIds[relativeIndex - 1];
+    }
+    
+    public void searchAgain(){
+    	// search again after each successfully executed command
     }
 }

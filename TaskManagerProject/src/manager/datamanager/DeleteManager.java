@@ -6,6 +6,7 @@ import manager.result.Result;
 import manager.result.SimpleResult;
 import data.TaskData;
 import data.TaskId;
+import data.taskinfo.TaskInfo;
 
 
 /**
@@ -26,11 +27,12 @@ public class DeleteManager extends AbstractManager {
     		return new SimpleResult(Result.Type.DELETE_FAILURE);
     	}
     	
+    	
+    	TaskInfo taskInfo = taskData.getTaskInfo(taskId);
     	Boolean isSuccessful = taskData.remove(taskId);
     	
-    	
     	if (isSuccessful){
-    		return new DeleteResult(Result.Type.DELETE_SUCCESS, taskId);
+    		return new DeleteResult(Result.Type.DELETE_SUCCESS, taskId, taskInfo);
     	}
     	
     	return new SimpleResult(Result.Type.DELETE_FAILURE);

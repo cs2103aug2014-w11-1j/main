@@ -1,5 +1,6 @@
 package main.message;
 
+import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class EditSuccessfulMessage implements Message{
@@ -14,8 +15,10 @@ public class EditSuccessfulMessage implements Message{
     
     Field changedField;
     private TaskInfo task;
+    private TaskId taskId;
     
-    public EditSuccessfulMessage(TaskInfo task, Field changedField) {
+    public EditSuccessfulMessage(TaskInfo task, TaskId taskId, Field changedField) {
+        this.taskId = taskId;
         this.task = task;
         this.changedField = changedField;
     }
@@ -30,5 +33,9 @@ public class EditSuccessfulMessage implements Message{
     
     public TaskInfo getTask() {
         return task;
+    }
+    
+    public TaskId getTaskId() {
+        return taskId;
     }
 }
