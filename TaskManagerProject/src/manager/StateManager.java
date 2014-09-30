@@ -115,8 +115,10 @@ public class StateManager {
                 setState(State.AVAILABLE);
                 break;
             case ADD_SUCCESS :
+                AddResult addResult = (AddResult)result;
                 AddSuccessfulMessage addSuccessMessage = 
-                        new AddSuccessfulMessage(((AddResult)result).getTaskInfo());
+                        new AddSuccessfulMessage(addResult.getTaskInfo(),
+                                addResult.getTaskId());
                 EmptyModeInfo addSuccessModeInfo = new EmptyModeInfo();
             	response = new Response(addSuccessMessage, addSuccessModeInfo);
             case ADD_FAILURE : 
@@ -124,8 +126,10 @@ public class StateManager {
                 EmptyModeInfo addFailModeInfo = new EmptyModeInfo();
                 response = new Response(addFailMessage, addFailModeInfo);
             case DELETE_SUCCESS :
+                DeleteResult deleteResult = (DeleteResult)result;
                 DeleteSuccessfulMessage deleteSuccessMessage = 
-                		new DeleteSuccessfulMessage(((DeleteResult)result).getTaskInfo());
+                		new DeleteSuccessfulMessage(deleteResult.getTaskInfo(), 
+                		        deleteResult.getTaskId());
                 EmptyModeInfo deleteSuccessModeInfo = new EmptyModeInfo();
                 response = new Response(deleteSuccessMessage, deleteSuccessModeInfo);
                 break;
