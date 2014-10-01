@@ -48,8 +48,36 @@ public class SearchModeFormatterTest {
     }
     
     @Test
-    public void twoTask() {
+    public void testOverLengthTaskName() {
+        SearchModeFormatter formatter = new SearchModeFormatter();
+        TaskId taskId = new TaskId(TaskId.toIntId("1ab"));
+        TaskInfo taskInfo = new TaskInfo();
+        taskInfo.details = "This is a detail";
+        taskInfo.name = "This is a very very long name abcdefghijklmnopqrstuvwxyz "
+                + "zyxwvutsrqponmlkjihgfedbca";
+        taskInfo.endTime = LocalTime.parse("12:40");
+        taskInfo.endDate = LocalDate.parse("2014-10-01");
+        taskInfo.tags = new Tag[2];
+        taskInfo.tags[0] = new Tag("wow");
+        taskInfo.tags[1] = new Tag("amazing");
+        taskInfo.priority = Priority.HIGH;
+        taskInfo.status = Status.UNDONE;
         
+        TaskId[] taskIdArray = new TaskId[1];
+        TaskInfo[] taskInfoArray = new TaskInfo[1];
+        taskIdArray[0] = taskId;
+        taskInfoArray[0] = taskInfo;
+        
+        SearchModeInfo searchModeInfo = new SearchModeInfo(taskInfoArray, 
+                taskIdArray);
+        String result = formatter.format(searchModeInfo);
+        
+        String expected = "Wed, 1 Oct 2014 ---" + System.lineSeparator() +
+                "1) [   12:40   ] " +
+                "This is a very very long name abcdefghijklmnopqrstuvw..."
+                + "- [1ab]" + System.lineSeparator();
+        
+        Assert.assertEquals(expected, result);
     }
 
 }
