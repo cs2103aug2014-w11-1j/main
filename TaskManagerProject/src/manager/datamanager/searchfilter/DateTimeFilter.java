@@ -1,8 +1,6 @@
 package manager.datamanager.searchfilter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import data.taskinfo.TaskInfo;
 
@@ -20,6 +18,9 @@ public class DateTimeFilter implements Filter{
     }
     
     public boolean filter(TaskInfo task) {
+        if (task.endDate == null || task.endTime == null) {
+            return false;
+        }
         LocalDateTime taskTime = LocalDateTime.of(task.endDate, task.endTime);
         return minTime.compareTo(taskTime) <= 0 && 
                 taskTime.compareTo(maxTime) <= 0;
