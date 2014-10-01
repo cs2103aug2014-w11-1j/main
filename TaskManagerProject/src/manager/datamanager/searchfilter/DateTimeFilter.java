@@ -21,6 +21,7 @@ public class DateTimeFilter implements Filter{
         if (task.endDate == null || task.endTime == null) {
             return false;
         }
+        
         LocalDateTime taskTime = LocalDateTime.of(task.endDate, task.endTime);
         return minTime.compareTo(taskTime) <= 0 && 
                 taskTime.compareTo(maxTime) <= 0;

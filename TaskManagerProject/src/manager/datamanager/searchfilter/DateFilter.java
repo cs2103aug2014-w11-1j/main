@@ -21,6 +21,9 @@ public class DateFilter implements Filter {
 
     @Override
     public boolean filter(TaskInfo task) {
+        if (task.endDate == null) {
+            return false;
+        }
         return startDate.compareTo(task.endDate) <= 0 && 
                 endDate.compareTo(task.endDate) <= 0; 
     }

@@ -7,7 +7,8 @@ public interface Filter {
         FILTER_TAG,
         FILTER_DATETIME,
         FILTER_DATE,
-        FILTER_PRIORITY
+        FILTER_PRIORITY,
+        FILTER_KEYWORD
     }
     
     public Type getType();
