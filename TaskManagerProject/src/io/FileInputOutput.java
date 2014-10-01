@@ -16,7 +16,7 @@ import data.taskinfo.TaskInfo;
 public class FileInputOutput {
     
     private final String fileName = "tasks.txt";
-    private String fileHash;
+    private String fileHash = "";
     
     private final TaskData taskData;
     

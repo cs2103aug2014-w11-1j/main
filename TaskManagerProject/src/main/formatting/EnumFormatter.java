@@ -23,16 +23,22 @@ public class EnumFormatter {
         switch(message.getMessageType()) {
             case CANNOT_EXECUTE_COMMAND :
                 formattedResult = MESSAGE_CANNOT_EXECUTE;
+                break;
             case EMPTY_STRING :
                 formattedResult = MESSAGE_EMPTY;
+                break;
             case ADD_FAILED :
                 formattedResult = MESSAGE_ADD_FAILED;
+                break;
             case EDIT_FAILED :
                 formattedResult = MESSAGE_EDIT_FAILED;
+                break;
             case DELETE_FAILED :
                 formattedResult = MESSAGE_DELETE_FAILED;
+                break;
             default :
                 formattedResult = "";
+                break;
         }
         return formattedResult;
     }

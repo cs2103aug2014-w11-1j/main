@@ -44,6 +44,7 @@ public class StateManager {
 	    this.fileInputOutput = fileInputOutput;
 		this.undoManager = undoManager;
 		this.searchManager = searchManager;
+		this.currentState = State.AVAILABLE;
 	}
 
 	public boolean canAdd() {
@@ -121,10 +122,12 @@ public class StateManager {
                                 addResult.getTaskId());
                 EmptyModeInfo addSuccessModeInfo = new EmptyModeInfo();
             	response = new Response(addSuccessMessage, addSuccessModeInfo);
+                break;
             case ADD_FAILURE : 
                 EnumMessage addFailMessage = new EnumMessage(EnumMessage.MessageType.ADD_FAILED);
                 EmptyModeInfo addFailModeInfo = new EmptyModeInfo();
                 response = new Response(addFailMessage, addFailModeInfo);
+                break;
             case DELETE_SUCCESS :
                 DeleteResult deleteResult = (DeleteResult)result;
                 DeleteSuccessfulMessage deleteSuccessMessage = 
@@ -137,15 +140,18 @@ public class StateManager {
                 EnumMessage deleteFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
                 EmptyModeInfo deleteFailModeInfo = new EmptyModeInfo();
                 response = new Response(deleteFailMessage, deleteFailModeInfo);
+                break;
             case EDIT_SUCCESS : 
                 EditSuccessfulMessage editSuccessMessage = 
                         new EditSuccessfulMessage(((EditResult)result).getTaskInfo(), editingTaskId, null);
                 EmptyModeInfo editSuccessModeInfo = new EmptyModeInfo();
                 response = new Response(editSuccessMessage, editSuccessModeInfo);
+                break;
             case EDIT_FAILURE : 
                 EnumMessage editFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
             	EmptyModeInfo editFailModeInfo = new EmptyModeInfo();
             	response = new Response(editFailMessage, editFailModeInfo);
+                break;
             default:
                 break;
         }
