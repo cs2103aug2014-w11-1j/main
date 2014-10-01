@@ -25,6 +25,8 @@ public class TaskInfo {
     public static final int REPEAT_INDEFINITELY = -1;
 
     public TaskInfo() {
+        priority = Priority.NONE;
+        status = Status.UNDONE;
     }
 
     /**
