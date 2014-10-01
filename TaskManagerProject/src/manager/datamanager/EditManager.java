@@ -70,12 +70,6 @@ public class EditManager extends AbstractManager {
     }
     
     
-    public  Result editTask(TaskInfo taskInfo, String absoluteId){
-    	
-    	TaskId taskId = TaskId.makeTaskId(absoluteId);
-    	return editTask(taskInfo, taskId);
-
-    }
     /**
      * This method is to modify origin task with some changes specified
      * in modifTask, and return the modified task
