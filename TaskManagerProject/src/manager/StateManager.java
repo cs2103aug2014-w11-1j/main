@@ -116,20 +116,20 @@ public class StateManager {
                 setState(State.AVAILABLE);
                 break;
             case ADD_SUCCESS :
-                AddResult addResult = (AddResult)result;
-                AddSuccessfulMessage addSuccessMessage = 
-                        new AddSuccessfulMessage(addResult.getTaskInfo(),
-                                addResult.getTaskId());
+            	 AddResult addResult = (AddResult)result;
+                 AddSuccessfulMessage addSuccessMessage = 
+                         new AddSuccessfulMessage(addResult.getTaskInfo(),
+                                 addResult.getTaskId());
                 EmptyModeInfo addSuccessModeInfo = new EmptyModeInfo();
             	response = new Response(addSuccessMessage, addSuccessModeInfo);
-                break;
+            	break;
             case ADD_FAILURE : 
                 EnumMessage addFailMessage = new EnumMessage(EnumMessage.MessageType.ADD_FAILED);
                 EmptyModeInfo addFailModeInfo = new EmptyModeInfo();
                 response = new Response(addFailMessage, addFailModeInfo);
                 break;
             case DELETE_SUCCESS :
-                DeleteResult deleteResult = (DeleteResult)result;
+            	DeleteResult deleteResult = (DeleteResult)result;
                 DeleteSuccessfulMessage deleteSuccessMessage = 
                 		new DeleteSuccessfulMessage(deleteResult.getTaskInfo(), 
                 		        deleteResult.getTaskId());
@@ -151,7 +151,7 @@ public class StateManager {
                 EnumMessage editFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
             	EmptyModeInfo editFailModeInfo = new EmptyModeInfo();
             	response = new Response(editFailMessage, editFailModeInfo);
-                break;
+            	break;
             default:
                 break;
         }
