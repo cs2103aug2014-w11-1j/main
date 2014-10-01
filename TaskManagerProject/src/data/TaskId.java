@@ -20,10 +20,31 @@ public final class TaskId implements Comparable<TaskId> {
     private static final int TRANSLATE_SHIFT = 4789;
     public static final int MAX_ID = 20280;
     
+    private static final int INVALID_ID = -1;
+    
     public final int id;
 
     public TaskId(int id) {
         this.id = id;
+    }
+    
+    /**
+     * Constructor for a taskId.
+     * @param stringId the string form of the taskId. (e.g. a6d)<br>
+     * Can be in capital letters.
+     * @return a TaskId object corresponding the stringId provided.<br>
+     * returns null if the string is an invalid task Id.
+     */
+    public static TaskId makeTaskId(String stringId) {
+        stringId = stringId.toLowerCase();
+        
+        try {
+            int index = toIntId(stringId);
+            return new TaskId(index);
+            
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
     
     @Override
@@ -125,6 +146,10 @@ public final class TaskId implements Comparable<TaskId> {
             throw new IllegalArgumentException("Invalid string input: " + stringId);
         }
         
+        if (isInvalid(character1, character2)) {
+            throw new IllegalArgumentException("Invalid string input: " + stringId);
+        }
+        
         int result = toIntId(numberPosition, number, character1, character2);
         
         result = numberTranslateInverse(result);
@@ -153,7 +178,7 @@ public final class TaskId implements Comparable<TaskId> {
 
     private static int toIntId(int numberPosition, int number, char character1,
             char character2) {
-        
+
         int result = (int)(character2 - 'a');
         result *= 26;
         result += (int)(character1 - 'a');
@@ -164,8 +189,16 @@ public final class TaskId implements Comparable<TaskId> {
         return result;
     }
     
+    private static boolean isInvalid(char character1, char character2) {
+        return !(isLowerCaseAlphabet(character1) && isLowerCaseAlphabet(character2));
+    }
+    
     private static boolean isDigit(char c) {
         return (c >= '0' && c <= '9');
+    }
+    
+    private static boolean isLowerCaseAlphabet(char c) {
+        return (c >= 'a' && c <= 'z');
     }
     
     private static int numberTranslateForward(int index) {
