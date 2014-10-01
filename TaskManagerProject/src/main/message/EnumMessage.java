@@ -6,7 +6,9 @@ public class EnumMessage implements Message{
         CANNOT_EXECUTE_COMMAND,
         ADD_FAILED,
         DELETE_FAILED,
-        EDIT_FAILED
+        EDIT_FAILED,
+        ADD_TAG_FAILED,
+        DETELE_TAG_FAILED
     }
     
     MessageType messageType;

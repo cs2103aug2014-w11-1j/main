@@ -1,11 +1,14 @@
 package manager;
 
+import javax.naming.directory.SearchResult;
+
 import io.FileInputOutput;
 import main.message.AddSuccessfulMessage;
 import main.message.DeleteSuccessfulMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
 import main.message.EnumMessage.MessageType;
+import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.response.Response;
 import manager.datamanager.SearchManager;
@@ -15,6 +18,7 @@ import manager.result.DeleteResult;
 import manager.result.EditResult;
 import manager.result.Result;
 import data.TaskId;
+import data.taskinfo.TaskInfo;
 
 
 /**
@@ -142,15 +146,43 @@ public class StateManager {
                 response = new Response(deleteFailMessage, deleteFailModeInfo);
                 break;
             case EDIT_SUCCESS : 
-                EditSuccessfulMessage editSuccessMessage = 
-                        new EditSuccessfulMessage(((EditResult)result).getTaskInfo(), editingTaskId, null);
-                EmptyModeInfo editSuccessModeInfo = new EmptyModeInfo();
+                EditResult editResult = (EditResult)result;
+                
+            	EditSuccessfulMessage editSuccessMessage = 
+                        new EditSuccessfulMessage(editResult.getTaskInfo(), editingTaskId, null);
+                EditModeInfo editSuccessModeInfo = new EditModeInfo(editingTaskId);
                 response = new Response(editSuccessMessage, editSuccessModeInfo);
                 break;
             case EDIT_FAILURE : 
                 EnumMessage editFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
-            	EmptyModeInfo editFailModeInfo = new EmptyModeInfo();
+            	EditModeInfo editFailModeInfo = new EditModeInfo(editingTaskId);
             	response = new Response(editFailMessage, editFailModeInfo);
+            	break;
+            case TAG_ADD_SUCCESS : 
+            	EditResult tagAddResult = (EditResult)result;
+            	EditSuccessfulMessage tagAddSuccessfulMessage = 
+            			new EditSuccessfulMessage(tagAddResult.getTaskInfo(),
+            					tagAddResult.getTaskId(), tagAddResult.getChangedFields());
+            	EditModeInfo tagAddModeInfo = new EditModeInfo(tagAddResult.getTaskId());
+            	response = new Response(tagAddSuccessfulMessage, tagAddModeInfo);
+            	break;
+            case TAG_ADD_FAILURE:
+            	EnumMessage tagAddFailMessage = new EnumMessage(MessageType.ADD_TAG_FAILED);
+            	EditModeInfo tagAddFailModeInfo = new EditModeInfo(editingTaskId);
+            	response = new Response(tagAddFailMessage, tagAddFailModeInfo);
+            	break;
+            case TAG_DELETE_SUCCESS : 
+            	EditResult tagDeleteResult = (EditResult)result;
+            	EditSuccessfulMessage tagDeleteSuccessfulMessage = 
+            			new EditSuccessfulMessage(tagDeleteResult.getTaskInfo(),
+            					tagDeleteResult.getTaskId(), tagDeleteResult.getChangedFields());
+            	EditModeInfo tagDeleteModeInfo = new EditModeInfo(tagDeleteResult.getTaskId());
+            	response = new Response(tagDeleteSuccessfulMessage, tagDeleteModeInfo);
+            	break;
+            case TAG_DELETE_FAILURE:
+            	EnumMessage tagDeleteFailMessage = new EnumMessage(MessageType.ADD_TAG_FAILED);
+            	EditModeInfo tagDeleteFailModeInfo = new EditModeInfo(editingTaskId);
+            	response = new Response(tagDeleteFailMessage, tagDeleteFailModeInfo);
             	break;
             default:
                 break;
@@ -170,6 +202,8 @@ public class StateManager {
         		default :
         			break;
         	}
+        	
+        //	SearchResult result = searchManager.redoLastSearch();
         }
 
         if (response != null) {

@@ -39,4 +39,8 @@ public class EditResult implements Result {
 		return taskId;
 	}
 
+	public EditSuccessfulMessage.Field[] getChangedFields(){
+		return changedFields;
+	}
+
 }
