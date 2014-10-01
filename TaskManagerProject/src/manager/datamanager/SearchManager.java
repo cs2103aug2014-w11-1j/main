@@ -1,8 +1,8 @@
 package manager.datamanager;
 
 import java.util.ArrayList;
-
-import com.sun.javafx.scene.control.skin.FXVK.Type;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import manager.datamanager.searchfilter.Filter;
 import manager.result.Result;
@@ -30,6 +30,39 @@ public class SearchManager extends AbstractManager {
         return true;
     }
     
+    private void sortTasks() {
+        class InfoId {
+            public TaskInfo taskInfo;
+            public TaskId taskId;
+            public InfoId(TaskInfo taskInfo, TaskId taskId) {
+                this.taskInfo = taskInfo;
+                this.taskId = taskId;
+            }
+        }
+        int numberOfTasks = lastSearchedTasks.length;
+        InfoId[] combinedList = new InfoId[numberOfTasks];
+        for (int i = 0; i < numberOfTasks; i++) {
+            combinedList[i] = new InfoId(lastSearchedTasks[i], 
+                    lastSearchedTaskIds[i]);
+        }
+        Arrays.sort(combinedList, new Comparator<InfoId>() {
+            public int compare(InfoId task1, InfoId task2) {
+                if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) < 0) {
+                    return -1;
+                } else if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) > 0) {
+                    return 1;
+                } else {
+                    return task1.taskInfo.endTime.compareTo(task2.taskInfo.endTime);
+                }
+            }
+        });
+        for (int i = 0; i < numberOfTasks; i++) {
+            lastSearchedTasks[i] = combinedList[i].taskInfo;
+            lastSearchedTaskIds[i] = combinedList[i].taskId;
+        }
+        
+    }
+    
     private void updateLastSearched(Filter[] filters) {
         ArrayList<TaskId> taskIdList = new ArrayList<TaskId>();
         ArrayList<TaskInfo> taskList = new ArrayList<TaskInfo>();
@@ -50,6 +83,7 @@ public class SearchManager extends AbstractManager {
         }
         lastSearchedTasks = (TaskInfo[])taskList.toArray();
         lastSearchedTaskIds = (TaskId[])taskIdList.toArray();
+        sortTasks();
     }
 
     public Result searchTasks(Filter[] filters) {

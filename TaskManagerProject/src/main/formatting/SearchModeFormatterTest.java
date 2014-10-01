@@ -46,5 +46,10 @@ public class SearchModeFormatterTest {
         
         Assert.assertEquals(expected, result);
     }
+    
+    @Test
+    public void twoTask() {
+        
+    }
 
 }

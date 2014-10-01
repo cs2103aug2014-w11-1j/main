@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 
 import main.modeinfo.SearchModeInfo;
 import data.TaskId;
@@ -16,35 +14,7 @@ public class SearchModeFormatter {
     private final static int WIDTH_TIME = 14;
     private final static int WIDTH_ABSOLUTE = 7;
     
-    class InfoId {
-        public TaskInfo taskInfo;
-        public TaskId taskId;
-        public InfoId(TaskInfo taskInfo, TaskId taskId) {
-            this.taskInfo = taskInfo;
-            this.taskId = taskId;
-        }
-    }
-    public void sortTask(TaskInfo[] tasks, TaskId[] taskIds) {
-        InfoId[] combinedList = new InfoId[tasks.length];
-        for (int i = 0; i < tasks.length; i++) {
-            combinedList[i] = new InfoId(tasks[i], taskIds[i]);
-        }
-        Arrays.sort(combinedList, new Comparator<InfoId>() {
-            public int compare(InfoId task1, InfoId task2) {
-                if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) < 0) {
-                    return -1;
-                } else if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) > 0) {
-                    return 1;
-                } else {
-                    return task1.taskInfo.endTime.compareTo(task2.taskInfo.endTime);
-                }
-            }
-        });
-        for (int i = 0; i < tasks.length; i++) {
-            tasks[i] = combinedList[i].taskInfo;
-            taskIds[i] = combinedList[i].taskId;
-        }
-    }
+
     
     private String getDateLine(LocalDate date) {
         DateTimeFormatter formatter = 
@@ -120,7 +90,6 @@ public class SearchModeFormatter {
     private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
             TaskId[] taskIds) {
         ArrayList<String> result = new ArrayList<String>();
-        sortTask(tasks, taskIds);
         int numberWidth = numberLength(tasks.length) + 2;
         for (int i = 0; i < tasks.length; i++) {
             if (i == 0 || !tasks[i].endDate.equals(tasks[i-1].endDate)) {
