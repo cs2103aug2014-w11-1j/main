@@ -1,21 +1,16 @@
 package manager.datamanager.searchfilter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import data.taskinfo.TaskInfo;
 
 public class DateTimeFilter implements Filter{
-    LocalTime minTime, maxTime;
-    LocalDate minDate, maxDate;
+    LocalDateTime minTime;
+    LocalDateTime maxTime;
     
-    public DateTimeFilter(LocalTime minTime, LocalDate minDate,
-            LocalTime maxTime, LocalDate maxDate) {
+    public DateTimeFilter(LocalDateTime minTime, LocalDateTime maxTime) {
         this.minTime = minTime;
-        this.minDate = minDate;
         this.maxTime = maxTime;
-        this.maxDate = maxDate;
     }
     
     public Type getType() {
@@ -23,9 +18,11 @@ public class DateTimeFilter implements Filter{
     }
     
     public boolean filter(TaskInfo task) {
-        LocalDateTime min = LocalDateTime.of(minDate, minTime);
-        LocalDateTime max = LocalDateTime.of(maxDate, maxTime);
+        if (task.endDate == null || task.endTime == null) {
+            return false;
+        }
         LocalDateTime taskTime = LocalDateTime.of(task.endDate, task.endTime);
-        return min.compareTo(taskTime) <= 0 && taskTime.compareTo(max) <= 0;
+        return minTime.compareTo(taskTime) <= 0 && 
+                taskTime.compareTo(maxTime) <= 0;
     }
 }

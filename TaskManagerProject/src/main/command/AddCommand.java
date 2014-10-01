@@ -14,7 +14,7 @@ public class AddCommand implements Command {
     private final StateManager stateManager;
     private final TaskInfo taskToAdd;
 
-    public AddCommand(String args, ManagerHolder managerHolder) {    	
+    public AddCommand(String args, ManagerHolder managerHolder) {
     	taskToAdd = parse(args);
         addManager = managerHolder.getAddManager();
         stateManager = managerHolder.getStateManager();
@@ -29,7 +29,7 @@ public class AddCommand implements Command {
     public Response execute() {
         if (stateManager.canAdd()) {
             stateManager.beforeCommandExecutionUpdate();
-            
+
             Result result = addManager.addTask(taskToAdd);
             Response response = stateManager.update(result);
             return response;
