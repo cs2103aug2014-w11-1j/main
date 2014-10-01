@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import main.message.EditSuccessfulMessage;
+import main.message.EditSuccessfulMessage.Field;
 import data.taskinfo.Priority;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
@@ -40,6 +41,8 @@ public class EditSuccessfulFormatter {
     private final static String CHANGED_PRIORITY = "Priority changed.";
     private final static String ADDED_TAG = "Tag added.";
     private final static String DELETED_TAG = "Tag deleted.";
+    private final static String CHANGED_DETAILS = "Details changed.";
+    private final static String CHANGED_STATUS = "Status changd.";
     
     private String formatTime(LocalTime time) {
         DateTimeFormatter formatter = 
@@ -108,6 +111,10 @@ public class EditSuccessfulFormatter {
             case TAGS_DELETE :
                 changedFieldString = DELETED_TAG;
                 break;
+            case DETAILS :
+                changedFieldString = CHANGED_DETAILS;
+            case STATUS : 
+                changedFieldString = CHANGED_STATUS;
         }
         return changedFieldString;
     }
@@ -116,7 +123,9 @@ public class EditSuccessfulFormatter {
     public ArrayList<String> formatToArray(EditSuccessfulMessage message) {
         ArrayList<String> result = new ArrayList<String>();
         
-        result.add(getChangedFieldString(message.getChangedField()));
+        for (Field field : message.getChangedField()) {
+            result.add(getChangedFieldString(field));
+        }
         result.add("");
         
         TaskInfo task = message.getTask();

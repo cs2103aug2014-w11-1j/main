@@ -7,6 +7,6 @@ public class EditModeFormatter {
             System.lineSeparator();
     
     public String format(EditModeInfo editInfo) {
-        return String.format(FORMAT_LINE, editInfo.getTask().name);
+        return String.format(FORMAT_LINE, editInfo.getTaskId());
     }
 }
