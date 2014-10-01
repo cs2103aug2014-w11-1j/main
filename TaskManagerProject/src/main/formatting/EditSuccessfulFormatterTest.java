@@ -1,11 +1,14 @@
 package main.formatting;
 
+
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import main.message.EditSuccessfulMessage;
 import main.message.EditSuccessfulMessage.Field;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import data.TaskId;
@@ -23,7 +26,7 @@ public class EditSuccessfulFormatterTest {
         TaskId taskId = new TaskId(TaskId.toIntId("4ef"));
         TaskInfo taskInfo = new TaskInfo();
         taskInfo.endTime = LocalTime.parse("13:13");
-        taskInfo.endDate = LocalDate.parse("2014-10-2");
+        taskInfo.endDate = LocalDate.parse("2014-10-02");
         taskInfo.name = "This is a task";
         taskInfo.details = "HAHAHAHA";
         taskInfo.priority = Priority.HIGH;
@@ -51,6 +54,7 @@ public class EditSuccessfulFormatterTest {
                 "   Priority: High" + System.lineSeparator() +
                 "   Description: HAHAHAHA" + System.lineSeparator();
         
+        Assert.assertEquals(expectedString, formattedString);
     }
 
 }

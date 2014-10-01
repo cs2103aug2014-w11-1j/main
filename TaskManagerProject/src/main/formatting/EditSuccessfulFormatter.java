@@ -29,9 +29,11 @@ import data.taskinfo.TaskInfo;
  */
 public class EditSuccessfulFormatter {
     private final static String FORMAT_ID = "Task [%1$s]";
-    private final static String FORMAT_NAME = "   Name: %1$s";
-    private final static String FORMAT_TIME = "HH:mm (a)";
-    private final static String FORMAT_DATE = "EEEE, d MMM Y";
+    private final static String FORMAT_NAME = "Name: %1$s";
+    private final static String FORMAT_TIME = "Time: %1$s";
+    private final static String DATETIME_FORMAT_TIME = "HH:mm (a)";
+    private final static String FORMAT_DATE = "Date: %1$s";
+    private final static String DATETIME_FORMAT_DATE = "EEEE, d MMM Y";
     private final static String FORMAT_TAGS = "Tags: %1$s";
     private final static String FORMAT_PRIORITY = "Priority: %1$s";
     private final static String FORMAT_DESCRIPTION = "Description: %1$s";
@@ -42,18 +44,20 @@ public class EditSuccessfulFormatter {
     private final static String ADDED_TAG = "Tag added.";
     private final static String DELETED_TAG = "Tag deleted.";
     private final static String CHANGED_DETAILS = "Details changed.";
-    private final static String CHANGED_STATUS = "Status changd.";
+    private final static String CHANGED_STATUS = "Status changed.";
     
     private String formatTime(LocalTime time) {
         DateTimeFormatter formatter = 
-                DateTimeFormatter.ofPattern(FORMAT_TIME);
-        return formatter.format(time);
+                DateTimeFormatter.ofPattern(DATETIME_FORMAT_TIME);
+        String formattedTime = formatter.format(time);
+        return String.format(FORMAT_TIME, formattedTime);
     }
     
     private String formatDate(LocalDate date) {
         DateTimeFormatter formatter = 
-                DateTimeFormatter.ofPattern(FORMAT_DATE);
-        return formatter.format(date);
+                DateTimeFormatter.ofPattern(DATETIME_FORMAT_DATE);
+        String formattedDate = formatter.format(date);
+        return String.format(FORMAT_DATE, formattedDate);
     }
     
     private String buildTagsString(Tag[] tags) {
@@ -157,7 +161,16 @@ public class EditSuccessfulFormatter {
         return result;
     }
     
+    private String arrayListToString(ArrayList<String> lines) {
+        StringBuilder builder = new StringBuilder("");
+        for (String line : lines) {
+            builder.append(line);
+            builder.append(System.lineSeparator());
+        }
+        return builder.toString();
+    }
+    
     public String format(EditSuccessfulMessage message) {
-        return null;
+        return arrayListToString(formatToArray(message));
     }
 }
