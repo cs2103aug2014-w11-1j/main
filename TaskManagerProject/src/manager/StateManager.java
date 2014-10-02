@@ -37,6 +37,7 @@ public class StateManager {
 	private final SearchManager searchManager;
 	private State currentState;
 	private TaskId editingTaskId;
+	private Response response;
 
 	public enum State {
 	    AVAILABLE,      // Normal state
@@ -119,18 +120,64 @@ public class StateManager {
 	}
 	/**
 	 * Updates the program's state using the result obtained from the managers.
-	 * 
-	 * @param result
-	 * @return
+	 * @param result result returned from the manager
+	 * @return response generated accordingly
 	 */
 	public Response update(Result result) {
         
         undoManager.retrieveUndoSnapshot();
         
-        Response response = null;
+        response = null;     
+        response = generateResponse(result);
         
-        // generate response
-        switch (result.getType()){
+         writeToFile();
+        
+        searchModeCheck(result);
+        
+        searchModeEnterCheck(result);
+
+        if (response != null) {
+            return response;
+        } else {
+            throw new UnsupportedOperationException("Not Implemented Yet");    
+        }
+    }
+
+	/**
+	 * This method is to check whether the state should enter search mode
+	 * if a search is successfully executed, enter search mode
+	 * @param result result to be checked
+	 */
+	private void searchModeEnterCheck(Result result) {
+		if (result.getType() == Type.SEARCH_SUCCESS){
+        	enterSearchMode();
+        }
+	}
+
+	/**
+	 * This method is to handling Search Mode.
+	 * If any command is executed, except a search command again under search mode, 
+	 * update the SearchModeInfo by redoLastSearch and store it back to response
+	 */
+	private void searchModeCheck(Result result) {
+		if ((inState(State.SEARCH_MODE)) && (result.getType() != Type.SEARCH_SUCCESS)){
+        	SearchResult redoSearchResult = (SearchResult)searchManager.redoLastSearch();;
+        	SearchModeInfo searchModeInfo = 
+        			new SearchModeInfo(redoSearchResult.getTasks(),redoSearchResult.getTaskIds());
+        		
+        	response = new Response(response.getMessage(), searchModeInfo);
+        	}
+	}
+
+	
+	/**
+	 * This method is to generate different response according to the 
+	 * type of result.
+	 * @param result result to be converted
+	 * @return response generated
+	 */
+	private Response generateResponse(Result result) {
+		switch (result.getType()){
                          
             case EDIT_MODE_END :
             	exitEditMode();
@@ -216,30 +263,8 @@ public class StateManager {
             default:
                 break;
         }
-        
-         writeToFile();
-        
-        // handling search mode: search again after each successful command
-        // and update the modeInfo
-        if (inState(State.SEARCH_MODE)){
-        	SearchResult redoSearchResult = (SearchResult)searchManager.redoLastSearch();;
-        	SearchModeInfo searchModeInfo = 
-        			new SearchModeInfo(redoSearchResult.getTasks(),redoSearchResult.getTaskIds());
-        		
-        	response = new Response(response.getMessage(), searchModeInfo);
-        	}
-        
-        // enter search mode if a successful search command is executed
-        if (result.getType() == Type.SEARCH_SUCCESS){
-        	enterSearchMode();
-        }
-
-        if (response != null) {
-            return response;
-        } else {
-            throw new UnsupportedOperationException("Not Implemented Yet");    
-        }
-    }
+		return response;
+	}
 
     
     /**
