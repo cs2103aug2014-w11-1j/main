@@ -1,13 +1,5 @@
 package manager.datamanager;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
-import javax.activation.FileDataSource;
-import javax.xml.ws.Response;
-
-import javafx.collections.SetChangeListener;
-import io.FileInputOutput;
 import main.message.EditSuccessfulMessage;
 import manager.result.EditResult;
 import manager.result.Result;

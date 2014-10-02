@@ -19,7 +19,6 @@ import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
 import data.TaskId;
-import data.taskinfo.TaskInfo;
 
 
 /**
