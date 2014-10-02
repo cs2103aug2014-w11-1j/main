@@ -2,5 +2,9 @@ package data.taskinfo;
 
 public enum Status {
     UNDONE,
-    DONE
+    DONE;
+    
+    public static Status defaultStatus() {
+        return UNDONE;
+    }
 }

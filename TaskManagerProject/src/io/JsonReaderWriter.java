@@ -31,7 +31,7 @@ import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
-public class JsonFileFormatter {
+public class JsonReaderWriter {
 
     private static final String FORMAT_TIME = "%02d:%02d:%02d";
     private static final String FORMAT_DATE = "%d-%02d-%02d";
@@ -187,28 +187,28 @@ public class JsonFileFormatter {
     
     public static String statusToString(Status status) {
         if (status == null)
-            return STRING_NULL;
+            return Status.defaultStatus().name();
         
         return status.name();
     }
 
     public static String priorityToString(Priority priority) {
         if (priority == null)
-            return STRING_NULL;
+            return Priority.defaultPriority().name();
         
         return priority.name();
     }
 
     public static Status stringToStatus(String statusString) {
         if (isNullString(statusString))
-            return null;
+            return Status.defaultStatus();
         
         return Status.valueOf(statusString);
     }
 
     public static Priority stringToPriority(String priorityString) {
         if (isNullString(priorityString))
-            return null;
+            return Priority.defaultPriority();
         
         return Priority.valueOf(priorityString);
     }
