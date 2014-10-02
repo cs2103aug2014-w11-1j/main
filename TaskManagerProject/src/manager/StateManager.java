@@ -1,7 +1,5 @@
 package manager;
 
-import javax.naming.directory.SearchResult;
-
 import io.FileInputOutput;
 import main.message.AddSuccessfulMessage;
 import main.message.DeleteSuccessfulMessage;
@@ -10,6 +8,7 @@ import main.message.EnumMessage;
 import main.message.EnumMessage.MessageType;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
+import main.modeinfo.SearchModeInfo;
 import main.response.Response;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
@@ -17,6 +16,8 @@ import manager.result.AddResult;
 import manager.result.DeleteResult;
 import manager.result.EditResult;
 import manager.result.Result;
+import manager.result.Result.Type;
+import manager.result.SearchResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
@@ -92,12 +93,30 @@ public class StateManager {
 	public boolean exitEditMode(){
 		if (currentState == State.EDIT_MODE){
 			setState(State.AVAILABLE);
+			editingTaskId = null;
 			return true;
 		}else{
 			return false;
 		}
 	}
 
+	public boolean enterSearchMode(){
+		if (currentState != State.AVAILABLE){
+			return false;
+		}else{
+			setState(State.SEARCH_MODE);
+			return true;
+		}
+	}
+	
+	public boolean exitSearchMode(){
+		if (currentState == State.SEARCH_MODE){
+			setState(State.AVAILABLE);
+			return true;
+		}else{
+			return false;
+		}
+	}
 	/**
 	 * Updates the program's state using the result obtained from the managers.
 	 * 
@@ -112,13 +131,12 @@ public class StateManager {
         
         // generate response
         switch (result.getType()){
-            case EDIT_MODE_START :
-                setState(State.EDIT_MODE);
-                break;
-                
+                         
             case EDIT_MODE_END :
-                setState(State.AVAILABLE);
-                break;
+            	exitEditMode();
+            	break;
+            case SEARCH_MODE_END : 
+            	exitSearchMode();
             case ADD_SUCCESS :
             	 AddResult addResult = (AddResult)result;
                  AddSuccessfulMessage addSuccessMessage = 
@@ -147,7 +165,7 @@ public class StateManager {
                 break;
             case EDIT_SUCCESS : 
                 EditResult editResult = (EditResult)result;
-                
+                enterEditMode(editResult.getTaskId());
             	EditSuccessfulMessage editSuccessMessage = 
                         new EditSuccessfulMessage(editResult.getTaskInfo(), editingTaskId, null);
                 EditModeInfo editSuccessModeInfo = new EditModeInfo(editingTaskId);
@@ -179,10 +197,21 @@ public class StateManager {
             	EditModeInfo tagDeleteModeInfo = new EditModeInfo(tagDeleteResult.getTaskId());
             	response = new Response(tagDeleteSuccessfulMessage, tagDeleteModeInfo);
             	break;
-            case TAG_DELETE_FAILURE:
+            case TAG_DELETE_FAILURE :
             	EnumMessage tagDeleteFailMessage = new EnumMessage(MessageType.ADD_TAG_FAILED);
             	EditModeInfo tagDeleteFailModeInfo = new EditModeInfo(editingTaskId);
             	response = new Response(tagDeleteFailMessage, tagDeleteFailModeInfo);
+            	break;
+            case SEARCH_SUCCESS : 
+            	SearchResult searchResult = (SearchResult)result;
+            	EnumMessage searchSuccessMessage = new EnumMessage(MessageType.SEARCH_SUCCESS);
+            	SearchModeInfo searchModeInfo = new SearchModeInfo(searchResult.getTasks(), searchResult.getTaskIds());
+            	response = new Response(searchSuccessMessage, searchModeInfo);
+            	break;
+            case SEARCH_FAILURE : 
+            	EnumMessage searchFailMessage = new EnumMessage(MessageType.SEARCH_FAILED);
+            	EmptyModeInfo searchFailModeInfo = new EmptyModeInfo();
+            	response = new Response(searchFailMessage, searchFailModeInfo);
             	break;
             default:
                 break;
@@ -191,19 +220,18 @@ public class StateManager {
          writeToFile();
         
         // handling search mode: search again after each successful command
+        // and update the modeInfo
         if (inState(State.SEARCH_MODE)){
-        	switch (result.getType()){
-        		case DELETE_SUCCESS : 
-        			searchManager.searchAgain();
-        			break;
-        		case EDIT_SUCCESS : 
-        			searchManager.searchAgain();
-        			break;
-        		default :
-        			break;
+        	SearchResult redoSearchResult = (SearchResult)searchManager.redoLastSearch();;
+        	SearchModeInfo searchModeInfo = 
+        			new SearchModeInfo(redoSearchResult.getTasks(),redoSearchResult.getTaskIds());
+        		
+        	response = new Response(response.getMessage(), searchModeInfo);
         	}
-        	
-        //	SearchResult result = searchManager.redoLastSearch();
+        
+        // enter search mode if a successful search command is executed
+        if (result.getType() == Type.SEARCH_SUCCESS){
+        	enterSearchMode();
         }
 
         if (response != null) {
