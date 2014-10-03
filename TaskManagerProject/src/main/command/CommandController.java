@@ -38,6 +38,8 @@ public class CommandController {
                 //return new EditCommand(cmdArgs);
             case "del":
                 //return new DeleteCommand(cmdArgs);
+            case "undo":
+                return new UndoCommand(managerHolder);
         }
         return null;
     }
