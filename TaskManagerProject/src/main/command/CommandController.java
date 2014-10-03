@@ -37,7 +37,9 @@ public class CommandController {
             case "edit":
                 //return new EditCommand(cmdArgs);
             case "del":
-                //return new DeleteCommand(cmdArgs);
+                return new DeleteCommand(cmdArgs, managerHolder);
+            case "undo":
+                return new UndoCommand(managerHolder);
         }
         return null;
     }
