@@ -8,6 +8,7 @@ import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 public class CommandParser {
+    private final static String SYMBOL_DELIM = " ";
     private final static String SYMBOL_IGNORE = "\"";
     private final static String SYMBOL_TAG = "#";
     private final static String SYMBOL_PRIORITY = "+";
@@ -16,16 +17,16 @@ public class CommandParser {
     public static TaskInfo parseTask(String taskText) {
         TaskInfo task = new TaskInfo();
 
-        parseName(taskText, task);
+        task.name = parseName(taskText);
         parseDateTime(taskText, task);
-        parseTags(taskText, task);
-        parsePriority(taskText, task);
+        task.tags = parseTags(taskText);
+        task.priority = parsePriority(taskText);
 
         return task;
     }
 
-    public static void parseName(String args, TaskInfo task) {
-        task.name = args;
+    public static String parseName(String args) {
+        return args;
         // TODO Proper parsing.
     }
 
@@ -34,10 +35,9 @@ public class CommandParser {
         DateParser.parseDateTime(args, task);
     }
 
-    public static void parseTags(String args, TaskInfo task) {
-        // TODO Care about efficiency.
+    public static Tag[] parseTags(String args) {
         args = stripIgnoredSegments(args);
-        String[] words = args.split(" ");
+        String[] words = args.split(SYMBOL_DELIM);
 
         List<Tag> tags = new ArrayList<Tag>();
         for (String word : words) {
@@ -45,14 +45,14 @@ public class CommandParser {
                 tags.add(new Tag(removeFirstChar(word)));
             }
         }
-        task.tags = tags.toArray(new Tag[tags.size()]);
+        return tags.toArray(new Tag[tags.size()]);
     }
 
-    public static void parsePriority(String args, TaskInfo task) {
+    public static Priority parsePriority(String args) {
         args = stripIgnoredSegments(args);
-        String[] words = args.split(" ");
+        String[] words = args.split(SYMBOL_DELIM);
 
-        Priority p = null;
+        Priority p = DEFAULT_PRIORITY;
 
         for (String word : words) {
             if (word.startsWith(SYMBOL_PRIORITY)) {
@@ -67,15 +67,13 @@ public class CommandParser {
                 if (priorityLevel.equals("low")) {
                     p = Priority.LOW;
                 }
-
-                task.priority = p;
             }
-            if (p != null) {
+            if (p != Priority.NONE) {
                 break;
             }
         }
 
-        task.priority = p != null ? p : DEFAULT_PRIORITY;
+        return p;
     }
 
     private static String removeFirstChar(String s) {
