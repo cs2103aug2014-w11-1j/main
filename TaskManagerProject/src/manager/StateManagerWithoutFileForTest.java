@@ -115,7 +115,7 @@ private Response response;
 	 */
 	public Response update(Result result) {
         
-        undoManager.retrieveUndoSnapshot();
+        undoManager.updateUndoHistory();
         
         response = null;     
         response = generateResponse(result);

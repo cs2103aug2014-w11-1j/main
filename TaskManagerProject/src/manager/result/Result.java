@@ -11,6 +11,8 @@ public interface Result {
         DELETE_FAILURE,
         UNDO_SUCCESS,
         UNDO_FAILURE,
+        REDO_SUCCESS,
+        REDO_FAILURE,
         EDIT_MODE_END,
         SEARCH_MODE_END,
         EDIT_SUCCESS,

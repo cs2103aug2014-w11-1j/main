@@ -124,7 +124,7 @@ public class StateManager {
 	 */
 	public Response update(Result result) {
         
-        undoManager.retrieveUndoSnapshot();
+        undoManager.updateUndoHistory();
         
         response = null;     
         response = generateResponse(result);

@@ -1,7 +1,5 @@
 package manager.datamanager;
 
-import io.FileInputOutput;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -16,22 +14,27 @@ import data.taskinfo.TaskInfo;
 public class UndoManager extends AbstractManager {
     private static int UNDO_LIMIT = 100;
     private LinkedList<UndoSnapshot> undoHistory;
+    private LinkedList<UndoSnapshot> redoHistory;
 
     public UndoManager(TaskData taskData) {
         super(taskData);
         undoHistory = new LinkedList<>();
+        redoHistory = new LinkedList<>();
     }
 
     public void clearUndoHistory() {
         undoHistory.clear();
     }
     
-    public void retrieveUndoSnapshot() {
+    public void updateUndoHistory() {
         UndoSnapshot undoSnapshot = taskData.retrieveUndoSnapshot();
         if (undoSnapshot.hasChanges()) {
+            clearRedoHistory();
+            
             undoHistory.push(undoSnapshot);
-            if (undoHistory.size() > UNDO_LIMIT)
+            if (undoHistory.size() > UNDO_LIMIT) {
                 undoHistory.removeLast();
+            }
         }
     }
     
@@ -42,14 +45,50 @@ public class UndoManager extends AbstractManager {
         
         UndoSnapshot undoSnapshot = undoHistory.pop();
         
+        applySnapshotChange(undoSnapshot);
+        
+        retrieveRedoSnapshot();
+        
+        return new SimpleResult(Result.Type.UNDO_SUCCESS);
+    }
+
+    
+    public Result redo() {
+        if (redoHistory.isEmpty()) {
+            return new SimpleResult(Result.Type.REDO_FAILURE);
+        }
+        
+        UndoSnapshot redoSnapshot = redoHistory.pop();
+        
+        applySnapshotChange(redoSnapshot);
+        
+        retrieveUndoSnapshot();
+        
+        return new SimpleResult(Result.Type.REDO_SUCCESS);
+    }
+    
+
+    private void applySnapshotChange(UndoSnapshot undoSnapshot) {
         ArrayList<UndoTaskSnapshot> taskSnapshotList = undoSnapshot.retrieveTaskSnapshots();
         for (UndoTaskSnapshot undoTaskSnapshot : taskSnapshotList) {
             undoTaskChange(undoTaskSnapshot);
         }
-        
-        taskData.discardUndoSnapshot();
-        
-        return new SimpleResult(Result.Type.UNDO_SUCCESS);
+    }
+    
+    
+    private void clearRedoHistory() {
+        redoHistory.clear();
+    }
+
+
+    private void retrieveUndoSnapshot() {
+        UndoSnapshot undoSnapshot = taskData.retrieveUndoSnapshot();
+        undoHistory.push(undoSnapshot);
+    }
+    
+    private void retrieveRedoSnapshot() {
+        UndoSnapshot redoSnapshot = taskData.retrieveUndoSnapshot();
+        redoHistory.push(redoSnapshot);
     }
 
     private void undoTaskChange(UndoTaskSnapshot undoTaskSnapshot) {
