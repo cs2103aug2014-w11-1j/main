@@ -11,7 +11,7 @@ public class CommandParser {
     private final static String SYMBOL_IGNORE = "\"";
     private final static String SYMBOL_TAG = "#";
     private final static String SYMBOL_PRIORITY = "+";
-    private final static Priority DEFAULT_PRIORITY = Priority.LOW;
+    private final static Priority DEFAULT_PRIORITY = Priority.NONE;
 
     public static TaskInfo parseTask(String taskText) {
         TaskInfo task = new TaskInfo();
@@ -49,7 +49,6 @@ public class CommandParser {
     }
 
     public static void parsePriority(String args, TaskInfo task) {
-        // TODO Care about efficiency.
         args = stripIgnoredSegments(args);
         String[] words = args.split(" ");
 
@@ -65,7 +64,7 @@ public class CommandParser {
                 if (priorityLevel.equals("med")) {
                     p = Priority.MEDIUM;
                 }
-                if (priorityLevel.equals("low")){
+                if (priorityLevel.equals("low")) {
                     p = Priority.LOW;
                 }
 
