@@ -4,40 +4,30 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 
 import main.modeinfo.SearchModeInfo;
+import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class SearchModeFormatter {
     private final static int WIDTH_LINE = 80;
-    private final static int WIDTH_TIME = 13;
+    private final static int WIDTH_TIME = 14;
     private final static int WIDTH_ABSOLUTE = 7;
     
-    public void sortTask(TaskInfo[] tasks) {
-        Arrays.sort(tasks, new Comparator<TaskInfo>() {
-            public int compare(TaskInfo task1, TaskInfo task2) {
-                if (task1.endDate.compareTo(task2.endDate) < 0) {
-                    return -1;
-                } else if (task1.endDate.compareTo(task2.endDate) > 0) {
-                    return 1;
-                } else {
-                    return task1.endTime.compareTo(task2.endTime);
-                }
-            }
-        });
-    }
+
     
     private String getDateLine(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, d MMM u");
+        DateTimeFormatter formatter = 
+                DateTimeFormatter.ofPattern("E, d MMM u");
         String dateString = formatter.format(date);
         return dateString + " ---";
     }
     
     private String getTimeString(LocalTime time) {
-        DateTimeFormatter formatter= DateTimeFormatter.ofPattern("[   HH:mm   ]");
-        return formatter.format(time);
+        DateTimeFormatter formatter = 
+                DateTimeFormatter.ofPattern("HH:mm");
+        String addedFormat = "[   %1$s   ] ";
+        return String.format(addedFormat, formatter.format(time));
     }
     
     int numberLength(int number) {
@@ -80,8 +70,12 @@ public class SearchModeFormatter {
         return padLeftToWidth(line, width);
     }
     
+    private String getAbsoluteTaskIdString(TaskId taskId) {
+        return String.format("- [%1$s]", taskId.toString());
+    }
     
-    private String getTaskInfoLine(TaskInfo task, int taskNumber, 
+    private String getTaskInfoLine(TaskInfo task, TaskId taskId, 
+            int taskNumber, 
             int numberWidth) {
         StringBuilder line = new StringBuilder();
         int taskNameWidth = WIDTH_LINE - WIDTH_ABSOLUTE - WIDTH_TIME - 
@@ -89,18 +83,20 @@ public class SearchModeFormatter {
         line.append(getTaskNumberString(taskNumber, numberWidth));
         line.append(getTimeString(task.endTime));
         line.append(getTaskNameString(task.name, taskNameWidth));
+        line.append(getAbsoluteTaskIdString(taskId));
         return line.toString();
     }
     
-    private ArrayList<String> formatToArrayList(TaskInfo[] tasks) {
+    private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
+            TaskId[] taskIds) {
         ArrayList<String> result = new ArrayList<String>();
-        sortTask(tasks);
-        int numberWidth = numberLength(tasks.length);
+        int numberWidth = numberLength(tasks.length) + 2;
         for (int i = 0; i < tasks.length; i++) {
             if (i == 0 || !tasks[i].endDate.equals(tasks[i-1].endDate)) {
                 result.add(getDateLine(tasks[i].endDate));
             }
-            result.add(getTaskInfoLine(tasks[i], i + 1, numberWidth));
+            result.add(getTaskInfoLine(tasks[i], taskIds[i], 
+                    i + 1, numberWidth));
         }
         return result;
     }
@@ -116,7 +112,9 @@ public class SearchModeFormatter {
     
     public String format(SearchModeInfo searchInfo) {
         TaskInfo[] tasks = searchInfo.getTasks();
-        ArrayList<String> formattedTaskArray = formatToArrayList(tasks);
+        TaskId[] taskIds = searchInfo.getTaskIds();
+        ArrayList<String> formattedTaskArray = 
+                formatToArrayList(tasks, taskIds);
         return arrayListToStringLines(formattedTaskArray);
     }
 }

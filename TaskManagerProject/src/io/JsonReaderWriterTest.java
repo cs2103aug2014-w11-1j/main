@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
-public class JsonFileFormatterTest {
+public class JsonReaderWriterTest {
 
     @Test
     public void test() {
@@ -49,8 +50,8 @@ public class JsonFileFormatterTest {
         taskInfo2.duration = null;
         taskInfo.endDate = LocalDate.of(160, 2, 29);
         taskInfo2.endTime = null;
-        taskInfo2.priority = null;
-        taskInfo2.status = null;
+        taskInfo2.priority = Priority.NONE;
+        taskInfo2.status = Status.UNDONE;
         taskInfo2.tags = new Tag[0];
 
         TaskInfo taskInfo4 = new TaskInfo();
@@ -90,22 +91,24 @@ public class JsonFileFormatterTest {
     }
 
     private void testJsonParsing(TaskInfo[] taskInfos) {
-        String json = JsonFileFormatter.tasksToJsonString(taskInfos);
+        String json = JsonReaderWriter.tasksToJsonString(taskInfos);
 
+        TaskInfo[] expectedResult = createExpectedResult(taskInfos);
         TaskInfo[] loadTaskInfos = null;
+        
         try {
-            loadTaskInfos = JsonFileFormatter.jsonStringToTasks(json);
+            loadTaskInfos = JsonReaderWriter.jsonStringToTasks(json);
         } catch (InvalidFileFormatException e) {
             e.printStackTrace();
         }
 
         assertEquals(taskInfos.length, loadTaskInfos.length);
+        
         for (int i = 0; i < taskInfos.length; i++) {
-            assertEquals(taskInfos[i], loadTaskInfos[i]);
+            assertEquals(expectedResult[i], loadTaskInfos[i]);
         }
         
-        
-        String json2 = JsonFileFormatter.tasksToJsonString(loadTaskInfos);
+        String json2 = JsonReaderWriter.tasksToJsonString(loadTaskInfos);
         assertEquals(json, json2);
     }
 
@@ -114,94 +117,109 @@ public class JsonFileFormatterTest {
         String durationString;
 
         duration = Duration.ofHours(15);
-        durationString = JsonFileFormatter.durationToString(duration);
-        assertEquals(duration, JsonFileFormatter.stringToDuration(durationString));
+        durationString = JsonReaderWriter.durationToString(duration);
+        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
         
         duration = Duration.ofDays(10000);
-        durationString = JsonFileFormatter.durationToString(duration);
-        assertEquals(duration, JsonFileFormatter.stringToDuration(durationString));
+        durationString = JsonReaderWriter.durationToString(duration);
+        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
         
         duration = Duration.ofSeconds(3);
-        durationString = JsonFileFormatter.durationToString(duration);
-        assertEquals(duration, JsonFileFormatter.stringToDuration(durationString));
+        durationString = JsonReaderWriter.durationToString(duration);
+        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
         
         duration = Duration.ofSeconds(1200);
-        durationString = JsonFileFormatter.durationToString(duration);
-        assertEquals(duration, JsonFileFormatter.stringToDuration(durationString));
+        durationString = JsonReaderWriter.durationToString(duration);
+        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
         
         duration = Duration.ofHours(0);
-        durationString = JsonFileFormatter.durationToString(duration);
-        assertEquals(duration, JsonFileFormatter.stringToDuration(durationString));
+        durationString = JsonReaderWriter.durationToString(duration);
+        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
         
         duration = Duration.ofHours(24);
-        durationString = JsonFileFormatter.durationToString(duration);
-        assertEquals(duration, JsonFileFormatter.stringToDuration(durationString));
+        durationString = JsonReaderWriter.durationToString(duration);
+        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
 
         durationString = "test";
-        assertEquals(null, JsonFileFormatter.stringToDuration(durationString));
+        assertEquals(null, JsonReaderWriter.stringToDuration(durationString));
 
         LocalTime time;
         String timeString;
         
         time = LocalTime.of(5, 4, 3);
-        timeString = JsonFileFormatter.localTimeToString(time);
-        assertEquals(time, JsonFileFormatter.stringToLocalTime(timeString));
+        timeString = JsonReaderWriter.localTimeToString(time);
+        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
         
         time = LocalTime.of(0, 1, 1);
-        timeString = JsonFileFormatter.localTimeToString(time);
-        assertEquals(time, JsonFileFormatter.stringToLocalTime(timeString));
+        timeString = JsonReaderWriter.localTimeToString(time);
+        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
         
         time = LocalTime.of(1, 0, 1);
-        timeString = JsonFileFormatter.localTimeToString(time);
-        assertEquals(time, JsonFileFormatter.stringToLocalTime(timeString));
+        timeString = JsonReaderWriter.localTimeToString(time);
+        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
         
         time = LocalTime.of(1, 1, 0);
-        timeString = JsonFileFormatter.localTimeToString(time);
-        assertEquals(time, JsonFileFormatter.stringToLocalTime(timeString));
+        timeString = JsonReaderWriter.localTimeToString(time);
+        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
         
         time = LocalTime.of(0, 0, 0);
-        timeString = JsonFileFormatter.localTimeToString(time);
-        assertEquals(time, JsonFileFormatter.stringToLocalTime(timeString));
+        timeString = JsonReaderWriter.localTimeToString(time);
+        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
         
         time = LocalTime.of(23, 59, 59);
-        timeString = JsonFileFormatter.localTimeToString(time);
-        assertEquals(time, JsonFileFormatter.stringToLocalTime(timeString));
+        timeString = JsonReaderWriter.localTimeToString(time);
+        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
         
         time = LocalTime.of(11, 10, 3);
-        timeString = JsonFileFormatter.localTimeToString(time);
-        assertEquals(time, JsonFileFormatter.stringToLocalTime(timeString));
+        timeString = JsonReaderWriter.localTimeToString(time);
+        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
 
         LocalDate date;
         String dateString;
         
         date = LocalDate.of(2013, 12, 31);
-        dateString = JsonFileFormatter.localDateToString(date);
-        assertEquals(date, JsonFileFormatter.stringToLocalDate(dateString));
+        dateString = JsonReaderWriter.localDateToString(date);
+        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
         
         date = LocalDate.of(1990, 2, 2);
-        dateString = JsonFileFormatter.localDateToString(date);
-        assertEquals(date, JsonFileFormatter.stringToLocalDate(dateString));
+        dateString = JsonReaderWriter.localDateToString(date);
+        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
         
         date = LocalDate.of(2012, 2, 29);
-        dateString = JsonFileFormatter.localDateToString(date);
-        assertEquals(date, JsonFileFormatter.stringToLocalDate(dateString));
+        dateString = JsonReaderWriter.localDateToString(date);
+        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
         
         date = LocalDate.of(1, 1, 1);
-        dateString = JsonFileFormatter.localDateToString(date);
-        assertEquals(date, JsonFileFormatter.stringToLocalDate(dateString));
+        dateString = JsonReaderWriter.localDateToString(date);
+        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
 
         date = LocalDate.of(3012, 7, 4);
-        dateString = JsonFileFormatter.localDateToString(date);
-        assertEquals(date, JsonFileFormatter.stringToLocalDate(dateString));
+        dateString = JsonReaderWriter.localDateToString(date);
+        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
 
         date = LocalDate.of(1000, 7, 7);
-        dateString = JsonFileFormatter.localDateToString(date);
-        assertEquals(date, JsonFileFormatter.stringToLocalDate(dateString));
+        dateString = JsonReaderWriter.localDateToString(date);
+        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
 
         date = LocalDate.now();
-        dateString = JsonFileFormatter.localDateToString(date);
-        assertEquals(date, JsonFileFormatter.stringToLocalDate(dateString));
+        dateString = JsonReaderWriter.localDateToString(date);
+        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
+    }
+    
+    private TaskInfo[] createExpectedResult(TaskInfo[] taskInfos) {
+        TaskInfo[] expectedResult = new TaskInfo[taskInfos.length];
         
+        for (int i = 0; i < taskInfos.length; i++) {
+            expectedResult[i] = new TaskInfo(taskInfos[i]);
+            
+            if (expectedResult[i].status == null) {
+                expectedResult[i].status = Status.defaultStatus();
+            }
+            if (expectedResult[i].priority == null) {
+                expectedResult[i].priority = Priority.defaultPriority();
+            }
+        }
+        return expectedResult;
     }
 
 }

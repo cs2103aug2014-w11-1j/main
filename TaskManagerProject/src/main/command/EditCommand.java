@@ -10,6 +10,7 @@ import manager.StateManager;
 import manager.datamanager.EditManager;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
+import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class EditCommand implements Command {
@@ -77,6 +78,10 @@ public class EditCommand implements Command {
             EmptyModeInfo modeInfo = new EmptyModeInfo();
             return new Response(message, modeInfo);
         }
+    }
+    
+    public TaskId convertStringtoTaskId(String stringId){
+    	return TaskId.makeTaskId(stringId);
     }
 
 }

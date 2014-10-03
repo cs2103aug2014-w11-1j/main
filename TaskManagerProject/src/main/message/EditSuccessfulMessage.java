@@ -8,16 +8,18 @@ public class EditSuccessfulMessage implements Message{
     public enum Field {
         NAME,
         TIME,
+        STATUS,
+        DETAILS,
         PRIORITY,
         TAGS_ADD,
         TAGS_DELETE,
     }
     
-    Field changedField;
+    Field[] changedField;
     private TaskInfo task;
     private TaskId taskId;
     
-    public EditSuccessfulMessage(TaskInfo task, TaskId taskId, Field changedField) {
+    public EditSuccessfulMessage(TaskInfo task, TaskId taskId, Field[] changedField) {
         this.taskId = taskId;
         this.task = task;
         this.changedField = changedField;
@@ -27,7 +29,7 @@ public class EditSuccessfulMessage implements Message{
         return Type.EDIT_SUCCESSFUL;
     }
     
-    public Field getChangedField() {
+    public Field[] getChangedField() {
         return changedField;
     }
     

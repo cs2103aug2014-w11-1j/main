@@ -1,6 +1,5 @@
 package manager.datamanager;
 
-import io.FileInputOutput;
 import manager.result.AddResult;
 import manager.result.Result;
 import manager.result.SimpleResult;

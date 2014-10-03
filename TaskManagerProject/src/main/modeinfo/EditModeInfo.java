@@ -1,20 +1,20 @@
 package main.modeinfo;
 
-import data.taskinfo.TaskInfo;
+import data.TaskId;
 
 public class EditModeInfo implements ModeInfo {
 
-    TaskInfo task;
-    public EditModeInfo(TaskInfo task) {
-        this.task = task;
+    TaskId taskId;
+    public EditModeInfo(TaskId taskId) {
+        this.taskId = taskId;
     }
     
     public Type getType() {
         return Type.EDIT_MODE;
     }
     
-    public TaskInfo getTask() {
-        return task;
+    public TaskId getTaskId() {
+        return taskId;
     }
 
 }

@@ -21,7 +21,28 @@ public class TaskIdTest {
         testIntConvert("d3e");
         testIntConvert("a1c");
         testIntConvert("bg0");
-        
+
+        testInvalidString("ggg");
+        testInvalidString("a00");
+        testInvalidString("a0cF");
+        testInvalidString("9d");
+        testInvalidString("9!d");
+        testInvalidString("9-d");
+        testInvalidString(",dd");
+        testInvalidString(",..");
+        testInvalidString(",.0");
+        testInvalidString("***");
+        testInvalidString("1*1");
+        testInvalidString("1 1");
+        testInvalidString("dke9");
+        testInvalidString("gad");
+        testInvalidString("E");
+        testInvalidString("ggg");
+
+        testValidString("G3D");
+        testValidString("E3A");
+        testValidString("AA0");
+        testValidString("9dR");
     }
     
     
@@ -37,6 +58,17 @@ public class TaskIdTest {
     private void testIntConvert(String stringId) {
         int intId = TaskId.toIntId(stringId);
         assertEquals(stringId, TaskId.toStringId(intId));
+        
+        testValidString(stringId);
     }
 
+    private void testInvalidString(String stringId) {
+        TaskId taskId = TaskId.makeTaskId(stringId);
+        assertEquals(taskId, null);
+    }
+
+    private void testValidString(String stringId) {
+        TaskId taskId = TaskId.makeTaskId(stringId);
+        assertFalse(taskId == null);
+    }
 }
