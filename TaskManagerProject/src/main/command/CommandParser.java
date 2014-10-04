@@ -39,13 +39,18 @@ public class CommandParser {
         args = stripIgnoredSegments(args);
         String[] words = args.split(SYMBOL_DELIM);
 
-        List<Tag> tags = new ArrayList<Tag>();
+        List<Tag> tagList = new ArrayList<Tag>();
         for (String word : words) {
             if (word.startsWith(SYMBOL_TAG)) {
-                tags.add(new Tag(removeFirstChar(word)));
+                word = removeFirstChar(word);
+                if (!word.isEmpty()) {
+                    tagList.add(new Tag(word));
+                }
             }
         }
-        return tags.toArray(new Tag[tags.size()]);
+        Tag[] tags = tagList.toArray(new Tag[tagList.size()]);
+
+        return tags.length == 0 ? null : tags;
     }
 
     public static Priority parsePriority(String args) {
