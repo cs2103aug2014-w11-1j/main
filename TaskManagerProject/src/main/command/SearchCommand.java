@@ -16,6 +16,7 @@ import manager.datamanager.searchfilter.PriorityFilter;
 import manager.datamanager.searchfilter.TagFilter;
 import manager.result.Result;
 import data.taskinfo.Priority;
+import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 public class SearchCommand implements Command {
@@ -33,18 +34,22 @@ public class SearchCommand implements Command {
     private TaskInfo parse(String args) {
         TaskInfo searchCriteria = CommandParser.parseTask(args);
         // TODO search name - confirm on name format
-        // TODO search within day range - refactor date parser
-        if (searchCriteria.duration != null) {
-            LocalDateTime endDateTime = LocalDateTime.of(searchCriteria.endDate, searchCriteria.endTime);
-            LocalDateTime startDateTime = endDateTime.minus(searchCriteria.duration);
-            filterList.add(new DateTimeFilter(startDateTime, endDateTime));
+        // TODO refactor date parser further
+
+        List<LocalDateTime> dateRange = DateParser.parseDateTime(args);
+        if (dateRange != null) {
+            filterList.add(new DateTimeFilter(dateRange.get(0), dateRange.get(1)));
         }
-        if (searchCriteria.tags != null) {
-            filterList.add(new TagFilter(searchCriteria.tags));
+
+        Tag[] newTags = CommandParser.parseTags(args);
+        if (newTags != null) {
+            filterList.add(new TagFilter(newTags));
         }
-        if (searchCriteria.priority != null) {
+
+        Priority newPriority = CommandParser.parsePriority(args);
+        if (newPriority != null) {
             // TODO support for multiple priorities
-            Priority[] pArr = {searchCriteria.priority};
+            Priority[] pArr = {newPriority};
             filterList.add(new PriorityFilter(pArr));
         }
         return searchCriteria;
