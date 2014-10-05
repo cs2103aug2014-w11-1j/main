@@ -17,23 +17,22 @@ import java.util.Map.Entry;
 import data.taskinfo.TaskInfo;
 
 public class DateParser {
+    private static final String SYMBOL_DELIM = " ";
+
     private static Map<DateTimeFormatter, String> datePartialFormatPatterns;
     private static Map<DateTimeFormatter, String> dateFullFormatPatterns;
     private static LocalDate datePatternsLastUpdate;
     private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
 
     public static void parseDateTime(String dateTimeString, TaskInfo task) {
-        // TODO extract datetime-related methods into a DateParser class
-
-        String delim = " ";
-        while (dateTimeString.contains(delim + delim)) {
-            dateTimeString = dateTimeString.replace(delim + delim, delim);
+        while (dateTimeString.contains(SYMBOL_DELIM + SYMBOL_DELIM)) {
+            dateTimeString = dateTimeString.replace(SYMBOL_DELIM + SYMBOL_DELIM, SYMBOL_DELIM);
         }
         // list for indices of the delimiter
         List<Integer> delimIndices = new ArrayList<Integer>();
         delimIndices.add(0);
-        for (int i = dateTimeString.indexOf(delim, 1);
-                i > 0; i = dateTimeString.indexOf(delim, i + 1)) {
+        for (int i = dateTimeString.indexOf(SYMBOL_DELIM, 1);
+                i > 0; i = dateTimeString.indexOf(SYMBOL_DELIM, i + 1)) {
             delimIndices.add(i + 1);
         }
         delimIndices.add(dateTimeString.length());
@@ -41,7 +40,7 @@ public class DateParser {
         List<LocalTime> times = new ArrayList<LocalTime>();
         List<LocalDate> dates = new ArrayList<LocalDate>();
 
-     // try to parse times and dates from every possible sequence of words
+        // try to parse times and dates from every possible sequence of words
         for (int offset = delimIndices.size() - 1; offset > 0; offset--) {
             for (int i = 0; !delimIndices.isEmpty() && i + offset < delimIndices.size(); i++) {
                 // if more than two times and dates, take the first two of each
@@ -138,10 +137,107 @@ public class DateParser {
 
     }
 
-    public static LocalDate parseDate(String dateString) {
-        if (shouldUpdateDatePatterns()) {
-            buildDatePatternHashMap();
+    // TODO currently specialised for search, refactor into search command?
+    public static List<LocalDateTime> parseDateTime(String dateTimeString) {
+        int curIndex = 0;
+        List<LocalDate> dates = new ArrayList<LocalDate>();
+        List<LocalTime> times = new ArrayList<LocalTime>();
+        for (int i = 0; i < 2; i++) {
+            dates.add(null);
+            times.add(null);
         }
+
+        LocalDate prevDate = null;
+        LocalTime prevTime = null;
+        for (int i = 0; i < dateTimeString.length(); i++) {
+            for (int j = dateTimeString.length(); j > i; j--) {
+                if (curIndex >= 2) {
+                    break;
+                }
+
+                String possibleDateTime = dateTimeString.substring(i, j);
+                LocalDate curDate = parseDate(possibleDateTime);
+                LocalTime curTime = parseTime(possibleDateTime);
+
+                // if nothing's found, continue; else move i-th index forward
+                if (curDate == null && curTime == null) {
+                    continue;
+                } else {
+                    i += possibleDateTime.length();
+                }
+
+                if (curDate != null) {
+                    if (prevDate != null) {
+                        ++curIndex;
+                    }
+                    dates.set(curIndex, curDate);
+                    if (prevTime != null) {
+                        ++curIndex;
+                        prevTime = null;
+                    } else {
+                        prevDate = curDate;
+                    }
+                }
+                if (curTime != null) {
+                    if (prevTime != null) {
+                        ++curIndex;
+                    }
+                    times.set(curIndex, curTime);
+                    if (prevDate != null) {
+                        ++curIndex;
+                        prevDate = null;
+                    } else {
+                        prevTime = curTime;
+                    }
+                }
+            }
+        }
+
+        // if no dates and times found, return null
+        if (dates.get(0) == null && dates.get(1) == null &&
+                times.get(0) == null && times.get(1) == null) {
+            return null;
+        }
+
+        // fill in missing data with magic circuit powar
+
+        // fill in start date
+        if (dates.get(0) == null) {
+            if (dates.get(1) != null) {
+                dates.set(0, dates.get(1));
+            } else {
+                dates.set(0, LocalDate.now());
+            }
+        }
+
+        // fill in end time
+        if (times.get(1) == null) {
+            if (times.get(0) != null && dates.get(1) == null) {
+                times.set(1, times.get(0));
+            } else {
+                times.set(1, LocalTime.MAX);
+            }
+        }
+
+        // fill in end date
+        if (dates.get(1) == null) {
+            dates.set(1, dates.get(0));
+        }
+
+        // fill in start time
+        if (times.get(0) == null) {
+            times.set(0, LocalTime.MIN);
+        }
+
+        List<LocalDateTime> dateTimes = new ArrayList<LocalDateTime>();
+        dateTimes.add(LocalDateTime.of(dates.get(0), times.get(0)));
+        dateTimes.add(LocalDateTime.of(dates.get(1), times.get(1)));
+
+        return dateTimes;
+    }
+
+    public static LocalDate parseDate(String dateString) {
+        buildDatePatternHashMap();
 
         LocalDate d = parseRelativeDate(dateString);
         if (d == null) {
@@ -167,16 +263,8 @@ public class DateParser {
     }
 
     private static LocalDate parseAbsoluteDate(String dateString) {
-        // TODO extract method
         // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
-        dateString = dateString.toUpperCase();
-        for (int i = 0; i < dateString.length(); i++) {
-            if (Character.isAlphabetic(dateString.charAt(i))) {
-                dateString = dateString.substring(0, i + 1) +
-                        dateString.substring(i + 1).toLowerCase();
-                break;
-            }
-        }
+        dateString = capitaliseFirstLetter(dateString);
 
         // match full before partial in order to prevent matching more than one.
         LocalDate date = matchDatePatterns(dateFullFormatPatterns, dateString);
@@ -211,6 +299,12 @@ public class DateParser {
     }
 
     private static void buildDatePatternHashMap() {
+        // last update was on the same date
+        if (datePatternsLastUpdate != null &&
+                datePatternsLastUpdate.equals(LocalDate.now())) {
+            return;
+        }
+
         datePartialFormatPatterns = new HashMap<DateTimeFormatter, String>();
 
         // 24 August
@@ -238,7 +332,6 @@ public class DateParser {
     }
 
     public static LocalTime parseTime(String timeString) {
-        // TODO selective building based on full / partial matching?
         buildTimePatternHashMap();
 
         LocalTime t = parseRelativeTime(timeString);
@@ -294,14 +387,6 @@ public class DateParser {
         mapPattern(timeFullFormatPatterns, "h a");
     }
 
-
-
-    private static boolean shouldUpdateDatePatterns() {
-        return datePartialFormatPatterns == null ||
-               dateFullFormatPatterns == null ||
-               !datePatternsLastUpdate.equals(LocalDate.now());
-    }
-
     private static void mapPattern(Map<DateTimeFormatter, String> map,
             String pattern) {
         map.put(DateTimeFormatter.ofPattern(pattern), "");
@@ -310,5 +395,17 @@ public class DateParser {
     private static void mapPattern(Map<DateTimeFormatter, String> map,
             String pattern, String missingField) {
         map.put(DateTimeFormatter.ofPattern(pattern), missingField);
+    }
+
+    private static String capitaliseFirstLetter(String dateString) {
+        dateString = dateString.toUpperCase();
+        for (int i = 0; i < dateString.length(); i++) {
+            if (Character.isAlphabetic(dateString.charAt(i))) {
+                dateString = dateString.substring(0, i + 1) +
+                        dateString.substring(i + 1).toLowerCase();
+                break;
+            }
+        }
+        return dateString;
     }
 }
