@@ -17,22 +17,20 @@ import manager.datamanager.searchfilter.TagFilter;
 import manager.result.Result;
 import data.taskinfo.Priority;
 import data.taskinfo.Tag;
-import data.taskinfo.TaskInfo;
 
 public class SearchCommand implements Command {
     private final SearchManager searchManager;
     private final StateManager stateManager;
-    private final TaskInfo searchTask;
     private final List<Filter> filterList = new ArrayList<Filter>();
 
     public SearchCommand(String args, ManagerHolder managerHolder) {
-        searchTask = parse(args);
+        parse(args);
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
     }
 
-    private TaskInfo parse(String args) {
-        TaskInfo searchCriteria = CommandParser.parseTask(args);
+    private void parse(String args) {
+        // TaskInfo searchCriteria = CommandParser.parseTask(args);
         // TODO search name - confirm on name format
         // TODO refactor date parser further
 
@@ -52,7 +50,6 @@ public class SearchCommand implements Command {
             Priority[] pArr = {newPriority};
             filterList.add(new PriorityFilter(pArr));
         }
-        return searchCriteria;
     }
 
     @Override
