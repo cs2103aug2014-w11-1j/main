@@ -45,7 +45,7 @@ public class EditCommand implements Command {
         Scanner sc = new Scanner(args);
         String editType = sc.next();
         String editParam = sc.nextLine();
-        TaskInfo editTask = new TaskInfo();
+        TaskInfo editTask = TaskInfo.createEmpty();
 
         switch (editType.toLowerCase()) {
             case "name" :

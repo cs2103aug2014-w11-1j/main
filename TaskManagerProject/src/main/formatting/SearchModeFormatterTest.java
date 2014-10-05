@@ -19,7 +19,7 @@ public class SearchModeFormatterTest {
     public void testSingleTask() {
         SearchModeFormatter formatter = new SearchModeFormatter();
         TaskId taskId = new TaskId(TaskId.toIntId("1ab"));
-        TaskInfo taskInfo = new TaskInfo();
+        TaskInfo taskInfo = TaskInfo.create();
         taskInfo.details = "This is a detail";
         taskInfo.name = "This is a name";
         taskInfo.endTime = LocalTime.parse("12:40");
@@ -51,7 +51,7 @@ public class SearchModeFormatterTest {
     public void testOverLengthTaskName() {
         SearchModeFormatter formatter = new SearchModeFormatter();
         TaskId taskId = new TaskId(TaskId.toIntId("1ab"));
-        TaskInfo taskInfo = new TaskInfo();
+        TaskInfo taskInfo = TaskInfo.create();
         taskInfo.details = "This is a detail";
         taskInfo.name = "This is a very very long name abcdefghijklmnopqrstuvwxyz "
                 + "zyxwvutsrqponmlkjihgfedbca";

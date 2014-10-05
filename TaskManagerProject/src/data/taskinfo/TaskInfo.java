@@ -24,9 +24,34 @@ public class TaskInfo {
 
     public static final int REPEAT_INDEFINITELY = -1;
 
-    public TaskInfo() {
-        priority = Priority.defaultPriority();
-        status = Status.defaultStatus();
+    private TaskInfo() {
+    }
+    
+    /**
+     * Default constructor for TaskInfo.<br>
+     * Always use this when creating a new task.<br>
+     * Initialises priority and status to their default valies.<br>
+     * They shouldn't be initialised as null.
+     * @return A new template taskInfo.
+     */
+    public static TaskInfo create() {
+        TaskInfo taskInfo = new TaskInfo();
+        taskInfo.priority = Priority.defaultPriority();
+        taskInfo.status = Status.defaultStatus();
+        return taskInfo;
+    }
+    
+    /**
+     * USE THIS SPARINGLY<br>
+     * This creates a taskInfo object without initialising the priority and
+     * status. Avoid using this unless you really need them to be null.
+     * Use TaskInfo.create() instead.<br>
+     * If you can't decide which one to use, use TaskInfo.create().
+     * @return An empty taskInfo with priority and status set to null.
+     */
+    public static TaskInfo createEmpty() {
+        TaskInfo taskInfo = new TaskInfo();
+        return taskInfo;
     }
 
     /**

@@ -24,7 +24,7 @@ public class EditSuccessfulFormatterTest {
         EditSuccessfulFormatter formatter = new EditSuccessfulFormatter();
         
         TaskId taskId = new TaskId(TaskId.toIntId("4ef"));
-        TaskInfo taskInfo = new TaskInfo();
+        TaskInfo taskInfo = TaskInfo.create();
         taskInfo.endTime = LocalTime.parse("13:13");
         taskInfo.endDate = LocalDate.parse("2014-10-02");
         taskInfo.name = "This is a task";

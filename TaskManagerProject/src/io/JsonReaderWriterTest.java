@@ -23,7 +23,7 @@ public class JsonReaderWriterTest {
     
     
     private void testJsonParsing() {
-        TaskInfo taskInfo = new TaskInfo();
+        TaskInfo taskInfo = TaskInfo.create();
         taskInfo.name = "A little boy going to the market";
         taskInfo.details = "The market is very big.";
         taskInfo.duration = Duration.ofHours(2);
@@ -33,7 +33,7 @@ public class JsonReaderWriterTest {
         taskInfo.status = Status.DONE;
         taskInfo.tags = new Tag[]{new Tag("boy"), new Tag("market")};
 
-        TaskInfo taskInfo2 = new TaskInfo();
+        TaskInfo taskInfo2 = TaskInfo.create();
         taskInfo2.name = "kasjfklaf\n\n\n^%#^#$%@%lkA<FZ>>>>???>></////||||||()()()%%%DDDD\r\n";
         taskInfo2.details = null;
         taskInfo2.duration = null;
@@ -43,7 +43,7 @@ public class JsonReaderWriterTest {
         taskInfo2.status = null;
         taskInfo2.tags = null;
 
-        TaskInfo taskInfo3 = new TaskInfo();
+        TaskInfo taskInfo3 = TaskInfo.create();
         taskInfo2.name = "";
         taskInfo2.details = "";
         taskInfo2.duration = null;
@@ -53,7 +53,7 @@ public class JsonReaderWriterTest {
         taskInfo2.status = Status.UNDONE;
         taskInfo2.tags = new Tag[0];
 
-        TaskInfo taskInfo4 = new TaskInfo();
+        TaskInfo taskInfo4 = TaskInfo.create();
         taskInfo.name = "null";
         taskInfo.details = "null";
         taskInfo.duration = Duration.ofHours(2);

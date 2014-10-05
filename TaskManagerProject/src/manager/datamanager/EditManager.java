@@ -109,10 +109,10 @@ public class EditManager extends AbstractManager {
     	if (modifTask.details != null){
     		mergedTask.details = modifTask.details;
     	}
-    	if ((modifTask.priority != null) && (modifTask.priority != Priority.DEFAULT_NONE)){
+    	if ((modifTask.priority != null)){
     		mergedTask.priority = modifTask.priority;
     	}
-    	if ((modifTask.status != null) && (modifTask.status != Status.DEFAULT_UNDONE)){
+    	if ((modifTask.status != null)){
     		mergedTask.status = modifTask.status;
     	}
     	if (modifTask.numberOfTimes != 0){

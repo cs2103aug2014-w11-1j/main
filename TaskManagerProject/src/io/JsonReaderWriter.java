@@ -228,7 +228,7 @@ public class JsonReaderWriter {
     private static TaskInfo parseTaskInfo(JsonParser parser)
             throws InvalidFileFormatException{
         
-        TaskInfo taskInfo = new TaskInfo();
+        TaskInfo taskInfo = TaskInfo.create();
         
         Event event = parser.next();
         while (event != Event.END_OBJECT) {

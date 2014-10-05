@@ -104,7 +104,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseDateTime() {
-        TaskInfo t = new TaskInfo();
+        TaskInfo t = TaskInfo.create();
         // nothing: null
         String test1 = mergeStrings(new String[]{TERM_2});
         CommandParser.parseDateTime(test1, t);
@@ -112,7 +112,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, null);
         assertEquals(t.duration, null);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // one date: null
         String test2 = mergeStrings(new String[]{DateTest.ABS_D_M_YY_1.type});
         CommandParser.parseDateTime(test2, t);
@@ -120,7 +120,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, null);
         assertEquals(t.duration, null);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // two dates: null
         String test3 = mergeStrings(new String[]{DateTest.ABS_D_MMMM_1.type,
                 DateTest.ABS_D_MMMM_2.type});
@@ -129,7 +129,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, null);
         assertEquals(t.duration, null);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // one time, zero date: next occurrence of time
         String test4 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_1.type});
         CommandParser.parseDateTime(test4, t);
@@ -141,7 +141,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, TIME_LONG_1);
         assertEquals(t.duration, Duration.ZERO);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // one time, one date: time on that date
         String test5 = mergeStrings(new String[]{DateTest.ABS_DMMM_2.type,
                 TimeTest.ABS_24_HOURS_LONG_2.type});
@@ -150,7 +150,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, TIME_LONG_2);
         assertEquals(t.duration, Duration.ZERO);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // one time, two date: null
         String test6 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_SHORT_2.type,
                 DateTest.ABS_D_MMMM_1.type, DateTest.ABS_DMMMYY_2.type});
@@ -159,7 +159,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, null);
         assertEquals(t.duration, null);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // two time, zero date: next occurrence of first time
         String test7 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_2.type,
                 TimeTest.ABS_12_HOURS_SHORT_1.type});

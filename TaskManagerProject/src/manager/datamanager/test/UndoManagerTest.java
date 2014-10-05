@@ -234,7 +234,7 @@ public class UndoManagerTest {
     }
     
     private TaskInfo dummyTask(String name) {
-        TaskInfo taskInfo = new TaskInfo();
+        TaskInfo taskInfo = TaskInfo.create();
         taskInfo.name = name;
         return taskInfo;
     }

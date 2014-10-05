@@ -10,7 +10,7 @@ public class TaskDataTest {
 
     @Test
     public void test() {
-        TaskInfo dummyTask = new TaskInfo();
+        TaskInfo dummyTask = TaskInfo.create();
         dummyTask.name = "testname1";
         
         TaskData taskData = new TaskData();

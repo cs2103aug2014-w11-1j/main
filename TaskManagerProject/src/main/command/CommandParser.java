@@ -15,7 +15,7 @@ public class CommandParser {
     private final static Priority DEFAULT_PRIORITY = Priority.NONE;
 
     public static TaskInfo parseTask(String taskText) {
-        TaskInfo task = new TaskInfo();
+        TaskInfo task = TaskInfo.create();
 
         task.name = parseName(taskText);
         parseDateTime(taskText, task);
