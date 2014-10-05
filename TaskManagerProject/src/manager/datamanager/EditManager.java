@@ -6,6 +6,8 @@ import manager.result.Result;
 import manager.result.SimpleResult;
 import data.TaskData;
 import data.TaskId;
+import data.taskinfo.Priority;
+import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
@@ -56,7 +58,8 @@ public class EditManager extends AbstractManager {
     			return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
     		}else{
     			return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(taskId),
-    					taskId, EditSuccessfulMessage.Field.TAGS_DELETE);    		}
+    					taskId, EditSuccessfulMessage.Field.TAGS_DELETE);    		
+    			}
     	}
     	
     }
@@ -86,10 +89,10 @@ public class EditManager extends AbstractManager {
     	if (modifTask.details != null){
     		mergedTask.details = modifTask.details;
     	}
-    	if (modifTask.priority != null){
+    	if ((modifTask.priority != null) && (modifTask.priority != Priority.DEFAULT_NONE)){
     		mergedTask.priority = modifTask.priority;
     	}
-    	if (modifTask.status != null){
+    	if ((modifTask.status != null) && (modifTask.status != Status.DEFAULT_UNDONE)){
     		mergedTask.status = modifTask.status;
     	}
     	if (modifTask.numberOfTimes != 0){

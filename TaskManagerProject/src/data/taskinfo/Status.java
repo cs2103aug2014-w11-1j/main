@@ -1,10 +1,11 @@
 package data.taskinfo;
 
 public enum Status {
+	DEFAULT_UNDONE,
     UNDONE,
     DONE;
     
     public static Status defaultStatus() {
-        return UNDONE;
+        return DEFAULT_UNDONE;
     }
 }

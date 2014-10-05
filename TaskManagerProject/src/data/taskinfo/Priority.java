@@ -4,9 +4,10 @@ public enum Priority {
     HIGH,
     MEDIUM,
     LOW,
-    NONE;
+    NONE,
+    DEFAULT_NONE;
     
     public static Priority defaultPriority() {
-        return NONE;
+        return DEFAULT_NONE;
     }
 }
