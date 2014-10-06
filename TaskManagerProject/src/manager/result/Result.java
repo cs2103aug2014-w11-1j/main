@@ -22,8 +22,8 @@ public interface Result {
         TAG_ADD_SUCCESS,
         TAG_ADD_FAILURE,
         TAG_DELETE_FAILURE,
-        TAG_DELETE_SUCCESS
-        
+        TAG_DELETE_SUCCESS,
+        DETAILS
     }
 
     public Type getType();    // implement this with the correct type.
