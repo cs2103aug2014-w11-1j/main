@@ -12,6 +12,7 @@ import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.searchfilter.DateTimeFilter;
 import manager.datamanager.searchfilter.Filter;
+import manager.datamanager.searchfilter.KeywordFilter;
 import manager.datamanager.searchfilter.PriorityFilter;
 import manager.datamanager.searchfilter.TagFilter;
 import manager.result.Result;
@@ -21,19 +22,29 @@ import data.taskinfo.Tag;
 public class SearchCommand implements Command {
     private final SearchManager searchManager;
     private final StateManager stateManager;
-    private final List<Filter> filterList = new ArrayList<Filter>();
+    private final List<Filter> filterList;
 
     public SearchCommand(String args, ManagerHolder managerHolder) {
+        filterList = new ArrayList<Filter>();
         parse(args);
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
     }
 
     private void parse(String args) {
-        // TaskInfo searchCriteria = CommandParser.parseTask(args);
-        // TODO search name - confirm on name format
-        // TODO refactor date parser further
+        assert args != null : "There should not be a null passed in.";
+        if (args.isEmpty()) {
+            return;
+        }
 
+        // TODO remove dates, tags, and priorities from keywords
+        String delim = " ";
+        String[] keywords = args.split(delim);
+        if (keywords != null) {
+            filterList.add(new KeywordFilter(keywords));
+        }
+
+        // TODO refactor date parser further
         List<LocalDateTime> dateRange = DateParser.parseDateTime(args);
         if (dateRange != null) {
             filterList.add(new DateTimeFilter(dateRange.get(0), dateRange.get(1)));
