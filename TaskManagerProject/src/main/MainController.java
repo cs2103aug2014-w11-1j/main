@@ -20,11 +20,11 @@ public class MainController {
     }
 
     public String runCommand(String commandString) {
-        CommandController cC = new CommandController(managerHolder);
-        Command c = cC.getCommand(commandString);
-        Response r = c.execute();
+        CommandController commandController = new CommandController(managerHolder);
+        Command curCommand = commandController.getCommand(commandString);
+        Response curResponse = curCommand.execute();
         Formatter formatter = new Formatter();
-        return formatter.format(r);
+        return formatter.format(curResponse);
         //throw new UnsupportedOperationException("Not implemented yet");
     }
     
