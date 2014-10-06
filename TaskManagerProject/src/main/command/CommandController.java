@@ -21,7 +21,10 @@ public class CommandController {
         Scanner sc = new Scanner(cmdTxt);
 
         String cmdType = sc.next();
-        String cmdArgs = sc.nextLine().trim();
+        String cmdArgs = "";
+        if (sc.hasNextLine()) {
+            cmdArgs = sc.nextLine().trim();
+        }
 
         sc.close();
 
