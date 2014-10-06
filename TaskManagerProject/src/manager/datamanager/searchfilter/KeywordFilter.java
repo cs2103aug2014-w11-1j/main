@@ -17,6 +17,9 @@ public class KeywordFilter implements Filter{
     }
     
     public boolean match(String keyword, String details) {
+        if (details == null) {
+            return false;
+        }
         Pattern pattern = Pattern.compile("[A-Za-z0-9]*");
         Matcher matcher = pattern.matcher(details);
         while (matcher.find()) {
@@ -29,7 +32,7 @@ public class KeywordFilter implements Filter{
     
     public boolean filter(TaskInfo task) {
         for (String keyword : keywords) {
-            if (!match(keyword, task.details)) {
+            if (!match(keyword, task.details) && !match(keyword, task.name)) {
                 return false;
             }
         }

@@ -100,7 +100,7 @@ public class SearchModeFormatter {
         int numberWidth = numberLength(tasks.length) + 2;
         for (int i = 0; i < tasks.length; i++) {
             if (tasks[i].endDate == null) {
-                if (tasks[i-1].endDate != null) {
+                if (i == 0 || tasks[i-1].endDate != null) {
                     result.add(getFloatingTaskLine());
                 }
             }
