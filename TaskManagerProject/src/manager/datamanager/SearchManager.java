@@ -48,6 +48,18 @@ public class SearchManager extends AbstractManager {
         Arrays.sort(combinedList, new Comparator<InfoId>() {
             @Override
             public int compare(InfoId task1, InfoId task2) {
+                /* To nathan: something like this? commented out for now.
+                 * if (task1.taskInfo.endDate == null) {
+                    if (task2.taskInfo.endDate == null) {
+                        return 0;
+                    }
+                    else {
+                        return 1;
+                    }
+                } else if (task2.taskInfo.endDate == null) {
+                    return -1;
+                }*/
+                
                 if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) < 0) {
                     return -1;
                 } else if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) > 0) {
