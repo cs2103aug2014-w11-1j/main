@@ -57,23 +57,28 @@ public class StateManager {
 	}
 
 	public boolean canAdd() {
-		return currentState == State.AVAILABLE;
+		return true;
+	    //return currentState == State.AVAILABLE;
 	}
 
 	public boolean canSearch() {
-        return currentState == State.AVAILABLE;
+        return true;
+        //return currentState == State.AVAILABLE;
 	}
 
 	public boolean canEdit() {
-        return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
+        return true;
+        //return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
 	}
 
 	public boolean canDelete() {
-        return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
+        return true;
+        //return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
 	}
 
 	public boolean canUndo() {
-        return currentState == State.AVAILABLE;
+        return true;
+        //return currentState == State.AVAILABLE;
 	}
 	
 	private void setState(State newState) {
@@ -158,10 +163,10 @@ public class StateManager {
 	        case AVAILABLE :
 	            return new EmptyModeInfo();
 
-            case EDIT_MODE :
+            case SEARCH_MODE :
                 return searchModeCheck(result);
                 
-            case SEARCH_MODE :
+            case EDIT_MODE :
                 return editModeCheck(result);
                 
             case LOCKED_MODE :
@@ -270,6 +275,7 @@ public class StateManager {
 
             case SEARCH_SUCCESS : 
             	//SearchResult searchResult = (SearchResult)result;
+                enterSearchMode();
             	return new EnumMessage(MessageType.SEARCH_SUCCESS);
             	//SearchModeInfo searchModeInfo = new SearchModeInfo(searchResult.getTasks(), searchResult.getTaskIds());
             	//response = new Response(searchSuccessMessage, searchModeInfo);
