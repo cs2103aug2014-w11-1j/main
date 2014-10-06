@@ -18,5 +18,4 @@ public class DetailsResult implements Result {
     public Type getType() {
         return Type.DETAILS;
     }
-
 }
