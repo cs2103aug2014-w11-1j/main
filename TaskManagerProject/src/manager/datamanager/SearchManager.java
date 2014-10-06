@@ -3,6 +3,7 @@ package manager.datamanager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 
 import manager.datamanager.searchfilter.Filter;
 import manager.result.Result;
@@ -99,7 +100,20 @@ public class SearchManager extends AbstractManager {
     }
     
     public TaskId getAbsoluteIndex(int relativeIndex) {
+        if (relativeIndex >= lastSearchedTaskIds.length) {
+            throw new IndexOutOfBoundsException();
+        }
         return lastSearchedTaskIds[relativeIndex - 1];
     }
     
+    public TaskInfo getTaskInfo(int relativeIndex) {
+        if (relativeIndex >= lastSearchedTaskIds.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        return lastSearchedTasks[relativeIndex - 1];
+    }
+    
+    public TaskInfo getTaskInfo(TaskId taskId) {
+        return taskData.getTaskInfo(taskId);
+    }
 }
