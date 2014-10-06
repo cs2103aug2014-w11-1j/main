@@ -468,6 +468,8 @@ public class TaskData {
     private boolean deleteTask(int index) {
         // Note: Uses lazy deletion to maintain index.
         
+        if (taskList.size() < index)
+            return false;
         if (taskList.get(index) == EMPTY_SLOT)
             return false;
 
