@@ -36,9 +36,9 @@ public class CommandController {
             case "add" :
                 return new AddCommand(cmdArgs, managerHolder);
             case "show" :
-                //return new SearchCommand(cmdArgs);
+                return new SearchCommand(cmdArgs, managerHolder);
             case "edit" :
-                //return new EditCommand(cmdArgs);
+                return new EditCommand(cmdArgs, managerHolder);
             case "del" :
                 return new DeleteCommand(cmdArgs, managerHolder);
             case "undo" :
