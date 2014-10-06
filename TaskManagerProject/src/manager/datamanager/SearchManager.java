@@ -67,21 +67,17 @@ public class SearchManager extends AbstractManager {
     private void updateLastSearched(Filter[] filters) {
         ArrayList<TaskId> taskIdList = new ArrayList<TaskId>();
         ArrayList<TaskInfo> taskList = new ArrayList<TaskInfo>();
+        
         TaskId currentId = taskData.getFirst();
-        if (taskData.taskExists(currentId)) {
-            TaskId lastId = taskData.getLast();
-            while (true) {
-                TaskInfo task = taskData.getTaskInfo(currentId);
-                if (matchFilter(task, filters)) {
-                    taskList.add(task);
-                    taskIdList.add(currentId);
-                }
-                if (lastId.equals(currentId)) {
-                    break;
-                }
-                currentId = taskData.getNext(currentId);
+        while (currentId.isValid()) {
+            TaskInfo task = taskData.getTaskInfo(currentId);
+            if (matchFilter(task, filters)) {
+                taskList.add(task);
+                taskIdList.add(currentId);
             }
+            currentId = taskData.getNext(currentId);
         }
+        
         lastSearchedTasks = taskList.toArray(new TaskInfo[taskList.size()]);
         lastSearchedTaskIds = taskIdList.toArray(new TaskId[taskIdList.size()]);
         sortTasks();
