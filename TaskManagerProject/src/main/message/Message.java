@@ -5,7 +5,8 @@ public interface Message {
         ENUM_MESSAGE,
         ADD_SUCCESSFUL,
         EDIT_SUCCESSFUL,
-        DELETE_SUCCESSFUL
+        DELETE_SUCCESSFUL,
+        DETAILS
     }
     
     public Type getType();

@@ -102,7 +102,4 @@ public class SearchManager extends AbstractManager {
         return lastSearchedTaskIds[relativeIndex - 1];
     }
     
-    public void searchAgain(){
-    	// search again after each successfully executed command
-    }
 }
