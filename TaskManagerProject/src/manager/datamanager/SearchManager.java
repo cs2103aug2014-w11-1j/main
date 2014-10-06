@@ -3,7 +3,6 @@ package manager.datamanager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.NoSuchElementException;
 
 import manager.datamanager.searchfilter.Filter;
 import manager.result.Result;
@@ -17,11 +16,11 @@ public class SearchManager extends AbstractManager {
     TaskId[] lastSearchedTaskIds;
     TaskInfo[] lastSearchedTasks;
     Filter[] lastSearchFilters;
-    
+
     public SearchManager(TaskData taskData) {
         super(taskData);
     }
-    
+
     private boolean matchFilter(TaskInfo taskInfo, Filter[] filters) {
         for (Filter filter : filters){
             if (!filter.filter(taskInfo)) {
@@ -30,7 +29,7 @@ public class SearchManager extends AbstractManager {
         }
         return true;
     }
-    
+
     private void sortTasks() {
         class InfoId {
             public TaskInfo taskInfo;
@@ -43,10 +42,11 @@ public class SearchManager extends AbstractManager {
         int numberOfTasks = lastSearchedTasks.length;
         InfoId[] combinedList = new InfoId[numberOfTasks];
         for (int i = 0; i < numberOfTasks; i++) {
-            combinedList[i] = new InfoId(lastSearchedTasks[i], 
+            combinedList[i] = new InfoId(lastSearchedTasks[i],
                     lastSearchedTaskIds[i]);
         }
         Arrays.sort(combinedList, new Comparator<InfoId>() {
+            @Override
             public int compare(InfoId task1, InfoId task2) {
                 if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) < 0) {
                     return -1;
@@ -61,9 +61,9 @@ public class SearchManager extends AbstractManager {
             lastSearchedTasks[i] = combinedList[i].taskInfo;
             lastSearchedTaskIds[i] = combinedList[i].taskId;
         }
-        
+
     }
-    
+
     private void updateLastSearched(Filter[] filters) {
         ArrayList<TaskId> taskIdList = new ArrayList<TaskId>();
         ArrayList<TaskInfo> taskList = new ArrayList<TaskInfo>();
@@ -82,37 +82,37 @@ public class SearchManager extends AbstractManager {
                 currentId = taskData.getNext(currentId);
             }
         }
-        lastSearchedTasks = (TaskInfo[])taskList.toArray();
-        lastSearchedTaskIds = (TaskId[])taskIdList.toArray();
+        lastSearchedTasks = taskList.toArray(new TaskInfo[taskList.size()]);
+        lastSearchedTaskIds = taskIdList.toArray(new TaskId[taskIdList.size()]);
         sortTasks();
     }
 
     public Result searchTasks(Filter[] filters) {
         lastSearchFilters = filters;
         updateLastSearched(filters);
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
+        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
                 lastSearchedTasks, lastSearchedTaskIds);
         return result;
     }
-    
+
     public Result redoLastSearch() {
         return searchTasks(lastSearchFilters);
     }
-    
+
     public TaskId getAbsoluteIndex(int relativeIndex) {
         if (relativeIndex >= lastSearchedTaskIds.length) {
             throw new IndexOutOfBoundsException();
         }
         return lastSearchedTaskIds[relativeIndex - 1];
     }
-    
+
     public TaskInfo getTaskInfo(int relativeIndex) {
         if (relativeIndex >= lastSearchedTaskIds.length) {
             throw new IndexOutOfBoundsException();
         }
         return lastSearchedTasks[relativeIndex - 1];
     }
-    
+
     public TaskInfo getTaskInfo(TaskId taskId) {
         return taskData.getTaskInfo(taskId);
     }
