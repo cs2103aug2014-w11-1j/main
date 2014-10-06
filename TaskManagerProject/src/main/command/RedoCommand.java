@@ -8,11 +8,11 @@ import manager.StateManager;
 import manager.datamanager.UndoManager;
 import manager.result.Result;
 
-public class UndoCommand implements Command {
+public class RedoCommand implements Command {
     private final UndoManager undoManager;
     private final StateManager stateManager;
 
-    public UndoCommand(ManagerHolder managerHolder) {
+    public RedoCommand(ManagerHolder managerHolder) {
         undoManager = managerHolder.getUndoManager();
         stateManager = managerHolder.getStateManager();
     }
@@ -22,7 +22,7 @@ public class UndoCommand implements Command {
         if (stateManager.canUndo()) {
             stateManager.beforeCommandExecutionUpdate();
 
-            Result result = undoManager.undo();
+            Result result = undoManager.redo();
             Response response = stateManager.update(result);
             return response;
         } else {

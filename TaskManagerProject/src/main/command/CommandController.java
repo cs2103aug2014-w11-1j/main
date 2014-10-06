@@ -43,6 +43,8 @@ public class CommandController {
                 return new DeleteCommand(cmdArgs, managerHolder);
             case "undo" :
                 return new UndoCommand(managerHolder);
+            case "redo" :
+                return new RedoCommand(managerHolder);
             default :
                 return new InvalidCommand(managerHolder);
         }
