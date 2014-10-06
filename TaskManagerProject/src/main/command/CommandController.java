@@ -33,15 +33,15 @@ public class CommandController {
 
     private Command getCommand(String cmdType, String cmdArgs) {
         switch (cmdType) {
-            case "add":
+            case "add" :
                 return new AddCommand(cmdArgs, managerHolder);
-            case "show":
+            case "show" :
                 //return new SearchCommand(cmdArgs);
-            case "edit":
+            case "edit" :
                 //return new EditCommand(cmdArgs);
-            case "del":
+            case "del" :
                 return new DeleteCommand(cmdArgs, managerHolder);
-            case "undo":
+            case "undo" :
                 return new UndoCommand(managerHolder);
         }
         return null;
