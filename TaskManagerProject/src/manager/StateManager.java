@@ -133,19 +133,13 @@ public class StateManager {
         Message message = applyResult(result);
         ModeInfo modeInfo = generateModeInfo(result);
         
-        Response response = new Response(message, modeInfo);
-        
         writeToFile();
         
         searchModeCheck(result);
         
         searchModeEnterCheck(result);
 
-        if (response != null) {
-            return response;
-        } else {
-            throw new UnsupportedOperationException("Not Implemented Yet");    
-        }
+        return new Response(message, modeInfo);
     }
 
 	/**
