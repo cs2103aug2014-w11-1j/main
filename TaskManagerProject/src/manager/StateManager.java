@@ -6,8 +6,10 @@ import main.message.DeleteSuccessfulMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
 import main.message.EnumMessage.MessageType;
+import main.message.Message;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
+import main.modeinfo.ModeInfo;
 import main.modeinfo.SearchModeInfo;
 import main.response.Response;
 import manager.datamanager.SearchManager;
@@ -18,7 +20,9 @@ import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
+import manager.result.StartEditModeResult;
 import data.TaskId;
+import data.taskinfo.TaskInfo;
 
 
 /**
@@ -36,7 +40,7 @@ public class StateManager {
 	private final SearchManager searchManager;
 	private State currentState;
 	private TaskId editingTaskId;
-	private Response response;
+	//private Response response;
 
 	public enum State {
 	    AVAILABLE,      // Normal state
@@ -126,10 +130,12 @@ public class StateManager {
         
         undoManager.updateUndoHistory();
         
-        response = null;     
-        response = generateResponse(result);
+        Message message = applyResult(result);
+        ModeInfo modeInfo = generateModeInfo(result);
         
-         writeToFile();
+        Response response = new Response(message, modeInfo);
+        
+        writeToFile();
         
         searchModeCheck(result);
         
@@ -152,20 +158,47 @@ public class StateManager {
         	enterSearchMode();
         }
 	}
+	
+	private ModeInfo generateModeInfo(Result result) {
+	    switch (currentState) {
+	        case AVAILABLE :
+	            return new EmptyModeInfo();
+
+            case EDIT_MODE :
+                return searchModeCheck(result);
+                
+            case SEARCH_MODE :
+                return editModeCheck(result);
+                
+            case LOCKED_MODE :
+                return new EmptyModeInfo();
+                
+            default :
+                throw new UnsupportedOperationException("Unknown state: " +
+                            currentState.name());
+	    }
+	}
 
 	/**
 	 * This method is to handling Search Mode.
 	 * If any command is executed, except a search command again under search mode, 
 	 * update the SearchModeInfo by redoLastSearch and store it back to response
 	 */
-	private void searchModeCheck(Result result) {
-		if ((inState(State.SEARCH_MODE)) && (result.getType() != Type.SEARCH_SUCCESS)){
-        	SearchResult redoSearchResult = (SearchResult)searchManager.redoLastSearch();;
-        	SearchModeInfo searchModeInfo = 
-        			new SearchModeInfo(redoSearchResult.getTasks(),redoSearchResult.getTaskIds());
-        		
-        	response = new Response(response.getMessage(), searchModeInfo);
-        	}
+	private ModeInfo searchModeCheck(Result result) {
+		if (result.getType() != Type.SEARCH_SUCCESS) {
+		    searchManager.redoLastSearch();
+		}
+		
+        SearchResult redoSearchResult = searchManager.getLastSearchResult();
+        TaskInfo[] tasks = redoSearchResult.getTasks();
+        TaskId[] taskIds = redoSearchResult.getTaskIds();
+        SearchModeInfo searchModeInfo = new SearchModeInfo(tasks, taskIds);
+        return searchModeInfo;
+	}
+	
+	private ModeInfo editModeCheck(Result result) {
+	    TaskInfo taskInfo = searchManager.getTaskInfo(editingTaskId);
+        return new EditModeInfo(taskInfo, editingTaskId);
 	}
 
 	
@@ -175,94 +208,88 @@ public class StateManager {
 	 * @param result result to be converted
 	 * @return response generated
 	 */
-	private Response generateResponse(Result result) {
+	private Message applyResult(Result result) {
 		switch (result.getType()){
-                         
-            case EDIT_MODE_END :
-            	exitEditMode();
-            	break;
+		    
             case SEARCH_MODE_END : 
             	exitSearchMode();
+                return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
+                
             case ADD_SUCCESS :
             	 AddResult addResult = (AddResult)result;
                  AddSuccessfulMessage addSuccessMessage = 
                          new AddSuccessfulMessage(addResult.getTaskInfo(),
                                  addResult.getTaskId());
-                EmptyModeInfo addSuccessModeInfo = new EmptyModeInfo();
-            	response = new Response(addSuccessMessage, addSuccessModeInfo);
-            	break;
+                 return addSuccessMessage;
+
             case ADD_FAILURE : 
-                EnumMessage addFailMessage = new EnumMessage(EnumMessage.MessageType.ADD_FAILED);
-                EmptyModeInfo addFailModeInfo = new EmptyModeInfo();
-                response = new Response(addFailMessage, addFailModeInfo);
-                break;
+                return new EnumMessage(EnumMessage.MessageType.ADD_FAILED);
+                
             case DELETE_SUCCESS :
             	DeleteResult deleteResult = (DeleteResult)result;
                 DeleteSuccessfulMessage deleteSuccessMessage = 
                 		new DeleteSuccessfulMessage(deleteResult.getTaskInfo(), 
                 		        deleteResult.getTaskId());
-                EmptyModeInfo deleteSuccessModeInfo = new EmptyModeInfo();
-                response = new Response(deleteSuccessMessage, deleteSuccessModeInfo);
-                break;
+                return deleteSuccessMessage;
+                
             case DELETE_FAILURE : 
-                EnumMessage deleteFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
-                EmptyModeInfo deleteFailModeInfo = new EmptyModeInfo();
-                response = new Response(deleteFailMessage, deleteFailModeInfo);
-                break;
+                return new EnumMessage(MessageType.DELETE_FAILED);
+                
+            case EDIT_MODE_START : {
+                StartEditModeResult editResult = (StartEditModeResult)result;
+                enterEditMode(editResult.getTaskId());
+                return new EnumMessage(MessageType.EDIT_STARTED);
+            }
+
+            case EDIT_MODE_END :
+                exitEditMode();
+                return new EnumMessage(EnumMessage.MessageType.EDIT_ENDED);
+
             case EDIT_SUCCESS : 
                 EditResult editResult = (EditResult)result;
-                enterEditMode(editResult.getTaskId());
             	EditSuccessfulMessage editSuccessMessage = 
                         new EditSuccessfulMessage(editResult.getTaskInfo(), editingTaskId, null);
-                EditModeInfo editSuccessModeInfo = new EditModeInfo(editingTaskId);
-                response = new Response(editSuccessMessage, editSuccessModeInfo);
-                break;
+            	return editSuccessMessage;
+
             case EDIT_FAILURE : 
-                EnumMessage editFailMessage = new EnumMessage(MessageType.EDIT_FAILED);
-            	EditModeInfo editFailModeInfo = new EditModeInfo(editingTaskId);
-            	response = new Response(editFailMessage, editFailModeInfo);
-            	break;
+                return new EnumMessage(MessageType.EDIT_FAILED);
+            	
             case TAG_ADD_SUCCESS : 
             	EditResult tagAddResult = (EditResult)result;
             	EditSuccessfulMessage tagAddSuccessfulMessage = 
             			new EditSuccessfulMessage(tagAddResult.getTaskInfo(),
             					tagAddResult.getTaskId(), tagAddResult.getChangedFields());
-            	EditModeInfo tagAddModeInfo = new EditModeInfo(tagAddResult.getTaskId());
-            	response = new Response(tagAddSuccessfulMessage, tagAddModeInfo);
-            	break;
+            	return tagAddSuccessfulMessage;
+
             case TAG_ADD_FAILURE:
-            	EnumMessage tagAddFailMessage = new EnumMessage(MessageType.ADD_TAG_FAILED);
-            	EditModeInfo tagAddFailModeInfo = new EditModeInfo(editingTaskId);
-            	response = new Response(tagAddFailMessage, tagAddFailModeInfo);
-            	break;
+            	return new EnumMessage(MessageType.ADD_TAG_FAILED);
+
             case TAG_DELETE_SUCCESS : 
             	EditResult tagDeleteResult = (EditResult)result;
             	EditSuccessfulMessage tagDeleteSuccessfulMessage = 
             			new EditSuccessfulMessage(tagDeleteResult.getTaskInfo(),
             					tagDeleteResult.getTaskId(), tagDeleteResult.getChangedFields());
-            	EditModeInfo tagDeleteModeInfo = new EditModeInfo(tagDeleteResult.getTaskId());
-            	response = new Response(tagDeleteSuccessfulMessage, tagDeleteModeInfo);
-            	break;
+            	return tagDeleteSuccessfulMessage;
+            	
             case TAG_DELETE_FAILURE :
-            	EnumMessage tagDeleteFailMessage = new EnumMessage(MessageType.ADD_TAG_FAILED);
-            	EditModeInfo tagDeleteFailModeInfo = new EditModeInfo(editingTaskId);
-            	response = new Response(tagDeleteFailMessage, tagDeleteFailModeInfo);
-            	break;
+            	return new EnumMessage(MessageType.ADD_TAG_FAILED);
+
             case SEARCH_SUCCESS : 
-            	SearchResult searchResult = (SearchResult)result;
-            	EnumMessage searchSuccessMessage = new EnumMessage(MessageType.SEARCH_SUCCESS);
-            	SearchModeInfo searchModeInfo = new SearchModeInfo(searchResult.getTasks(), searchResult.getTaskIds());
-            	response = new Response(searchSuccessMessage, searchModeInfo);
-            	break;
+            	//SearchResult searchResult = (SearchResult)result;
+            	return new EnumMessage(MessageType.SEARCH_SUCCESS);
+            	//SearchModeInfo searchModeInfo = new SearchModeInfo(searchResult.getTasks(), searchResult.getTaskIds());
+            	//response = new Response(searchSuccessMessage, searchModeInfo);
+            	
             case SEARCH_FAILURE : 
-            	EnumMessage searchFailMessage = new EnumMessage(MessageType.SEARCH_FAILED);
-            	EmptyModeInfo searchFailModeInfo = new EmptyModeInfo();
-            	response = new Response(searchFailMessage, searchFailModeInfo);
-            	break;
+            	return new EnumMessage(MessageType.SEARCH_FAILED);
+
+            case INVALID_COMMAND : 
+                return new EnumMessage(MessageType.INVALID_COMMAND);
+
             default:
-                break;
+                throw new UnsupportedOperationException("Unknown state: " +
+                            result.getType().name());
         }
-		return response;
 	}
 
     

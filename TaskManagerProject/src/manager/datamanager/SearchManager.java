@@ -19,6 +19,7 @@ public class SearchManager extends AbstractManager {
 
     public SearchManager(TaskData taskData) {
         super(taskData);
+        lastSearchFilters = new Filter[0];
     }
 
     private boolean matchFilter(TaskInfo taskInfo, Filter[] filters) {
@@ -105,6 +106,11 @@ public class SearchManager extends AbstractManager {
 
     public Result redoLastSearch() {
         return searchTasks(lastSearchFilters);
+    }
+    
+    public SearchResult getLastSearchResult() {
+        return new SearchResult(Result.Type.SEARCH_SUCCESS,
+                lastSearchedTasks, lastSearchedTaskIds);
     }
 
     public TaskId getAbsoluteIndex(int relativeIndex) {

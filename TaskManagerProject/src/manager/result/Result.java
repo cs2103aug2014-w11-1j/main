@@ -10,6 +10,7 @@ public interface Result {
         UNDO_FAILURE,
         REDO_SUCCESS,
         REDO_FAILURE,
+        EDIT_MODE_START,
         EDIT_MODE_END,
         SEARCH_MODE_END,
         EDIT_SUCCESS,

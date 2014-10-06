@@ -4,10 +4,9 @@ import main.message.EditSuccessfulMessage;
 import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.SimpleResult;
+import manager.result.StartEditModeResult;
 import data.TaskData;
 import data.TaskId;
-import data.taskinfo.Priority;
-import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
@@ -18,6 +17,8 @@ import data.taskinfo.TaskInfo;
  *
  */
 public class EditManager extends AbstractManager {
+    
+    private TaskId editingTask;
 
     public EditManager(TaskData taskData) {
         super(taskData);
@@ -40,6 +41,20 @@ public class EditManager extends AbstractManager {
     	
     	return new EditResult(Result.Type.EDIT_SUCCESS,editedTask, taskId, fields);
     	
+    }
+    
+    public TaskId getEditingTask() {
+        return editingTask;
+    }
+    
+    public Result startEditMode(TaskId taskId) {
+        editingTask = taskId;
+        return new StartEditModeResult(taskId);
+    }
+    
+    public Result endEditMode(TaskId taskId) {
+        editingTask = null;
+        return new SimpleResult(Result.Type.EDIT_MODE_END);
     }
     
     public Result addTaskTag(Tag tag, TaskId taskId){

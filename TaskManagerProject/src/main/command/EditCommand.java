@@ -83,7 +83,12 @@ public class EditCommand implements Command {
         if (stateManager.canEdit()) {
             stateManager.beforeCommandExecutionUpdate();
 
-            Result result = editManager.editTask(taskToEdit, taskId);
+            Result result;
+            if (taskToEdit == null) {
+                result = editManager.startEditMode(taskId);
+            } else {
+                result = editManager.editTask(taskToEdit, taskId);
+            }
             Response response = stateManager.update(result);
             return response;
         } else {
