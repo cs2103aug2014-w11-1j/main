@@ -247,7 +247,7 @@ public class StateManager {
             case EDIT_SUCCESS : 
                 EditResult editResult = (EditResult)result;
             	EditSuccessfulMessage editSuccessMessage = 
-                        new EditSuccessfulMessage(editResult.getTaskInfo(), editingTaskId, null);
+                        new EditSuccessfulMessage(editResult.getTaskInfo(), editResult.getTaskId(), editResult.getChangedFields());
             	return editSuccessMessage;
 
             case EDIT_FAILURE : 
