@@ -27,7 +27,7 @@ public class SearchCommand implements Command {
     public SearchCommand(String args, ManagerHolder managerHolder) {
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
-        
+
         filterList = new ArrayList<Filter>();
         parse(args);
     }
@@ -40,7 +40,8 @@ public class SearchCommand implements Command {
 
         // TODO remove dates, tags, and priorities from keywords
         String delim = " ";
-        String[] keywords = args.split(delim);
+        String taskName = CommandParser.parseName(args);
+        String[] keywords = taskName.split(delim);
         if (keywords != null) {
             filterList.add(new KeywordFilter(keywords));
         }
