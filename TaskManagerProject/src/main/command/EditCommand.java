@@ -13,6 +13,7 @@ import manager.datamanager.SearchManager;
 import manager.result.Result;
 import manager.result.SimpleResult;
 import data.TaskId;
+import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
 public class EditCommand implements Command {
@@ -117,7 +118,10 @@ public class EditCommand implements Command {
                 }
                 break;
             case "priority" :
-                editTask.priority = CommandParser.parsePriority("+" + editParam);
+                Priority p = CommandParser.parsePriority("+" + editParam);
+                if (p != null) {
+                    editTask.priority = p;
+                }
                 break;
             default :
                 // invalid edit type, throw invalid edit field exception?

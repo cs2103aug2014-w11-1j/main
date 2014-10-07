@@ -238,9 +238,9 @@ public class CommandParserTest {
         priority = CommandParser.parsePriority(test3);
         assertEquals(priority, Priority.MEDIUM);
 
-        // no priority - take default (NONE for now)
+        // no priority - take default (null for now)
         priority = CommandParser.parsePriority(test4);
-        assertEquals(priority, Priority.NONE);
+        assertEquals(priority, null);
 
         // multiple priority - should take the first
         priority = CommandParser.parsePriority(test5);
