@@ -2,6 +2,7 @@ package main.formatting;
 
 import main.message.AddSuccessfulMessage;
 import main.message.DeleteSuccessfulMessage;
+import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
 import main.message.Message;
@@ -17,6 +18,7 @@ public class Formatter {
     private DeleteSuccessfulFormatter deleteSuccessfulFormatter;
     private EditSuccessfulFormatter editSuccessfulFormatter;
     private EnumFormatter enumFormatter;
+    private DetailsFormatter detailsFormatter;
     
     private EditModeFormatter editModeFormatter;
     private SearchModeFormatter searchModeFormatter;
@@ -27,6 +29,7 @@ public class Formatter {
         deleteSuccessfulFormatter = new DeleteSuccessfulFormatter();
         editSuccessfulFormatter = new EditSuccessfulFormatter();
         enumFormatter = new EnumFormatter();
+        detailsFormatter = new DetailsFormatter();
         
         editModeFormatter = new EditModeFormatter();
         searchModeFormatter = new SearchModeFormatter();
@@ -58,6 +61,9 @@ public class Formatter {
                 EnumMessage enumMessage = (EnumMessage)message;
                 formattedMessage = enumFormatter.format(enumMessage);
                 break;
+            case DETAILS :
+                DetailsMessage detailsMessage = (DetailsMessage)message;
+                formattedMessage = detailsFormatter.format(detailsMessage);
         }
         return formattedMessage;
     }
