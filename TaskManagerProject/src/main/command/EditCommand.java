@@ -79,9 +79,6 @@ public class EditCommand implements Command {
 
     private TaskInfo parseEditParams(String args) {
         assert args != null : "There should not be a null passed in.";
-        if (args.isEmpty()) {
-            return null;
-        }
 
         Scanner sc = new Scanner(args);
         if (!sc.hasNext()) {
@@ -93,7 +90,8 @@ public class EditCommand implements Command {
             sc.close();
             return null;
         }
-        String editParam = sc.nextLine();
+        String editParam = sc.nextLine().trim();
+
         TaskInfo editTask = TaskInfo.createEmpty();
 
         switch (editType.toLowerCase()) {
@@ -132,7 +130,6 @@ public class EditCommand implements Command {
 
     @Override
     public Response execute() {
-        
         if (stateManager.canEdit()) {
             stateManager.beforeCommandExecutionUpdate();
 
