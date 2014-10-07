@@ -402,7 +402,7 @@ public class DateParser {
         // 3 PM
         mapPattern(timeFullFormatPatterns, "h a");
         // 3PM
-        mapPattern(timeFullFormatPatterns, "h a");
+        mapPattern(timeFullFormatPatterns, "ha");
     }
 
     private static void mapPattern(Map<DateTimeFormatter, String> map,
