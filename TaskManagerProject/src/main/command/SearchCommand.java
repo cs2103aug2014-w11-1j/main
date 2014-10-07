@@ -25,10 +25,11 @@ public class SearchCommand implements Command {
     private final List<Filter> filterList;
 
     public SearchCommand(String args, ManagerHolder managerHolder) {
-        filterList = new ArrayList<Filter>();
-        parse(args);
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
+        
+        filterList = new ArrayList<Filter>();
+        parse(args);
     }
 
     private void parse(String args) {

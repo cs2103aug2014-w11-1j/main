@@ -15,9 +15,10 @@ public class AddCommand implements Command {
     private final TaskInfo taskToAdd;
 
     public AddCommand(String args, ManagerHolder managerHolder) {
-    	taskToAdd = parse(args);
         addManager = managerHolder.getAddManager();
         stateManager = managerHolder.getStateManager();
+        
+    	taskToAdd = parse(args);
     }
 
     private TaskInfo parse(String args) {

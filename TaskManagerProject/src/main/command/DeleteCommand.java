@@ -20,6 +20,7 @@ public class DeleteCommand implements Command {
         deleteManager = managerHolder.getDeleteManager();
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
+        
         taskId = parse(args);
     }
 

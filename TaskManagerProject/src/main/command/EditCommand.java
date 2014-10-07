@@ -21,14 +21,14 @@ public class EditCommand implements Command {
     private final TaskId taskId;
 
     public EditCommand(String args, ManagerHolder managerHolder) {
+        editManager = managerHolder.getEditManager();
+        searchManager = managerHolder.getSearchManager();
+        stateManager = managerHolder.getStateManager();
+        
         Scanner sc = new Scanner(args);
         taskId = parseTaskId(sc.next());
         taskToEdit = parseEditParams(sc.nextLine());
         sc.close();
-
-        editManager = managerHolder.getEditManager();
-        searchManager = managerHolder.getSearchManager();
-        stateManager = managerHolder.getStateManager();
     }
 
     private TaskId parseTaskId(String args) {
