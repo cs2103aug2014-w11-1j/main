@@ -310,9 +310,15 @@ public class DateParser {
         // 24 August
         mapPattern(datePartialFormatPatterns,
                 "d MMMM" + "y", String.valueOf(LocalDate.now().getYear()));
+        // 24 Aug
+        mapPattern(datePartialFormatPatterns,
+                "d MMM" + "y", String.valueOf(LocalDate.now().getYear()));
         // 24Aug
         mapPattern(datePartialFormatPatterns,
                 "dMMM" + "y", String.valueOf(LocalDate.now().getYear()));
+        // 24/8, 24/08, 04/08, 04/8
+        mapPattern(datePartialFormatPatterns,
+                "d/M" + "/y", "/" + String.valueOf(LocalDateTime.now().getYear()));
 
         datePatternsLastUpdate = LocalDate.now();
 
@@ -323,11 +329,17 @@ public class DateParser {
 
         dateFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
 
+        // 24 Aug 2014
+        mapPattern(dateFullFormatPatterns, "d MMM y");
         // 24Aug2014
         mapPattern(dateFullFormatPatterns, "dMMMy");
+        // 24 Aug 14
+        mapPattern(dateFullFormatPatterns, "d MMM yy");
         // 24Aug14
         mapPattern(dateFullFormatPatterns, "dMMMyy");
-        // 24/8/14
+        // 24 August 2014
+        mapPattern(dateFullFormatPatterns, "d MMMM y");
+        // 24/8/14, 24/08/14, 04/08/14, 04/8/14
         mapPattern(dateFullFormatPatterns, "d/M/yy");
     }
 
@@ -385,7 +397,11 @@ public class DateParser {
         mapPattern(timeFullFormatPatterns, "H:m");
         // 3:46 PM
         mapPattern(timeFullFormatPatterns, "h:m a");
+        // 3:46PM
+        mapPattern(timeFullFormatPatterns, "h:m a");
         // 3 PM
+        mapPattern(timeFullFormatPatterns, "h a");
+        // 3PM
         mapPattern(timeFullFormatPatterns, "h a");
     }
 
