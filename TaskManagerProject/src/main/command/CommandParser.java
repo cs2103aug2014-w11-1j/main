@@ -84,7 +84,7 @@ public class CommandParser {
             }
         }
 
-        return sB.toString();
+        return sB.toString().trim();
         //return args;
         // TODO Proper parsing.
     }

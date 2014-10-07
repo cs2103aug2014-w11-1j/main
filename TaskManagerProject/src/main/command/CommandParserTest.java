@@ -90,7 +90,8 @@ public class CommandParserTest {
                 TAG+TERM_7, TERM_3, TAG+TERM_4, PRI_HIGH,
                 TimeTest.ABS_12_HOURS_LONG_1.type, DateTest.ABS_DMMMY_1.type});
         TaskInfo t = CommandParser.parseTask(test1);
-        assertEquals(t.name, test1);
+        assertEquals(t.name, mergeStrings(new String[]{TERM_1, TERM_IGNORE_1,
+                TERM_2, TERM_3}));
         assertEquals(t.endDate, DATE_1);
         assertEquals(t.endTime, TIME_LONG_1);
         assertEquals(t.duration, Duration.ZERO);
