@@ -3,7 +3,7 @@ package main.message;
 public class EnumMessage implements Message{
     public enum MessageType {
         EMPTY_STRING,
-        CANNOT_EXECUTE_COMMAND,
+        INVALID_ARGUMENT,
         INVALID_COMMAND,
         ADD_FAILED,
         DELETE_FAILED,
@@ -35,6 +35,6 @@ public class EnumMessage implements Message{
     }
     
     public static EnumMessage cannotExecuteCommand() {
-        return new EnumMessage(MessageType.CANNOT_EXECUTE_COMMAND);
+        return new EnumMessage(MessageType.INVALID_ARGUMENT);
     }
 }

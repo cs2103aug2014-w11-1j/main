@@ -4,7 +4,7 @@ import main.message.EnumMessage;
 
 public class EnumFormatter {
     
-    private final static String MESSAGE_CANNOT_EXECUTE = 
+    private final static String MESSAGE_INVALID_ARGUMENT = 
             "Sorry, Taskline could not execute your command." +
             System.lineSeparator();
     private final static String MESSAGE_ADD_FAILED =
@@ -21,8 +21,8 @@ public class EnumFormatter {
     public String format(EnumMessage message) {
         String formattedResult;
         switch(message.getMessageType()) {
-            case CANNOT_EXECUTE_COMMAND :
-                formattedResult = MESSAGE_CANNOT_EXECUTE;
+            case INVALID_ARGUMENT :
+                formattedResult = MESSAGE_INVALID_ARGUMENT;
                 break;
             case EMPTY_STRING :
                 formattedResult = MESSAGE_EMPTY;
