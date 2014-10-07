@@ -16,7 +16,7 @@ public class CommandParser {
     private final static String SYMBOL_IGNORE = "\"";
     private final static String SYMBOL_TAG = "#";
     private final static String SYMBOL_PRIORITY = "+";
-    private final static Priority DEFAULT_PRIORITY = Priority.NONE;
+    private final static Priority DEFAULT_PRIORITY = null;
 
     public static TaskInfo parseTask(String taskText) {
         TaskInfo task = TaskInfo.create();
@@ -24,7 +24,10 @@ public class CommandParser {
         task.name = parseName(taskText);
         parseDateTime(taskText, task);
         task.tags = parseTags(taskText);
-        task.priority = parsePriority(taskText);
+        Priority p = parsePriority(taskText);
+        if (p != null) {
+            task.priority = p;
+        }
 
         return task;
     }
@@ -174,7 +177,7 @@ public class CommandParser {
                     p = Priority.LOW;
                 }
             }
-            if (p != Priority.NONE) {
+            if (p != DEFAULT_PRIORITY) {
                 break;
             }
         }

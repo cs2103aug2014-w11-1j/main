@@ -13,6 +13,7 @@ import manager.datamanager.SearchManager;
 import manager.result.Result;
 import manager.result.SimpleResult;
 import data.TaskId;
+import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
 public class EditCommand implements Command {
@@ -79,9 +80,6 @@ public class EditCommand implements Command {
 
     private TaskInfo parseEditParams(String args) {
         assert args != null : "There should not be a null passed in.";
-        if (args.isEmpty()) {
-            return null;
-        }
 
         Scanner sc = new Scanner(args);
         if (!sc.hasNext()) {
@@ -93,33 +91,48 @@ public class EditCommand implements Command {
             sc.close();
             return null;
         }
-        String editParam = sc.nextLine();
+        String editParam = sc.nextLine().trim();
+
         TaskInfo editTask = TaskInfo.createEmpty();
 
         switch (editType.toLowerCase()) {
             case "name" :
                 editTask.name = CommandParser.parseName(editParam);
                 break;
+            case "details" :
+            case "description" :
+                editTask.details = CommandParser.parseName(editParam);
+                break;
             case "date" :
+                CommandParser.parseDateTime(editParam, editTask);
                 // TODO modify date somehow
                 break;
             case "time" :
+                CommandParser.parseDateTime(editParam, editTask);
                 // TODO modify time somehow
                 break;
             case "tag" :
-                editTask.tags = CommandParser.parseTags("#" + editParam);
-                if (sc.hasNext()) {
-                    String changeType = sc.next();
-                    if (changeType.toLowerCase().equals("add")) {
-                        tagOperation = TAG_ADD;
-                    }
-                    if (changeType.toLowerCase().equals("del")){
-                        tagOperation = TAG_DEL;
+                int separation = editParam.indexOf(' ');
+                if (separation != -1) {
+                    String changeType = editParam.substring(0, separation).trim();
+                    String tagsString = editParam.substring(separation).trim();
+                    if (tagsString.length() > 0) {
+                        editTask.tags = CommandParser.parseTags("#" + tagsString);
+                        
+                        if (changeType.toLowerCase().equals("add")) {
+                            tagOperation = TAG_ADD;
+                        }
+                        if (changeType.toLowerCase().equals("del")){
+                            tagOperation = TAG_DEL;
+                        }
                     }
                 }
                 break;
             case "priority" :
-                editTask.priority = CommandParser.parsePriority("+" + editParam);
+                Priority p = CommandParser.parsePriority("+" + editParam);
+                if (p != null) {
+                    editTask.priority = p;
+                }
                 break;
             default :
                 // invalid edit type, throw invalid edit field exception?
@@ -132,7 +145,6 @@ public class EditCommand implements Command {
 
     @Override
     public Response execute() {
-        
         if (stateManager.canEdit()) {
             stateManager.beforeCommandExecutionUpdate();
 
@@ -150,7 +162,7 @@ public class EditCommand implements Command {
                     }
                 }
             } else {
-                result = new SimpleResult(Result.Type.INVALID_COMMAND);
+                result = new SimpleResult(Result.Type.INVALID_ARGUMENT);
             }
             Response response = stateManager.update(result);
             return response;

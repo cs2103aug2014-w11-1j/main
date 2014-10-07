@@ -16,6 +16,7 @@ public class Task {
     
     public Task (TaskInfo taskInfo) {
         this.taskInfo = new TaskInfo(taskInfo);
+        initialiseFields();
     }
 
     public TaskInfo getTaskInfo() {
@@ -139,7 +140,18 @@ public class Task {
         this.taskInfo = new TaskInfo(taskInfo);
     }
 
-
+    private void initialiseFields() {
+        if (taskInfo.priority == null) {
+            taskInfo.priority = Priority.defaultPriority();
+        }
+        if (taskInfo.status == null) {
+            taskInfo.status = Status.defaultStatus();
+        }
+        if (taskInfo.tags == null) {
+            taskInfo.tags = new Tag[0];
+        }
+    }
+    
     private int findIndexOfTag(Tag tag) {
         for (int i = 0 ; i < taskInfo.tags.length; i++) {
             if (tag.equals(taskInfo.tags[i])) {
