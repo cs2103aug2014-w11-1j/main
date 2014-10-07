@@ -9,7 +9,7 @@ public class EnumMessage implements Message{
         DELETE_FAILED,
         EDIT_FAILED,
         ADD_TAG_FAILED,
-        DETELE_TAG_FAILED,
+        DELETE_TAG_FAILED,
         SEARCH_SUCCESS,
         SEARCH_FAILED,
         EDIT_STARTED,

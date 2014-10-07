@@ -24,6 +24,33 @@ public class Formatter {
     private SearchModeFormatter searchModeFormatter;
     private EmptyModeFormatter emptyModeFormatter;
     
+    class MessageModePair {
+        public Message.Type messageType;
+        public ModeInfo.Type modeInfoType;
+        
+        public MessageModePair(Message.Type messageType, 
+                ModeInfo.Type modeInfoType) {
+            this.messageType = messageType;
+            this.modeInfoType = modeInfoType;
+        }
+    }
+    
+    private final MessageModePair modePrintPair[] = new MessageModePair[]{
+            new MessageModePair(Message.Type.ADD_SUCCESSFUL, 
+                    ModeInfo.Type.EDIT_MODE),
+            new MessageModePair(Message.Type.ADD_SUCCESSFUL, 
+                    ModeInfo.Type.SEARCH_MODE),
+            new MessageModePair(Message.Type.DELETE_SUCCESSFUL, 
+                    ModeInfo.Type.EDIT_MODE),
+            new MessageModePair(Message.Type.DELETE_SUCCESSFUL, 
+                    ModeInfo.Type.SEARCH_MODE),
+            new MessageModePair(Message.Type.ENUM_MESSAGE,
+                    ModeInfo.Type.SEARCH_MODE),
+            new MessageModePair(Message.Type.ENUM_MESSAGE,
+                    ModeInfo.Type.EDIT_MODE),
+            new MessageModePair(Message.Type.EDIT_SUCCESSFUL,
+                    ModeInfo.Type.SEARCH_MODE)
+    };
 
     public Formatter() {
         addSuccessfulFormatter = new AddSuccessfulFormatter();
@@ -88,8 +115,22 @@ public class Formatter {
         return formattedModeInfo;
     }
     
+    private boolean shouldPrintMode(Response response) {
+        for (MessageModePair pair : modePrintPair) {
+            if (pair.messageType == response.getMessage().getType() && 
+                    pair.modeInfoType == response.getModeInfo().getType()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public String format(Response response) {
-        return formatMessage(response.getMessage()) + 
-                formatModeInfo(response.getModeInfo());
+        if (shouldPrintMode(response)) {
+            return formatMessage(response.getMessage()) + 
+                    formatModeInfo(response.getModeInfo());
+        } else {
+            return formatMessage(response.getMessage());
+        }
     }
 }
