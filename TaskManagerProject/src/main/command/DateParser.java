@@ -348,6 +348,8 @@ public class DateParser {
     }
 
     private static LocalTime parseAbsoluteTime(String timeString) {
+        // 3 pm -> 3 PM
+        timeString = timeString.toUpperCase();
         LocalTime time = matchTimePatterns(timeFullFormatPatterns, timeString);
         return time;
     }
