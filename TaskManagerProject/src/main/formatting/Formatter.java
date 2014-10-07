@@ -23,6 +23,7 @@ public class Formatter {
     private EditModeFormatter editModeFormatter;
     private SearchModeFormatter searchModeFormatter;
     private EmptyModeFormatter emptyModeFormatter;
+    
 
     public Formatter() {
         addSuccessfulFormatter = new AddSuccessfulFormatter();

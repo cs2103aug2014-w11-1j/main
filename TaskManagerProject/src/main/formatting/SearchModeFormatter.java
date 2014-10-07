@@ -14,6 +14,7 @@ public class SearchModeFormatter {
     private final static int WIDTH_TIME = 14;
     private final static int WIDTH_ABSOLUTE = 7;
     private final static String LINE_FLOATING = "Floating Tasks---";
+    private final static String LINE_NO_TASK = "No tasks found.";
 
     
     private String getDateLine(LocalDate date) {
@@ -97,6 +98,8 @@ public class SearchModeFormatter {
     private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
             TaskId[] taskIds) {
         ArrayList<String> result = new ArrayList<String>();
+        if (tasks.length == 0)
+            result.add(LINE_NO_TASK);
         int numberWidth = numberLength(tasks.length) + 2;
         for (int i = 0; i < tasks.length; i++) {
             if (tasks[i].endDate == null) {
