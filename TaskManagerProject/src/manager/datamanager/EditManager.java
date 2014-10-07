@@ -1,5 +1,7 @@
 package manager.datamanager;
 
+import java.util.ArrayList;
+
 import main.message.EditSuccessfulMessage;
 import manager.result.EditResult;
 import manager.result.Result;
@@ -142,30 +144,32 @@ public class EditManager extends AbstractManager {
    
     public EditSuccessfulMessage.Field[] setChangedFields(TaskInfo taskInfo){
     	
-    	EditSuccessfulMessage.Field[] fields = new EditSuccessfulMessage.Field[10];
+        ArrayList<EditSuccessfulMessage.Field> fields = 
+                new ArrayList<EditSuccessfulMessage.Field>();
     	int index = 0;
     	if (taskInfo.name != null){
-    		fields[index] = EditSuccessfulMessage.Field.NAME;
-    		index ++;
+    	    fields.add(EditSuccessfulMessage.Field.NAME);
     	}
     	if (taskInfo.priority != null){
-    		fields[index] = EditSuccessfulMessage.Field.PRIORITY;
-    		index ++;
+    		fields.add(EditSuccessfulMessage.Field.PRIORITY);
     	}
     	if (taskInfo.status != null){
-    		fields[index] = EditSuccessfulMessage.Field.STATUS;
-    		index ++;
+    		fields.add(EditSuccessfulMessage.Field.STATUS);
     	}
     	if (taskInfo.details != null){
-    		fields[index] = EditSuccessfulMessage.Field.DETAILS;
-    		index ++;
+    		fields.add(EditSuccessfulMessage.Field.DETAILS);
     	}
     	if ((taskInfo.duration != null) || (taskInfo.endTime != null) ||
     			(taskInfo.endDate != null)){
-    		fields[index] = EditSuccessfulMessage.Field.TIME;
-    		index ++;
+    		fields.add(EditSuccessfulMessage.Field.TIME);
     	}
     	
-    	return fields;
+    	EditSuccessfulMessage.Field[] fieldsArray = 
+    	        new EditSuccessfulMessage.Field[fields.size()];
+    	for (int i = 0; i < fields.size(); i++) {
+    	    fieldsArray[i] = fields.get(i);
+    	}
+    	
+    	return fieldsArray;
     }
 }

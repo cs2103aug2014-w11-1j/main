@@ -3,6 +3,7 @@ package manager;
 import io.FileInputOutput;
 import main.message.AddSuccessfulMessage;
 import main.message.DeleteSuccessfulMessage;
+import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
 import main.message.EnumMessage.MessageType;
@@ -16,6 +17,7 @@ import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
 import manager.result.AddResult;
 import manager.result.DeleteResult;
+import manager.result.DetailsResult;
 import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.Result.Type;
@@ -247,7 +249,7 @@ public class StateManager {
             case EDIT_SUCCESS : 
                 EditResult editResult = (EditResult)result;
             	EditSuccessfulMessage editSuccessMessage = 
-                        new EditSuccessfulMessage(editResult.getTaskInfo(), editingTaskId, null);
+                        new EditSuccessfulMessage(editResult.getTaskInfo(), editResult.getTaskId(), editResult.getChangedFields());
             	return editSuccessMessage;
 
             case EDIT_FAILURE : 
@@ -285,6 +287,11 @@ public class StateManager {
 
             case INVALID_COMMAND : 
                 return new EnumMessage(MessageType.INVALID_COMMAND);
+                
+            case DETAILS :
+                DetailsResult detailsResult = (DetailsResult)result;
+                return new DetailsMessage(detailsResult.getTask(),
+                        detailsResult.getTaskId());
 
             default:
                 throw new UnsupportedOperationException("Unknown state: " +
