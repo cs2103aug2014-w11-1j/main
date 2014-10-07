@@ -211,10 +211,6 @@ public class StateManager {
 	 */
 	private Message applyResult(Result result) {
 		switch (result.getType()){
-		    
-            case SEARCH_MODE_END : 
-            	exitSearchMode();
-                return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
                 
             case ADD_SUCCESS :
             	 AddResult addResult = (AddResult)result;
@@ -245,6 +241,19 @@ public class StateManager {
             case EDIT_MODE_END :
                 exitEditMode();
                 return new EnumMessage(EnumMessage.MessageType.EDIT_ENDED);
+
+            case SEARCH_MODE_END : 
+                exitSearchMode();
+                return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
+                
+            case GO_BACK :
+                if (inState(State.EDIT_MODE)) {
+                    exitEditMode();
+                    return new EnumMessage(EnumMessage.MessageType.EDIT_ENDED);
+                } else if (inState(State.SEARCH_MODE)) {
+                    exitSearchMode();
+                    return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
+                }
 
             case EDIT_SUCCESS : 
                 EditResult editResult = (EditResult)result;

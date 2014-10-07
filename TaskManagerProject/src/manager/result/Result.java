@@ -13,6 +13,7 @@ public interface Result {
         EDIT_MODE_START,
         EDIT_MODE_END,
         SEARCH_MODE_END,
+        GO_BACK,
         EDIT_SUCCESS,
         EDIT_FAILURE,
         SEARCH_SUCCESS,

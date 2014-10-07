@@ -50,6 +50,8 @@ public class CommandController {
                 return new UndoCommand(managerHolder);
             case "redo" :
                 return new RedoCommand(managerHolder);
+            case "back" :
+                return new BackCommand(managerHolder);
             default :
                 return new InvalidCommand(managerHolder);
         }

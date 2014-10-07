@@ -36,8 +36,17 @@ public class EditCommand implements Command {
         if (editManager.getEditingTask() == null) {
             // not edit mode
             Scanner sc = new Scanner(args);
-            taskId = parseTaskId(sc.next());
-            taskToEdit = parseEditParams(sc.nextLine());
+            if (sc.hasNext()) {
+                taskId = parseTaskId(sc.next());
+                if (sc.hasNext()) {
+                    taskToEdit = parseEditParams(sc.nextLine());
+                } else {
+                    taskToEdit = null;
+                }
+            } else {
+                taskId = null;
+                taskToEdit = null;
+            }
             sc.close();
         } else {
             // edit mode
