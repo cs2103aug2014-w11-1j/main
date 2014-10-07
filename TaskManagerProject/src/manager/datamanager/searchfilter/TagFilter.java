@@ -12,6 +12,10 @@ public class TagFilter implements Filter{
     
     public boolean filter(TaskInfo task) 
     {
+        if (task.tags == null) {
+            return false;
+        }
+        
         for (Tag filterTag : tags) {
             boolean isExist = false;
             for (Tag taskTag : task.tags) {

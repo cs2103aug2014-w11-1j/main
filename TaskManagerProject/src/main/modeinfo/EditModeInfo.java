@@ -20,5 +20,9 @@ public class EditModeInfo implements ModeInfo {
     public TaskId getTaskId() {
         return taskId;
     }
+    
+    public TaskInfo getTask() {
+        return taskInfo;
+    }
 
 }
