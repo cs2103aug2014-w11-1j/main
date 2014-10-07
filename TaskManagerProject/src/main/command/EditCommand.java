@@ -1,5 +1,6 @@
 package main.command;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import main.message.EnumMessage;
@@ -10,6 +11,7 @@ import manager.StateManager;
 import manager.datamanager.EditManager;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
+import manager.result.SimpleResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
@@ -20,22 +22,32 @@ public class EditCommand implements Command {
     private final EditManager editManager;
     private final SearchManager searchManager;
     private final StateManager stateManager;
-    private final TaskInfo taskToEdit;
     private final TaskId taskId;
+    private final TaskInfo taskToEdit;
     private int tagOperation = 0;
 
-    public EditCommand(String args, ManagerHolder managerHolder) {
+    public EditCommand(String args, ManagerHolder managerHolder)
+            throws NoSuchElementException {
         editManager = managerHolder.getEditManager();
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
 
-        Scanner sc = new Scanner(args);
-        taskId = parseTaskId(sc.next());
-        taskToEdit = parseEditParams(sc.nextLine());
-        sc.close();
+        // check if in edit mode
+        if (editManager.getEditingTask() == null) {
+            // not edit mode
+            Scanner sc = new Scanner(args);
+            taskId = parseTaskId(sc.next());
+            taskToEdit = parseEditParams(sc.nextLine());
+            sc.close();
+        } else {
+            // edit mode
+            taskId = editManager.getEditingTask();
+            taskToEdit = parseEditParams(args);
+        }
     }
 
     private TaskId parseTaskId(String args) {
+        // should return null if in edit mode
         assert args != null : "There should not be a null passed in.";
         if (args.isEmpty()) {
             return null;
@@ -53,7 +65,6 @@ public class EditCommand implements Command {
     private TaskInfo parseEditParams(String args) {
         assert args != null : "There should not be a null passed in.";
         if (args.isEmpty()) {
-            // edit mode
             return null;
         }
 
@@ -87,11 +98,8 @@ public class EditCommand implements Command {
             case "priority" :
                 editTask.priority = CommandParser.parsePriority("+" + editParam);
                 break;
-            case "" :
-                editTask = null;
-                break;
             default :
-                // something
+                // invalid edit type, throw invalid edit field exception?
         }
 
         sc.close();
@@ -105,16 +113,20 @@ public class EditCommand implements Command {
             stateManager.beforeCommandExecutionUpdate();
 
             Result result;
-            if (taskToEdit == null) {
-                result = editManager.startEditMode(taskId);
-            } else {
-                if (tagOperation == TAG_ADD) {
-                    result = editManager.addTaskTag(taskToEdit.tags[0], taskId);
-                } else if (tagOperation == TAG_DEL) {
-                    result = editManager.deleteTaskTag(taskToEdit.tags[0], taskId);
+            if (taskId != null) {
+                if (taskToEdit == null) {
+                    result = editManager.startEditMode(taskId);
                 } else {
-                    result = editManager.editTask(taskToEdit, taskId);
+                    if (tagOperation == TAG_ADD) {
+                        result = editManager.addTaskTag(taskToEdit.tags[0], taskId);
+                    } else if (tagOperation == TAG_DEL) {
+                        result = editManager.deleteTaskTag(taskToEdit.tags[0], taskId);
+                    } else {
+                        result = editManager.editTask(taskToEdit, taskId);
+                    }
                 }
+            } else {
+                result = new SimpleResult(Result.Type.INVALID_COMMAND);
             }
             Response response = stateManager.update(result);
             return response;
