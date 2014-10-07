@@ -13,7 +13,7 @@ public class SearchModeFormatter {
     private final static int WIDTH_LINE = 80;
     private final static int WIDTH_TIME = 14;
     private final static int WIDTH_ABSOLUTE = 7;
-    
+    private final static String LINE_FLOATING = "Floating Tasks---";
 
     
     private String getDateLine(LocalDate date) {
@@ -24,6 +24,9 @@ public class SearchModeFormatter {
     }
     
     private String getTimeString(LocalTime time) {
+        if(time == null) {
+            return "              ";
+        }
         DateTimeFormatter formatter = 
                 DateTimeFormatter.ofPattern("HH:mm");
         String addedFormat = "[   %1$s   ] ";
@@ -87,13 +90,24 @@ public class SearchModeFormatter {
         return line.toString();
     }
     
+    private String getFloatingTaskLine() {
+        return LINE_FLOATING;
+    }
+    
     private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
             TaskId[] taskIds) {
         ArrayList<String> result = new ArrayList<String>();
         int numberWidth = numberLength(tasks.length) + 2;
         for (int i = 0; i < tasks.length; i++) {
-            if (i == 0 || !tasks[i].endDate.equals(tasks[i-1].endDate)) {
-                result.add(getDateLine(tasks[i].endDate));
+            if (tasks[i].endDate == null) {
+                if (i == 0 || tasks[i-1].endDate != null) {
+                    result.add(getFloatingTaskLine());
+                }
+            }
+            else {
+                if (i == 0 || !tasks[i].endDate.equals(tasks[i-1].endDate)) {
+                    result.add(getDateLine(tasks[i].endDate));
+                }
             }
             result.add(getTaskInfoLine(tasks[i], taskIds[i], 
                     i + 1, numberWidth));

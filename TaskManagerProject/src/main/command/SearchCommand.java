@@ -12,42 +12,56 @@ import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.searchfilter.DateTimeFilter;
 import manager.datamanager.searchfilter.Filter;
+import manager.datamanager.searchfilter.KeywordFilter;
 import manager.datamanager.searchfilter.PriorityFilter;
 import manager.datamanager.searchfilter.TagFilter;
 import manager.result.Result;
 import data.taskinfo.Priority;
-import data.taskinfo.TaskInfo;
+import data.taskinfo.Tag;
 
 public class SearchCommand implements Command {
     private final SearchManager searchManager;
     private final StateManager stateManager;
-    private final TaskInfo searchTask;
-    private final List<Filter> filterList = new ArrayList<Filter>();
+    private final List<Filter> filterList;
 
     public SearchCommand(String args, ManagerHolder managerHolder) {
-        searchTask = parse(args);
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
+        
+        filterList = new ArrayList<Filter>();
+        parse(args);
     }
 
-    private TaskInfo parse(String args) {
-        TaskInfo searchCriteria = CommandParser.parseTask(args);
-        // TODO search name - confirm on name format
-        // TODO search within day range - refactor date parser
-        if (searchCriteria.duration != null) {
-            LocalDateTime endDateTime = LocalDateTime.of(searchCriteria.endDate, searchCriteria.endTime);
-            LocalDateTime startDateTime = endDateTime.minus(searchCriteria.duration);
-            filterList.add(new DateTimeFilter(startDateTime, endDateTime));
+    private void parse(String args) {
+        assert args != null : "There should not be a null passed in.";
+        if (args.isEmpty()) {
+            return;
         }
-        if (searchCriteria.tags != null) {
-            filterList.add(new TagFilter(searchCriteria.tags));
+
+        // TODO remove dates, tags, and priorities from keywords
+        String delim = " ";
+        String[] keywords = args.split(delim);
+        if (keywords != null) {
+            filterList.add(new KeywordFilter(keywords));
         }
-        if (searchCriteria.priority != null) {
+
+        // TODO refactor date parser further
+        List<LocalDateTime> dateRange = DateParser.parseDateTime(args);
+        if (dateRange != null) {
+            filterList.add(new DateTimeFilter(dateRange.get(0), dateRange.get(1)));
+        }
+
+        Tag[] newTags = CommandParser.parseTags(args);
+        if (newTags != null) {
+            filterList.add(new TagFilter(newTags));
+        }
+
+        Priority newPriority = CommandParser.parsePriority(args);
+        if (newPriority != null) {
             // TODO support for multiple priorities
-            Priority[] pArr = {searchCriteria.priority};
+            Priority[] pArr = {newPriority};
             filterList.add(new PriorityFilter(pArr));
         }
-        return searchCriteria;
     }
 
     @Override

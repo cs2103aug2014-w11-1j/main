@@ -6,6 +6,7 @@ package data;
  */
 public final class TaskId implements Comparable<TaskId> {
     
+    private static final int STRINGID_LENGTH = 3;
     /**
      * TRANSLATE_PRIME must be coprime to MAX_ID.<br>
      * We can ensure this by simply meeting the below two conditions:<br>
@@ -120,6 +121,10 @@ public final class TaskId implements Comparable<TaskId> {
         int number;
         char character1;
         char character2;
+
+        if (stringId.length() != STRINGID_LENGTH) {
+            throw new IllegalArgumentException("Invalid string input: " + stringId);
+        }
 
         if (isDigit(stringId.charAt(0))) {
             

@@ -5,33 +5,24 @@ import main.modeinfo.EmptyModeInfo;
 import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
-import manager.datamanager.AddManager;
+import manager.datamanager.UndoManager;
 import manager.result.Result;
-import data.taskinfo.TaskInfo;
 
-public class AddCommand implements Command {
-    private final AddManager addManager;
+public class RedoCommand implements Command {
+    private final UndoManager undoManager;
     private final StateManager stateManager;
-    private final TaskInfo taskToAdd;
 
-    public AddCommand(String args, ManagerHolder managerHolder) {
-        addManager = managerHolder.getAddManager();
+    public RedoCommand(ManagerHolder managerHolder) {
+        undoManager = managerHolder.getUndoManager();
         stateManager = managerHolder.getStateManager();
-        
-    	taskToAdd = parse(args);
-    }
-
-    private TaskInfo parse(String args) {
-        TaskInfo newTask = CommandParser.parseTask(args);
-        return newTask;
     }
 
     @Override
     public Response execute() {
-        if (stateManager.canAdd()) {
+        if (stateManager.canUndo()) {
             stateManager.beforeCommandExecutionUpdate();
 
-            Result result = addManager.addTask(taskToAdd);
+            Result result = undoManager.redo();
             Response response = stateManager.update(result);
             return response;
         } else {

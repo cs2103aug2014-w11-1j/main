@@ -136,7 +136,7 @@ public class Task {
     }
     
     public void setAllInfo(TaskInfo taskInfo) {
-        taskInfo = new TaskInfo(taskInfo);
+        this.taskInfo = new TaskInfo(taskInfo);
     }
 
 

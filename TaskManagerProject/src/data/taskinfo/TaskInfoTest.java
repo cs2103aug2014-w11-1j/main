@@ -13,8 +13,8 @@ public class TaskInfoTest {
     @Test
     public void test() {
         //Solely for testing the extremely long equals() method!
-        TaskInfo taskInfo = new TaskInfo();
-        TaskInfo taskInfo2 = new TaskInfo();
+        TaskInfo taskInfo = TaskInfo.create();
+        TaskInfo taskInfo2 = TaskInfo.create();
         
         assertEquals(taskInfo, taskInfo);
         

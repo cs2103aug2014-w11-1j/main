@@ -18,25 +18,38 @@ public class EditCommand implements Command {
     private final SearchManager searchManager;
     private final StateManager stateManager;
     private final TaskInfo taskToEdit;
-    private int taskId;
+    private final TaskId taskId;
 
     public EditCommand(String args, ManagerHolder managerHolder) {
-        taskToEdit = parse(args);
         editManager = managerHolder.getEditManager();
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
+        
+        Scanner sc = new Scanner(args);
+        taskId = parseTaskId(sc.next());
+        taskToEdit = parseEditParams(sc.nextLine());
+        sc.close();
     }
 
-    private TaskInfo parse(String args) {
-        TaskInfo editTask = new TaskInfo();
-        Scanner sc = new Scanner(args);
+    private TaskId parseTaskId(String args) {
+        try {
+            int relativeTaskId = Integer.parseInt(args);
+            return searchManager.getAbsoluteIndex(relativeTaskId);
+        } catch (NumberFormatException e) {
+            String absoluteTaskId = args;
+            return TaskId.makeTaskId(absoluteTaskId);
+        }
+    }
 
-        taskId = sc.nextInt();
-        String paramType = sc.next();
-        String paramNew = sc.nextLine();
-        switch (paramType.toLowerCase()) {
+    private TaskInfo parseEditParams(String args) {
+        Scanner sc = new Scanner(args);
+        String editType = sc.next();
+        String editParam = sc.nextLine();
+        TaskInfo editTask = TaskInfo.createEmpty();
+
+        switch (editType.toLowerCase()) {
             case "name" :
-                CommandParser.parseName(paramNew, editTask);
+                editTask.name = CommandParser.parseName(editParam);
                 break;
             case "date" :
                 // TODO modify date somehow
@@ -45,7 +58,7 @@ public class EditCommand implements Command {
                 // TODO modify time somehow
                 break;
             case "tag" :
-                CommandParser.parseTags("#" + paramNew, editTask);
+                editTask.tags = CommandParser.parseTags("#" + editParam);
                 String changeType = sc.next();
                 if (changeType.toLowerCase().equals("add")) {
                     // do something
@@ -54,7 +67,7 @@ public class EditCommand implements Command {
                 }
                 break;
             case "priority" :
-                CommandParser.parsePriority("+" + paramNew, editTask);
+                editTask.priority = CommandParser.parsePriority("+" + editParam);
                 break;
             default :
                 // something
@@ -70,7 +83,12 @@ public class EditCommand implements Command {
         if (stateManager.canEdit()) {
             stateManager.beforeCommandExecutionUpdate();
 
-            Result result = editManager.editTask(taskToEdit, null);
+            Result result;
+            if (taskToEdit == null) {
+                result = editManager.startEditMode(taskId);
+            } else {
+                result = editManager.editTask(taskToEdit, taskId);
+            }
             Response response = stateManager.update(result);
             return response;
         } else {
@@ -79,7 +97,7 @@ public class EditCommand implements Command {
             return new Response(message, modeInfo);
         }
     }
-    
+
     public TaskId convertStringtoTaskId(String stringId){
     	return TaskId.makeTaskId(stringId);
     }

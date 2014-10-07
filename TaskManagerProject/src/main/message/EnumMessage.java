@@ -4,13 +4,17 @@ public class EnumMessage implements Message{
     public enum MessageType {
         EMPTY_STRING,
         CANNOT_EXECUTE_COMMAND,
+        INVALID_COMMAND,
         ADD_FAILED,
         DELETE_FAILED,
         EDIT_FAILED,
         ADD_TAG_FAILED,
         DETELE_TAG_FAILED,
         SEARCH_SUCCESS,
-        SEARCH_FAILED
+        SEARCH_FAILED,
+        EDIT_STARTED,
+        EDIT_ENDED,
+        SEARCH_ENDED
     }    
     MessageType messageType;
     

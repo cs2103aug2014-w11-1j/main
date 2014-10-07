@@ -1,8 +1,5 @@
 package manager.result;
 
-import data.TaskId;
-import data.taskinfo.TaskInfo;
-
 public interface Result {
     public enum Type {
         ADD_SUCCESS,
@@ -11,6 +8,9 @@ public interface Result {
         DELETE_FAILURE,
         UNDO_SUCCESS,
         UNDO_FAILURE,
+        REDO_SUCCESS,
+        REDO_FAILURE,
+        EDIT_MODE_START,
         EDIT_MODE_END,
         SEARCH_MODE_END,
         EDIT_SUCCESS,
@@ -20,8 +20,9 @@ public interface Result {
         TAG_ADD_SUCCESS,
         TAG_ADD_FAILURE,
         TAG_DELETE_FAILURE,
-        TAG_DELETE_SUCCESS
-        
+        TAG_DELETE_SUCCESS,
+        DETAILS,
+        INVALID_COMMAND
     }
 
     public Type getType();    // implement this with the correct type.

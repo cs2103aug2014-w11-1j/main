@@ -134,7 +134,7 @@ public class FileInputOutput {
         File file = new File(fileName);
         try {
             FileReader fileReader = new FileReader(file);
-            taskInfos = JsonFileFormatter.readTasksFromJson(fileReader);
+            taskInfos = JsonReaderWriter.readTasksFromJson(fileReader);
             
             fileReader.close();
             
@@ -157,7 +157,7 @@ public class FileInputOutput {
         
         try {
             FileWriter fileWriter = new FileWriter(file);
-            result = JsonFileFormatter.writeTasksToJson(fileWriter, taskInfos);
+            result = JsonReaderWriter.writeTasksToJson(fileWriter, taskInfos);
             
         } catch (IOException e) {
             e.printStackTrace();

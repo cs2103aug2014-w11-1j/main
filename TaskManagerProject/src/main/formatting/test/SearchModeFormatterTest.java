@@ -1,12 +1,14 @@
-package main.formatting;
+package main.formatting.test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import main.formatting.SearchModeFormatter;
 import main.modeinfo.SearchModeInfo;
 
 import org.junit.Test;
 import org.junit.Assert;
+
 import data.TaskId;
 import data.taskinfo.Priority;
 import data.taskinfo.Status;

@@ -4,6 +4,7 @@ import main.message.EditSuccessfulMessage;
 import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.SimpleResult;
+import manager.result.StartEditModeResult;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.Tag;
@@ -16,6 +17,8 @@ import data.taskinfo.TaskInfo;
  *
  */
 public class EditManager extends AbstractManager {
+    
+    private TaskId editingTask;
 
     public EditManager(TaskData taskData) {
         super(taskData);
@@ -40,26 +43,61 @@ public class EditManager extends AbstractManager {
     	
     }
     
-    public Result editTaskwithTag(Tag tag, int operation, TaskId taskId){
-    	boolean isTagSuccess;
-    	if (operation == 1) {  //add
-    		isTagSuccess = taskData.addTag(taskId, tag); 
-    		if (!isTagSuccess){
-    			return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
-    		}else{
-    			return new EditResult(Result.Type.TAG_ADD_SUCCESS,taskData.getTaskInfo(taskId),
-    					taskId, EditSuccessfulMessage.Field.TAGS_ADD);
-    		}
-    	} else  { //delete
-    		isTagSuccess = taskData.removeTag(taskId, tag);
-    		if (!isTagSuccess){
-    			return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
-    		}else{
-    			return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(taskId),
-    					taskId, EditSuccessfulMessage.Field.TAGS_DELETE);    		}
-    	}
-    	
+    public TaskId getEditingTask() {
+        return editingTask;
     }
+    
+    public Result startEditMode(TaskId taskId) {
+        editingTask = taskId;
+        return new StartEditModeResult(taskId);
+    }
+    
+    public Result endEditMode(TaskId taskId) {
+        editingTask = null;
+        return new SimpleResult(Result.Type.EDIT_MODE_END);
+    }
+    
+    public Result addTaskTag(Tag tag, TaskId taskId){
+    	Boolean isTagSuccess = taskData.addTag(taskId, tag); 
+		if (!isTagSuccess){
+			return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
+		}else{
+			return new EditResult(Result.Type.TAG_ADD_SUCCESS,taskData.getTaskInfo(taskId),
+					taskId, EditSuccessfulMessage.Field.TAGS_ADD);
+		}
+    }
+    
+    public Result deleteTaskTag(Tag tag, TaskId taskId){
+    	Boolean isTagSuccess = taskData.removeTag(taskId, tag);
+    	if (!isTagSuccess){
+    		return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
+    	}else{
+    		return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(taskId),
+    				taskId, EditSuccessfulMessage.Field.TAGS_DELETE);  
+    	}
+    }
+    
+//    public Result editTaskwithTag(Tag tag, int operation, TaskId taskId){
+//    	boolean isTagSuccess;
+//    	if (operation == 1) {  //add
+//    		isTagSuccess = taskData.addTag(taskId, tag); 
+//    		if (!isTagSuccess){
+//    			return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
+//    		}else{
+//    			return new EditResult(Result.Type.TAG_ADD_SUCCESS,taskData.getTaskInfo(taskId),
+//    					taskId, EditSuccessfulMessage.Field.TAGS_ADD);
+//    		}
+//    	} else  { //delete
+//    		isTagSuccess = taskData.removeTag(taskId, tag);
+//    		if (!isTagSuccess){
+//    			return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
+//    		}else{
+//    			return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(taskId),
+//    					taskId, EditSuccessfulMessage.Field.TAGS_DELETE);    		
+//    			}
+//    	}
+//    	
+//    }
     
     
     /**
@@ -86,10 +124,10 @@ public class EditManager extends AbstractManager {
     	if (modifTask.details != null){
     		mergedTask.details = modifTask.details;
     	}
-    	if (modifTask.priority != null){
+    	if ((modifTask.priority != null)){
     		mergedTask.priority = modifTask.priority;
     	}
-    	if (modifTask.status != null){
+    	if ((modifTask.status != null)){
     		mergedTask.status = modifTask.status;
     	}
     	if (modifTask.numberOfTimes != 0){

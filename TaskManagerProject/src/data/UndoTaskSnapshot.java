@@ -54,6 +54,9 @@ public class UndoTaskSnapshot {
      * @return copy of stored TaskInfo for immutability.
      */
     public TaskInfo getTaskInfo() {
+        if (taskInfo == NO_TASK) {
+            return NO_TASK;
+        }
         return new TaskInfo(taskInfo);
     }
 

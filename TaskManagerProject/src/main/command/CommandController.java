@@ -21,7 +21,10 @@ public class CommandController {
         Scanner sc = new Scanner(cmdTxt);
 
         String cmdType = sc.next();
-        String cmdArgs = sc.nextLine().trim();
+        String cmdArgs = "";
+        if (sc.hasNextLine()) {
+            cmdArgs = sc.nextLine().trim();
+        }
 
         sc.close();
 
@@ -30,15 +33,20 @@ public class CommandController {
 
     private Command getCommand(String cmdType, String cmdArgs) {
         switch (cmdType) {
-            case "add":
+            case "add" :
                 return new AddCommand(cmdArgs, managerHolder);
-            case "show":
-                //return new SearchCommand(cmdArgs);
-            case "edit":
-                //return new EditCommand(cmdArgs);
-            case "del":
-                //return new DeleteCommand(cmdArgs);
+            case "show" :
+                return new SearchCommand(cmdArgs, managerHolder);
+            case "edit" :
+                return new EditCommand(cmdArgs, managerHolder);
+            case "del" :
+                return new DeleteCommand(cmdArgs, managerHolder);
+            case "undo" :
+                return new UndoCommand(managerHolder);
+            case "redo" :
+                return new RedoCommand(managerHolder);
+            default :
+                return new InvalidCommand(managerHolder);
         }
-        return null;
     }
 }

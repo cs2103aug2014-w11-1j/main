@@ -1,7 +1,6 @@
 package main.command;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -105,7 +104,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseDateTime() {
-        TaskInfo t = new TaskInfo();
+        TaskInfo t = TaskInfo.create();
         // nothing: null
         String test1 = mergeStrings(new String[]{TERM_2});
         CommandParser.parseDateTime(test1, t);
@@ -113,7 +112,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, null);
         assertEquals(t.duration, null);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // one date: null
         String test2 = mergeStrings(new String[]{DateTest.ABS_D_M_YY_1.type});
         CommandParser.parseDateTime(test2, t);
@@ -121,7 +120,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, null);
         assertEquals(t.duration, null);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // two dates: null
         String test3 = mergeStrings(new String[]{DateTest.ABS_D_MMMM_1.type,
                 DateTest.ABS_D_MMMM_2.type});
@@ -130,7 +129,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, null);
         assertEquals(t.duration, null);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // one time, zero date: next occurrence of time
         String test4 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_1.type});
         CommandParser.parseDateTime(test4, t);
@@ -142,7 +141,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, TIME_LONG_1);
         assertEquals(t.duration, Duration.ZERO);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // one time, one date: time on that date
         String test5 = mergeStrings(new String[]{DateTest.ABS_DMMM_2.type,
                 TimeTest.ABS_24_HOURS_LONG_2.type});
@@ -151,7 +150,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, TIME_LONG_2);
         assertEquals(t.duration, Duration.ZERO);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // one time, two date: null
         String test6 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_SHORT_2.type,
                 DateTest.ABS_D_MMMM_1.type, DateTest.ABS_DMMMYY_2.type});
@@ -160,7 +159,7 @@ public class CommandParserTest {
         assertEquals(t.endTime, null);
         assertEquals(t.duration, null);
 
-        t = new TaskInfo();
+        t = TaskInfo.create();
         // two time, zero date: next occurrence of first time
         String test7 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_2.type,
                 TimeTest.ABS_12_HOURS_SHORT_1.type});
@@ -188,39 +187,31 @@ public class CommandParserTest {
     }
 
     @Test
-    public void testParseTime() {
-        TaskInfo testTaskInfo = new TaskInfo();
-        //CommandParser
-        fail("Not yet implemented");
-    }
-
-    @Test
     public void testParseTags() {
-        TaskInfo testTaskInfo = new TaskInfo();
         String test1 = mergeStrings(new String[]{TERM_1, TERM_2, PRI_MED, TAG+TERM_6});
         String test2 = mergeStrings(new String[]{TAG+TERM_3, TERM_7, PRI_HIGH, TERM_1});
         String test3 = mergeStrings(new String[]{TERM_1, TAG+TERM_5, TAG+TERM_7, PRI_MED});
 
         // single tag, at end
-        CommandParser.parseTags(test1, testTaskInfo);
+        Tag[] tags = CommandParser.parseTags(test1);
         StringBuilder result = new StringBuilder();
-        for (Tag t : testTaskInfo.tags) {
+        for (Tag t : tags) {
             result.append(t.toString()).append(' ');
         }
         assertEquals(result.toString().trim(), TERM_6);
 
         // single tag, elsewhere
-        CommandParser.parseTags(test2, testTaskInfo);
+        tags = CommandParser.parseTags(test2);
         result = new StringBuilder();
-        for (Tag t : testTaskInfo.tags) {
+        for (Tag t : tags) {
             result.append(t.toString()).append(' ');
         }
         assertEquals(result.toString().trim(), TERM_3);
 
         // multiple tags
-        CommandParser.parseTags(test3, testTaskInfo);
+        tags = CommandParser.parseTags(test3);
         result = new StringBuilder();
-        for (Tag t : testTaskInfo.tags) {
+        for (Tag t : tags) {
             result.append(t.toString()).append(' ');
         }
         assertEquals(result.toString().trim(), TERM_5 + " " + TERM_7);
@@ -228,7 +219,6 @@ public class CommandParserTest {
 
     @Test
     public void testParsePriority() {
-        TaskInfo testTaskInfo = new TaskInfo();
         String test1 = mergeStrings(new String[]{TERM_1, TERM_2, PRI_LOW, TAG+TERM_6});
         String test2 = mergeStrings(new String[]{TAG+TERM_3, TERM_7, PRI_HIGH, TERM_1});
         String test3 = mergeStrings(new String[]{TERM_1, TAG+TERM_5, TAG+TERM_7, PRI_MED});
@@ -236,24 +226,24 @@ public class CommandParserTest {
         String test5 = mergeStrings(new String[]{TERM_1, PRI_HIGH, TAG+TERM_7, PRI_MED});
 
         // low priority
-        CommandParser.parsePriority(test1, testTaskInfo);
-        assertEquals(testTaskInfo.priority, Priority.LOW);
+        Priority priority = CommandParser.parsePriority(test1);
+        assertEquals(priority, Priority.LOW);
 
         // high priority
-        CommandParser.parsePriority(test2, testTaskInfo);
-        assertEquals(testTaskInfo.priority, Priority.HIGH);
+        priority = CommandParser.parsePriority(test2);
+        assertEquals(priority, Priority.HIGH);
 
         // med priority
-        CommandParser.parsePriority(test3, testTaskInfo);
-        assertEquals(testTaskInfo.priority, Priority.MEDIUM);
+        priority = CommandParser.parsePriority(test3);
+        assertEquals(priority, Priority.MEDIUM);
 
-        // no priority - take default (low for now)
-        CommandParser.parsePriority(test4, testTaskInfo);
-        assertEquals(testTaskInfo.priority, Priority.LOW);
+        // no priority - take default (NONE for now)
+        priority = CommandParser.parsePriority(test4);
+        assertEquals(priority, Priority.NONE);
 
         // multiple priority - should take the first
-        CommandParser.parsePriority(test5, testTaskInfo);
-        assertEquals(testTaskInfo.priority, Priority.HIGH);
+        priority = CommandParser.parsePriority(test5);
+        assertEquals(priority, Priority.HIGH);
     }
 
     private String mergeStrings(String[] strings) {

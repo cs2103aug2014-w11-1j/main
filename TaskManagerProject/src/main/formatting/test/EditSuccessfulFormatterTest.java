@@ -1,10 +1,11 @@
-package main.formatting;
+package main.formatting.test;
 
 
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import main.formatting.EditSuccessfulFormatter;
 import main.message.EditSuccessfulMessage;
 import main.message.EditSuccessfulMessage.Field;
 

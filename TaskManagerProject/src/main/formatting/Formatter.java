@@ -72,9 +72,11 @@ public class Formatter {
             case EDIT_MODE :
                 EditModeInfo editModeInfo = (EditModeInfo) modeInfo;
                 formattedModeInfo = editModeFormatter.format(editModeInfo);
+                break;
             case SEARCH_MODE :
                 SearchModeInfo searchModeInfo = (SearchModeInfo) modeInfo;
                 formattedModeInfo = searchModeFormatter.format(searchModeInfo);
+                break;
         }
         return formattedModeInfo;
     }
