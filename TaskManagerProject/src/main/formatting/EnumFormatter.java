@@ -17,12 +17,17 @@ public class EnumFormatter {
             "Delete failed. Please try again." +
             System.lineSeparator();
     private final static String MESSAGE_EMPTY = "";
+    private final static String MESSAGE_INVALID_COMMAND =
+            "The command is invalid." + System.lineSeparator();
     
     public String format(EnumMessage message) {
         String formattedResult;
         switch(message.getMessageType()) {
             case INVALID_ARGUMENT :
                 formattedResult = MESSAGE_INVALID_ARGUMENT;
+                break;
+            case INVALID_COMMAND :
+                formattedResult = MESSAGE_INVALID_COMMAND;
                 break;
             case EMPTY_STRING :
                 formattedResult = MESSAGE_EMPTY;
