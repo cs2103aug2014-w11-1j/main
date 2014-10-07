@@ -33,7 +33,11 @@ public class EditCommand implements Command {
         stateManager = managerHolder.getStateManager();
 
         // check if in edit mode
-        if (editManager.getEditingTask() == null) {
+        if (stateManager.inEditMode()) {
+            // edit mode
+            taskId = editManager.getEditingTask();
+            taskToEdit = parseEditParams(args);
+        } else {
             // not edit mode
             Scanner sc = new Scanner(args);
             if (sc.hasNext()) {
@@ -48,10 +52,6 @@ public class EditCommand implements Command {
                 taskToEdit = null;
             }
             sc.close();
-        } else {
-            // edit mode
-            taskId = editManager.getEditingTask();
-            taskToEdit = parseEditParams(args);
         }
     }
 
@@ -64,7 +64,11 @@ public class EditCommand implements Command {
 
         try {
             int relativeTaskId = Integer.parseInt(args);
-            return searchManager.getAbsoluteIndex(relativeTaskId);
+            if (stateManager.inSearchMode()) {
+                return searchManager.getAbsoluteIndex(relativeTaskId);
+            } else {
+                return null;
+            }
         } catch (NumberFormatException e) {
             String absoluteTaskId = args;
             return TaskId.makeTaskId(absoluteTaskId);
@@ -80,7 +84,15 @@ public class EditCommand implements Command {
         }
 
         Scanner sc = new Scanner(args);
+        if (!sc.hasNext()) {
+            sc.close();
+            return null;
+        }
         String editType = sc.next();
+        if (!sc.hasNext()) {
+            sc.close();
+            return null;
+        }
         String editParam = sc.nextLine();
         TaskInfo editTask = TaskInfo.createEmpty();
 

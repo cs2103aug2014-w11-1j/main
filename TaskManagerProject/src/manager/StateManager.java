@@ -82,26 +82,30 @@ public class StateManager {
         return true;
         //return currentState == State.AVAILABLE;
 	}
+    
+    public boolean inEditMode() {
+        return inState(State.EDIT_MODE);
+    }
+    
+    public boolean inSearchMode() {
+        return inState(State.SEARCH_MODE);
+    }
 	
 	private void setState(State newState) {
 	    currentState = newState;
 	}
 	
-	public boolean inState(State state) {
+	private boolean inState(State state) {
 	    return (currentState == state);
 	}
     
-	public boolean enterEditMode(TaskId id){
-		if (currentState != State.AVAILABLE){
-			return false;
-		}else{
-			setState(State.EDIT_MODE);
-			editingTaskId = id;
-			return true;
-		}
+	private boolean enterEditMode(TaskId id){
+		setState(State.EDIT_MODE);
+		editingTaskId = id;
+		return true;
 	}
 	
-	public boolean exitEditMode(){
+	private boolean exitEditMode(){
 		if (currentState == State.EDIT_MODE){
 			setState(State.AVAILABLE);
 			editingTaskId = null;
@@ -111,16 +115,12 @@ public class StateManager {
 		}
 	}
 
-	public boolean enterSearchMode(){
-		if (currentState != State.AVAILABLE){
-			return false;
-		}else{
-			setState(State.SEARCH_MODE);
-			return true;
-		}
+	private boolean enterSearchMode(){
+		setState(State.SEARCH_MODE);
+		return true;
 	}
 	
-	public boolean exitSearchMode(){
+	private boolean exitSearchMode(){
 		if (currentState == State.SEARCH_MODE){
 			setState(State.AVAILABLE);
 			return true;
