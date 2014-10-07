@@ -99,10 +99,16 @@ public class EditCommand implements Command {
             case "name" :
                 editTask.name = CommandParser.parseName(editParam);
                 break;
+            case "details" :
+            case "description" :
+                editTask.details = CommandParser.parseName(editParam);
+                break;
             case "date" :
+                CommandParser.parseDateTime(editParam, editTask);
                 // TODO modify date somehow
                 break;
             case "time" :
+                CommandParser.parseDateTime(editParam, editTask);
                 // TODO modify time somehow
                 break;
             case "tag" :
