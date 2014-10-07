@@ -36,6 +36,11 @@ public class EditCommand implements Command {
     }
 
     private TaskId parseTaskId(String args) {
+        assert args != null : "There should not be a null passed in.";
+        if (args.isEmpty()) {
+            return null;
+        }
+
         try {
             int relativeTaskId = Integer.parseInt(args);
             return searchManager.getAbsoluteIndex(relativeTaskId);
@@ -46,6 +51,12 @@ public class EditCommand implements Command {
     }
 
     private TaskInfo parseEditParams(String args) {
+        assert args != null : "There should not be a null passed in.";
+        if (args.isEmpty()) {
+            // edit mode
+            return null;
+        }
+
         Scanner sc = new Scanner(args);
         String editType = sc.next();
         String editParam = sc.nextLine();
@@ -75,6 +86,9 @@ public class EditCommand implements Command {
                 break;
             case "priority" :
                 editTask.priority = CommandParser.parsePriority("+" + editParam);
+                break;
+            case "" :
+                editTask = null;
                 break;
             default :
                 // something
