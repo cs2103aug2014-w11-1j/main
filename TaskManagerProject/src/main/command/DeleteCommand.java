@@ -17,10 +17,10 @@ public class DeleteCommand implements Command {
     private final TaskId taskId;
 
     public DeleteCommand(String args, ManagerHolder managerHolder) {
-        taskId = parse(args);
         deleteManager = managerHolder.getDeleteManager();
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
+        taskId = parse(args);
     }
 
     private TaskId parse(String args) {

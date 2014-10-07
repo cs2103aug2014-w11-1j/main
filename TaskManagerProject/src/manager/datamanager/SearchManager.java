@@ -113,7 +113,7 @@ public class SearchManager extends AbstractManager {
     }
 
     public TaskId getAbsoluteIndex(int relativeIndex) {
-        if (relativeIndex >= lastSearchedTaskIds.length) {
+        if (relativeIndex > lastSearchedTaskIds.length) {
             throw new IndexOutOfBoundsException();
         }
         return lastSearchedTaskIds[relativeIndex - 1];
