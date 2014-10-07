@@ -28,7 +28,11 @@ public class DeleteCommand implements Command {
     private TaskId parse(String args) {
         try {
             int relativeTaskId = Integer.parseInt(args);
-            return searchManager.getAbsoluteIndex(relativeTaskId);
+            if (stateManager.inSearchMode()) {
+                return searchManager.getAbsoluteIndex(relativeTaskId);
+            } else {
+                return null;
+            }
         } catch (NumberFormatException e) {
             String absoluteTaskId = args;
             return TaskId.makeTaskId(absoluteTaskId);
