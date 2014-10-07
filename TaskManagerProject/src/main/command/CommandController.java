@@ -40,6 +40,7 @@ public class CommandController {
             case "edit" :
                 return new EditCommand(cmdArgs, managerHolder);
             case "del" :
+            case "delete" :
                 return new DeleteCommand(cmdArgs, managerHolder);
             case "undo" :
                 return new UndoCommand(managerHolder);
