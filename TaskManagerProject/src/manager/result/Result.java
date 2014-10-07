@@ -22,7 +22,8 @@ public interface Result {
         TAG_DELETE_FAILURE,
         TAG_DELETE_SUCCESS,
         DETAILS,
-        INVALID_COMMAND
+        INVALID_COMMAND,
+        INVALID_ARGUMENT
     }
 
     public Type getType();    // implement this with the correct type.

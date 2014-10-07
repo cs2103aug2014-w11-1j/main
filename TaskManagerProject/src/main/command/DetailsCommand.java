@@ -1,6 +1,5 @@
 package main.command;
 
-import data.TaskId;
 import main.message.EnumMessage;
 import main.modeinfo.EmptyModeInfo;
 import main.response.Response;
@@ -8,6 +7,8 @@ import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
+import manager.result.SimpleResult;
+import data.TaskId;
 
 public class DetailsCommand implements Command {
     private final StateManager stateManager;
@@ -29,11 +30,19 @@ public class DetailsCommand implements Command {
         } catch (NumberFormatException e) {
             String absoluteTaskId = args;
             return TaskId.makeTaskId(absoluteTaskId);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
         }
     }
 
     @Override
     public Response execute() {
+        if (taskId == null) {
+            Result result = new SimpleResult(Result.Type.INVALID_ARGUMENT);
+            Response response = stateManager.update(result);
+            return response;
+        }
+        
         if (stateManager.canSearch()) {
             stateManager.beforeCommandExecutionUpdate();
 

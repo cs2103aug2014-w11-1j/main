@@ -59,6 +59,8 @@ public class EditCommand implements Command {
         } catch (NumberFormatException e) {
             String absoluteTaskId = args;
             return TaskId.makeTaskId(absoluteTaskId);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
         }
     }
 
@@ -109,6 +111,7 @@ public class EditCommand implements Command {
 
     @Override
     public Response execute() {
+        
         if (stateManager.canEdit()) {
             stateManager.beforeCommandExecutionUpdate();
 

@@ -287,6 +287,9 @@ public class StateManager {
 
             case INVALID_COMMAND : 
                 return new EnumMessage(MessageType.INVALID_COMMAND);
+
+            case INVALID_ARGUMENT : 
+                return new EnumMessage(MessageType.INVALID_ARGUMENT);
                 
             case DETAILS :
                 DetailsResult detailsResult = (DetailsResult)result;
