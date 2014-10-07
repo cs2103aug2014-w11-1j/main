@@ -38,6 +38,7 @@ public class TaskInfo {
         TaskInfo taskInfo = new TaskInfo();
         taskInfo.priority = Priority.defaultPriority();
         taskInfo.status = Status.defaultStatus();
+        taskInfo.tags = new Tag[0];
         return taskInfo;
     }
     
