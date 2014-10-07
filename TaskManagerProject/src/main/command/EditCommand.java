@@ -10,6 +10,7 @@ import manager.StateManager;
 import manager.datamanager.EditManager;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
+import manager.result.SimpleResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
@@ -47,6 +48,8 @@ public class EditCommand implements Command {
         } catch (NumberFormatException e) {
             String absoluteTaskId = args;
             return TaskId.makeTaskId(absoluteTaskId);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
         }
     }
 
@@ -101,6 +104,7 @@ public class EditCommand implements Command {
 
     @Override
     public Response execute() {
+        
         if (stateManager.canEdit()) {
             stateManager.beforeCommandExecutionUpdate();
 

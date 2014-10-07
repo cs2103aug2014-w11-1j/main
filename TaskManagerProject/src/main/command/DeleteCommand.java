@@ -8,6 +8,7 @@ import manager.StateManager;
 import manager.datamanager.DeleteManager;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
+import manager.result.SimpleResult;
 import data.TaskId;
 
 public class DeleteCommand implements Command {
@@ -31,11 +32,19 @@ public class DeleteCommand implements Command {
         } catch (NumberFormatException e) {
             String absoluteTaskId = args;
             return TaskId.makeTaskId(absoluteTaskId);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
         }
     }
 
     @Override
     public Response execute() {
+        if (taskId == null) {
+            Result result = new SimpleResult(Result.Type.INVALID_ARGUMENT);
+            Response response = stateManager.update(result);
+            return response;
+        }
+        
         if (stateManager.canDelete()) {
             stateManager.beforeCommandExecutionUpdate();
 
