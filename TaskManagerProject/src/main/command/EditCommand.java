@@ -14,17 +14,21 @@ import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class EditCommand implements Command {
+    private static final int TAG_ADD = 1;
+    private static final int TAG_DEL = -1;
+
     private final EditManager editManager;
     private final SearchManager searchManager;
     private final StateManager stateManager;
     private final TaskInfo taskToEdit;
     private final TaskId taskId;
+    private int tagOperation = 0;
 
     public EditCommand(String args, ManagerHolder managerHolder) {
         editManager = managerHolder.getEditManager();
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
-        
+
         Scanner sc = new Scanner(args);
         taskId = parseTaskId(sc.next());
         taskToEdit = parseEditParams(sc.nextLine());
@@ -59,11 +63,14 @@ public class EditCommand implements Command {
                 break;
             case "tag" :
                 editTask.tags = CommandParser.parseTags("#" + editParam);
-                String changeType = sc.next();
-                if (changeType.toLowerCase().equals("add")) {
-                    // do something
-                } else {
-                    // do something else
+                if (sc.hasNext()) {
+                    String changeType = sc.next();
+                    if (changeType.toLowerCase().equals("add")) {
+                        tagOperation = TAG_ADD;
+                    }
+                    if (changeType.toLowerCase().equals("del")){
+                        tagOperation = TAG_DEL;
+                    }
                 }
                 break;
             case "priority" :
@@ -87,7 +94,13 @@ public class EditCommand implements Command {
             if (taskToEdit == null) {
                 result = editManager.startEditMode(taskId);
             } else {
-                result = editManager.editTask(taskToEdit, taskId);
+                if (tagOperation == TAG_ADD) {
+                    result = editManager.addTaskTag(taskToEdit.tags[0], taskId);
+                } else if (tagOperation == TAG_DEL) {
+                    result = editManager.deleteTaskTag(taskToEdit.tags[0], taskId);
+                } else {
+                    result = editManager.editTask(taskToEdit, taskId);
+                }
             }
             Response response = stateManager.update(result);
             return response;
