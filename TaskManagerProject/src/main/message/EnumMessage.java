@@ -14,6 +14,10 @@ public class EnumMessage implements Message{
         SEARCH_FAILED,
         EDIT_STARTED,
         EDIT_ENDED,
+        UNDO_SUCCESS,
+        UNDO_FAILED,
+        REDO_SUCCESS,
+        REDO_FAILED,
         SEARCH_ENDED
     }    
     MessageType messageType;

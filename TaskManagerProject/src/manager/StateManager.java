@@ -281,9 +281,21 @@ public class StateManager {
             	return new EnumMessage(MessageType.SEARCH_SUCCESS);
             	//SearchModeInfo searchModeInfo = new SearchModeInfo(searchResult.getTasks(), searchResult.getTaskIds());
             	//response = new Response(searchSuccessMessage, searchModeInfo);
-            	
+                
             case SEARCH_FAILURE : 
-            	return new EnumMessage(MessageType.SEARCH_FAILED);
+                return new EnumMessage(MessageType.SEARCH_FAILED);
+                
+            case UNDO_SUCCESS : 
+                return new EnumMessage(MessageType.UNDO_SUCCESS);
+                
+            case UNDO_FAILURE : 
+                return new EnumMessage(MessageType.UNDO_FAILED);
+                
+            case REDO_SUCCESS : 
+                return new EnumMessage(MessageType.REDO_SUCCESS);
+                
+            case REDO_FAILURE : 
+                return new EnumMessage(MessageType.REDO_FAILED);
 
             case INVALID_COMMAND : 
                 return new EnumMessage(MessageType.INVALID_COMMAND);
