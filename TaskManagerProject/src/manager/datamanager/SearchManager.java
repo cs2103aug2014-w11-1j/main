@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import manager.datamanager.searchfilter.Filter;
+import manager.result.DetailsResult;
 import manager.result.Result;
 import manager.result.SearchResult;
 import data.TaskData;
@@ -110,6 +111,10 @@ public class SearchManager extends AbstractManager {
     public SearchResult getLastSearchResult() {
         return new SearchResult(Result.Type.SEARCH_SUCCESS,
                 lastSearchedTasks, lastSearchedTaskIds);
+    }
+    
+    public Result details(TaskId taskId) {
+        return new DetailsResult(taskData.getTaskInfo(taskId), taskId);
     }
 
     public TaskId getAbsoluteIndex(int relativeIndex) {
