@@ -147,7 +147,7 @@ public class EditCommand implements Command {
                     }
                 }
             } else {
-                result = new SimpleResult(Result.Type.INVALID_COMMAND);
+                result = new SimpleResult(Result.Type.INVALID_ARGUMENT);
             }
             Response response = stateManager.update(result);
             return response;
