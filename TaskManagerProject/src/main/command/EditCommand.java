@@ -91,29 +91,33 @@ public class EditCommand implements Command {
             sc.close();
             return null;
         }
-        String editParam = sc.nextLine().trim();
+        String editParam = "";
 
         TaskInfo editTask = TaskInfo.createEmpty();
 
         switch (editType.toLowerCase()) {
             case "name" :
+                editParam = sc.nextLine().trim();
                 editTask.name = CommandParser.parseName(editParam);
                 break;
             case "details" :
             case "description" :
+                editParam = sc.nextLine().trim();
                 editTask.details = CommandParser.parseName(editParam);
                 break;
             case "date" :
+                editParam = sc.nextLine().trim();
                 CommandParser.parseDateTime(editParam, editTask);
                 // TODO modify date somehow
                 break;
             case "time" :
+                editParam = sc.nextLine().trim();
                 CommandParser.parseDateTime(editParam, editTask);
                 // TODO modify time somehow
                 break;
             case "tag" :
+                String changeType = sc.next();
                 if (sc.hasNext()) {
-                    String changeType = sc.next();
                     if (changeType.toLowerCase().equals("add")) {
                         tagOperation = TAG_ADD;
                     }
@@ -126,6 +130,7 @@ public class EditCommand implements Command {
                 }
                 break;
             case "priority" :
+                editParam = sc.nextLine().trim();
                 Priority p = CommandParser.parsePriority("+" + editParam);
                 if (p != null) {
                     editTask.priority = p;
