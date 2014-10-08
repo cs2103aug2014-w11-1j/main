@@ -112,19 +112,16 @@ public class EditCommand implements Command {
                 // TODO modify time somehow
                 break;
             case "tag" :
-                int separation = editParam.indexOf(' ');
-                if (separation != -1) {
-                    String changeType = editParam.substring(0, separation).trim();
-                    String tagsString = editParam.substring(separation).trim();
-                    if (tagsString.length() > 0) {
-                        editTask.tags = CommandParser.parseTags("#" + tagsString);
-                        
-                        if (changeType.toLowerCase().equals("add")) {
-                            tagOperation = TAG_ADD;
-                        }
-                        if (changeType.toLowerCase().equals("del")){
-                            tagOperation = TAG_DEL;
-                        }
+                if (sc.hasNext()) {
+                    String changeType = sc.next();
+                    if (changeType.toLowerCase().equals("add")) {
+                        tagOperation = TAG_ADD;
+                    }
+                    if (changeType.toLowerCase().equals("del")){
+                        tagOperation = TAG_DEL;
+                    }
+                    if (tagOperation == TAG_ADD || tagOperation == TAG_DEL) {
+                        editTask.tags = CommandParser.parseTags("#" + editParam);
                     }
                 }
                 break;
