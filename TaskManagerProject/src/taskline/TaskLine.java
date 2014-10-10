@@ -11,12 +11,13 @@ import data.TaskData;
  * 
  * @author Oh
  */
-public class TaskLine {
+public class Taskline {
     
     public static void main(String[] args) {
+        String fileName = "tasks.txt";
         
         TaskData taskData = new TaskData();
-        FileInputOutput fileInputOutput = new FileInputOutput(taskData); 
+        FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName); 
         ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput);
         MainController mainController = new MainController(managerHolder);
         UIDisplay uiDisplay = new UIDisplay(mainController);

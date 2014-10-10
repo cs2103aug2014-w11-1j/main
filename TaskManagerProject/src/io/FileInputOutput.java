@@ -15,12 +15,13 @@ import data.taskinfo.TaskInfo;
 
 public class FileInputOutput {
     
-    private final String fileName = "tasks.txt";
+    private final String fileName;
     private String fileHash = "";
     
     private final TaskData taskData;
     
-    public FileInputOutput(TaskData taskData) {
+    public FileInputOutput(TaskData taskData, String fileName) {
+        this.fileName = fileName;
         this.taskData = taskData;
     }
     

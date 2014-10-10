@@ -117,7 +117,7 @@ class StubFileInputOutput extends FileInputOutput {
     private final TestOutput testOutput;
 
     public StubFileInputOutput(TestOutput testOutput) {
-        super(null);
+        super(null, "testFile.txt");
         this.testOutput = testOutput;
     }
 
