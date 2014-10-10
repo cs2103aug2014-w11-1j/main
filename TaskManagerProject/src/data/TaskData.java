@@ -355,7 +355,7 @@ public class TaskData {
      * Used after an undo so that you don't undo an undo. :D
      */
     public void discardUndoSnapshot() {
-        undoSnapshot = new UndoSnapshot();
+        undoSnapshot = new UndoSnapshot(this);
     }
     
     /**
@@ -376,7 +376,7 @@ public class TaskData {
         nextTaskList = new ArrayList<>();
         previousTaskList = new ArrayList<>();
         
-        undoSnapshot = new UndoSnapshot();
+        undoSnapshot = new UndoSnapshot(this);
         size = 0;
         hasUnsavedChanges = false;
     }

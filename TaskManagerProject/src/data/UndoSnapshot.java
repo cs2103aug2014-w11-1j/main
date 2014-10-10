@@ -13,8 +13,10 @@ import data.taskinfo.TaskInfo;
  */
 public class UndoSnapshot {
     private ArrayList<UndoTaskSnapshot> taskSnapshotList;
+    private final TaskData taskData;
     
-    public UndoSnapshot() {
+    public UndoSnapshot(TaskData taskData) {
+        this.taskData = taskData;
         taskSnapshotList = new ArrayList<>();
     }
     
@@ -36,9 +38,35 @@ public class UndoSnapshot {
      * @return a list of all the individual task snapshots - the previous state
      * for all the tasks that have been modified in the last action.
      */
-    public ArrayList<UndoTaskSnapshot> retrieveTaskSnapshots() {
+    private ArrayList<UndoTaskSnapshot> retrieveTaskSnapshots() {
         ArrayList<UndoTaskSnapshot> tempList = taskSnapshotList;
         taskSnapshotList = null;
         return tempList;
     }
+    
+
+    public void applySnapshotChange() {
+        ArrayList<UndoTaskSnapshot> taskSnapshotList = retrieveTaskSnapshots();
+        for (UndoTaskSnapshot undoTaskSnapshot : taskSnapshotList) {
+            undoTaskChange(undoTaskSnapshot);
+        }
+    }
+
+    private void undoTaskChange(UndoTaskSnapshot undoTaskSnapshot) {
+        TaskId taskId = undoTaskSnapshot.getTaskId();
+        TaskInfo taskInfo = undoTaskSnapshot.getTaskInfo();
+        
+        if (taskInfo == UndoTaskSnapshot.NO_TASK) {
+            taskData.remove(taskId);
+            
+        } else {
+            if (taskData.taskExists(taskId)) {
+                taskData.setTaskInfo(taskId, taskInfo);
+            } else {
+                taskData.addTaskWithSpecificId(taskInfo, taskId);
+            }
+        }
+    }
+    
+    
 }

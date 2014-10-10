@@ -45,7 +45,7 @@ public class UndoManager extends AbstractManager {
         
         UndoSnapshot undoSnapshot = undoHistory.pop();
         
-        applySnapshotChange(undoSnapshot);
+        undoSnapshot.applySnapshotChange();
         
         retrieveRedoSnapshot();
         
@@ -60,20 +60,13 @@ public class UndoManager extends AbstractManager {
         
         UndoSnapshot redoSnapshot = redoHistory.pop();
         
-        applySnapshotChange(redoSnapshot);
+        redoSnapshot.applySnapshotChange();
         
         retrieveUndoSnapshot();
         
         return new SimpleResult(Result.Type.REDO_SUCCESS);
     }
     
-
-    private void applySnapshotChange(UndoSnapshot undoSnapshot) {
-        ArrayList<UndoTaskSnapshot> taskSnapshotList = undoSnapshot.retrieveTaskSnapshots();
-        for (UndoTaskSnapshot undoTaskSnapshot : taskSnapshotList) {
-            undoTaskChange(undoTaskSnapshot);
-        }
-    }
     
     
     private void clearRedoHistory() {
@@ -89,22 +82,6 @@ public class UndoManager extends AbstractManager {
     private void retrieveRedoSnapshot() {
         UndoSnapshot redoSnapshot = taskData.retrieveUndoSnapshot();
         redoHistory.push(redoSnapshot);
-    }
-
-    private void undoTaskChange(UndoTaskSnapshot undoTaskSnapshot) {
-        TaskId taskId = undoTaskSnapshot.getTaskId();
-        TaskInfo taskInfo = undoTaskSnapshot.getTaskInfo();
-        
-        if (taskInfo == UndoTaskSnapshot.NO_TASK) {
-            taskData.remove(taskId);
-            
-        } else {
-            if (taskData.taskExists(taskId)) {
-                taskData.setTaskInfo(taskId, taskInfo);
-            } else {
-                taskData.addTaskWithSpecificId(taskInfo, taskId);
-            }
-        }
     }
     
 }
