@@ -82,6 +82,10 @@ public class StateManager {
         return true;
         //return currentState == State.AVAILABLE;
 	}
+
+    public boolean canGoBack() {
+        return inEditMode() || inSearchMode();
+    }
     
     public boolean inEditMode() {
         return inState(State.EDIT_MODE);

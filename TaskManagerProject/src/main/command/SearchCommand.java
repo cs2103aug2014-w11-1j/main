@@ -4,9 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.message.EnumMessage;
-import main.modeinfo.EmptyModeInfo;
-import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.SearchManager;
@@ -25,6 +22,7 @@ public class SearchCommand extends Command {
     private final List<Filter> filterList;
 
     public SearchCommand(String args, ManagerHolder managerHolder) {
+        super(managerHolder);
         searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
 
@@ -66,19 +64,20 @@ public class SearchCommand extends Command {
     }
 
     @Override
-    public Response execute() {
-        if (stateManager.canSearch()) {
-            stateManager.beforeCommandExecutionUpdate();
+    protected boolean isValidArguments() {
+        return true;
+    }
 
-            Result result = searchManager.searchTasks(
-                    filterList.toArray(new Filter[filterList.size()]));
-            Response response = stateManager.update(result);
-            return response;
-        } else {
-            EnumMessage message = EnumMessage.cannotExecuteCommand();
-            EmptyModeInfo modeInfo = new EmptyModeInfo();
-            return new Response(message, modeInfo);
-        }
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canSearch();
+    }
+
+    @Override
+    protected Result executeAction() {
+        Filter[] filters = filterList.toArray(new Filter[filterList.size()]);
+        Result result = searchManager.searchTasks(filters);
+        return result;
     }
 
 }

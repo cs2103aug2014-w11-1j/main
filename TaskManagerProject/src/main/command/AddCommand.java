@@ -1,8 +1,5 @@
 package main.command;
 
-import main.message.EnumMessage;
-import main.modeinfo.EmptyModeInfo;
-import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.AddManager;
@@ -15,6 +12,7 @@ public class AddCommand extends Command {
     private final TaskInfo taskToAdd;
 
     public AddCommand(String args, ManagerHolder managerHolder) {
+        super(managerHolder);
         addManager = managerHolder.getAddManager();
         stateManager = managerHolder.getStateManager();
         
@@ -27,18 +25,19 @@ public class AddCommand extends Command {
     }
 
     @Override
-    public Response execute() {
-        if (stateManager.canAdd()) {
-            stateManager.beforeCommandExecutionUpdate();
+    protected boolean isValidArguments() {
+        return true;
+    }
 
-            Result result = addManager.addTask(taskToAdd);
-            Response response = stateManager.update(result);
-            return response;
-        } else {
-            EnumMessage message = EnumMessage.cannotExecuteCommand();
-            EmptyModeInfo modeInfo = new EmptyModeInfo();
-            return new Response(message, modeInfo);
-        }
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canAdd();
+    }
+
+    @Override
+    protected Result executeAction() {
+        Result result = addManager.addTask(taskToAdd);
+        return result;
     }
 
 }

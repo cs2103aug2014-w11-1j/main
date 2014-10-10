@@ -10,13 +10,23 @@ public class BackCommand extends Command {
     private final StateManager stateManager;
 
     public BackCommand (ManagerHolder managerHolder) {
+        super(managerHolder);
         stateManager = managerHolder.getStateManager();
     }
 
     @Override
-    public Response execute() {
+    protected boolean isValidArguments() {
+        return true;
+    }
+
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canGoBack();
+    }
+
+    @Override
+    protected Result executeAction() {
         Result result = new SimpleResult(Result.Type.GO_BACK);
-        Response response = stateManager.update(result);
-        return response;
+        return result;
     }
 }

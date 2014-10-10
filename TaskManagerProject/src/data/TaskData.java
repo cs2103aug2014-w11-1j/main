@@ -338,6 +338,7 @@ public class TaskData {
     public boolean remove(TaskId taskId) {
         return deleteTask(taskId.id);
     }
+
     
     /**
      * Retrieves the undo snapshot holding the previous state of all tasks
@@ -357,6 +358,15 @@ public class TaskData {
     public void discardUndoSnapshot() {
         undoSnapshot = new UndoSnapshot(this);
     }
+    
+    /**
+     * Use to reverse all the changes in the last undo snapshot.
+     */
+    public void reverseLastChange() {
+        undoSnapshot.applySnapshotChange();
+        discardUndoSnapshot();
+    }
+    
     
     /**
      * Call this whenever a save is successful so that TaskData knows it no

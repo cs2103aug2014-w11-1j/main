@@ -3,15 +3,11 @@ package main.command;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import main.message.EnumMessage;
-import main.modeinfo.EmptyModeInfo;
-import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.EditManager;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
-import manager.result.SimpleResult;
 import data.TaskId;
 import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
@@ -21,7 +17,6 @@ public class EditCommand extends Command {
     private static final int TAG_DEL = -1;
 
     private final EditManager editManager;
-    private final SearchManager searchManager;
     private final StateManager stateManager;
     private final TaskId taskId;
     private final TaskInfo taskToEdit;
@@ -29,8 +24,8 @@ public class EditCommand extends Command {
 
     public EditCommand(String args, ManagerHolder managerHolder)
             throws NoSuchElementException {
+        super(managerHolder);
         editManager = managerHolder.getEditManager();
-        searchManager = managerHolder.getSearchManager();
         stateManager = managerHolder.getStateManager();
 
         // check if in edit mode
@@ -53,28 +48,6 @@ public class EditCommand extends Command {
                 taskToEdit = null;
             }
             sc.close();
-        }
-    }
-
-    private TaskId parseTaskId(String args) {
-        // should return null if in edit mode
-        assert args != null : "There should not be a null passed in.";
-        if (args.isEmpty()) {
-            return null;
-        }
-
-        try {
-            int relativeTaskId = Integer.parseInt(args);
-            if (stateManager.inSearchMode()) {
-                return searchManager.getAbsoluteIndex(relativeTaskId);
-            } else {
-                return null;
-            }
-        } catch (NumberFormatException e) {
-            String absoluteTaskId = args;
-            return TaskId.makeTaskId(absoluteTaskId);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
         }
     }
 
@@ -125,6 +98,7 @@ public class EditCommand extends Command {
                         tagOperation = TAG_DEL;
                     }
                     if (tagOperation == TAG_ADD || tagOperation == TAG_DEL) {
+                        editParam = sc.next();
                         editTask.tags = CommandParser.parseTags("#" + editParam);
                     }
                 }
@@ -145,38 +119,35 @@ public class EditCommand extends Command {
         return editTask;
     }
 
-    @Override
-    public Response execute() {
-        if (stateManager.canEdit()) {
-            stateManager.beforeCommandExecutionUpdate();
-
-            Result result;
-            if (taskId != null) {
-                if (taskToEdit == null) {
-                    result = editManager.startEditMode(taskId);
-                } else {
-                    if (tagOperation == TAG_ADD) {
-                        result = editManager.addTaskTag(taskToEdit.tags[0], taskId);
-                    } else if (tagOperation == TAG_DEL) {
-                        result = editManager.deleteTaskTag(taskToEdit.tags[0], taskId);
-                    } else {
-                        result = editManager.editTask(taskToEdit, taskId);
-                    }
-                }
-            } else {
-                result = new SimpleResult(Result.Type.INVALID_ARGUMENT);
-            }
-            Response response = stateManager.update(result);
-            return response;
-        } else {
-            EnumMessage message = EnumMessage.cannotExecuteCommand();
-            EmptyModeInfo modeInfo = new EmptyModeInfo();
-            return new Response(message, modeInfo);
-        }
-    }
-
     public TaskId convertStringtoTaskId(String stringId){
     	return TaskId.makeTaskId(stringId);
+    }
+
+    @Override
+    protected boolean isValidArguments() {
+        return taskId != null;
+    }
+
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canEdit();
+    }
+
+    @Override
+    protected Result executeAction() {
+        Result result;
+        if (taskToEdit == null) {
+            result = editManager.startEditMode(taskId);
+        } else {
+            if (tagOperation == TAG_ADD) {
+                result = editManager.addTaskTag(taskToEdit.tags[0], taskId);
+            } else if (tagOperation == TAG_DEL) {
+                result = editManager.deleteTaskTag(taskToEdit.tags[0], taskId);
+            } else {
+                result = editManager.editTask(taskToEdit, taskId);
+            }
+        }
+        return result;
     }
 
 }
