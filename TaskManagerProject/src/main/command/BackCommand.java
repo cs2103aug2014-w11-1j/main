@@ -6,7 +6,7 @@ import manager.StateManager;
 import manager.result.Result;
 import manager.result.SimpleResult;
 
-public class BackCommand implements Command {
+public class BackCommand extends Command {
     private final StateManager stateManager;
 
     public BackCommand (ManagerHolder managerHolder) {

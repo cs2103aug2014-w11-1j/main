@@ -8,7 +8,7 @@ import manager.StateManager;
 import manager.datamanager.UndoManager;
 import manager.result.Result;
 
-public class UndoCommand implements Command {
+public class UndoCommand extends Command {
     private final UndoManager undoManager;
     private final StateManager stateManager;
 

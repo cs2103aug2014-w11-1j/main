@@ -16,7 +16,7 @@ import data.TaskId;
 import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
-public class EditCommand implements Command {
+public class EditCommand extends Command {
     private static final int TAG_ADD = 1;
     private static final int TAG_DEL = -1;
 

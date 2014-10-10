@@ -19,7 +19,7 @@ import manager.result.Result;
 import data.taskinfo.Priority;
 import data.taskinfo.Tag;
 
-public class SearchCommand implements Command {
+public class SearchCommand extends Command {
     private final SearchManager searchManager;
     private final StateManager stateManager;
     private final List<Filter> filterList;

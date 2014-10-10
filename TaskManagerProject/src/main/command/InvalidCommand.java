@@ -6,7 +6,7 @@ import manager.StateManager;
 import manager.result.Result;
 import manager.result.SimpleResult;
 
-public class InvalidCommand implements Command {
+public class InvalidCommand extends Command {
     private final StateManager stateManager;
 
     public InvalidCommand(ManagerHolder managerHolder) {

@@ -11,7 +11,7 @@ import manager.result.Result;
 import manager.result.SimpleResult;
 import data.TaskId;
 
-public class DeleteCommand implements Command {
+public class DeleteCommand extends Command {
     private final DeleteManager deleteManager;
     private final SearchManager searchManager;
     private final StateManager stateManager;

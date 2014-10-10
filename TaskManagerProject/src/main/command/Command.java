@@ -1,7 +1,7 @@
 package main.command;
 import main.response.Response;
 
-public interface Command {
+public abstract class Command {
     
-    public Response execute();
+    public abstract Response execute();
 }

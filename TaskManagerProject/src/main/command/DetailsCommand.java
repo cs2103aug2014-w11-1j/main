@@ -10,7 +10,7 @@ import manager.result.Result;
 import manager.result.SimpleResult;
 import data.TaskId;
 
-public class DetailsCommand implements Command {
+public class DetailsCommand extends Command {
     private final StateManager stateManager;
     private final SearchManager searchManager;
     

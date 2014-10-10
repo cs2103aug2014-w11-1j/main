@@ -9,7 +9,7 @@ import manager.datamanager.AddManager;
 import manager.result.Result;
 import data.taskinfo.TaskInfo;
 
-public class AddCommand implements Command {
+public class AddCommand extends Command {
     private final AddManager addManager;
     private final StateManager stateManager;
     private final TaskInfo taskToAdd;
