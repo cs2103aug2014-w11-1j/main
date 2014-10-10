@@ -109,7 +109,7 @@ public class EditManager extends AbstractManager {
      * @param modifTask changes to be modified
      * @return modified TaskInfo
      */
-    public TaskInfo mergeTasks(TaskInfo originTask, TaskInfo modifTask ){
+    private TaskInfo mergeTasks(TaskInfo originTask, TaskInfo modifTask ){
     	TaskInfo mergedTask = new TaskInfo(originTask);
     	if (modifTask.name != null){
     		mergedTask.name = modifTask.name;
@@ -142,7 +142,7 @@ public class EditManager extends AbstractManager {
     }
     
    
-    public EditSuccessfulMessage.Field[] setChangedFields(TaskInfo taskInfo){
+    private EditSuccessfulMessage.Field[] setChangedFields(TaskInfo taskInfo){
     	
         ArrayList<EditSuccessfulMessage.Field> fields = 
                 new ArrayList<EditSuccessfulMessage.Field>();
