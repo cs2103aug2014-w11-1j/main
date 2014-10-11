@@ -25,10 +25,24 @@ public abstract class TargetedCommand extends Command {
         stateManager = managerHolder.getStateManager();
     }
 
-    public void setTargetSet(){}
+    /**
+     * Add target taskIds to a stored TargetedCommand, so that the command
+     * will be executed on this taskIds.
+     * @param taskIds taskIds to be added.
+     */
+    public void addTargets(TaskId[] taskIds){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
-    public String tryParseIdsIntoSet(String args) {
-        
+    /**
+     * Attempts to parse a String containing Task IDs into the targetTaskIdSet.
+     * targetTaskIdSet will be set to null if this is unsuccessful.
+     * @param args A string that possibly specifies task IDs. The task IDs
+     * should be at the front of the string.
+     * @return The remaining string that after cutting out the task ids.<br>
+     * returns the original string if parsing is unsuccessful.
+     */
+    protected String tryParseIdsIntoSet(String args) {
         targetTaskIdSet = new TaskIdSet();
         try {
             String remainingArgs = parseIdsIntoSet(args);
@@ -37,6 +51,38 @@ public abstract class TargetedCommand extends Command {
         } catch (IllegalArgumentException e) {
             targetTaskIdSet = null;
             return args;
+        }
+    }
+    
+    /**
+     * Parse a string as a substitute for Task IDs and make this command
+     * execute a search instead, and store itself in StateManager for later
+     * execution by the confirmation.
+     * @param searchString
+     */
+    protected void parseAsSearchString(String searchString) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    /**
+     * @param args String form of task ID. Can be relative or absolute.
+     * @return a TaskId object corresponding to the relative or absolute id.<br>
+     * null if it is unsuccessful. (e.g. not in search mode for relative ids).
+     */
+    protected TaskId parseTaskId(String args) {
+        assert args != null : "There should not be a null passed in.";
+        if (args.isEmpty()) {
+            return null;
+        }
+        
+        try {
+            int relativeTaskId = Integer.parseInt(args);
+            return retrieveRelativeTaskId(relativeTaskId);
+        } catch (NumberFormatException e) {
+            String absoluteTaskId = args;
+            return TaskId.makeTaskId(absoluteTaskId);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
         }
     }
     
@@ -134,32 +180,6 @@ public abstract class TargetedCommand extends Command {
                 throw new IllegalArgumentException("Invalid range");
             }
             targetTaskIdSet.add(taskId);
-        }
-    }
-
-    protected void parseAsSearchString(String searchString) {
-        
-    }
-
-    /**
-     * 
-     * @param args
-     * @return null iff invalid task Id.
-     */
-    protected TaskId parseTaskId(String args) {
-        assert args != null : "There should not be a null passed in.";
-        if (args.isEmpty()) {
-            return null;
-        }
-        
-        try {
-            int relativeTaskId = Integer.parseInt(args);
-            return retrieveRelativeTaskId(relativeTaskId);
-        } catch (NumberFormatException e) {
-            String absoluteTaskId = args;
-            return TaskId.makeTaskId(absoluteTaskId);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
         }
     }
 

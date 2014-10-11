@@ -18,7 +18,7 @@ public class TaskIdSet implements Iterable<TaskId>{
     }
 
     /**
-     * Returns a non-modifiable iterator for the TargetIdSet.
+     * @return a non-modifiable iterator for the TargetIdSet.
      */
     @Override
     public Iterator<TaskId> iterator() {

@@ -4,7 +4,6 @@ import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.DeleteManager;
 import manager.result.Result;
-import data.TaskId;
 
 public class DeleteCommand extends TargetedCommand {
     private final DeleteManager deleteManager;
