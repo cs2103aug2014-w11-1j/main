@@ -20,10 +20,11 @@ public class KeywordFilter implements Filter{
         if (details == null) {
             return false;
         }
-        Pattern pattern = Pattern.compile("[A-Za-z0-9]*");
+        Pattern pattern = Pattern.compile("[A-Za-z0-9]+");
         Matcher matcher = pattern.matcher(details);
         while (matcher.find()) {
-            if (keyword.equals(matcher.group())) {
+            if (keyword.toLowerCase().equals(
+                    matcher.group().toLowerCase())) {
                 return true;
             }
         }
