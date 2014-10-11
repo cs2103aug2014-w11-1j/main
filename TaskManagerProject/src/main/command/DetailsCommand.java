@@ -6,7 +6,7 @@ import manager.datamanager.SearchManager;
 import manager.result.Result;
 import data.TaskId;
 
-public class DetailsCommand extends Command {
+public class DetailsCommand extends TargetedCommand {
     private final StateManager stateManager;
     private final SearchManager searchManager;
     
