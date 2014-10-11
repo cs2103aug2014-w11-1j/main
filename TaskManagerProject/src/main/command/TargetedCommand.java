@@ -77,12 +77,10 @@ public abstract class TargetedCommand extends Command {
         
         try {
             int relativeTaskId = Integer.parseInt(args);
-            return retrieveRelativeTaskId(relativeTaskId);
+            return retrieveAbsoluteTaskId(relativeTaskId);
         } catch (NumberFormatException e) {
             String absoluteTaskId = args;
             return TaskId.makeTaskId(absoluteTaskId);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
         }
     }
     
@@ -98,9 +96,9 @@ public abstract class TargetedCommand extends Command {
             char c = args.charAt(currentIndex);
             
             if (c == DELIMITER_COMMA) {
-                lastTokenHadDelimiter = true;
                 idStrings.add(args.substring(tokenStart, currentIndex));
                 tokenStart = currentIndex+1;
+                lastTokenHadDelimiter = true;
                 readingCharacters = false;
                 
             } else if (c == DELIMITER_DASH) {
@@ -111,17 +109,12 @@ public abstract class TargetedCommand extends Command {
                 readingCharacters = false;
                 
             } else {
-                if (!readingCharacters) {
-                    readingCharacters = true;
-                    
-                    if (lastTokenHadDelimiter) {
-                        lastTokenHadDelimiter = false;
-                    } else {
-                        break;
-                    }
+                if (!readingCharacters && !lastTokenHadDelimiter) {
+                    break;
                 }
+                lastTokenHadDelimiter = false;
+                readingCharacters = true;
             }
-            
             currentIndex++;
         }
 
@@ -175,7 +168,7 @@ public abstract class TargetedCommand extends Command {
         }
         
         for (int i = rangeStart; i <= rangeEnd; i++) { 
-            TaskId taskId = retrieveRelativeTaskId(i);
+            TaskId taskId = retrieveAbsoluteTaskId(i);
             if (taskId == null) {
                 throw new IllegalArgumentException("Invalid range");
             }
@@ -183,9 +176,14 @@ public abstract class TargetedCommand extends Command {
         }
     }
 
-    private TaskId retrieveRelativeTaskId(int relativeTaskId) {
+    private TaskId retrieveAbsoluteTaskId(int relativeTaskId) {
         if (stateManager.inSearchMode()) {
-            return searchManager.getAbsoluteIndex(relativeTaskId);
+            try {
+                TaskId result = searchManager.getAbsoluteIndex(relativeTaskId);
+                return result;
+            } catch (IndexOutOfBoundsException e) {
+                return null;
+            }
         } else {
             return null;
         }
