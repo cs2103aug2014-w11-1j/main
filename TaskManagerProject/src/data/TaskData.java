@@ -41,6 +41,10 @@ public class TaskData {
         initializeTaskData();
     }
 
+    public ArrayList<Task> getTaskList(){
+    	return taskList;
+    }
+    
     public TaskId getFirst() {
         return new TaskId(firstTask);
     }
@@ -390,8 +394,7 @@ public class TaskData {
         size = 0;
         hasUnsavedChanges = false;
     }
-    
-    
+        
     private int maxTasks() {
         return TaskId.MAX_ID;
     }

@@ -96,6 +96,24 @@ public class TaskInfo {
         return result;
     }
 
+    // To be implemented
+    public LocalDate getStartDate(){
+    	return null;
+    }
+    
+    // To be implemented
+    public LocalTime getStartTime(){
+    	return null;
+    }
+    
+    public LocalDate getEndDate(){
+    	return endDate;
+    }
+    
+    public LocalTime getEndTime(){
+    	return endTime;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         
@@ -236,4 +254,5 @@ public class TaskInfo {
         return true;
     }
 
+ 
 }
