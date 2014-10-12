@@ -42,6 +42,7 @@ public class StateManager {
 	private final SearchManager searchManager;
 	private State currentState;
 	private TaskId editingTaskId;
+	private UpdateManager updateManager;
 	//private Response response;
 
 	public enum State {
@@ -56,6 +57,8 @@ public class StateManager {
 		this.undoManager = undoManager;
 		this.searchManager = searchManager;
 		this.currentState = State.AVAILABLE;
+		
+		this.updateManager = new UpdateManager(fileInputOutput, undoManager, searchManager);
 	}
 
 	public boolean canAdd() {
@@ -139,12 +142,13 @@ public class StateManager {
 	 */
 	public Response update(Result result) {
         
-        undoManager.updateUndoHistory();
+//        undoManager.updateUndoHistory();.
+		updateManager.updateUndoHistory();
         
         Message message = applyResult(result);
         ModeInfo modeInfo = generateModeInfo(result);
         
-        writeToFile();
+        updateManager.writeToFile();
         
         searchModeCheck(result);
         
@@ -191,18 +195,22 @@ public class StateManager {
 	 */
 	private ModeInfo searchModeCheck(Result result) {
 		if (result.getType() != Type.SEARCH_SUCCESS) {
-		    searchManager.redoLastSearch();
+//		    searchManager.redoLastSearch();
+			updateManager.redoSearch();
 		}
 		
-        SearchResult redoSearchResult = searchManager.getLastSearchResult();
-        TaskInfo[] tasks = redoSearchResult.getTasks();
-        TaskId[] taskIds = redoSearchResult.getTaskIds();
-        SearchModeInfo searchModeInfo = new SearchModeInfo(tasks, taskIds);
-        return searchModeInfo;
+//        SearchResult redoSearchResult = searchManager.getLastSearchResult();
+//        TaskInfo[] tasks = redoSearchResult.getTasks();
+//        TaskId[] taskIds = redoSearchResult.getTaskIds();
+//        SearchModeInfo searchModeInfo = new SearchModeInfo(tasks, taskIds);
+//        return searchModeInfo;
+		
+		return updateManager.getSearchModeInfo();
 	}
 	
 	private ModeInfo editModeCheck(Result result) {
-	    TaskInfo taskInfo = searchManager.getTaskInfo(editingTaskId);
+//	    TaskInfo taskInfo = searchManager.getTaskInfo(editingTaskId);
+		TaskInfo taskInfo = updateManager.getTaskInfo(editingTaskId);
         return new EditModeInfo(taskInfo, editingTaskId);
 	}
 
@@ -332,18 +340,7 @@ public class StateManager {
      * This method is called just before every command execution.
      */
     public void beforeCommandExecutionUpdate() {
-        boolean fileChanged = readFromFile();
-        
-        if (fileChanged) {
-            undoManager.clearUndoHistory();
-        }
+       updateManager.preExecutionCheck();
     }
 
-    private boolean readFromFile() {
-        return fileInputOutput.read();
-    }
-
-    private boolean writeToFile() {
-        return fileInputOutput.write();
-    }
 }
