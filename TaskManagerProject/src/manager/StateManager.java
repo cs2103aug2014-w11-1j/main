@@ -11,7 +11,6 @@ import main.message.Message;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.modeinfo.ModeInfo;
-import main.modeinfo.SearchModeInfo;
 import main.response.Response;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
@@ -21,7 +20,6 @@ import manager.result.DetailsResult;
 import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.Result.Type;
-import manager.result.SearchResult;
 import manager.result.StartEditModeResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
@@ -37,9 +35,6 @@ import data.taskinfo.TaskInfo;
  */
 public class StateManager {
 
-    private final FileInputOutput fileInputOutput;
-	private final UndoManager undoManager;
-	private final SearchManager searchManager;
 	private State currentState;
 	private TaskId editingTaskId;
 	private UpdateManager updateManager;
@@ -53,11 +48,7 @@ public class StateManager {
 	}
 
 	public StateManager(FileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager) {
-	    this.fileInputOutput = fileInputOutput;
-		this.undoManager = undoManager;
-		this.searchManager = searchManager;
-		this.currentState = State.AVAILABLE;
-		
+		this.currentState = State.AVAILABLE;	
 		this.updateManager = new UpdateManager(fileInputOutput, undoManager, searchManager);
 	}
 
