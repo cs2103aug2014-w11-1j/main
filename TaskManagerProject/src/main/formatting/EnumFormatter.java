@@ -2,6 +2,11 @@ package main.formatting;
 
 import main.message.EnumMessage;
 
+/**
+ * Formatter for EnumMessage.
+ * @author nathanajah
+ *
+ */
 public class EnumFormatter {
     
     private final static String MESSAGE_INVALID_ARGUMENT = 
@@ -49,6 +54,11 @@ public class EnumFormatter {
             System.lineSeparator();
     private final static String MESSAGE_EMPTY = "";
 
+    /**
+     * Format an EnumMessage.
+     * @param message The EnumMessage that needs to be formatted.
+     * @return The message, formatted to a String.
+     */
     public String format(EnumMessage message) {
         String formattedResult;
         switch(message.getMessageType()) {

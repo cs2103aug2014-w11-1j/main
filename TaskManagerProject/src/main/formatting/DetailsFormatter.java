@@ -36,6 +36,11 @@ public class DetailsFormatter {
         return builder.toString();
     }
     
+    /**
+     * Format the DetailsMessage to a String.
+     * @param message The DetailsMessage to be formatted.
+     * @return The formatted Message.
+     */
     public String format(DetailsMessage message) {
         TaskInfo task = message.getTask();
         TaskId taskId = message.getTaskId();
