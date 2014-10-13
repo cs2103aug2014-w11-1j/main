@@ -46,7 +46,7 @@ public class UpdateManager {
 		 boolean fileChanged = readFromFile();
 	        
 	        if (fileChanged) {
-	            undoManager.clearUndoHistory();
+	            undoManager.clearHistory();
 	        }
 	    }
 
