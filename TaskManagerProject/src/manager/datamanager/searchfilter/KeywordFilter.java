@@ -16,7 +16,7 @@ public class KeywordFilter implements Filter{
         this.keywords = keywords;
     }
     
-    public boolean match(String keyword, String details) {
+    private boolean match(String keyword, String details) {
         if (details == null) {
             return false;
         }
