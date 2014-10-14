@@ -8,7 +8,6 @@ import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
 import manager.result.SimpleResult;
-
 import org.junit.Test;
 
 import data.TaskId;

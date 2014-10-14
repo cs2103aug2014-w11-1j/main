@@ -14,6 +14,8 @@ import data.TaskData;
 public class Taskline {
 
     public static void main(String[] args) {
+        //setupLogger();
+        
         String fileName = "tasks.txt";
 
         TaskData taskData = new TaskData();
@@ -30,4 +32,27 @@ public class Taskline {
             uiDisplay.commandLoopIteration();
         }
     }
+    
+    /*public static void setupLogger() {
+        Logger log = Logger.getLogger("ASDDSAD");  
+        log.setUseParentHandlers(false);
+        FileHandler fileHandler;  
+
+        try {  
+            fileHandler = new FileHandler("taskline.log", 1000000, 1, true);
+            SimpleFormatter formatter = new SimpleFormatter();  
+            fileHandler.setFormatter(formatter);  
+            
+            log.addHandler(fileHandler);
+            
+        } catch (SecurityException e) {  
+            e.printStackTrace();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+
+        log.info("Test log.");  
+
+        log.log(Level.ALL, "GIGIGI LOGGING");
+    }*/
 }

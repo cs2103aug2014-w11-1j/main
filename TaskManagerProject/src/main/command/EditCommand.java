@@ -17,7 +17,7 @@ public class EditCommand extends TargetedCommand {
 
     private final EditManager editManager;
     private final StateManager stateManager;
-    private final TaskId taskId;
+    //private final TaskId taskId;
     private final TaskInfo taskToEdit;
     private int tagOperation = 0;
 
@@ -30,11 +30,14 @@ public class EditCommand extends TargetedCommand {
         // check if in edit mode
         if (stateManager.inEditMode()) {
             // edit mode
-            taskId = editManager.getEditingTask();
+            targetTaskIdSet = editManager.getEditingTasks();
             taskToEdit = parseEditParams(args);
         } else {
             // not edit mode
-            Scanner sc = new Scanner(args);
+            args = tryParseIdsIntoSet(args);
+            taskToEdit = parseEditParams(args);
+            
+            /*Scanner sc = new Scanner(args);
             if (sc.hasNext()) {
                 taskId = parseTaskId(sc.next());
                 if (sc.hasNext()) {
@@ -46,7 +49,7 @@ public class EditCommand extends TargetedCommand {
                 taskId = null;
                 taskToEdit = null;
             }
-            sc.close();
+            sc.close();*/
         }
     }
 
@@ -110,7 +113,7 @@ public class EditCommand extends TargetedCommand {
                 }
                 break;
             default :
-                // invalid edit type, throw invalid edit field exception?
+                editTask = null;
         }
 
         sc.close();
@@ -124,7 +127,7 @@ public class EditCommand extends TargetedCommand {
 
     @Override
     protected boolean isValidArguments() {
-        return taskId != null;
+        return targetTaskIdSet != null;
     }
 
     @Override
@@ -136,14 +139,14 @@ public class EditCommand extends TargetedCommand {
     protected Result executeAction() {
         Result result;
         if (taskToEdit == null) {
-            result = editManager.startEditMode(taskId);
+            result = editManager.startEditMode(targetTaskIdSet);
         } else {
             if (tagOperation == TAG_ADD) {
-                result = editManager.addTaskTag(taskToEdit.tags[0], taskId);
+                result = editManager.addTaskTag(taskToEdit.tags[0], targetTaskIdSet);
             } else if (tagOperation == TAG_DEL) {
-                result = editManager.deleteTaskTag(taskToEdit.tags[0], taskId);
+                result = editManager.deleteTaskTag(taskToEdit.tags[0], targetTaskIdSet);
             } else {
-                result = editManager.editTask(taskToEdit, taskId);
+                result = editManager.editTask(taskToEdit, targetTaskIdSet);
             }
         }
         return result;
