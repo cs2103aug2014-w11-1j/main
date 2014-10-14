@@ -1,7 +1,69 @@
 package ui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import jline.ConsoleReader;
+
 public class UserOutputWriter {
-    public void printOutput(String output) {
-        System.out.print(output);
+    ArrayList<String> lines;
+    ConsoleReader reader;
+    
+    public UserOutputWriter(ConsoleReader reader) throws IOException {
+        this.reader = reader;
+        clearScreen();
+        lines = new ArrayList<String>();
+    }
+    
+    public void printOutput(String output) throws IOException {
+        String[] array = output.split(System.lineSeparator());
+        
+        lines.addAll(Arrays.asList(array));
+        
+        int currentSize = lines.size();
+        int height = reader.getTermheight();
+        
+        int start = Math.max(0,  currentSize - height);
+        show(start);
+    }
+    
+    public void show(int startLine) throws IOException {
+        clearScreen();
+        int numberOfLines = reader.getTermheight();
+        int numberOfOutputLines = numberOfLines - 1;
+        int numberOfStoredLines = lines.size();
+        
+        int endLine = Math.min(numberOfStoredLines, 
+                startLine + numberOfOutputLines);
+        
+        int numberOfAvailableLines = endLine - startLine;
+        
+        int numberOfPaddingLines = numberOfOutputLines - numberOfAvailableLines;
+        
+        for (int i = startLine; i < endLine; i++) {
+            reader.printString(lines.get(i));
+            reader.printNewline();
+        }
+        
+        for (int i = 0; i < numberOfPaddingLines; i++) {
+            reader.printNewline();
+        }
+        reader.flushConsole();
+    }
+    
+    private void clearScreen() throws IOException {
+        reader.clearScreen();
+        Process p = Runtime.getRuntime().exec("mode.com con cols=80 lines=25");
+        try {
+            p.waitFor();
+        } catch (InterruptedException e) {
+            
+        }
+        reader.flushConsole();
+    }
+    
+    public void scrollUp() {
+        
     }
 }

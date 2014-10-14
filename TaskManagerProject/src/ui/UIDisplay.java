@@ -2,7 +2,10 @@ package ui;
 
 import java.io.IOException;
 
+import jline.ConsoleReader;
 import main.MainController;
+import ui.input.Input;
+import ui.input.InputString;
 
 public class UIDisplay {
     private UserInputReader userInputReader;
@@ -15,10 +18,11 @@ public class UIDisplay {
     
     public UIDisplay(MainController mainController) {
         this.mainController = mainController;
-        
         try {
-            userInputReader = new UserInputReader();
-            userOutputWriter = new UserOutputWriter();
+            ConsoleReader reader = new ConsoleReader();
+            reader.clearScreen();
+            userInputReader = new UserInputReader(reader);
+            userOutputWriter = new UserOutputWriter(reader);
         } catch(IOException e) {
             System.out.println("IOException : " + e.getMessage());
         }
@@ -28,16 +32,32 @@ public class UIDisplay {
      * Called from main
      */
     public void commandLoopIteration() {
-        userOutputWriter.printOutput(MESSAGE_WELCOME);
+        try {
+            userOutputWriter.printOutput(MESSAGE_WELCOME);
+        } catch(IOException e) {
+            System.out.println(MESSAGE_WELCOME);
+        }
         while (!isReadyToExit()) {
             try {
-            String input = userInputReader.readInput();
-            String output = mainController.runCommand(input);
-            userOutputWriter.printOutput(output);
-            } catch(IOException e) {
+                Input input = userInputReader.getInput();
+                processInput(input);
+            }
+            catch(IOException e) {
                 System.out.println("Something went wrong.");
                 System.out.println("Please try again.");
             }
+        }
+    }
+    
+    public void processInput(Input input) throws IOException {
+        switch (input.getType()) {
+            case INPUT_STRING :
+                InputString inputString = (InputString)input;
+                String output = mainController.runCommand(inputString.getString());
+                userOutputWriter.printOutput(output);
+                break;
+            case INPUT_OPERATION :
+                throw new UnsupportedOperationException("Scroll is not supported yet.");
         }
     }
     

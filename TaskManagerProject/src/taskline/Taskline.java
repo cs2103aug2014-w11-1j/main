@@ -1,6 +1,9 @@
 package taskline;
 
 import io.FileInputOutput;
+
+import java.io.IOException;
+
 import main.MainController;
 import manager.ManagerHolder;
 import ui.UIDisplay;
@@ -13,9 +16,8 @@ import data.TaskData;
  */
 public class Taskline {
 
-    public static void main(String[] args) {
-        //setupLogger();
-        
+    public static void main(String[] args) throws IOException {
+        //setupLogger();        
         String fileName = "tasks.txt";
 
         TaskData taskData = new TaskData();
