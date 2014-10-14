@@ -58,10 +58,12 @@ public class TaskData {
     }
 
     public TaskId getNext(TaskId taskId) {
+        assert taskId != null;
         return new TaskId(next(taskId.id));
     }
     
     public TaskId getPrevious(TaskId taskId) {
+        assert taskId != null;
         return new TaskId(previous(taskId.id));
     }
     
@@ -79,6 +81,7 @@ public class TaskData {
     }
 
     public boolean setTaskName(TaskId taskId, String name) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -91,6 +94,7 @@ public class TaskData {
     }
     
     public Duration getTaskDuration(TaskId taskId) {
+        assert taskId != null;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -100,6 +104,7 @@ public class TaskData {
     }
     
     public boolean setTaskDuration(TaskId taskId, Duration duration) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -112,6 +117,7 @@ public class TaskData {
     }
     
     public LocalTime getTaskEndTime(TaskId taskId) {
+        assert taskId != null;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -121,6 +127,7 @@ public class TaskData {
     }
     
     public boolean setTaskEndTime(TaskId taskId, LocalTime time) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -133,6 +140,7 @@ public class TaskData {
     }
     
     public LocalDate getTaskDate(TaskId taskId) {
+        assert taskId != null;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -142,6 +150,7 @@ public class TaskData {
     }
 
     public boolean setTaskDate(TaskId taskId, LocalDate date) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -154,6 +163,7 @@ public class TaskData {
     }
     
     public String getTaskDetails(TaskId taskId) {
+        assert taskId != null;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -163,6 +173,7 @@ public class TaskData {
     }
 
     public boolean setTaskDetails(TaskId taskId, String details) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -175,6 +186,7 @@ public class TaskData {
     }
     
     public Priority getTaskPriority(TaskId taskId) {
+        assert taskId != null;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -185,6 +197,7 @@ public class TaskData {
 
 
     public boolean setTaskPriority(TaskId taskId, Priority priority) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -197,6 +210,7 @@ public class TaskData {
     }
     
     public Status getTaskStatus(TaskId taskId) {
+        assert taskId != null;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -206,6 +220,7 @@ public class TaskData {
     }
 
     public boolean setTaskStatus(TaskId taskId, Status status) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -218,6 +233,7 @@ public class TaskData {
     }
 
     public Tag[] getTaskTags(TaskId taskId) {
+        assert taskId != null;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -227,6 +243,7 @@ public class TaskData {
     }
     
     public boolean addTag(TaskId taskId, Tag tag) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -238,6 +255,7 @@ public class TaskData {
     }
     
     public boolean removeTag(TaskId taskId, Tag tag) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -249,6 +267,7 @@ public class TaskData {
     }
     
     public boolean clearTags(TaskId taskId) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -261,6 +280,7 @@ public class TaskData {
     }
 
     public TaskInfo getTaskInfo(TaskId taskId) {
+        assert taskId != null;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
@@ -270,6 +290,7 @@ public class TaskData {
     }
     
     public boolean setTaskInfo(TaskId taskId, TaskInfo taskInfo) {
+        assert taskId != null;
         addToSnapshot(taskId);
         
         Task task = getTask(taskId);
@@ -286,6 +307,8 @@ public class TaskData {
      * @param tasks List of tasks as retrieved from file.
      */
     public void updateTaskList(TaskInfo[] tasks) {
+        assert tasks != null;
+        
         initializeTaskData();
         for (TaskInfo taskInfo : tasks) {
             add(taskInfo);
@@ -301,6 +324,9 @@ public class TaskData {
      * @param taskId
      */
     public void addTaskWithSpecificId(TaskInfo taskInfo, TaskId taskId) {
+        assert taskInfo != null;
+        assert taskId != null;
+        
         if (getTask(taskId) != EMPTY_SLOT) {
             throw new IllegalArgumentException("Unable to add task with id = " + taskId);
         }
@@ -322,6 +348,8 @@ public class TaskData {
      * Returns null if unable to add new task.
      */
     public TaskId add(TaskInfo taskInfo) {
+        assert taskInfo != null;
+        
         Task task = new Task(taskInfo);
         int id = insertTask(task);
         
@@ -340,6 +368,7 @@ public class TaskData {
      * Deletion can be unsuccessful if task does not exist.
      */
     public boolean remove(TaskId taskId) {
+        assert taskId != null;
         return deleteTask(taskId.id);
     }
 

@@ -31,3 +31,8 @@ local.properties
 
 TaskManagerProject/tasks.txt
 TaskManagerProject/doc
+
+taskline.log
+taskline.log.*
+taskline.log.lck
+taskline.log.*.lck
