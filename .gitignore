@@ -36,3 +36,6 @@ taskline.log
 taskline.log.*
 taskline.log.lck
 taskline.log.*.lck
+
+taskline.jar
+

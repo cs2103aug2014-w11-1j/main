@@ -33,18 +33,20 @@ public class FileInputOutput {
      * @return true iff there is a change in the file.
      */
     public boolean read() {
-        log.log(Level.FINER, "Read from file");
         
         if (fileUnchanged()) {
+            log.log(Level.FINER, "Read from file - Hash unchanged. Will not change TaskData");
             return false;
         }
+        log.log(Level.FINER, "Read from file - Hash mismatch.");
         
         TaskInfo[] taskInfos = readTasksFromFile();
         
         if (taskInfos == null) {
+            log.log(Level.FINER, "Unable to read tasks from file. Will not change TaskData");
             return false;
-            
         } else {
+            log.log(Level.FINER, "New task read from file successfully - Updating TaskData...");
             taskData.updateTaskList(taskInfos);
             return true;
         }
@@ -55,9 +57,11 @@ public class FileInputOutput {
      */
     public boolean write() {
         if (taskData.hasUnsavedChanges()) {
+            log.log(Level.FINER, "Write to file: TaskData has unsaved changes. Writing...");
             boolean result = writeTasksToFile();
             
             if (result == true) {
+                log.log(Level.FINER, "Writing to file successful. Recomputing hash.");
                 fileHash = computeHash(fileName);
                 taskData.saveSuccessful();
             } 
@@ -65,6 +69,7 @@ public class FileInputOutput {
             return result;
             
         } else {
+            log.log(Level.FINER, "Write to file: TaskData has no unsaved changes. Do nothing.");
             return true;
         }
     }
