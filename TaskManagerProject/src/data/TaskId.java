@@ -6,7 +6,13 @@ package data;
  */
 public final class TaskId implements Comparable<TaskId> {
     
+    private static final char CHAR_Z = 'Z';
+    private static final char CHAR_NINE = '9';
+    private static final char CHAR_ZERO = '0';
+    private static final char CHAR_A = 'A';
+    
     private static final int STRINGID_LENGTH = 3;
+    
     /**
      * TRANSLATE_PRIME must be coprime to MAX_ID.<br>
      * We can ensure this by simply meeting the below two conditions:<br>
@@ -37,7 +43,7 @@ public final class TaskId implements Comparable<TaskId> {
      * returns null if the string is an invalid task Id.
      */
     public static TaskId makeTaskId(String stringId) {
-        stringId = stringId.toLowerCase();
+        stringId = stringId.toUpperCase();
         
         try {
             int index = toIntId(stringId);
@@ -102,9 +108,9 @@ public final class TaskId implements Comparable<TaskId> {
         translatedIndex /= 3;
         int number = translatedIndex % 10;
         translatedIndex /= 10;
-        char character1 = (char)(translatedIndex % 26 + 'a');
+        char character1 = (char)(translatedIndex % 26 + CHAR_A);
         translatedIndex /= 26;
-        char character2 = (char)(translatedIndex + 'a');
+        char character2 = (char)(translatedIndex + CHAR_A);
         
         String result = toStringId(numberPosition, number, character1, character2);
         
@@ -128,21 +134,21 @@ public final class TaskId implements Comparable<TaskId> {
 
         if (isDigit(stringId.charAt(0))) {
             
-            number = (int)(stringId.charAt(0) - '0');
+            number = (int)(stringId.charAt(0) - CHAR_ZERO);
             character1 = stringId.charAt(1);
             character2 = stringId.charAt(2);
             numberPosition = 0;
             
         } else if (isDigit(stringId.charAt(1))) {
             
-            number = (int)(stringId.charAt(1) - '0');
+            number = (int)(stringId.charAt(1) - CHAR_ZERO);
             character1 = stringId.charAt(0);
             character2 = stringId.charAt(2);
             numberPosition = 1;
             
         } else if (isDigit(stringId.charAt(2))) {
             
-            number = (int)(stringId.charAt(2) - '0');
+            number = (int)(stringId.charAt(2) - CHAR_ZERO);
             character1 = stringId.charAt(0);
             character2 = stringId.charAt(1);
             numberPosition = 2;
@@ -184,9 +190,9 @@ public final class TaskId implements Comparable<TaskId> {
     private static int toIntId(int numberPosition, int number, char character1,
             char character2) {
 
-        int result = (int)(character2 - 'a');
+        int result = (int)(character2 - CHAR_A);
         result *= 26;
-        result += (int)(character1 - 'a');
+        result += (int)(character1 - CHAR_A);
         result *= 10;
         result += number;
         result *= 3;
@@ -199,11 +205,11 @@ public final class TaskId implements Comparable<TaskId> {
     }
     
     private static boolean isDigit(char c) {
-        return (c >= '0' && c <= '9');
+        return (c >= CHAR_ZERO && c <= CHAR_NINE);
     }
     
     private static boolean isLowerCaseAlphabet(char c) {
-        return (c >= 'a' && c <= 'z');
+        return (c >= CHAR_A && c <= CHAR_Z);
     }
     
     private static int numberTranslateForward(int index) {

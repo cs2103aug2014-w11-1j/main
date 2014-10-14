@@ -12,15 +12,15 @@ public class TaskIdTest {
             testStringConvert(i);
         }
 
-        testIntConvert("a7d");
-        testIntConvert("8ad");
-        testIntConvert("0aa");
-        testIntConvert("aa0");
-        testIntConvert("zz9");
-        testIntConvert("9zz");
-        testIntConvert("d3e");
-        testIntConvert("a1c");
-        testIntConvert("bg0");
+        testIntConvert("A7D");
+        testIntConvert("8AD");
+        testIntConvert("0AA");
+        testIntConvert("AA0");
+        testIntConvert("ZZ9");
+        testIntConvert("9ZZ");
+        testIntConvert("D3E");
+        testIntConvert("A1C");
+        testIntConvert("BG0");
 
         testInvalidString("ggg");
         testInvalidString("a00");
@@ -39,16 +39,16 @@ public class TaskIdTest {
         testInvalidString("E");
         testInvalidString("ggg");
 
-        testValidString("G3D");
-        testValidString("E3A");
-        testValidString("AA0");
+        testValidString("g3d");
+        testValidString("e3a");
+        testValidString("aa0");
         testValidString("9dR");
     }
     
     
     private void testStringConvert(int a) {
         String stringId = TaskId.toStringId(a);
-        assertEquals(3, stringId.length());
+        assertEquals(3, stringId.length()); 
         
         int c = TaskId.toIntId(stringId);
         assertEquals(a, c);

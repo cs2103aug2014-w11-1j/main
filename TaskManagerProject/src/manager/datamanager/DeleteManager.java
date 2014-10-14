@@ -1,5 +1,6 @@
 package manager.datamanager;
 
+import main.command.TaskIdSet;
 import manager.result.DeleteResult;
 import manager.result.Result;
 import manager.result.SimpleResult;
@@ -20,21 +21,35 @@ public class DeleteManager extends AbstractManager {
         super(taskData);
     }
 
-    public Result deleteTask(TaskId taskId) {
+    public Result deleteTask(TaskIdSet taskIdSet) {
     	
-    	if (taskId == null){
-    		return new SimpleResult(Result.Type.DELETE_FAILURE);
-    	}
-    	
-    	
-    	TaskInfo taskInfo = taskData.getTaskInfo(taskId);
-    	Boolean isSuccessful = taskData.remove(taskId);
-    	
-    	if (isSuccessful){
-    		return new DeleteResult(Result.Type.DELETE_SUCCESS, taskId, taskInfo);
-    	}
-    	
-    	return new SimpleResult(Result.Type.DELETE_FAILURE);
+        boolean allSuccessful = true;
+        TaskId returnTaskId = null;
+        TaskInfo returnTaskInfo = null;
+        
+        for (TaskId taskId : taskIdSet) {
+        	if (taskId == null){
+        	    allSuccessful = false;
+        	    break;
+        	}
+
+            returnTaskId = taskId;
+        	returnTaskInfo = taskData.getTaskInfo(taskId);
+        	boolean isSuccessful = taskData.remove(taskId);
+        	
+        	if (!isSuccessful){
+                allSuccessful = false;
+                break;
+        	}
+        }
+        
+        if (allSuccessful) {
+            return new DeleteResult(Result.Type.DELETE_SUCCESS,
+                    returnTaskId, returnTaskInfo);
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.DELETE_FAILURE);
+        }
     }
        
 }

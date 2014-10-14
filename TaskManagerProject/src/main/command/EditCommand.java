@@ -6,13 +6,12 @@ import java.util.Scanner;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.EditManager;
-import manager.datamanager.SearchManager;
 import manager.result.Result;
 import data.TaskId;
 import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
-public class EditCommand extends Command {
+public class EditCommand extends TargetedCommand {
     private static final int TAG_ADD = 1;
     private static final int TAG_DEL = -1;
 

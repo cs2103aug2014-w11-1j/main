@@ -12,7 +12,10 @@ import main.modeinfo.ModeInfo;
 import main.modeinfo.SearchModeInfo;
 import main.response.Response;
 
-
+/**
+ * Formatter. Responsible for formatting Response objects to String.
+ * @author nathanajah
+ */
 public class Formatter {
     private AddSuccessfulFormatter addSuccessfulFormatter;
     private DeleteSuccessfulFormatter deleteSuccessfulFormatter;
@@ -52,6 +55,9 @@ public class Formatter {
                     ModeInfo.Type.SEARCH_MODE)
     };
 
+    /**
+     * The constructor for Formatter.
+     */
     public Formatter() {
         addSuccessfulFormatter = new AddSuccessfulFormatter();
         deleteSuccessfulFormatter = new DeleteSuccessfulFormatter();
@@ -125,6 +131,11 @@ public class Formatter {
         return false;
     }
     
+    /**
+     * Format the Response to String.
+     * @param response The Response object to be formatted.
+     * @return The formatted String.
+     */
     public String format(Response response) {
         if (shouldPrintMode(response)) {
             return formatMessage(response.getMessage()) + 

@@ -1,15 +1,11 @@
 package manager.datamanager;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import manager.result.Result;
 import manager.result.SimpleResult;
 import data.TaskData;
-import data.TaskId;
 import data.UndoSnapshot;
-import data.UndoTaskSnapshot;
-import data.taskinfo.TaskInfo;
 
 public class UndoManager extends AbstractManager {
     private static int UNDO_LIMIT = 100;
@@ -22,8 +18,9 @@ public class UndoManager extends AbstractManager {
         redoHistory = new LinkedList<>();
     }
 
-    public void clearUndoHistory() {
+    public void clearHistory() {
         undoHistory.clear();
+        redoHistory.clear();
     }
     
     public void updateUndoHistory() {

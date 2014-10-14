@@ -10,6 +10,10 @@ import data.taskinfo.Priority;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+/**
+ * A utility class to format the details of a TaskInfo.
+ * @author nathanajah
+ */
 public class DetailsUtility {
     private final static String FORMAT_ID = "Task [%1$s]";
     private final static String FORMAT_NAME = "Name: %1$s";
@@ -73,6 +77,13 @@ public class DetailsUtility {
         return builder.toString();
     }
     
+    /**
+     * Format a pair of TaskInfo and TaskId to an ArrayList of String, where 
+     * each entry of the ArrayList corresponds to a line of output.
+     * @param task The TaskInfo to be formatted.
+     * @param taskId The TaskId to be formatted.
+     * @return The formatted task details.
+     */
     public ArrayList<String> formatToArray(TaskInfo task, TaskId taskId) {
         ArrayList<String> result = new ArrayList<String>();
         

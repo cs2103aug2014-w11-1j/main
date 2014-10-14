@@ -1,130 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.1.6" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
   associations="true" dependencies="false" nesting-relationships="true">  
-  <class id="1" language="java" name="main.command.Command" project="TaskManagerProject" 
-    file="/TaskManagerProject/src/main/command/Command.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="-148" y="359"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
-      visibility="true">      
-      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="false"/>    
-    </display>  
-  </class>  
-  <class id="2" language="java" name="manager.StateManager" project="TaskManagerProject" 
+  <class id="1" language="java" name="manager.StateManager" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/StateManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="194" y="360"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="-1" width="-1" x="522" y="206"/>    
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="manager.datamanager.AbstractManager" project="TaskManagerProject" 
+  <class id="2" language="java" name="manager.datamanager.AbstractManager" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/AbstractManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="99" width="162" x="492" y="279"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="-1" width="-1" x="522" y="620"/>    
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="manager.datamanager.AddManager" project="TaskManagerProject" 
+  <class id="3" language="java" name="manager.datamanager.AddManager" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/AddManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="94" width="187" x="492" y="575"/>    
-    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="94" width="187" x="113" y="320"/>    
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="manager.datamanager.DeleteManager" project="TaskManagerProject" 
+  <class id="4" language="java" name="manager.datamanager.DeleteManager" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/DeleteManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="102" width="186" x="962" y="574"/>    
-    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="102" width="186" x="114" y="640"/>    
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="manager.datamanager.EditManager" project="TaskManagerProject" 
+  <class id="5" language="java" name="manager.datamanager.EditManager" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/EditManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="187" width="185" x="727" y="575"/>    
-    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="187" width="185" x="114" y="440"/>    
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="manager.datamanager.SearchManager" project="TaskManagerProject" 
+  <class id="6" language="java" name="manager.datamanager.SearchManager" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/SearchManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="111" y="675"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="-1" width="-1" x="206" y="179"/>    
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="manager.datamanager.UndoManager" project="TaskManagerProject" 
+  <class id="7" language="java" name="manager.datamanager.UndoManager" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/UndoManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="148" width="199" x="253" y="571"/>    
-    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="-1" width="-1" x="522" y="449"/>    
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <association id="9">    
-    <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="10" name="undoManager"/>      
-      <multiplicity id="11" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="8" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="12">    
-    <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="13" name="searchManager"/>      
-      <multiplicity id="14" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="15">    
+  <generalization id="8">    
+    <bendpoint x="314" y="368"/>    
+    <bendpoint x="314" y="522"/>    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="9">    
     <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="3"/>  
+    <end type="TARGET" refId="2"/>  
   </generalization>  
-  <association id="16">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="17" name="stateManager"/>      
-      <multiplicity id="18" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="19">    
-    <bendpoint x="-149" y="674"/>    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="20" name="searchManager"/>      
-      <multiplicity id="21" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="22">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="3"/>  
-  </generalization>  
-  <generalization id="23">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="3"/>  
-  </generalization>  
-  <generalization id="24">    
-    <end type="SOURCE" refId="8"/>    
-    <end type="TARGET" refId="3"/>  
-  </generalization>  
-  <generalization id="25">    
+  <generalization id="10">    
     <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="3"/>  
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="11">    
+    <bendpoint x="336" y="214"/>    
+    <bendpoint x="336" y="484"/>    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="12">    
+    <bendpoint x="392" y="619"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
   </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    

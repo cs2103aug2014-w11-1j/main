@@ -60,7 +60,7 @@ public class EditSuccessfulFormatter {
     }
     
     
-    public ArrayList<String> formatToArray(EditSuccessfulMessage message) {
+    private ArrayList<String> formatToArray(EditSuccessfulMessage message) {
         ArrayList<String> result = new ArrayList<String>();
         
         for (Field field : message.getChangedField()) {
