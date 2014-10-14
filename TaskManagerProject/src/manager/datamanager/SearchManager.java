@@ -3,16 +3,20 @@ package manager.datamanager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import manager.datamanager.searchfilter.Filter;
 import manager.result.DetailsResult;
 import manager.result.Result;
 import manager.result.SearchResult;
+import taskline.debug.Taskline;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class SearchManager extends AbstractManager {
+    private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
 
     TaskId[] lastSearchedTaskIds;
     TaskInfo[] lastSearchedTasks;
@@ -97,6 +101,8 @@ public class SearchManager extends AbstractManager {
     }
 
     public Result searchTasks(Filter[] filters) {
+        log.log(Level.FINER, "Conduct search: " + filters.length + " filters");
+        
         lastSearchFilters = filters;
         updateLastSearched(filters);
         SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,

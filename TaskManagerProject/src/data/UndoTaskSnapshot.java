@@ -33,20 +33,24 @@ public class UndoTaskSnapshot {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         
         UndoTaskSnapshot other = (UndoTaskSnapshot) obj;
         if (taskId == null) {
             if (other.taskId != null) {
                 return false;
             }
-        } else if (!taskId.equals(other.taskId))
+        } else if (!taskId.equals(other.taskId)) {
             return false;
+        }
         return true;
     }
 

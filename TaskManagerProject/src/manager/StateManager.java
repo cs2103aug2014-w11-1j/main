@@ -1,6 +1,10 @@
 package manager;
 
 import io.FileInputOutput;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import main.command.TaskIdSet;
 import main.message.AddSuccessfulMessage;
 import main.message.DeleteSuccessfulMessage;
@@ -22,6 +26,7 @@ import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.StartEditModeResult;
+import taskline.debug.Taskline;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
@@ -35,6 +40,7 @@ import data.taskinfo.TaskInfo;
  *
  */
 public class StateManager {
+    private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
 
 	private State currentState;
 	private TaskIdSet editingTaskIdSet;
@@ -95,46 +101,64 @@ public class StateManager {
 	}
 	
 	private boolean inState(State state) {
+	    assert currentState != null : "State cannot be null";
 	    return (currentState == state);
 	}
     
-	private boolean enterEditMode(TaskIdSet idSet){
+	private boolean enterEditMode(TaskIdSet idSet) {
+	    if (inState(State.EDIT_MODE)) {
+	        return false;
+	    }
+	    
 		setState(State.EDIT_MODE);
 		editingTaskIdSet = idSet;
 		return true;
 	}
 	
-	private boolean exitEditMode(){
-		if (currentState == State.EDIT_MODE){
+	private boolean exitEditMode() {
+		if (inState(State.EDIT_MODE)){
 			setState(State.AVAILABLE);
 			editingTaskIdSet = null;
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
 
-	private boolean enterSearchMode(){
+	private boolean enterSearchMode() {
+        if (inState(State.SEARCH_MODE)) {
+            return false;
+        }
+        
 		setState(State.SEARCH_MODE);
 		return true;
 	}
 	
-	private boolean exitSearchMode(){
-		if (currentState == State.SEARCH_MODE){
+	private boolean exitSearchMode() {
+		if (inState(State.SEARCH_MODE)){
 			setState(State.AVAILABLE);
 			return true;
 		}else{
 			return false;
 		}
 	}
+    
+    /**
+     * This method is called just before every command execution.
+     */
+    public void beforeCommandExecutionUpdate() {
+       updateManager.preExecutionCheck();
+    }
+    
 	/**
 	 * Updates the program's state using the result obtained from the managers.
 	 * @param result result returned from the manager
 	 * @return response generated accordingly
 	 */
 	public Response update(Result result) {
+        log.log(Level.FINER, "Apply StateManager update - Result = " + 
+                result.getType().name() + " / " + result.getClass().getName());
         
-//        undoManager.updateUndoHistory();.
 		updateManager.updateUndoHistory();
         
         Message message = applyResult(result);
@@ -146,7 +170,17 @@ public class StateManager {
         
         searchModeEnterCheck(result);
 
+        postUpdateLog(message, modeInfo);
         return new Response(message, modeInfo);
+    }
+
+    private void postUpdateLog(Message message, ModeInfo modeInfo) {
+        log.log(Level.FINE, "StateManager updated. Current State: " + currentState.name());
+        log.log(Level.FINER, "Return response. Message = " +
+                message.getType().name() + " / " +
+                message.getClass().getName() + ". ModeInfo = " + 
+                modeInfo.getType().name() + " / " + 
+                modeInfo.getClass().getName());
     }
 
 	/**
@@ -329,12 +363,5 @@ public class StateManager {
         }
 	}
 
-    
-    /**
-     * This method is called just before every command execution.
-     */
-    public void beforeCommandExecutionUpdate() {
-       updateManager.preExecutionCheck();
-    }
 
 }
