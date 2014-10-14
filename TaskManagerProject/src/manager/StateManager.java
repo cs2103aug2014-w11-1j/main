@@ -1,6 +1,7 @@
 package manager;
 
 import io.FileInputOutput;
+import main.command.TaskIdSet;
 import main.message.AddSuccessfulMessage;
 import main.message.DeleteSuccessfulMessage;
 import main.message.DetailsMessage;
@@ -36,7 +37,7 @@ import data.taskinfo.TaskInfo;
 public class StateManager {
 
 	private State currentState;
-	private TaskId editingTaskId;
+	private TaskIdSet editingTaskIdSet;
 	private UpdateManager updateManager;
 	//private Response response;
 
@@ -97,16 +98,16 @@ public class StateManager {
 	    return (currentState == state);
 	}
     
-	private boolean enterEditMode(TaskId id){
+	private boolean enterEditMode(TaskIdSet idSet){
 		setState(State.EDIT_MODE);
-		editingTaskId = id;
+		editingTaskIdSet = idSet;
 		return true;
 	}
 	
 	private boolean exitEditMode(){
 		if (currentState == State.EDIT_MODE){
 			setState(State.AVAILABLE);
-			editingTaskId = null;
+			editingTaskIdSet = null;
 			return true;
 		}else{
 			return false;
@@ -201,8 +202,10 @@ public class StateManager {
 	
 	private ModeInfo editModeCheck(Result result) {
 //	    TaskInfo taskInfo = searchManager.getTaskInfo(editingTaskId);
-		TaskInfo taskInfo = updateManager.getTaskInfo(editingTaskId);
-        return new EditModeInfo(taskInfo, editingTaskId);
+	    TaskId taskId = editingTaskIdSet.iterator().next();
+	    
+		TaskInfo taskInfo = updateManager.getTaskInfo(taskId);
+        return new EditModeInfo(taskInfo, taskId);
 	}
 
 	
@@ -237,7 +240,7 @@ public class StateManager {
                 
             case EDIT_MODE_START : {
                 StartEditModeResult editResult = (StartEditModeResult)result;
-                enterEditMode(editResult.getTaskId());
+                enterEditMode(editResult.getTaskIdSet());
                 return new EnumMessage(MessageType.EDIT_STARTED);
             }
 

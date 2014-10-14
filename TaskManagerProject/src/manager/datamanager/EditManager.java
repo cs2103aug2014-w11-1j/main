@@ -2,7 +2,9 @@ package manager.datamanager;
 
 import java.util.ArrayList;
 
+import main.command.TaskIdSet;
 import main.message.EditSuccessfulMessage;
+import manager.result.DeleteResult;
 import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.SimpleResult;
@@ -20,63 +22,118 @@ import data.taskinfo.TaskInfo;
  */
 public class EditManager extends AbstractManager {
     
-    private TaskId editingTask;
+    private TaskIdSet editingTasks;
 
     public EditManager(TaskData taskData) {
         super(taskData);
     }
 
-    public Result editTask(TaskInfo taskInfo, TaskId taskId) {
+    public Result editTask(TaskInfo taskInfo, TaskIdSet taskIdSet) {
     	
-    	if (taskId == null){
-    		return new SimpleResult(Result.Type.EDIT_FAILURE);
-    	}
-    	
-    	TaskInfo originTask = taskData.getTaskInfo(taskId);
-    	if (originTask == null){
-    		return new SimpleResult(Result.Type.EDIT_FAILURE);
-    	}
-    	TaskInfo editedTask = mergeTasks(originTask, taskInfo);
-    	taskData.setTaskInfo(taskId, editedTask);
-    	
-    	EditSuccessfulMessage.Field[] fields = setChangedFields(taskInfo);
-    	
-    	return new EditResult(Result.Type.EDIT_SUCCESS,editedTask, taskId, fields);
-    	
+        boolean allSuccessful = true;
+        TaskId returnTaskId = null;
+        TaskInfo editedTask = null;
+        EditSuccessfulMessage.Field[] fields = setChangedFields(taskInfo);
+        
+        for (TaskId taskId : taskIdSet) {
+            if (taskId == null){
+                allSuccessful = false;
+                break;
+            }
+
+            TaskInfo originTask = taskData.getTaskInfo(taskId);
+            if (originTask == null){
+                return new SimpleResult(Result.Type.EDIT_FAILURE);
+            }
+            // PLACEHOLDER : Change later to a proper batch response.
+            editedTask = mergeTasks(originTask, taskInfo);
+            returnTaskId = taskId;
+            boolean isSuccessful = taskData.setTaskInfo(taskId, editedTask);
+            
+            if (!isSuccessful){
+                allSuccessful = false;
+                break;
+            }
+        }
+        
+        if (allSuccessful) {
+            return new EditResult(Result.Type.EDIT_SUCCESS,editedTask,
+                    returnTaskId, fields);
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.EDIT_FAILURE);
+        }
     }
     
-    public TaskId getEditingTask() {
-        return editingTask;
+    public TaskIdSet getEditingTasks() {
+        return editingTasks;
     }
     
-    public Result startEditMode(TaskId taskId) {
-        editingTask = taskId;
-        return new StartEditModeResult(taskId);
+    public Result startEditMode(TaskIdSet taskIdSet) {
+        editingTasks = taskIdSet;
+        return new StartEditModeResult(taskIdSet);
     }
     
-    public Result endEditMode(TaskId taskId) {
-        editingTask = null;
+    public Result endEditMode() {
+        editingTasks = null;
         return new SimpleResult(Result.Type.EDIT_MODE_END);
     }
     
-    public Result addTaskTag(Tag tag, TaskId taskId){
-    	Boolean isTagSuccess = taskData.addTag(taskId, tag); 
-		if (!isTagSuccess){
-			return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
-		}else{
-			return new EditResult(Result.Type.TAG_ADD_SUCCESS,taskData.getTaskInfo(taskId),
-					taskId, EditSuccessfulMessage.Field.TAGS_ADD);
-		}
+    public Result addTaskTag(Tag tag, TaskIdSet taskIdSet){
+        boolean allSuccessful = true;
+        TaskId returnTaskId = null;
+        
+        for (TaskId taskId : taskIdSet) {
+            if (taskId == null){
+                allSuccessful = false;
+                break;
+            }
+            
+            boolean isSuccessful = taskData.taskExists(taskId);
+            boolean isTagSuccess = taskData.addTag(taskId, tag);
+            
+            if (!isSuccessful) {
+                allSuccessful = false;
+                break;
+            }
+        }
+        
+        if (allSuccessful) {
+            return new EditResult(Result.Type.TAG_ADD_SUCCESS,taskData.getTaskInfo(returnTaskId),
+                    returnTaskId, EditSuccessfulMessage.Field.TAGS_ADD);
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
+        }
     }
     
-    public Result deleteTaskTag(Tag tag, TaskId taskId){
-    	Boolean isTagSuccess = taskData.removeTag(taskId, tag);
-    	if (!isTagSuccess){
-    		return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
-    	}else{
-    		return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(taskId),
-    				taskId, EditSuccessfulMessage.Field.TAGS_DELETE);  
-    	}
+    public Result deleteTaskTag(Tag tag, TaskIdSet taskIdSet){
+
+        boolean allSuccessful = true;
+        TaskId returnTaskId = null;
+        
+        for (TaskId taskId : taskIdSet) {
+            if (taskId == null){
+                allSuccessful = false;
+                break;
+            }
+            
+        	boolean isTagSuccess = taskData.removeTag(taskId, tag);
+            boolean isSuccessful = taskData.taskExists(taskId);
+
+            if (!isSuccessful) {
+                allSuccessful = false;
+                break;
+            }
+        }
+    	
+        if (allSuccessful) {
+            return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(returnTaskId),
+                    returnTaskId, EditSuccessfulMessage.Field.TAGS_DELETE);
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
+        }
     }
     
 //    public Result editTaskwithTag(Tag tag, int operation, TaskId taskId){

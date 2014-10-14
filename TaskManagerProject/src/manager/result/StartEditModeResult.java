@@ -1,15 +1,14 @@
 package manager.result;
 
-import manager.result.Result.Type;
+import main.command.TaskIdSet;
 import data.TaskId;
-import data.taskinfo.TaskInfo;
 
 public class StartEditModeResult implements Result {
 
-    private final TaskId taskId;
+    private final TaskIdSet taskIdSet;
 
-    public StartEditModeResult(TaskId taskId){
-        this.taskId = taskId;
+    public StartEditModeResult(TaskIdSet taskIdSet){
+        this.taskIdSet = taskIdSet;
     }
     
     @Override
@@ -17,7 +16,7 @@ public class StartEditModeResult implements Result {
         return Type.EDIT_MODE_START;
     }
 
-    public TaskId getTaskId(){
-        return taskId;
+    public TaskIdSet getTaskIdSet(){
+        return taskIdSet;
     }
 }

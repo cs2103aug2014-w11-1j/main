@@ -33,6 +33,7 @@ public class DeleteManager extends AbstractManager {
         	    break;
         	}
 
+            // PLACEHOLDER : Change later to a proper batch response.
             returnTaskId = taskId;
         	returnTaskInfo = taskData.getTaskInfo(taskId);
         	boolean isSuccessful = taskData.remove(taskId);
