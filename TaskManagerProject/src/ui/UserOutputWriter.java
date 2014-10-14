@@ -9,6 +9,7 @@ import jline.ConsoleReader;
 public class UserOutputWriter {
     ArrayList<String> lines;
     ConsoleReader reader;
+    int currentLine;
     
     public UserOutputWriter(ConsoleReader reader) throws IOException {
         this.reader = reader;
@@ -50,6 +51,8 @@ public class UserOutputWriter {
             reader.printNewline();
         }
         reader.flushConsole();
+        
+        currentLine = startLine;
     }
     
     private void clearScreen() throws IOException {
@@ -63,7 +66,15 @@ public class UserOutputWriter {
         reader.flushConsole();
     }
     
-    public void scrollUp() {
-        
+    public void scrollUp() throws IOException {
+        if (currentLine > 0) {
+            show(currentLine - 1);
+        }
+    }
+    
+    public void scrollDown() throws IOException {
+        if (currentLine + reader.getTermheight() < lines.size()) {
+            show(currentLine + 1);
+        }
     }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import jline.ConsoleReader;
 import main.MainController;
 import ui.input.Input;
+import ui.input.InputOperation;
 import ui.input.InputString;
 
 public class UIDisplay {
@@ -57,7 +58,15 @@ public class UIDisplay {
                 userOutputWriter.printOutput(output);
                 break;
             case INPUT_OPERATION :
-                throw new UnsupportedOperationException("Scroll is not supported yet.");
+                InputOperation inputOperation = (InputOperation)input;
+                switch (inputOperation.getOperation()) {
+                    case SCROLL_UP :
+                        userOutputWriter.scrollUp();
+                        break;
+                    case SCROLL_DOWN :
+                        userOutputWriter.scrollDown();
+                        break;
+                }
         }
     }
     
