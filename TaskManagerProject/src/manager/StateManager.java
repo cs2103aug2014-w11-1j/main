@@ -99,27 +99,36 @@ public class StateManager {
 	}
     
 	private boolean enterEditMode(TaskIdSet idSet){
+		
+		assert currentState != State.EDIT_MODE;
 		setState(State.EDIT_MODE);
 		editingTaskIdSet = idSet;
 		return true;
 	}
 	
 	private boolean exitEditMode(){
-		if (currentState == State.EDIT_MODE){
-			setState(State.AVAILABLE);
-			editingTaskIdSet = null;
-			return true;
-		}else{
-			return false;
-		}
+//		if (currentState == State.EDIT_MODE){
+//			setState(State.AVAILABLE);
+//			editingTaskIdSet = null;
+//			return true;
+//		}else{
+//			return false;
+//		}
+		
+		assert currentState == State.EDIT_MODE;
+		setState(State.AVAILABLE);
+		editingTaskIdSet = null;
+		return true;
 	}
 
 	private boolean enterSearchMode(){
+		assert currentState != State.SEARCH_MODE : "In Search Mode already";
 		setState(State.SEARCH_MODE);
 		return true;
 	}
 	
 	private boolean exitSearchMode(){
+		assert currentState == State.SEARCH_MODE : "Not in Search Mode";
 		if (currentState == State.SEARCH_MODE){
 			setState(State.AVAILABLE);
 			return true;
