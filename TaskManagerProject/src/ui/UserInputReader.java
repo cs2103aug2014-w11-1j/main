@@ -10,6 +10,7 @@ public class UserInputReader {
     public UserInputReader() throws IOException {
         reader = new ConsoleReader();
     }
+    
     public String readInput() throws IOException {
         return reader.readLine(">");
     }
