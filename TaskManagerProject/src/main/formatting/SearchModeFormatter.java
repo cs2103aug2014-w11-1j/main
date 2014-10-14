@@ -23,7 +23,7 @@ import data.taskinfo.TaskInfo;
  * @author nathanajah
  */
 public class SearchModeFormatter {
-    private final static int WIDTH_LINE = 80;
+    private final static int WIDTH_LINE = 79;
     private final static int WIDTH_TIME = 14;
     private final static int WIDTH_ABSOLUTE = 7;
     private final static String LINE_FLOATING = "Floating Tasks ---";

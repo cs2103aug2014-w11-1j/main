@@ -1,14 +1,16 @@
 package ui;
 
-import java.util.Scanner;
+import java.io.IOException;
+
+import jline.ConsoleReader;
 
 public class UserInputReader {
-    private Scanner scanner;
+    private ConsoleReader reader;
     
-    public UserInputReader() {
-        scanner = new Scanner(System.in);
+    public UserInputReader() throws IOException {
+        reader = new ConsoleReader();
     }
-    public String readInput() {
-        return scanner.nextLine();
+    public String readInput() throws IOException {
+        return reader.readLine(">");
     }
 }

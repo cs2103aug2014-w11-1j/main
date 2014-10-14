@@ -108,7 +108,7 @@ public class KeywordFilterTest {
         assertTrue(filter.filter(testedTask));
     }
     @Test
-    public void testPunctuation( ){
+    public void testPunctuation(){
         TaskInfo testedTask = TaskInfo.create();
         testedTask.name = "hahaha$%^$%^$!@#test^$&@#$hahaha";
         String[] words = new String[]{"test"};

@@ -43,7 +43,7 @@ public class SearchModeFormatterTest {
         
         String expected = "Wed, 1 Oct 2014 ---" + System.lineSeparator() +
                 "1) [   12:40   ] This is a name" +
-                "                                          - [1ab]" + 
+                "                                         - [1ab]" + 
                 System.lineSeparator();
         
         Assert.assertEquals(expected, result);
@@ -76,7 +76,7 @@ public class SearchModeFormatterTest {
         
         String expected = "Wed, 1 Oct 2014 ---" + System.lineSeparator() +
                 "1) [   12:40   ] " +
-                "This is a very very long name abcdefghijklmnopqrstuvw..."
+                "This is a very very long name abcdefghijklmnopqrstuv..."
                 + "- [1ab]" + System.lineSeparator();
         
         Assert.assertEquals(expected, result);

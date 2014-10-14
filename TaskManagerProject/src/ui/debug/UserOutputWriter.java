@@ -1,4 +1,4 @@
-package ui;
+package ui.debug;
 
 public class UserOutputWriter {
     public void printOutput(String output) {
