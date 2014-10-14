@@ -8,12 +8,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class FileInputOutput {
+    
+    private static final Logger log = Logger.getLogger("TEA");
     
     private final String fileName;
     private String fileHash = "";
@@ -29,6 +33,8 @@ public class FileInputOutput {
      * @return true iff there is a change in the file.
      */
     public boolean read() {
+        log.log(Level.FINE, "READ!!!");
+        
         if (fileUnchanged()) {
             return false;
         }
