@@ -25,6 +25,9 @@ public class UserInputReader {
     
     private final static int ASCII_SPACE = 32;
     
+    private final static String PROMPT_INPUT = ">";
+    private final static String PROMPT_SCROLL = "--- SCROLL MODE ---";
+    
     Mode currentMode;
     
     public UserInputReader(ConsoleReader reader) throws IOException {
@@ -33,6 +36,7 @@ public class UserInputReader {
     }
     
     public Input getInput() throws IOException {
+        switchMode(currentMode);
         Input result = null;
         
         while (result == null) {
@@ -83,14 +87,14 @@ public class UserInputReader {
                 return input;
             case KEY_UP :
                 if (reader.getHistory().previous()) {
-                    clearLine();
+                    clearInput();
                     reader.putString(reader.getHistory().current());
                     reader.flushConsole();
                 }
                 return null;
             case KEY_DOWN :
                 if (reader.getHistory().next()) {
-                    clearLine();
+                    clearInput();
                     reader.putString(reader.getHistory().current());
                     reader.flushConsole();
                 }
@@ -131,11 +135,38 @@ public class UserInputReader {
     private void switchMode(Mode newMode) throws IOException {
         clearLine();
         currentMode = newMode;
+        
+        switch (newMode) {
+            case INPUT_MODE :
+                reader.printString(PROMPT_INPUT);
+                break;
+            case SCROLL_MODE :
+                reader.printString(PROMPT_SCROLL);
+                break;
+        }
+        reader.flushConsole();
     }
     
-    private void clearLine() throws IOException {
+    private void clearInput() throws IOException {
         while (reader.getCursorBuffer().length() > 0) {
             reader.backspace();
         }
+    }
+    
+    private void clearPrompt() throws IOException {
+        for (int i = 0; i < reader.getTermwidth(); i++) {
+            reader.printString("\b");
+        }
+        for (int i = 0; i < reader.getTermwidth() - 1; i++) {
+            reader.printString(" ");;
+        }
+        for (int i = 0; i < reader.getTermwidth(); i++) {
+            reader.printString("\b");
+        }
+    }
+    
+    private void clearLine() throws IOException {
+        clearInput();
+        clearPrompt();
     }
 }

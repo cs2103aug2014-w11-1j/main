@@ -55,6 +55,7 @@ public class UIDisplay {
             case INPUT_STRING :
                 InputString inputString = (InputString)input;
                 String output = mainController.runCommand(inputString.getString());
+                userOutputWriter.printOutput(">" + inputString.getString());
                 userOutputWriter.printOutput(output);
                 break;
             case INPUT_OPERATION :
