@@ -11,6 +11,9 @@ public class UserOutputWriter {
     ConsoleReader reader;
     int currentLine;
     
+    private final static String EXEC_CLEARSCREEN = 
+            "mode.com con cols=80 lines=25";
+    
     public UserOutputWriter(ConsoleReader reader) throws IOException {
         this.reader = reader;
         clearScreen();
@@ -25,7 +28,7 @@ public class UserOutputWriter {
         int currentSize = lines.size();
         int height = reader.getTermheight();
         
-        int start = Math.max(0,  currentSize - height);
+        int start = Math.max(0,  currentSize - height + 1);
         show(start);
     }
     
@@ -73,7 +76,7 @@ public class UserOutputWriter {
     }
     
     public void scrollDown() throws IOException {
-        if (currentLine + reader.getTermheight() < lines.size()) {
+        if (currentLine + reader.getTermheight() < lines.size() + 1) {
             show(currentLine + 1);
         }
     }
