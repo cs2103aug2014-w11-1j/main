@@ -66,7 +66,6 @@ public class UserOutputWriter {
         try {
             p.waitFor();
         } catch (InterruptedException e) {
-            
         }
         reader.flushConsole();
     }

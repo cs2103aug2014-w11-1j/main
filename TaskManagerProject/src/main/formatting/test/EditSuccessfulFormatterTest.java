@@ -24,7 +24,7 @@ public class EditSuccessfulFormatterTest {
     public void test() {
         EditSuccessfulFormatter formatter = new EditSuccessfulFormatter();
         
-        TaskId taskId = new TaskId(TaskId.toIntId("4ef"));
+        TaskId taskId = new TaskId(TaskId.toIntId("4GQ"));
         TaskInfo taskInfo = TaskInfo.create();
         taskInfo.endTime = LocalTime.parse("13:13");
         taskInfo.endDate = LocalDate.parse("2014-10-02");
@@ -47,12 +47,13 @@ public class EditSuccessfulFormatterTest {
                 "Task name changed." + System.lineSeparator() +
                 "Status changed." + System.lineSeparator() +
                 System.lineSeparator() + 
-                "Task [4ef]" + System.lineSeparator() +
+                "Task [4GQ]" + System.lineSeparator() +
                 "   Name: This is a task" + System.lineSeparator() +
                 "   Time: 13:13 (PM)" + System.lineSeparator() +
                 "   Date: Thursday, 2 Oct 2014" + System.lineSeparator() +
                 "   Tags: abcd, efgh" + System.lineSeparator() + 
                 "   Priority: High" + System.lineSeparator() +
+                "   Status: Not done" + System.lineSeparator() +
                 "   Description: HAHAHAHA" + System.lineSeparator();
         
         Assert.assertEquals(expectedString, formattedString);
