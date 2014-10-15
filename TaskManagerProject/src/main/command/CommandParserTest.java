@@ -2,7 +2,6 @@ package main.command;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -94,7 +93,8 @@ public class CommandParserTest {
                 TERM_2, TERM_3}));
         assertEquals(t.endDate, DATE_1);
         assertEquals(t.endTime, TIME_LONG_1);
-        assertEquals(t.duration, Duration.ZERO);
+        assertEquals(t.startDate, null);
+        assertEquals(t.startTime, null);
         assertEquals(t.priority, Priority.HIGH);
         StringBuilder result = new StringBuilder();
         for (Tag tag : t.tags) {
@@ -111,7 +111,8 @@ public class CommandParserTest {
         CommandParser.parseDateTime(test1, t);
         assertEquals(t.endDate, null);
         assertEquals(t.endTime, null);
-        assertEquals(t.duration, null);
+        assertEquals(t.startDate, null);
+        assertEquals(t.startTime, null);
 
         t = TaskInfo.create();
         // one date: null
@@ -119,7 +120,8 @@ public class CommandParserTest {
         CommandParser.parseDateTime(test2, t);
         assertEquals(t.endDate, null);
         assertEquals(t.endTime, null);
-        assertEquals(t.duration, null);
+        assertEquals(t.startDate, null);
+        assertEquals(t.startTime, null);
 
         t = TaskInfo.create();
         // two dates: null
@@ -128,7 +130,8 @@ public class CommandParserTest {
         CommandParser.parseDateTime(test3, t);
         assertEquals(t.endDate, null);
         assertEquals(t.endTime, null);
-        assertEquals(t.duration, null);
+        assertEquals(t.startDate, null);
+        assertEquals(t.startTime, null);
 
         t = TaskInfo.create();
         // one time, zero date: next occurrence of time
@@ -140,7 +143,8 @@ public class CommandParserTest {
             assertEquals(t.endDate, LocalDate.now().plusDays(1));
         }
         assertEquals(t.endTime, TIME_LONG_1);
-        assertEquals(t.duration, Duration.ZERO);
+        assertEquals(t.startDate, null);
+        assertEquals(t.startTime, null);
 
         t = TaskInfo.create();
         // one time, one date: time on that date
@@ -149,7 +153,8 @@ public class CommandParserTest {
         CommandParser.parseDateTime(test5, t);
         assertEquals(t.endDate, DATE_2);
         assertEquals(t.endTime, TIME_LONG_2);
-        assertEquals(t.duration, Duration.ZERO);
+        assertEquals(t.startDate, null);
+        assertEquals(t.startTime, null);
 
         t = TaskInfo.create();
         // one time, two date: null
@@ -158,7 +163,8 @@ public class CommandParserTest {
         CommandParser.parseDateTime(test6, t);
         assertEquals(t.endDate, null);
         assertEquals(t.endTime, null);
-        assertEquals(t.duration, null);
+        assertEquals(t.startDate, null);
+        assertEquals(t.startTime, null);
 
         t = TaskInfo.create();
         // two time, zero date: next occurrence of first time
@@ -168,18 +174,26 @@ public class CommandParserTest {
         if (LocalTime.now().isBefore(TIME_LONG_2)) {
             if (TIME_LONG_2.isAfter(TIME_SHORT_1)) {
                 assertEquals(t.endDate, LocalDate.now().plusDays(1));
-                assertEquals(t.duration, Duration.between(TIME_LONG_2, TIME_SHORT_1).plusDays(1));
+                assertEquals(t.endTime, TIME_SHORT_1);
+                assertEquals(t.startDate, LocalDate.now());
+                assertEquals(t.startTime, TIME_LONG_2);
             } else {
                 assertEquals(t.endDate, LocalDate.now());
-                assertEquals(t.duration, Duration.between(TIME_LONG_2, TIME_SHORT_1).plusDays(1));
+                assertEquals(t.endTime, TIME_SHORT_1);
+                assertEquals(t.startDate, LocalDate.now());
+                assertEquals(t.startTime, TIME_LONG_2);
             }
         } else {
             if (TIME_LONG_2.isAfter(TIME_SHORT_1)) {
                 assertEquals(t.endDate, LocalDate.now().plusDays(2));
-                assertEquals(t.duration, Duration.between(TIME_LONG_2, TIME_SHORT_1).plusDays(1));
+                assertEquals(t.endTime, TIME_SHORT_1);
+                assertEquals(t.startDate, LocalDate.now().plusDays(1));
+                assertEquals(t.startTime, TIME_LONG_2);
             } else {
                 assertEquals(t.endDate, LocalDate.now().plusDays(1));
-                assertEquals(t.duration, Duration.between(TIME_LONG_2, TIME_SHORT_1).plusDays(1));
+                assertEquals(t.endTime, TIME_SHORT_1);
+                assertEquals(t.startDate, LocalDate.now().plusDays(1));
+                assertEquals(t.startTime, TIME_LONG_2);
             }
         }
         assertEquals(t.endTime, TIME_SHORT_1);

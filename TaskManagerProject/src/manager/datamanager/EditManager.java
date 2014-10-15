@@ -171,9 +171,12 @@ public class EditManager extends AbstractManager {
     	if (modifTask.name != null){
     		mergedTask.name = modifTask.name;
     	}
-    	if (modifTask.duration != null){
-    		mergedTask.duration = modifTask.duration;
-    	}
+        if (modifTask.startTime != null){
+            mergedTask.startTime = modifTask.startTime;
+        }
+        if (modifTask.startDate != null){
+            mergedTask.startDate = modifTask.startDate;
+        }
     	if (modifTask.endTime != null){
     		mergedTask.endTime = modifTask.endTime;
     	}
@@ -216,8 +219,8 @@ public class EditManager extends AbstractManager {
     	if (taskInfo.details != null){
     		fields.add(EditSuccessfulMessage.Field.DETAILS);
     	}
-    	if ((taskInfo.duration != null) || (taskInfo.endTime != null) ||
-    			(taskInfo.endDate != null)){
+    	if ((taskInfo.startTime != null) || (taskInfo.startDate != null) ||
+    	        (taskInfo.endTime != null) || (taskInfo.endDate != null)) {
     		fields.add(EditSuccessfulMessage.Field.TIME);
     	}
     	

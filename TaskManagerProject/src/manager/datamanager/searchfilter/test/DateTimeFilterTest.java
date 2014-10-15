@@ -24,7 +24,8 @@ public class DateTimeFilterTest {
 		TaskInfo taskInfo = TaskInfo.create();
 		taskInfo.endDate = null;
 		taskInfo.endTime = null;
-		taskInfo.duration = null;
+        taskInfo.startDate = null;
+        taskInfo.startTime = null;
 		
 		assertFalse(filter.filter(taskInfo));
 	}

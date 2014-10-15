@@ -39,10 +39,6 @@ public class Task {
         taskInfo.name = name;
     }
     
-    public Duration getDuration() {
-        return taskInfo.duration;
-    }
-    
     public LocalTime getStartTime() {
         throw new UnsupportedOperationException("Not implemented yet");
         //return taskInfo.endTime;
