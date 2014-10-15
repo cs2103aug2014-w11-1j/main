@@ -103,9 +103,10 @@ public class DateParser {
             // case: no specified dates
             if (dates.isEmpty()) {
                 if (LocalTime.now().isAfter(timeA)) {
-                    ++dateOffset;
+                    dateTimeStart = timeA.atDate(LocalDate.now().plusDays(1));
+                } else {
+                    dateTimeStart = timeA.atDate(LocalDate.now());
                 }
-                dateTimeStart = timeA.atDate(LocalDate.now());
             } else {
                 dateTimeStart = LocalDateTime.of(dates.get(0), timeA);
             }
@@ -128,11 +129,13 @@ public class DateParser {
 
         // check if there are any datetimes
         if (dateTimeStart != null) {
-            task.endDate = dateTimeStart.plus(dateTimeDiff).plusDays(dateOffset)
-                    .toLocalDate();
-            task.endTime = dateTimeStart.plus(dateTimeDiff).plusDays(dateOffset)
-                    .toLocalTime();
-            task.duration = dateTimeDiff;
+            task.endDate = dateTimeStart.plus(dateTimeDiff).toLocalDate();
+            task.endTime = dateTimeStart.plus(dateTimeDiff).toLocalTime();
+
+            if (!dateTimeDiff.isZero()) {
+                task.startDate = dateTimeStart.toLocalDate();
+                task.startTime = dateTimeStart.toLocalTime();
+            }
         }
 
     }
