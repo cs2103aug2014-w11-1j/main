@@ -2,9 +2,14 @@ package main.command;
 
 import java.util.LinkedList;
 
+import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.SearchManager;
+import manager.datamanager.searchfilter.Filter;
+import manager.datamanager.searchfilter.KeywordFilter;
+import manager.result.Result;
+import manager.result.SimpleResult;
 import data.TaskId;
 
 public abstract class TargetedCommand extends Command {
@@ -17,6 +22,33 @@ public abstract class TargetedCommand extends Command {
     private final SearchManager searchManager;
     private final StateManager stateManager;
     protected TaskIdSet targetTaskIdSet;
+    protected KeywordFilter keywordFilter;
+    
+    @Override
+    public Response execute() {
+        if (targetTaskIdSet == null) {
+            if (keywordFilter == null) {
+                return updateInvalidArguments();
+            } else {
+                return keywordFilterExecute();
+            }
+        } else {
+            assert keywordFilter == null;
+            return super.execute();
+        }
+    }
+    
+    private Response keywordFilterExecute() {
+        if (isCommandAllowed() && stateManager.canSearch()) {
+            Filter[] filters = new Filter[]{keywordFilter};
+            Result result = searchManager.searchTasks(filters);
+            Response response = stateManager.updateAndStoreCommand(result, this);
+            return response;
+            
+        } else {
+            return updateCannotExecuteCommand();
+        }
+    }
     
     
     public TargetedCommand(ManagerHolder managerHolder) {
@@ -30,8 +62,8 @@ public abstract class TargetedCommand extends Command {
      * will be executed on this taskIds.
      * @param taskIds taskIds to be added.
      */
-    public void addTargets(TaskId[] taskIds){
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void setTargets(TaskIdSet taskIdSet){
+        this.targetTaskIdSet = taskIdSet;
     }
 
     /**
@@ -61,7 +93,9 @@ public abstract class TargetedCommand extends Command {
      * @param searchString
      */
     protected void parseAsSearchString(String searchString) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        assert targetTaskIdSet == null : "targetTaskIdSet needs to be null";
+        String[] keywords = searchString.split(" ");
+        keywordFilter = new KeywordFilter(keywords);
     }
 
     /**
@@ -83,6 +117,7 @@ public abstract class TargetedCommand extends Command {
             return TaskId.makeTaskId(absoluteTaskId);
         }
     }
+
     
     private String parseIdsIntoSet(String args) throws IllegalArgumentException{
         int currentIndex = 0;

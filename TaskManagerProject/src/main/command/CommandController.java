@@ -53,7 +53,7 @@ public class CommandController {
             case "back" :
                 return new BackCommand(managerHolder);
             default :
-                return new InvalidCommand(managerHolder);
+                return new ArgumentCommand(cmdType + " " + cmdArgs, managerHolder);
         }
     }
 }

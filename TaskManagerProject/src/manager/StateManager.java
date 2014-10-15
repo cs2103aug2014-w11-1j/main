@@ -5,6 +5,7 @@ import io.FileInputOutput;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import main.command.TargetedCommand;
 import main.command.TaskIdSet;
 import main.message.AddSuccessfulMessage;
 import main.message.DeleteSuccessfulMessage;
@@ -173,7 +174,23 @@ public class StateManager {
         postUpdateLog(message, modeInfo);
         return new Response(message, modeInfo);
     }
+	
+	public boolean isWaitingForArguments() {
+        throw new UnsupportedOperationException("Not implemented yet");
+	}
+	
+	public TargetedCommand retrieveStoredCommand() {
+        throw new UnsupportedOperationException("Not implemented yet");
+	}
 
+	public Response updateAndStoreCommand(Result result, TargetedCommand command) {
+	    throw new UnsupportedOperationException("Not implemented yet");
+	    
+	    //Response response = update(result);
+	    //return response;
+	}
+	
+	
     private void postUpdateLog(Message message, ModeInfo modeInfo) {
         log.log(Level.FINE, "StateManager updated. Current State: " + currentState.name());
         log.log(Level.FINER, "Return response. Message = " +

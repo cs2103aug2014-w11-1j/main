@@ -6,7 +6,6 @@ import manager.ManagerHolder;
 import manager.StateManager;
 import manager.result.Result;
 import manager.result.SimpleResult;
-import data.TaskId;
 
 public abstract class Command {
     private final StateManager stateManager;
@@ -16,11 +15,9 @@ public abstract class Command {
     }
 
 
-    public final Response execute() {
+    public Response execute() {
         if (!isValidArguments()) {
-            Result result = new SimpleResult(Result.Type.INVALID_ARGUMENT);
-            Response response = stateManager.update(result);
-            return response;
+            return updateInvalidArguments();
         }
         
         if (isCommandAllowed()) {
@@ -31,10 +28,26 @@ public abstract class Command {
             return response;
             
         } else {
-            EnumMessage message = EnumMessage.cannotExecuteCommand();
-            EmptyModeInfo modeInfo = new EmptyModeInfo();
-            return new Response(message, modeInfo);
+            return updateCannotExecuteCommand();
         }
+    }
+
+    protected Response updateInvalidArguments() {
+        Result result = new SimpleResult(Result.Type.INVALID_ARGUMENT);
+        Response response = stateManager.update(result);
+        return response;
+    }
+
+    protected Response updateCannotExecuteCommand() {
+        EnumMessage message = EnumMessage.cannotExecuteCommand();
+        EmptyModeInfo modeInfo = new EmptyModeInfo();
+        return new Response(message, modeInfo);
+    }
+
+    protected Response updateInvalidCommand() {
+        Result result = new SimpleResult(Result.Type.INVALID_COMMAND);
+        Response response = stateManager.update(result);
+        return response;
     }
     
     protected abstract boolean isValidArguments();

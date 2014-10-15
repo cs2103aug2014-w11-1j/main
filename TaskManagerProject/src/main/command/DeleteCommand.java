@@ -22,8 +22,11 @@ public class DeleteCommand extends TargetedCommand {
         if (remaining.length() > 0) {
             targetTaskIdSet = null;
         }
+        if (targetTaskIdSet == null) {
+            parseAsSearchString(args);
+        }
     }
-
+    
     @Override
     protected boolean isValidArguments() {
         return targetTaskIdSet != null;
