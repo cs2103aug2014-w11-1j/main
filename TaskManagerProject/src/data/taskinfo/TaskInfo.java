@@ -10,7 +10,8 @@ public class TaskInfo {
 
 
     public String name;
-    public Duration duration;
+    public LocalTime startTime;
+    public LocalDate startDate;
     public LocalTime endTime;
     public LocalDate endDate;
 
@@ -61,7 +62,8 @@ public class TaskInfo {
      */
     public TaskInfo(TaskInfo taskInfo) {
         this.name = taskInfo.name;
-        this.duration = taskInfo.duration;
+        this.startTime = taskInfo.startTime;
+        this.startDate = taskInfo.startDate;
         this.endTime = taskInfo.endTime;
         this.endDate = taskInfo.endDate;
         this.details = taskInfo.details;
@@ -82,8 +84,6 @@ public class TaskInfo {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((details == null) ? 0 : details.hashCode());
-        result = prime * result
-                + ((duration == null) ? 0 : duration.hashCode());
         result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
         result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -92,18 +92,21 @@ public class TaskInfo {
                 + ((priority == null) ? 0 : priority.hashCode());
         result = prime * result
                 + ((repeatInterval == null) ? 0 : repeatInterval.hashCode());
+        result = prime * result
+                + ((startDate == null) ? 0 : startDate.hashCode());
+        result = prime * result
+                + ((startTime == null) ? 0 : startTime.hashCode());
         result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + Arrays.hashCode(tags);
         return result;
     }
 
-    // To be implemented
     public LocalDate getStartDate(){
-    	return null;
+    	return startDate;
     }
     
-    // To be implemented
     public LocalTime getStartTime(){
-    	return null;
+    	return startTime;
     }
     
     public LocalDate getEndDate(){
@@ -112,6 +115,41 @@ public class TaskInfo {
     
     public LocalTime getEndTime(){
     	return endTime;
+    }
+    
+    public void assertValidDateTime() {
+        assert validDateTime() : "Invalid Date/Time combination!";
+    }
+
+    /**
+     * Requirements:<br>
+     * Keyword: D/T fields = date/time fields.<br>
+     * If startTime or startDate exists, then all four D/T fields cannot be null.<br>
+     * if endTime exists, then endDate cannot be null.
+     * @return
+     */
+    private boolean validDateTime() {
+        if (startTime == null) {
+            if (startDate != null) {
+                return false;
+            }
+        } else {
+            if (startDate == null) {
+                return false;
+            } else {
+                if (endTime == null) {
+                    return false;
+                }
+            }
+        }
+        
+        if (endTime != null) {
+            if (endDate == null) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     @Override
@@ -131,7 +169,8 @@ public class TaskInfo {
         
         return (namesEqual(other) &&
                 detailsEqual(other) &&
-                durationsEqual(other) &&
+                startDatesEqual(other) &&
+                startTimesEqual(other) &&
                 endDatesEqual(other) &&
                 endTimesEqual(other) &&
                 numberOfTimesEqual(other) &&
@@ -213,17 +252,29 @@ public class TaskInfo {
         return true;
     }
 
-    private boolean durationsEqual(TaskInfo other) {
-        if (duration == null) {
-            if (other.duration != null) {
+
+    private boolean startTimesEqual(TaskInfo other) {
+        if (startTime == null) {
+            if (other.startTime != null) {
                 return false;
             }
-        } else if (!duration.equals(other.duration)) {
+        } else if (!startTime.equals(other.startTime)) {
             return false;
         }
         return true;
     }
 
+    private boolean startDatesEqual(TaskInfo other) {
+        if (startDate == null) {
+            if (other.startDate != null) {
+                return false;
+            }
+        } else if (!startDate.equals(other.startDate)) {
+            return false;
+        }
+        return true;
+    }
+    
     private boolean detailsEqual(TaskInfo other) {
         String details1 = details;
         String details2 = other.details;
