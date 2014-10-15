@@ -43,8 +43,24 @@ public class Task {
         return taskInfo.duration;
     }
     
-    public void setDuration(Duration duration) {
-        taskInfo.duration = duration;
+    public LocalTime getStartTime() {
+        throw new UnsupportedOperationException("Not implemented yet");
+        //return taskInfo.endTime;
+    }
+    
+    public void setStartTime(LocalTime startTime) {
+        throw new UnsupportedOperationException("Not implemented yet");
+        //taskInfo.endTime = startTime;
+    }
+    
+    public LocalDate getStartDate() {
+        throw new UnsupportedOperationException("Not implemented yet");
+        //return taskInfo.endDate;
+    }
+    
+    public void setStartDate(LocalDate startDate) {
+        throw new UnsupportedOperationException("Not implemented yet");
+        //taskInfo.endDate = startDate;
     }
     
     public LocalTime getEndTime() {

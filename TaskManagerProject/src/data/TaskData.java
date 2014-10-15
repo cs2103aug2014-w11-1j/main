@@ -98,17 +98,17 @@ public class TaskData {
         }
     }
     
-    public Duration getTaskDuration(TaskId taskId) {
+    public LocalTime getTaskStartTime(TaskId taskId) {
         assert taskId != null : ERROR_NULL_TASKID;
         Task task = getTask(taskId);
         if (task == EMPTY_SLOT) {
             return null;
         } else {
-            return task.getDuration();
+            return task.getStartTime();
         }
     }
     
-    public boolean setTaskDuration(TaskId taskId, Duration duration) {
+    public boolean setTaskStartTime(TaskId taskId, LocalTime time) {
         assert taskId != null : ERROR_NULL_TASKID;
         addToSnapshot(taskId);
         
@@ -116,7 +116,30 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setDuration(duration);
+            task.setStartTime(time);
+            return true;
+        }
+    }
+    
+    public LocalDate getTaskStartDate(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getStartDate();
+        }
+    }
+
+    public boolean setTaskStartDate(TaskId taskId, LocalDate date) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.setStartDate(date);
             return true;
         }
     }
