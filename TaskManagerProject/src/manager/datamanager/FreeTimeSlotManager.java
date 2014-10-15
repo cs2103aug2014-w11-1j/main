@@ -143,4 +143,24 @@ public class FreeTimeSlotManager extends AbstractManager{
 			return task.getTaskInfo().getStartDate();
 		}
 	}
+	
+	private LocalTime getTaskStartTime(Task task){
+		if (task.getTaskInfo().getEndTime() == null){
+			return null;
+		}else if (task.getTaskInfo().getStartTime() == null){
+			return task.getTaskInfo().getEndTime();
+		}else{
+			return task.getTaskInfo().getStartTime();
+		}
+	}
+	
+	private LocalDate getTaskStartDate(Task task){
+		if (task.getTaskInfo().getEndDate() == null){
+			return null;
+		}else if (task.getTaskInfo().getStartDate() == null){
+			return task.getTaskInfo().getEndDate();
+		}else{
+			return task.getTaskInfo().getStartDate();
+		}
+	}
 }
