@@ -23,12 +23,14 @@ public class UserOutputWriter {
     public void printOutput(String output) throws IOException {
         String[] array = output.split(System.lineSeparator());
         
+        int prevSize = lines.size();
+        
         lines.addAll(Arrays.asList(array));
         
         int currentSize = lines.size();
         int height = reader.getTermheight();
         
-        int start = Math.max(0,  currentSize - height + 1);
+        int start = prevSize;
         show(start);
     }
     
@@ -45,14 +47,16 @@ public class UserOutputWriter {
         
         int numberOfPaddingLines = numberOfOutputLines - numberOfAvailableLines;
         
+        StringBuilder builder = new StringBuilder();
         for (int i = startLine; i < endLine; i++) {
-            reader.printString(lines.get(i));
-            reader.printNewline();
+            builder.append(lines.get(i));
+            builder.append(System.lineSeparator());
         }
         
         for (int i = 0; i < numberOfPaddingLines; i++) {
-            reader.printNewline();
+            builder.append(System.lineSeparator());
         }
+        reader.printString(builder.toString());
         reader.flushConsole();
         
         currentLine = startLine;
