@@ -175,11 +175,12 @@ public class CommandParser {
 
     public static Tag[] parseTags(String args) {
         args = stripIgnoredSegments(args);
+        args = cleanCmdString(args);
         String[] words = args.split(SYMBOL_DELIM);
 
         List<Tag> tagList = new ArrayList<Tag>();
         for (String word : words) {
-            if (word.startsWith(SYMBOL_TAG)) {
+            if (isTag(word)) {
                 word = removeFirstChar(word);
                 if (!word.isEmpty()) {
                     tagList.add(new Tag(word));
