@@ -21,6 +21,9 @@ public class UserInputReader {
     private final static int KEY_LEFT = 2;
     private final static int KEY_RIGHT = 6;
     private final static int KEY_BACKSPACE = 8;
+    private final static int KEY_DELETE = 127;
+    
+    private final static int ASCII_SPACE = 32;
     
     Mode currentMode;
     
@@ -75,6 +78,7 @@ public class UserInputReader {
                 InputString input = 
                         new InputString(bufferString);
                 reader.getHistory().addToHistory(bufferString);
+                reader.getHistory().moveToEnd();
                 reader.getCursorBuffer().clearBuffer();
                 return input;
             case KEY_UP :
@@ -93,10 +97,29 @@ public class UserInputReader {
                 return null;
             case KEY_BACKSPACE :
                 reader.backspace();
+                reader.flushConsole();
+                return null;
+            case KEY_LEFT :
+                int currentCursorPosition = reader.getCursorBuffer().cursor;
+                if (reader.setCursorPosition(currentCursorPosition - 1)) {
+                    reader.flushConsole();
+                }
+                return null;
+            case KEY_RIGHT :
+                int currentPosition = reader.getCursorBuffer().cursor;
+                if (reader.setCursorPosition(currentPosition + 1)) {
+                    reader.flushConsole();
+                }
+                return null;
+            case KEY_DELETE :
+                reader.delete();
+                reader.flushConsole();
                 return null;
             default :
-                reader.putString(Character.toString((char)key));
-                reader.flushConsole();
+                if (key >= ASCII_SPACE) {
+                    reader.putString(Character.toString((char)key));
+                    reader.flushConsole();
+                }
                 return null;
         }
     }
