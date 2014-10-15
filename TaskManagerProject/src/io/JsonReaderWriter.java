@@ -43,6 +43,8 @@ public class JsonReaderWriter {
     private static final String JSON_TASKS = "tasks";
     private static final String JSON_NAME = "name";
     private static final String JSON_DURATION = "duration";
+    private static final String JSON_START_TIME = "startTime";
+    private static final String JSON_START_DATE = "startDate";
     private static final String JSON_END_TIME = "endTime";
     private static final String JSON_END_DATE = "endDate";
     private static final String JSON_DETAILS = "details";
@@ -263,8 +265,11 @@ public class JsonReaderWriter {
             case JSON_NAME :
                 taskInfo.name = jsonStringToString(value);
                 break;
-            case JSON_DURATION :
-                taskInfo.duration = stringToDuration(value);
+            case JSON_START_TIME :
+                taskInfo.startTime = stringToLocalTime(value);
+                break;
+            case JSON_START_DATE :
+                taskInfo.startDate = stringToLocalDate(value);
                 break;
             case JSON_END_TIME :
                 taskInfo.endTime = stringToLocalTime(value);
@@ -319,7 +324,8 @@ public class JsonReaderWriter {
     private static JsonObjectBuilder createJsonObjectBuilder(TaskInfo taskInfo) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add(JSON_NAME, stringToJsonString(taskInfo.name));
-        builder.add(JSON_DURATION, durationToString(taskInfo.duration));
+        builder.add(JSON_START_TIME, localTimeToString(taskInfo.startTime));
+        builder.add(JSON_START_DATE, localDateToString(taskInfo.startDate));
         builder.add(JSON_END_TIME, localTimeToString(taskInfo.endTime));
         builder.add(JSON_END_DATE, localDateToString(taskInfo.endDate));
         builder.add(JSON_DETAILS, stringToJsonString(taskInfo.details));
