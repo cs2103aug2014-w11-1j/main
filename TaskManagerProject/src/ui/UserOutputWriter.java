@@ -12,7 +12,7 @@ public class UserOutputWriter {
     int currentLine;
     
     private final static String EXEC_CLEARSCREEN = 
-            "mode.com con cols=80 lines=25";
+            "mode.com con cols=%1$d lines=%2$d";
     
     public UserOutputWriter(ConsoleReader reader) throws IOException {
         this.reader = reader;
@@ -60,7 +60,9 @@ public class UserOutputWriter {
     
     private void clearScreen() throws IOException {
         reader.clearScreen();
-        Process p = Runtime.getRuntime().exec("mode.com con cols=80 lines=25");
+        String executedCommand = String.format(EXEC_CLEARSCREEN, 
+                reader.getTermwidth(), reader.getTermheight());
+        Process p = Runtime.getRuntime().exec(executedCommand);
         try {
             p.waitFor();
         } catch (InterruptedException e) {
