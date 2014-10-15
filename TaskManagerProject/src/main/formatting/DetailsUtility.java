@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import data.TaskId;
 import data.taskinfo.Priority;
+import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
@@ -24,6 +25,10 @@ public class DetailsUtility {
     private final static String FORMAT_TAGS = "Tags: %1$s";
     private final static String FORMAT_PRIORITY = "Priority: %1$s";
     private final static String FORMAT_DESCRIPTION = "Description: %1$s";
+    private final static String FORMAT_STATUS = "Status: %1$s";
+    
+    private final static String ERROR_PRIORITY_NULL = "Priority is null.";
+    private final static String ERROR_STATUS_NULL = "Status is null.";
     
     private String formatTime(LocalTime time) {
         DateTimeFormatter formatter = 
@@ -51,6 +56,7 @@ public class DetailsUtility {
     }
     
     private String getPriorityString(Priority priority) {
+        assert priority != null : ERROR_PRIORITY_NULL;
         String priorityString = "";
         switch(priority) {
             case HIGH :
@@ -66,6 +72,19 @@ public class DetailsUtility {
                 priorityString = "None";
         }
         return priorityString;
+    }
+    
+    private String getStatusString(Status status) {
+        assert status != null : ERROR_STATUS_NULL;
+        
+        String statusString = "";
+        switch (status) {
+            case DONE :
+                statusString = "Done";
+            case UNDONE :
+                statusString = "Not done";
+        }
+        return statusString;
     }
     
     private String addIndentation(String s, int numberOfSpaces) {
@@ -111,6 +130,9 @@ public class DetailsUtility {
         String priorityLine = String.format(FORMAT_PRIORITY, 
                 getPriorityString(task.priority));
         result.add(addIndentation(priorityLine, 3));
+        
+        String statusLine = String.format(FORMAT_STATUS, getStatusString(task.status));
+        result.add(addIndentation(statusLine, 3));
         
         if (task.details != null) {
             String descriptionLine = String.format(FORMAT_DESCRIPTION, 

@@ -32,6 +32,40 @@ public class CommandParser {
         return task;
     }
 
+    public static String parseNameNew(String args) {
+        args = cleanCmdString(args);
+        return parseNameRecurse(args).trim();
+    }
+
+    private static String parseNameRecurse(String args) {
+        if (hasIgnoredSegment()) {
+            String ignoredSegment = ""; //getIgnoredSegment
+            int startIgnoreIdx = args.indexOf(ignoredSegment);
+            int endIgnoreIdx = startIgnoreIdx + ignoredSegment.length();
+
+            // recursively parse non-ignored segments
+            String front = parseNameRecurse(args.substring(0, startIgnoreIdx));
+            String back = parseNameRecurse(args.substring(endIgnoreIdx));
+
+            return front + ignoredSegment + back;
+        } else {
+            //parse and remove
+
+            // if has tag,
+                // strip tags
+            // if has priority
+                // strip priority
+            // if has datetime
+                // strip priority
+        }
+        return "";
+    }
+
+    private static boolean hasIgnoredSegment() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     public static String parseName(String args) {
         // TODO fix this horrible, horrible code
         StringBuilder sB = new StringBuilder(args);
@@ -141,11 +175,12 @@ public class CommandParser {
 
     public static Tag[] parseTags(String args) {
         args = stripIgnoredSegments(args);
+        args = cleanCmdString(args);
         String[] words = args.split(SYMBOL_DELIM);
 
         List<Tag> tagList = new ArrayList<Tag>();
         for (String word : words) {
-            if (word.startsWith(SYMBOL_TAG)) {
+            if (isTag(word)) {
                 word = removeFirstChar(word);
                 if (!word.isEmpty()) {
                     tagList.add(new Tag(word));
@@ -157,26 +192,22 @@ public class CommandParser {
         return tags.length == 0 ? null : tags;
     }
 
+    private static boolean isTag(String possibleTag) {
+        return possibleTag.startsWith(SYMBOL_TAG) &&
+                !possibleTag.contains(SYMBOL_DELIM);
+    }
+
     public static Priority parsePriority(String args) {
         args = stripIgnoredSegments(args);
+        args = cleanCmdString(args);
         String[] words = args.split(SYMBOL_DELIM);
 
         Priority p = DEFAULT_PRIORITY;
 
         for (String word : words) {
-            if (word.startsWith(SYMBOL_PRIORITY)) {
-                String priorityLevel = removeFirstChar(word).toLowerCase();
+            p = matchPriority(word);
 
-                if (priorityLevel.equals("high")) {
-                    p = Priority.HIGH;
-                }
-                if (priorityLevel.equals("med")) {
-                    p = Priority.MEDIUM;
-                }
-                if (priorityLevel.equals("low")) {
-                    p = Priority.LOW;
-                }
-            }
+            // match only the first recognised priority
             if (p != DEFAULT_PRIORITY) {
                 break;
             }
@@ -185,8 +216,47 @@ public class CommandParser {
         return p;
     }
 
+    private static boolean isPriority(String possiblePriority) {
+        boolean isPriority = matchPriority(possiblePriority) != null;
+        return isPriority;
+    }
+
+    private static Priority matchPriority(String possiblePriority) {
+        Priority p = DEFAULT_PRIORITY;
+
+        if (possiblePriority.startsWith(SYMBOL_PRIORITY) &&
+                !possiblePriority.contains(SYMBOL_DELIM)) {
+            String type = removeFirstChar(possiblePriority);
+            switch (type.toLowerCase()) {
+                case "high" :
+                    p = Priority.HIGH;
+                    break;
+                case "med" :
+                    p = Priority.MEDIUM;
+                    break;
+                case "low" :
+                    p = Priority.LOW;
+                    break;
+            }
+        }
+
+        return p;
+    }
+
     private static String removeFirstChar(String s) {
         return s.substring(1);
+    }
+
+    private static String cleanCmdString(String cmdString) {
+        return stripExtraDelims(cmdString).trim();
+    }
+
+    private static String stripExtraDelims(String s) {
+        String doubleDelim = SYMBOL_DELIM + SYMBOL_DELIM;
+        while (s.indexOf(doubleDelim) != -1) {
+            s = s.replace(doubleDelim, SYMBOL_DELIM);
+        }
+        return s;
     }
 
     private static String stripIgnoredSegments(String s) {
