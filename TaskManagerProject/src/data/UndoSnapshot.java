@@ -44,6 +44,17 @@ public class UndoSnapshot {
         return tempList;
     }
     
+    public TaskId[] getChangedList() {
+        assert taskSnapshotList != null : "TaskSnapshotList has been already extracted";
+        
+        TaskId[] taskIds = new TaskId[taskSnapshotList.size()];
+        int index = 0;
+        for (UndoTaskSnapshot taskSnapshot : taskSnapshotList) {
+            taskIds[index] = taskSnapshot.getTaskId();
+            index++;
+        }
+        return taskIds;
+    }
 
     public void applySnapshotChange() {
         ArrayList<UndoTaskSnapshot> taskSnapshotList = retrieveTaskSnapshots();

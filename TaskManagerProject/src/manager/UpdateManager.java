@@ -45,18 +45,18 @@ public class UpdateManager {
 	public void preExecutionCheck(){
 		 boolean fileChanged = readFromFile();
 	        
-	        if (fileChanged) {
-	            undoManager.clearHistory();
-	        }
-	    }
+        if (fileChanged) {
+            undoManager.clearHistory();
+        }
+    }
 
 	public boolean readFromFile() {
-	        return fileInputOutput.read();
-	    }
+        return fileInputOutput.read();
+    }
 
 	public boolean writeToFile() {
-	        return fileInputOutput.write();
-	    }  
+        return fileInputOutput.write();
+    }  
 	
 	
 }

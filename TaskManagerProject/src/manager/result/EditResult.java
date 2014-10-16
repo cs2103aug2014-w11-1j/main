@@ -12,6 +12,7 @@ public class EditResult implements Result {
 	private EditSuccessfulMessage.Field[] changedFields;
 
 	public EditResult (Type type, TaskInfo taskInfo, TaskId taskId, EditSuccessfulMessage.Field[] fields){
+	    assert type == Type.EDIT_SUCCESS;
 		this.type = type;
 		this.taskInfo = taskInfo;
 		this.taskId = taskId;

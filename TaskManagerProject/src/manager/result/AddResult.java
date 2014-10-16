@@ -10,6 +10,7 @@ public class AddResult implements Result {
 	private TaskId taskId;
 
 	public AddResult (Type type, TaskInfo taskInfo, TaskId taskId){
+	    assert type == Type.ADD_SUCCESS;
 		this.type = type;
 		this.taskInfo = taskInfo;
 		this.taskId = taskId;

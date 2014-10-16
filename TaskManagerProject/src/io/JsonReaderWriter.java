@@ -81,7 +81,6 @@ public class JsonReaderWriter {
     }
 
     /**
-     * 
      * @param writer Outputs the JSON string to this writer.
      * @param taskInfos an Array of TaskInfo to be converted into JSON format
      * @return true iff successful.
@@ -102,7 +101,6 @@ public class JsonReaderWriter {
             taskInfos = jsonToTasks(reader);
             
         } catch (InvalidFileFormatException e) {
-            e.printStackTrace();
             return null;
         }
         return taskInfos;

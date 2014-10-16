@@ -10,6 +10,7 @@ public class DeleteResult implements Result{
 	private TaskInfo taskInfo;
 	
 	public DeleteResult(Type type, TaskId taskId, TaskInfo taskInfo){
+	    assert type == Type.DELETE_SUCCESS;
 		this.type = type;
 		this.taskId = taskId;
 		this.taskInfo = taskInfo;
