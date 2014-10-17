@@ -162,6 +162,10 @@ public class StateManager {
 			return true;
 		}
 	}
+	
+	private TargetedCommand getSavedCommand(){
+		return savedCommand;
+	}
     
     /**
      * This method is called just before every command execution.
