@@ -70,9 +70,9 @@ public class FreeTimeSlotManager extends AbstractManager{
 				if (checkDate == null){         // first task initialization
 					checkDate = task.getTaskInfo().getEndDate();
 				}else{							// if new task's start date < checkDate, update freeDay, else update checkDate
-					if (task.getTaskInfo().getStartDate().isAfter(checkDate)){
+					if (getTaskStartDate(task).isAfter(checkDate)){
 						LocalDate tempDate = checkDate.minusDays(-1);
-						while (tempDate.isBefore(task.getTaskInfo().getStartDate())){
+						while (tempDate.isBefore(getTaskStartDate(task))){
 							freeDays.add(tempDate);
 							tempDate = tempDate.minusDays(-1);
 					}
@@ -137,10 +137,10 @@ public class FreeTimeSlotManager extends AbstractManager{
 	}
 	
 	private LocalDate firstContainingDate(Task task, LocalTime startTime, LocalTime endTime){
-		if (task.getTaskInfo().getStartTime().isAfter(endTime)){
-			return task.getTaskInfo().getStartDate().minusDays(-1);
+		if (getTaskStartTime(task).isAfter(endTime)){
+			return getTaskStartDate(task).minusDays(-1);
 		}else{
-			return task.getTaskInfo().getStartDate();
+			return getTaskStartDate(task);
 		}
 	}
 	
