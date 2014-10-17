@@ -27,13 +27,7 @@ public class FreeTimeSlotManager extends AbstractManager {
 	}
 
 	private ArrayList<TaskInfo> TaskListWithDate() {
-		// ArrayList<Task> taskList = taskData.getTaskList();
 		ArrayList<TaskInfo> taskListWithDate = new ArrayList<TaskInfo>();
-		// for ( Task task : taskList){
-		// if (task.getEndDate() != null){
-		// taskListWithDate.add(task);
-		// }
-		// }
 		TaskId taskId = taskData.getFirst();
 		TaskInfo task;
 		while (taskId.isValid()) {
@@ -145,7 +139,11 @@ public class FreeTimeSlotManager extends AbstractManager {
 
 	private boolean isContainTimeSlot(TaskInfo task, LocalTime startTime,
 			LocalTime endTime) {
-
+		
+		if (task.endTime == null){	  // no time task, not count
+			return false;
+		}
+		
 		if (getTaskStartDate(task).equals(task.getEndDate())) { // One day task
 			if ((getTaskStartTime(task).isAfter(endTime))
 					|| (task.getEndTime().isBefore(startTime))) {
