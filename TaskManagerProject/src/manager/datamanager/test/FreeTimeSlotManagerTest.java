@@ -26,13 +26,15 @@ public class FreeTimeSlotManagerTest {
 		TaskInfo task4 = createTask("dip", null, null , getTime(10, 0), getDate(11, 19));
 		TaskInfo task5 = createTask("egg", getTime(19, 0), getDate(10, 30), getTime(20, 0), getDate(10, 30));
 		TaskInfo task6 = createTask("fish", null, null, null, null);
-		
+		TaskInfo task7 = createTask("gum", getTime(10, 0), getDate(11, 8), getTime(16, 0), getDate(11, 10));
+	
 		taskData.add(task3);
 		taskData.add(task5);
 		taskData.add(task1);
 		taskData.add(task2);
 		taskData.add(task4);
 		taskData.add(task6);
+		taskData.add(task7);
 
 		
 		FreeTimeSlotManager manager = new FreeTimeSlotManager(taskData);
@@ -46,7 +48,13 @@ public class FreeTimeSlotManagerTest {
 //		System.out.println(finResult.getStartDate());
 //		System.out.println(finResult.getLastTaskEndDate());
 		
-		result = manager.searchFreeTimeSlot(getTime(5, 0), getDate(10, 9), getTime(8, 0), getDate(10, 28));
+		result = manager.searchFreeTimeSlot(getTime(6, 0), getDate(10, 9), getTime(8, 0), getDate(10, 28));
+		FreeDayResult finResult = (FreeDayResult) result;
+		System.out.println(finResult.getFreeDate().size());
+		System.out.println(finResult.getFreeDate());
+		System.out.println(finResult.getStartDate());
+		System.out.println(finResult.getLastTaskEndDate());
+//		System.out.println(manager.lastContainingDate(task2,getTime(5, 0),getTime(8, 0)));
 		
 	}
 	
