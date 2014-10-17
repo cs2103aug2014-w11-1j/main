@@ -15,7 +15,7 @@ import data.taskinfo.TaskInfo;
 
 public class FreeTimeSlotManager extends AbstractManager{
 	
-	private ArrayList<Task> taskList;
+	public ArrayList<Task> taskList;
 	private int size;
 
 	public FreeTimeSlotManager(TaskData taskData) {
@@ -58,12 +58,14 @@ public class FreeTimeSlotManager extends AbstractManager{
 			}
 		}
 		
-		return new FreeDayResult(Type.FREE_DAY, freeDays, checkDate);
+		return new FreeDayResult(Type.FREE_DAY, freeDays, null, checkDate);
 	}
 	
 	public Result searchFreeDay(LocalDate startDate, LocalDate endDate){
 		LocalDate checkDate = null;
+		LocalDate firststartDate = getTaskStartDate(taskList.get(0));
 		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>(); 
+		
 		
 		for (Task task : taskList){
 			if (task.getTaskInfo().getEndDate().isAfter(LocalDate.now())){  // search start from today, for those tasks end in future
@@ -73,16 +75,27 @@ public class FreeTimeSlotManager extends AbstractManager{
 					if (getTaskStartDate(task).isAfter(checkDate)){
 						LocalDate tempDate = checkDate.minusDays(-1);
 						while (tempDate.isBefore(getTaskStartDate(task))){
+//							System.out.println(getTaskStartDate(task));
+//							System.out.println(checkDate);
+//							System.out.println(tempDate);
+//							System.out.println("=====");
 							freeDays.add(tempDate);
 							tempDate = tempDate.minusDays(-1);
 					}
+						
 					checkDate = task.getTaskInfo().getEndDate().isBefore(checkDate) ? checkDate :  task.getTaskInfo().getEndDate();
+					}else if (getTaskStartDate(task).equals(checkDate)){
+						if (task.getEndDate().isAfter(checkDate)){
+							checkDate = task.getEndDate();
+						}
+						
 					}
+				
 				}
 			}
 		}
 		
-		return new FreeDayResult(Type.FREE_DAY, freeDays, checkDate);
+		return new FreeDayResult(Type.FREE_DAY, freeDays, firststartDate, checkDate);
 	}
 	
 	private void sortTask(){
@@ -90,9 +103,9 @@ public class FreeTimeSlotManager extends AbstractManager{
     	@Override
         public int compare(Task task1, Task task2) {
             
-            if (task1.getTaskInfo().getStartDate().isBefore(task2.getTaskInfo().getStartDate())) {
+            if (getTaskStartDate(task1).isBefore(getTaskStartDate(task2))) {
                 return -1;
-            } else if (task1.getTaskInfo().getStartDate().isAfter(task2.getTaskInfo().getStartDate())) {
+            } else if (getTaskStartDate(task1).isAfter(getTaskStartDate(task2))) {
                 return 1;
             } else {
                 return 0;

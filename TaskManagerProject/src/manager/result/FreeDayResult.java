@@ -8,10 +8,12 @@ public class FreeDayResult implements Result{
 	private Type type;
 	private ArrayList<LocalDate> freeDate;
 	private LocalDate lastTaskEndDate;
+	private LocalDate firstTaskDate;
 	
-	public FreeDayResult(Type type, ArrayList<LocalDate> freeDate, LocalDate lastTaskEndDate){
+	public FreeDayResult(Type type, ArrayList<LocalDate> freeDate, LocalDate startDate, LocalDate lastTaskEndDate){
 		this.type = type;
 		this.freeDate = freeDate;
+		this.firstTaskDate = startDate;
 		this.lastTaskEndDate = lastTaskEndDate;
 	}
 	
@@ -27,6 +29,10 @@ public class FreeDayResult implements Result{
 	
 	public LocalDate getLastTaskEndDate(){
 		return lastTaskEndDate;
+	}
+	
+	public LocalDate getStartDate(){
+		return firstTaskDate;
 	}
 
 }
