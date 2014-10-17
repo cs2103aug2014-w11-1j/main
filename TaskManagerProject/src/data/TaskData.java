@@ -45,6 +45,7 @@ public class TaskData {
     }
 
     public ArrayList<Task> getTaskList(){
+        assert false : "YOU CAN'T USE THIS METHOD!!! It's illegal!";
     	return taskList;
     }
     
