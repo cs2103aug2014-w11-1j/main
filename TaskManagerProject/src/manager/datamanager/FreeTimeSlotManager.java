@@ -66,9 +66,6 @@ public class FreeTimeSlotManager extends AbstractManager {
 					checkDate = lastContainingDate(task, startTime, endTime)
 							.isBefore(checkDate) ? checkDate
 							: lastContainingDate(task, startTime, endTime);
-					System.out.println("task is " + task.name);
-					System.out.println("LCD = "
-							+ lastContainingDate(task, startTime, endTime));
 
 				}
 			}
@@ -95,10 +92,7 @@ public class FreeTimeSlotManager extends AbstractManager {
 					if (getTaskStartDate(task).isAfter(checkDate)) {
 						LocalDate tempDate = checkDate.minusDays(-1);
 						while (tempDate.isBefore(getTaskStartDate(task))) {
-							// System.out.println(getTaskStartDate(task));
-							// System.out.println(checkDate);
-							// System.out.println(tempDate);
-							// System.out.println("=====");
+						
 							freeDays.add(tempDate);
 							tempDate = tempDate.minusDays(-1);
 						}
@@ -172,7 +166,6 @@ public class FreeTimeSlotManager extends AbstractManager {
 
 			}
 		}
-		System.out.println("Matching Task " + matchingTask.size());
 		return matchingTask;
 	}
 
