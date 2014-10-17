@@ -20,7 +20,7 @@ public class SearchModeFormatterTest {
     @Test
     public void testSingleTask() {
         SearchModeFormatter formatter = new SearchModeFormatter();
-        TaskId taskId = new TaskId(TaskId.toIntId("1ab"));
+        TaskId taskId = TaskId.makeTaskId("1ab");
         TaskInfo taskInfo = TaskInfo.create();
         taskInfo.details = "This is a detail";
         taskInfo.name = "This is a name";
@@ -43,7 +43,7 @@ public class SearchModeFormatterTest {
         
         String expected = "Wed, 1 Oct 2014 ---" + System.lineSeparator() +
                 "1) [   12:40   ] This is a name" +
-                "                                         - [1ab]" + 
+                "                                         - [1AB]" + 
                 System.lineSeparator();
         
         Assert.assertEquals(expected, result);
@@ -52,7 +52,7 @@ public class SearchModeFormatterTest {
     @Test
     public void testOverLengthTaskName() {
         SearchModeFormatter formatter = new SearchModeFormatter();
-        TaskId taskId = new TaskId(TaskId.toIntId("1ab"));
+        TaskId taskId = TaskId.makeTaskId("1ab");
         TaskInfo taskInfo = TaskInfo.create();
         taskInfo.details = "This is a detail";
         taskInfo.name = "This is a very very long name abcdefghijklmnopqrstuvwxyz "
@@ -77,7 +77,7 @@ public class SearchModeFormatterTest {
         String expected = "Wed, 1 Oct 2014 ---" + System.lineSeparator() +
                 "1) [   12:40   ] " +
                 "This is a very very long name abcdefghijklmnopqrstuv..."
-                + "- [1ab]" + System.lineSeparator();
+                + "- [1AB]" + System.lineSeparator();
         
         Assert.assertEquals(expected, result);
     }

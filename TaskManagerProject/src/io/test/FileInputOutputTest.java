@@ -1,7 +1,8 @@
-package io;
+package io.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import io.FileInputOutput;
 
 import java.io.FileWriter;
 import java.io.IOException;

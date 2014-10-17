@@ -1,9 +1,11 @@
-package data;
+package data.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import data.TaskData;
+import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class TaskDataTest {

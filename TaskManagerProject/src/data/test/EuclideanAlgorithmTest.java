@@ -1,10 +1,19 @@
-package data;
+package data.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import data.EuclideanAlgorithm;
+
 public class EuclideanAlgorithmTest {
+
+    private void computeReversePrime() {
+        EuclideanAlgorithm result;
+        // Actual computation of reverse prime.
+        result = new EuclideanAlgorithm(363767, 20280);
+        System.out.println(result.m);
+    }
 
     @Test
     public void test() {
@@ -26,10 +35,6 @@ public class EuclideanAlgorithmTest {
         assertEquals(-3, result.q);
         assertEquals(5, result.gcd);
 
-        // Actual computation of reverse prime.
-        result = new EuclideanAlgorithm(363767, 20280);
-        System.out.println(result.m);
-        
+        //computeReversePrime();
     }
-
 }

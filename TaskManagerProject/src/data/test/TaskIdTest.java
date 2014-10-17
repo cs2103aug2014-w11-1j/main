@@ -1,8 +1,10 @@
-package data;
+package data.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import data.TaskId;
 
 public class TaskIdTest {
 
