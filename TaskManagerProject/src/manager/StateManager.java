@@ -47,7 +47,8 @@ public class StateManager {
 	private TaskIdSet editingTaskIdSet;
 	private UpdateManager updateManager;
 	//private Response response;
-
+	private TargetedCommand savedCommand;
+	
 	public enum State {
 	    AVAILABLE,      // Normal state
 	    EDIT_MODE,      // Can edit the same task without re-specifying task ID
@@ -142,6 +143,28 @@ public class StateManager {
 		}else{
 			return false;
 		}
+	}
+	
+	private boolean setSavedCommand(TargetedCommand command){
+		if (savedCommand == null){
+			this.savedCommand = command;
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	private boolean clearSavedCommand(){
+		if (savedCommand == null){
+			return false;
+		}else{
+			savedCommand = null;
+			return true;
+		}
+	}
+	
+	private TargetedCommand getSavedCommand(){
+		return savedCommand;
 	}
     
     /**

@@ -30,7 +30,9 @@ public class UpdateManager {
 		SearchResult redoSearchResult = searchManager.getLastSearchResult();
         TaskInfo[] tasks = redoSearchResult.getTasks();
         TaskId[] taskIds = redoSearchResult.getTaskIds();
-        SearchModeInfo searchModeInfo = new SearchModeInfo(tasks, taskIds);
+        String[] suggestions = redoSearchResult.getSuggestions();
+        SearchModeInfo searchModeInfo = new SearchModeInfo(tasks, taskIds, 
+                suggestions);
         return searchModeInfo;
 	}
 	

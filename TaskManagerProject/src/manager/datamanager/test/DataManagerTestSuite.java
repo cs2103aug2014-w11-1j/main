@@ -5,7 +5,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    UndoManagerTest.class
+    UndoManagerTest.class,
+    FreeTimeSlotManagerTest.class
 })
 public class DataManagerTestSuite {
 }
