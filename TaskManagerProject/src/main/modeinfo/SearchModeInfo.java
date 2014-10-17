@@ -9,6 +9,7 @@ import data.taskinfo.TaskInfo;
  */
 public class SearchModeInfo implements ModeInfo {
 
+    private String[] suggestions;
     private TaskInfo[] tasks;
     private TaskId[] taskIds;
     
@@ -17,9 +18,11 @@ public class SearchModeInfo implements ModeInfo {
      * @param tasks The TaskInfo of the search results.
      * @param taskIds The TaskId of the search results.
      */
-    public SearchModeInfo(TaskInfo[] tasks, TaskId[] taskIds) {
+    public SearchModeInfo(TaskInfo[] tasks, TaskId[] taskIds, 
+            String[] suggestions) {
         this.tasks = tasks;
         this.taskIds = taskIds;
+        this.suggestions = suggestions;
     }
     
     /**
@@ -43,5 +46,9 @@ public class SearchModeInfo implements ModeInfo {
      */
     public TaskId[] getTaskIds() {
         return taskIds;
+    }
+    
+    public String[] getSuggestions() {
+        return suggestions;
     }
 }
