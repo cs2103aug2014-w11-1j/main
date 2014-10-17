@@ -8,6 +8,7 @@ public class SearchResult implements Result {
     private TaskInfo[] tasks;
     private TaskId[] taskIds;
     Type type;
+    private String[] suggestions;
     
     public SearchResult(Type type, TaskInfo[] tasks, TaskId[] taskIds) {
         this.type = type;
@@ -21,6 +22,10 @@ public class SearchResult implements Result {
     
     public TaskInfo[] getTasks() {
         return tasks;
+    }
+    
+    public void setSuggestion(String[] suggestions) {
+        this.suggestions = suggestions;
     }
     
     @Override

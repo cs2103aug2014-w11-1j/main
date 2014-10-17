@@ -2,11 +2,17 @@ package manager.datamanager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import manager.datamanager.searchfilter.Filter;
+import manager.datamanager.searchfilter.SuggestionFilter;
+import manager.datamanager.suggestion.SuggestionFinder;
 import manager.result.DetailsResult;
 import manager.result.Result;
 import manager.result.SearchResult;
@@ -18,6 +24,8 @@ import data.taskinfo.TaskInfo;
 public class SearchManager extends AbstractManager {
     private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
 
+    
+    SuggestionFinder suggestionFinder;
     TaskId[] lastSearchedTaskIds;
     TaskInfo[] lastSearchedTasks;
     Filter[] lastSearchFilters;
@@ -25,31 +33,24 @@ public class SearchManager extends AbstractManager {
     public SearchManager(TaskData taskData) {
         super(taskData);
         lastSearchFilters = new Filter[0];
+        suggestionFinder = new SuggestionFinder(taskData);
+    }
+    
+    class InfoId {
+        public TaskInfo taskInfo;
+        public TaskId taskId;
+        public InfoId(TaskInfo taskInfo, TaskId taskId) {
+            this.taskInfo = taskInfo;
+            this.taskId = taskId;
+        }
     }
 
-    private boolean matchFilter(TaskInfo taskInfo, Filter[] filters) {
-        for (Filter filter : filters){
-            if (!filter.filter(taskInfo)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void sortTasks() {
-        class InfoId {
-            public TaskInfo taskInfo;
-            public TaskId taskId;
-            public InfoId(TaskInfo taskInfo, TaskId taskId) {
-                this.taskInfo = taskInfo;
-                this.taskId = taskId;
-            }
-        }
-        int numberOfTasks = lastSearchedTasks.length;
+    private void sortTasks(TaskInfo[] tasks, TaskId[] taskIds) {
+        int numberOfTasks = taskIds.length;
         InfoId[] combinedList = new InfoId[numberOfTasks];
         for (int i = 0; i < numberOfTasks; i++) {
-            combinedList[i] = new InfoId(lastSearchedTasks[i],
-                    lastSearchedTaskIds[i]);
+            combinedList[i] = new InfoId(tasks[i],
+                    taskIds[i]);
         }
         Arrays.sort(combinedList, new Comparator<InfoId>() {
             @Override
@@ -75,39 +76,122 @@ public class SearchManager extends AbstractManager {
             }
         });
         for (int i = 0; i < numberOfTasks; i++) {
-            lastSearchedTasks[i] = combinedList[i].taskInfo;
-            lastSearchedTaskIds[i] = combinedList[i].taskId;
+            tasks[i] = combinedList[i].taskInfo;
+            taskIds[i] = combinedList[i].taskId;
         }
-
     }
-
-    private void updateLastSearched(Filter[] filters) {
-        ArrayList<TaskId> taskIdList = new ArrayList<TaskId>();
-        ArrayList<TaskInfo> taskList = new ArrayList<TaskInfo>();
+    
+    private Set<TaskId> applyFilter(Filter filter) {
+        Set<TaskId> resultSet = new HashSet<TaskId>();
         
         TaskId currentId = taskData.getFirst();
         while (currentId.isValid()) {
             TaskInfo task = taskData.getTaskInfo(currentId);
-            if (matchFilter(task, filters)) {
-                taskList.add(task);
-                taskIdList.add(currentId);
+            if (filter.filter(task)) {
+                resultSet.add(currentId);
             }
             currentId = taskData.getNext(currentId);
         }
         
-        lastSearchedTasks = taskList.toArray(new TaskInfo[taskList.size()]);
-        lastSearchedTaskIds = taskIdList.toArray(new TaskId[taskIdList.size()]);
-        sortTasks();
+        return resultSet;
     }
-
+    
+    private Set<TaskId> findMatchingTasks(Filter[] filters) {
+        Set<TaskId> currentMatch = getAllId();
+        
+        for (Filter filter : filters) {
+            Set<TaskId> matching = applyFilter(filter);
+            currentMatch.retainAll(matching);
+        }
+        
+        return currentMatch;
+    }
+    
+    private Set<TaskId> getAllId() {
+        Set<TaskId> resultSet = new HashSet<TaskId>();
+        
+        TaskId currentId = taskData.getFirst();
+        while (currentId.isValid()) {
+            resultSet.add(currentId);
+            currentId = taskData.getNext(currentId);
+        }
+        
+        return resultSet;
+    }
+    
+    void updateSearchedTasks(Collection<TaskId> taskIds) {
+        lastSearchedTaskIds = new TaskId[taskIds.size()];
+        lastSearchedTasks = new TaskInfo[taskIds.size()];
+        
+        taskIds.toArray(lastSearchedTaskIds);
+        
+        for (int i = 0; i < lastSearchedTaskIds.length; i++) {
+            lastSearchedTasks[i] = 
+                    taskData.getTaskInfo(lastSearchedTaskIds[i]);
+        }
+        sortTasks(lastSearchedTasks, lastSearchedTaskIds);
+    }
+    
+    private SearchResult getResultFromIds(Collection<TaskId> taskIds) {
+        TaskId idArray[] = new TaskId[taskIds.size()];
+        TaskInfo taskArray[] = new TaskInfo[taskIds.size()];
+        
+        taskIds.toArray(idArray);
+        
+        for (int i = 0; i < idArray.length; i++) {
+            taskArray[i] = taskData.getTaskInfo(idArray[i]);
+        }
+        
+        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
+                taskArray, idArray);
+        return result;
+    }
+    
+    public SearchResult searchWithSuggestion(Filter[] filters) {
+        Collection<TaskId> taskIds = findMatchingTasks(filters);
+        
+        updateSearchedTasks(taskIds);
+        SearchResult result = getResultFromIds(taskIds);
+        
+        List<String> suggestions = new ArrayList<String>();
+        for (int i = 0; i < filters.length; i++) {
+            if (filters[i].getType() == Filter.Type.FILTER_SUGGESTION) {
+                SuggestionFilter filter = (SuggestionFilter)filters[i];
+                suggestions.add(filter.getTopSuggestion());
+            }
+        }
+        
+        String[] suggestionArray = new String[suggestions.size()];
+        result.setSuggestion(suggestionArray);
+        
+        return result;
+    }
+    
+    private SearchResult searchAndUpdate(Filter[] filters) {
+        Collection<TaskId> taskIds = findMatchingTasks(filters);
+        updateSearchedTasks(taskIds);
+        
+        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
+                lastSearchedTasks, lastSearchedTaskIds);
+        return result;
+    }
+    
     public Result searchTasks(Filter[] filters) {
         log.log(Level.FINER, "Conduct search: " + filters.length + " filters");
         
-        lastSearchFilters = filters;
-        updateLastSearched(filters);
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
-                lastSearchedTasks, lastSearchedTaskIds);
-        return result;
+        SearchResult result = searchAndUpdate(filters);
+        
+        if (result.getTaskIds().length == 0) {
+            Filter[] newFilters = 
+                    suggestionFinder.generateSuggestionFilters(filters);
+            if (newFilters == null) {
+                return result;
+            } else {
+                return searchWithSuggestion(newFilters);
+            }
+        } else {
+            return result;
+        }
     }
 
     public Result redoLastSearch() {

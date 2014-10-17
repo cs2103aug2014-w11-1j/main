@@ -5,14 +5,10 @@ import java.util.regex.Pattern;
 
 import data.taskinfo.TaskInfo;
 
-public class KeywordFilter implements Filter{
-    public Type getType() {
-        return Type.FILTER_KEYWORD;
-    }
+public class SuggestionFilter implements Filter {
+    String keywords[];
     
-    private String[] keywords;
-    
-    public KeywordFilter(String[] keywords) {
+    public SuggestionFilter(String[] keywords) {
         this.keywords = keywords;
     }
     
@@ -31,16 +27,27 @@ public class KeywordFilter implements Filter{
         return false;
     }
     
-    public boolean filter(TaskInfo task) {
-        for (String keyword : keywords) {
-            if (!match(keyword, task.details) && !match(keyword, task.name)) {
-                return false;
-            }
+    public String getTopSuggestion() {
+        if (keywords.length == 0) {
+            return null;
+        } else {
+            return keywords[0];
         }
-        return true;
     }
     
-    public String[] getKeywords() {
-        return keywords;
+    @Override
+    public Type getType() {
+        return Type.FILTER_SUGGESTION;
     }
+
+    @Override
+    public boolean filter(TaskInfo task) {
+        for (String keyword : keywords) {
+            if (match(keyword, task.name) || match(keyword, task.details)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }
