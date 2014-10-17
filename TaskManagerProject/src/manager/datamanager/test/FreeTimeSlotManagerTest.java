@@ -1,7 +1,6 @@
 package manager.datamanager.test;
 
-import java.applet.Applet;
-import java.sql.Time;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -34,15 +33,16 @@ public class FreeTimeSlotManagerTest {
 		
 		FreeTimeSlotManager manager = new FreeTimeSlotManager(taskData);
 		System.out.println(manager.taskList.size());
-		
-		
 		Result result;
-		result = manager.searchFreeDay(getDate(10,9), getDate(10, 28));
-		FreeDayResult finResult = (FreeDayResult) result;
-		System.out.println(finResult.getFreeDate().size());
-		System.out.println(finResult.getFreeDate());
-		System.out.println(finResult.getStartDate());
-		System.out.println(finResult.getLastTaskEndDate());
+		
+//		result = manager.searchFreeDay(getDate(10,9), getDate(10, 28));
+//		FreeDayResult finResult = (FreeDayResult) result;
+//		System.out.println(finResult.getFreeDate().size());
+//		System.out.println(finResult.getFreeDate());
+//		System.out.println(finResult.getStartDate());
+//		System.out.println(finResult.getLastTaskEndDate());
+		
+		result = manager.searchFreeTimeSlot(getTime(5, 0), getDate(10, 9), getTime(8, 0), getDate(10, 28));
 		
 	}
 	

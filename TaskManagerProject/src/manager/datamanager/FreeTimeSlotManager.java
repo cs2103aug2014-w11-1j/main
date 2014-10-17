@@ -36,7 +36,7 @@ public class FreeTimeSlotManager extends AbstractManager{
 		return taskListWithDate;
 	}
 
-	public Result searchFreeTimeSlot(LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate EndDate){
+	public Result searchFreeTimeSlot(LocalTime startTime, LocalDate startDate,LocalTime endTime, LocalDate EndDate){
 		LocalDate checkDate = null;
 		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>(); 
 		ArrayList<Task> taskListContainingTimeSlot = findTaskContainingTimeSlot(startTime, endTime);
