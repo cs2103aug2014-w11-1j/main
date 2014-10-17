@@ -28,6 +28,10 @@ public class SearchResult implements Result {
         this.suggestions = suggestions;
     }
     
+    public String[] getSuggestions() {
+        return suggestions;
+    }
+    
     @Override
     public Type getType() {
         return type;

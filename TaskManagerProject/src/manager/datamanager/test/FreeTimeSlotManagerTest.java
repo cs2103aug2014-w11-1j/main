@@ -10,6 +10,6 @@ public class FreeTimeSlotManagerTest {
 	}
 	
 	
-	private static void addTask(String name)
+	private static void addTask(String name){}
 
 }

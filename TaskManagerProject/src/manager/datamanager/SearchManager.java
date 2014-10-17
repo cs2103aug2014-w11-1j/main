@@ -28,6 +28,7 @@ public class SearchManager extends AbstractManager {
     SuggestionFinder suggestionFinder;
     TaskId[] lastSearchedTaskIds;
     TaskInfo[] lastSearchedTasks;
+    String[] lastSearchedSuggestions;
     Filter[] lastSearchFilters;
 
     public SearchManager(TaskData taskData) {
@@ -162,7 +163,9 @@ public class SearchManager extends AbstractManager {
         }
         
         String[] suggestionArray = new String[suggestions.size()];
+        suggestions.toArray(suggestionArray);
         result.setSuggestion(suggestionArray);
+        lastSearchedSuggestions = suggestionArray;
         
         return result;
     }
@@ -173,10 +176,13 @@ public class SearchManager extends AbstractManager {
         
         SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
                 lastSearchedTasks, lastSearchedTaskIds);
+        
+        lastSearchedSuggestions = null;
         return result;
     }
     
     public Result searchTasks(Filter[] filters) {
+        lastSearchFilters = filters;
         log.log(Level.FINER, "Conduct search: " + filters.length + " filters");
         
         SearchResult result = searchAndUpdate(filters);
@@ -199,8 +205,8 @@ public class SearchManager extends AbstractManager {
     }
     
     public SearchResult getLastSearchResult() {
-        return new SearchResult(Result.Type.SEARCH_SUCCESS,
-                lastSearchedTasks, lastSearchedTaskIds);
+        SearchResult result = (SearchResult) redoLastSearch();
+        return result;
     }
     
     public Result details(TaskId taskId) {

@@ -28,6 +28,7 @@ public class SearchModeFormatter {
     private final static int WIDTH_ABSOLUTE = 7;
     private final static String LINE_FLOATING = "Floating Tasks ---";
     private final static String LINE_NO_TASK = "No tasks found.";
+    private final static String LINE_SUGGESTION = "Did you mean: ";
 
     
     private String getDateLine(LocalDate date) {
@@ -108,27 +109,41 @@ public class SearchModeFormatter {
         return LINE_FLOATING;
     }
     
+    private String getSuggestionLine(String[] suggestions) {
+        assert suggestions != null;
+        StringBuilder builder = new StringBuilder(LINE_SUGGESTION);
+        builder.append(String.join(",", suggestions));
+        builder.append("?");
+        return builder.toString();
+    }
+    
     private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
-            TaskId[] taskIds) {
+            TaskId[] taskIds, String[] suggestions) {
         ArrayList<String> result = new ArrayList<String>();
         if (tasks.length == 0)
             result.add(LINE_NO_TASK);
-        int numberWidth = numberLength(tasks.length) + 2;
-        for (int i = 0; i < tasks.length; i++) {
-            if (tasks[i].endDate == null) {
-                if (i == 0 || tasks[i-1].endDate != null) {
-                    result.add(getFloatingTaskLine());
-                }
+        else {
+            if (suggestions != null) {
+                result.add(getSuggestionLine(suggestions));
             }
-            else {
-                if (i == 0 || !tasks[i].endDate.equals(tasks[i-1].endDate)) {
-                    result.add(getDateLine(tasks[i].endDate));
+            int numberWidth = numberLength(tasks.length) + 2;
+            for (int i = 0; i < tasks.length; i++) {
+                if (tasks[i].endDate == null) {
+                    if (i == 0 || tasks[i-1].endDate != null) {
+                        result.add(getFloatingTaskLine());
+                    }
                 }
+                else {
+                    if (i == 0 || !tasks[i].endDate.equals(tasks[i-1].endDate)) {
+                        result.add(getDateLine(tasks[i].endDate));
+                    }
+                }
+                result.add(getTaskInfoLine(tasks[i], taskIds[i], 
+                        i + 1, numberWidth));
             }
-            result.add(getTaskInfoLine(tasks[i], taskIds[i], 
-                    i + 1, numberWidth));
         }
         return result;
+        
     }
     
     private String arrayListToStringLines(ArrayList<String> lines) {
@@ -143,8 +158,9 @@ public class SearchModeFormatter {
     public String format(SearchModeInfo searchInfo) {
         TaskInfo[] tasks = searchInfo.getTasks();
         TaskId[] taskIds = searchInfo.getTaskIds();
+        String[] suggestions = searchInfo.getSuggestions();
         ArrayList<String> formattedTaskArray = 
-                formatToArrayList(tasks, taskIds);
+                formatToArrayList(tasks, taskIds, suggestions);
         return arrayListToStringLines(formattedTaskArray);
     }
 }
