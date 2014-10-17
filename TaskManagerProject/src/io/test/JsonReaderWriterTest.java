@@ -1,6 +1,8 @@
-package io;
+package io.test;
 
 import static org.junit.Assert.assertEquals;
+import io.InvalidFileFormatException;
+import io.JsonReaderWriter;
 
 import java.time.Duration;
 import java.time.LocalDate;

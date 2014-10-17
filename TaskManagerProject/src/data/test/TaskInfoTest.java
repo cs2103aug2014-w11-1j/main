@@ -1,4 +1,4 @@
-package data.taskinfo;
+package data.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,6 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.junit.Test;
+
+import data.taskinfo.Priority;
+import data.taskinfo.Status;
+import data.taskinfo.Tag;
+import data.taskinfo.TaskInfo;
 
 public class TaskInfoTest {
 

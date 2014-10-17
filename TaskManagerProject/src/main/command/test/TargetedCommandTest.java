@@ -1,6 +1,8 @@
-package main.command;
+package main.command.test;
 
 import static org.junit.Assert.assertEquals;
+import main.command.TargetedCommand;
+import main.command.TaskIdSet;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.SearchManager;
@@ -131,6 +133,18 @@ class StubTargetedCommand extends TargetedCommand {
         super(new StubManagerHolder());
     }
 
+    public String toString() {
+        return targetTaskIdSet.numericIdString();
+    }
+    
+    public TaskIdSet getTargetIdSet() {
+        return targetTaskIdSet;
+    }
+    
+    public String tryParseIdsIntoSet(String args) {
+        return super.tryParseIdsIntoSet(args);
+    }
+    
     @Override
     protected boolean isValidArguments() {
         return false;
@@ -144,14 +158,6 @@ class StubTargetedCommand extends TargetedCommand {
     @Override
     protected Result executeAction() {
         return null;
-    }
-    
-    public String toString() {
-        return targetTaskIdSet.numericIdString();
-    }
-    
-    public TaskIdSet getTargetIdSet() {
-        return targetTaskIdSet;
     }
     
 }

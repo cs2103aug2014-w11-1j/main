@@ -1,13 +1,15 @@
-package manager;
+package manager.test;
 
 import static org.junit.Assert.assertEquals;
 import io.FileInputOutput;
+import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
 import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
 import manager.result.SimpleResult;
+
 import org.junit.Test;
 
 import data.TaskId;

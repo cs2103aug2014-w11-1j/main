@@ -1,18 +1,26 @@
 package manager.datamanager.test;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import manager.datamanager.FreeTimeSlotManager;
 import manager.result.FreeDayResult;
 import manager.result.Result;
+
+import org.junit.Test;
+
 import data.TaskData;
 import data.taskinfo.TaskInfo;
 
 public class FreeTimeSlotManagerTest {
-	
-	public static void main(String[] args){
+
+
+    @Test
+    public void test() {
 		
 		TaskData taskData = new TaskData();
 		
