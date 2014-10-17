@@ -1,9 +1,5 @@
 package manager.datamanager.test;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
 import java.time.LocalDate;
 import java.time.LocalTime;
 
