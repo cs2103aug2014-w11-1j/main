@@ -1,4 +1,4 @@
-package main.command;
+package main.command.parser;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

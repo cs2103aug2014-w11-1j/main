@@ -1,4 +1,4 @@
-package main.command;
+package main.command.parser.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+import main.command.parser.DateParser;
 
 import org.junit.Test;
 

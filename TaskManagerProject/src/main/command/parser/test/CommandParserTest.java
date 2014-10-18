@@ -1,9 +1,11 @@
-package main.command;
+package main.command.parser.test;
 
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import main.command.parser.CommandParser;
 
 import org.junit.Test;
 
