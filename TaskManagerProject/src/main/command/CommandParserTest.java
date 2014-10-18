@@ -104,6 +104,15 @@ public class CommandParserTest {
     }
 
     @Test
+    public void testParseNameNew() {
+        String test1 = mergeStrings(new String[]{TERM_1, TERM_IGNORE_1, TERM_2,
+                TAG+TERM_7, TERM_3, TAG+TERM_4, PRI_HIGH});
+        String name1 = CommandParser.parseNameNew(test1);
+        assertEquals(name1, mergeStrings(new String[]{TERM_1, TERM_IGNORE_1,
+                TERM_2, TERM_3}));
+    }
+
+    @Test
     public void testParseDateTime() {
         TaskInfo t = TaskInfo.create();
         // nothing: null

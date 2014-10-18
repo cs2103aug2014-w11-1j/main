@@ -3,6 +3,7 @@ package main.command;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -33,37 +34,80 @@ public class CommandParser {
     }
 
     public static String parseNameNew(String args) {
-        args = cleanCmdString(args);
-        return parseNameRecurse(args).trim();
+        String name = parseNameRecurse(args);
+        String cleanedName = cleanCmdString(name);
+        return cleanedName;
     }
 
     private static String parseNameRecurse(String args) {
-        if (hasIgnoredSegment()) {
-            String ignoredSegment = ""; //getIgnoredSegment
-            int startIgnoreIdx = args.indexOf(ignoredSegment);
-            int endIgnoreIdx = startIgnoreIdx + ignoredSegment.length();
+        if (hasIgnoredSegment(args)) {
+            String ignoredSegment = getIgnoredSegment(args);
+            int startIgnoreIdx = args.indexOf(ignoredSegment) - 1;
+            int endIgnoreIdx = startIgnoreIdx + ignoredSegment.length() + 1;
 
             // recursively parse non-ignored segments
             String front = parseNameRecurse(args.substring(0, startIgnoreIdx));
             String back = parseNameRecurse(args.substring(endIgnoreIdx));
 
-            return front + ignoredSegment + back;
+            String cleanedIgnoredSegment =
+                    ignoredSegment.substring(1, ignoredSegment.length() - 1);
+            return front + cleanedIgnoredSegment + back;
         } else {
-            //parse and remove
+            // remove if should not be part of name
+            List<String> tokens = Arrays.asList(args.split(SYMBOL_DELIM));
+            for (int i = 0; i < tokens.size(); i++) {
+                for (int j = tokens.size(); j > i; j--) {
+                    List<String> curList = tokens.subList(i, j);
+                    String curSubstring = String.join(SYMBOL_DELIM, curList);
 
-            // if has tag,
-                // strip tags
-            // if has priority
-                // strip priority
-            // if has datetime
-                // strip priority
+                    if (isPriority(curSubstring) || isTag(curSubstring) ||
+                            DateParser.isDate(curSubstring) ||
+                            DateParser.isTime(curSubstring)) {
+                        for (int k = 0; k < j - i; k++) {
+                            tokens.remove(i);
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < args.length(); i++) {
+                String toRemove = "";
+                for (int j = args.length(); j > i; j--) {
+                    String curSubstring = args.substring(i, j);
+
+                    if (isPriority(curSubstring) || isTag(curSubstring) ||
+                            DateParser.isDate(curSubstring) ||
+                            DateParser.isTime(curSubstring)) {
+                        toRemove = curSubstring;
+                    }
+                }
+                args = args.replace(toRemove, "");
+            }
         }
-        return "";
+
+        return args;
     }
 
-    private static boolean hasIgnoredSegment() {
-        // TODO Auto-generated method stub
-        return false;
+    /**
+     * Extracts the ignored segment (surrounded by SYMBOL_IGNORE) from a string.
+     * @param args
+     *      is the string to extract from.
+     * @return
+     *      null if no ignored segment exists, otherwise, the ignored segment.
+     */
+    private static String getIgnoredSegment(String args) {
+        int startIdx = args.indexOf(SYMBOL_IGNORE);
+        int endIdx = args.indexOf(SYMBOL_IGNORE, startIdx + 1);
+
+        if (endIdx != -1) {
+            String ignoredSegment = args.substring(startIdx, endIdx + 1);
+            return ignoredSegment;
+        }
+
+        return null;
+    }
+
+    private static boolean hasIgnoredSegment(String args) {
+        return getIgnoredSegment(args) != null;
     }
 
     public static String parseName(String args) {
