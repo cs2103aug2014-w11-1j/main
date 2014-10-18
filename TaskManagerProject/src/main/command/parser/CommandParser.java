@@ -1,12 +1,9 @@
 package main.command.parser;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.BitSet;
 import java.util.List;
-import java.util.Queue;
 
 import data.taskinfo.Priority;
 import data.taskinfo.Tag;
@@ -33,7 +30,7 @@ public class CommandParser {
         return task;
     }
 
-    public static String parseNameNew(String args) {
+    public static String parseName(String args) {
         String name = parseNameRecurse(args);
         String cleanedName = cleanCmdString(name);
         return cleanedName;
@@ -49,42 +46,37 @@ public class CommandParser {
             String front = parseNameRecurse(args.substring(0, startIgnoreIdx));
             String back = parseNameRecurse(args.substring(endIgnoreIdx));
 
+            // remove SYMBOL_IGNORE from both sides
             String cleanedIgnoredSegment =
                     ignoredSegment.substring(1, ignoredSegment.length() - 1);
-            return front + cleanedIgnoredSegment + back;
+            return front + " " + cleanedIgnoredSegment + " " + back;
         } else {
-            // remove if should not be part of name
-            List<String> tokens = Arrays.asList(args.split(SYMBOL_DELIM));
-            for (int i = 0; i < tokens.size(); i++) {
-                for (int j = tokens.size(); j > i; j--) {
-                    List<String> curList = tokens.subList(i, j);
-                    String curSubstring = String.join(SYMBOL_DELIM, curList);
+            // check if any sequence of tokens should not be in the task name
+            String[] tokens = args.split(SYMBOL_DELIM);
+            BitSet toRemove = new BitSet(); // indices to be removed
+
+            for (int i = 0; i < tokens.length; i++) {
+                for (int j = tokens.length; j > i; j--) {
+                    String[] curTokens = Arrays.copyOfRange(tokens, i, j);
+                    String curSubstring = String.join(SYMBOL_DELIM, curTokens);
 
                     if (isPriority(curSubstring) || isTag(curSubstring) ||
                             DateParser.isDate(curSubstring) ||
                             DateParser.isTime(curSubstring)) {
-                        for (int k = 0; k < j - i; k++) {
-                            tokens.remove(i);
-                        }
+                        toRemove.set(i, j);
                     }
                 }
             }
-            for (int i = 0; i < args.length(); i++) {
-                String toRemove = "";
-                for (int j = args.length(); j > i; j--) {
-                    String curSubstring = args.substring(i, j);
 
-                    if (isPriority(curSubstring) || isTag(curSubstring) ||
-                            DateParser.isDate(curSubstring) ||
-                            DateParser.isTime(curSubstring)) {
-                        toRemove = curSubstring;
-                    }
-                }
-                args = args.replace(toRemove, "");
+            // join the tokens that should be kept
+            StringBuilder cleanedName = new StringBuilder();
+            for (int i = toRemove.nextClearBit(0); i < tokens.length;
+                    i = toRemove.nextClearBit(i + 1)) {
+                cleanedName.append(tokens[i]);
+                cleanedName.append(" ");
             }
+            return cleanedName.toString().trim();
         }
-
-        return args;
     }
 
     /**
@@ -108,108 +100,6 @@ public class CommandParser {
 
     private static boolean hasIgnoredSegment(String args) {
         return getIgnoredSegment(args) != null;
-    }
-
-    public static String parseName(String args) {
-        // TODO fix this horrible, horrible code
-        StringBuilder sB = new StringBuilder(args);
-        Queue<String> outside = new LinkedList<String>();
-        Queue<String> inside = new LinkedList<String>();
-
-        boolean hasIgnoreSegment;
-        int curIdx = 0;
-        do {
-            int startIgnoreIdx = sB.indexOf(SYMBOL_IGNORE, curIdx);
-            int endIgnoreIdx = startIgnoreIdx == -1 ? -1 :
-                sB.indexOf(SYMBOL_IGNORE, startIgnoreIdx + 1);
-            hasIgnoreSegment = endIgnoreIdx > startIgnoreIdx;
-
-            if (!hasIgnoreSegment) {
-                outside.offer(sB.substring(curIdx, sB.length()));
-            } else {
-                outside.offer(sB.substring(curIdx, startIgnoreIdx));
-                inside.offer(sB.substring(startIgnoreIdx, endIgnoreIdx + 1));
-            }
-            curIdx = endIgnoreIdx + 1;
-        } while (hasIgnoreSegment);
-
-        for (int i = 0; i < outside.size(); i++) {
-            String s = outside.poll();
-            sB = new StringBuilder(s);
-            for (int j = 0; j < sB.length(); j++) {
-                for (int k = sB.length(); k > j; k--) {
-                    String possibleDateTime = sB.substring(j, k);
-                    LocalDate date = DateParser.parseDate(possibleDateTime);
-                    LocalTime time = DateParser.parseTime(possibleDateTime);
-                    if (date != null || time != null) {
-                        sB.delete(j--, k);
-                        break;
-                    }
-                }
-            }
-            outside.offer(sB.toString());
-        }
-
-        for (int i = 0; i < outside.size(); i++) {
-            String s = outside.poll();
-            s = stripTags(s);
-            s = stripPriority(s);
-            outside.offer(s);
-        }
-
-        sB = new StringBuilder();
-        while (!outside.isEmpty()) {
-            sB.append(outside.poll());
-            if (!inside.isEmpty()) {
-                sB.append(inside.poll());
-            }
-        }
-
-        return sB.toString().trim();
-        //return args;
-        // TODO Proper parsing.
-    }
-
-    private static String stripTags(String args) {
-        StringBuilder sB = new StringBuilder(args);
-
-        boolean shouldCheckFurther;
-        do {
-            int startTagIdx = sB.indexOf(SYMBOL_TAG);
-            int endTagIdx = startTagIdx == -1 ? -1 :
-                sB.indexOf(SYMBOL_DELIM, startTagIdx + 1);
-
-            shouldCheckFurther = endTagIdx > startTagIdx;
-            if (shouldCheckFurther) {
-                sB.delete(startTagIdx, endTagIdx + 1);
-            } else if (startTagIdx != -1) {
-                // last word in line
-                sB.delete(startTagIdx, sB.length());
-            }
-        } while (shouldCheckFurther);
-
-        return sB.toString();
-    }
-
-    private static String stripPriority(String args) {
-        StringBuilder sB = new StringBuilder(args);
-
-        boolean shouldCheckFurther;
-        do {
-            int startPriorityIdx = sB.indexOf(SYMBOL_PRIORITY);
-            int endPriorityIdx = startPriorityIdx == -1 ? -1 :
-                sB.indexOf(SYMBOL_DELIM, startPriorityIdx + 1);
-
-            shouldCheckFurther = endPriorityIdx > startPriorityIdx;
-            if (shouldCheckFurther) {
-                sB.delete(startPriorityIdx, endPriorityIdx + 1);
-            } else if (startPriorityIdx != -1) {
-                // last word in line
-                sB.delete(startPriorityIdx, sB.length());
-            }
-        } while (shouldCheckFurther);
-
-        return sB.toString();
     }
 
     public static void parseDateTime(String args, TaskInfo task) {
