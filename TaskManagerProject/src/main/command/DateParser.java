@@ -250,6 +250,10 @@ public class DateParser {
         return d;
     }
 
+    public static boolean isDate(String dateString) {
+        return parseDate(dateString) != null;
+    }
+
     private static LocalDate parseRelativeDate(String dateString) {
         // TODO weekdays (absolute?), +7d, -7d
         switch (dateString.toLowerCase()) {
@@ -355,6 +359,10 @@ public class DateParser {
         }
 
         return t;
+    }
+
+    public static boolean isTime(String timeString) {
+        return parseTime(timeString) != null;
     }
 
     private static LocalTime parseRelativeTime(String timeString) {
