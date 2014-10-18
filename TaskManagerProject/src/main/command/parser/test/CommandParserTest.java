@@ -22,16 +22,13 @@ public class CommandParserTest {
     private static final String TERM_6 = "yellow";
     private static final String TERM_7 = "tag#red";
 
-    private static final String TERM_IGNORE_1 = "\"#blue\"";
-    private static final String TERM_IGNORE_2 = "\"+high\"";
-    private static final String TERM_IGNORE_3 = "\"#blue +high\"";
-    private static final String TERM_IGNORE_4 = "\"3 PM\"";
-
+    private static final String IGNORE = "\"";
     private static final String TAG = "#";
+    private static final String PRIORITY = "+";
 
-    private static final String PRI_LOW = "+low";
-    private static final String PRI_MED = "+mEd";
-    private static final String PRI_HIGH = "+HIGH";
+    private static final String PRI_LOW = "low";
+    private static final String PRI_MED = "mEd";
+    private static final String PRI_HIGH = "HIGH";
 
     private enum TimeTest {
         ABS_12_HOURS_LONG_1  ("9:46 AM"),
@@ -87,12 +84,13 @@ public class CommandParserTest {
     @Test
     public void testParseTask() {
         // terms, ignored terms, 2 tags, 1 priority, 1 date, 1 time
-        String test1 = mergeStrings(new String[]{TERM_1, TERM_IGNORE_1, TERM_2,
-                TAG+TERM_7, TERM_3, TAG+TERM_4, PRI_HIGH,
-                TimeTest.ABS_12_HOURS_LONG_1.type, DateTest.ABS_DMMMY_1.type});
+        String test1 = mergeStrings(new String[]{TERM_1, IGNORE+TERM_2+IGNORE,
+                TAG+TERM_7, TERM_3, IGNORE, TAG+TERM_4, IGNORE, PRIORITY+PRI_HIGH,
+                PRIORITY+TERM_5, TimeTest.ABS_12_HOURS_LONG_1.type,
+                DateTest.ABS_DMMMY_1.type, TAG+TERM_6});
         TaskInfo t = CommandParser.parseTask(test1);
-        assertEquals(t.name, mergeStrings(new String[]{TERM_1, TERM_IGNORE_1,
-                TERM_2, TERM_3}));
+        assertEquals(t.name, mergeStrings(new String[]{TERM_1, TERM_2, TERM_3,
+                TAG+TERM_4, PRIORITY+TERM_5}));
         assertEquals(t.endDate, DATE_1);
         assertEquals(t.endTime, TIME_LONG_1);
         assertEquals(t.startDate, null);
@@ -102,16 +100,18 @@ public class CommandParserTest {
         for (Tag tag : t.tags) {
             result.append(tag.toString()).append(' ');
         }
-        assertEquals(result.toString().trim(), TERM_7 + " " + TERM_4);
+        assertEquals(result.toString().trim(), TERM_7 + " " + TERM_6);
     }
 
     @Test
-    public void testParseNameNew() {
-        String test1 = mergeStrings(new String[]{TERM_1, TERM_IGNORE_1, TERM_2,
-                TAG+TERM_7, TERM_3, TAG+TERM_4, PRI_HIGH});
-        String name1 = CommandParser.parseNameNew(test1);
-        assertEquals(name1, mergeStrings(new String[]{TERM_1, TERM_IGNORE_1,
-                TERM_2, TERM_3}));
+    public void testParseName() {
+        String test1 = mergeStrings(new String[]{TERM_1, IGNORE+TERM_2+IGNORE,
+                TAG+TERM_7, TERM_3, IGNORE, TAG+TERM_4, IGNORE, PRIORITY+PRI_HIGH,
+                PRIORITY+TERM_5, TimeTest.ABS_12_HOURS_LONG_1.type,
+                DateTest.ABS_DMMMY_1.type});
+        String name1 = CommandParser.parseName(test1);
+        assertEquals(name1, mergeStrings(new String[]{TERM_1, TERM_2, TERM_3,
+                TAG+TERM_4, PRIORITY+TERM_5}));
     }
 
     @Test
@@ -245,11 +245,11 @@ public class CommandParserTest {
 
     @Test
     public void testParsePriority() {
-        String test1 = mergeStrings(new String[]{TERM_1, TERM_2, PRI_LOW, TAG+TERM_6});
-        String test2 = mergeStrings(new String[]{TAG+TERM_3, TERM_7, PRI_HIGH, TERM_1});
-        String test3 = mergeStrings(new String[]{TERM_1, TAG+TERM_5, TAG+TERM_7, PRI_MED});
+        String test1 = mergeStrings(new String[]{TERM_1, TERM_2, PRIORITY+PRI_LOW, TAG+TERM_6});
+        String test2 = mergeStrings(new String[]{TAG+TERM_3, TERM_7, PRIORITY+PRI_HIGH, TERM_1});
+        String test3 = mergeStrings(new String[]{TERM_1, TAG+TERM_5, TAG+TERM_7, PRIORITY+PRI_MED});
         String test4 = mergeStrings(new String[]{TERM_1, TAG+TERM_7, TERM_3});
-        String test5 = mergeStrings(new String[]{TERM_1, PRI_HIGH, TAG+TERM_7, PRI_MED});
+        String test5 = mergeStrings(new String[]{TERM_1, PRIORITY+PRI_HIGH, TAG+TERM_7, PRIORITY+PRI_MED});
 
         // low priority
         Priority priority = CommandParser.parsePriority(test1);
