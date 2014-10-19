@@ -1,10 +1,15 @@
 package main.command;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import main.command.parser.CommandParser;
+import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.AddManager;
 import manager.result.Result;
+import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
 public class AddCommand extends Command {
@@ -16,13 +21,75 @@ public class AddCommand extends Command {
         super(managerHolder);
         addManager = managerHolder.getAddManager();
         stateManager = managerHolder.getStateManager();
-        
+
     	taskToAdd = parse(args);
     }
 
     private TaskInfo parse(String args) {
-        TaskInfo newTask = CommandParser.parseTask(args);
-        return newTask;
+        TaskInfo task = TaskInfo.create();
+
+        task.name = CommandParser.parseName(args);
+        parseDateTimes(args, task);
+        task.tags = CommandParser.parseTags(args);
+        Priority p = CommandParser.parsePriority(args);
+        if (p != null) {
+            task.priority = p;
+        }
+
+        return task;
+    }
+
+    private void parseDateTimes(String args, TaskInfo task) {
+        DateTimePair range = CommandParser.parseDateTimes(args);
+        if (range.isEmpty() ||
+                range.getNumOfTimes() < range.getNumOfDates()) {
+            return;
+        }
+
+        // store times first
+        if (!range.hasSecondTime()) {
+            task.endTime = range.getFirstTime();
+        } else {
+            task.startTime = range.getFirstTime();
+            task.endTime = range.getSecondTime();
+        }
+
+        // two dates, use them accordingly
+        if (range.hasFirstDate() && range.hasSecondDate()) {
+            task.startDate = range.getFirstDate();
+            task.endDate = range.getSecondDate();
+        }
+
+        // one date, use the same for both
+        if (range.hasFirstDate() && !range.hasSecondDate()) {
+            task.startDate = task.endDate = range.getFirstDate();
+        }
+        if (range.hasSecondDate() && !range.hasFirstDate()) {
+            task.startDate = task.endDate = range.getSecondDate();
+        }
+
+        // no date, get the next possible date for the times
+        if (!range.hasFirstDate() && !range.hasSecondDate()) {
+            task.startDate = task.endDate = getNextOccurrence(
+                task.startTime, LocalTime.now(), LocalDate.now());
+            if (range.hasSecondTime()) {
+                task.endDate = getNextOccurrence(
+                    task.endTime, range.getFirstTime(), task.startDate);
+            }
+        }
+
+        // there can only be one date if there is only one time
+        if (!range.hasSecondTime()) {
+            task.startDate = null;
+        }
+    }
+
+    private LocalDate getNextOccurrence(LocalTime time, LocalTime timeFrom, LocalDate dateFrom) {
+        if (time.isAfter(timeFrom)) {
+            return dateFrom;
+        } else {
+            return dateFrom.plusDays(1);
+        }
     }
 
     @Override
