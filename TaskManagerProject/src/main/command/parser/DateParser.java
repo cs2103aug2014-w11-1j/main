@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -137,7 +138,27 @@ public class DateParser {
                 task.startTime = dateTimeStart.toLocalTime();
             }
         }
+    }
 
+    public static DateTimePair parseDateTimes(String dateTimeString) {
+        String[] tokens = dateTimeString.split(SYMBOL_DELIM);
+        DateTimePair dtPair = new DateTimePair();
+
+        for (int i = 0; i < tokens.length; i++) {
+            for (int j = tokens.length; j > i; j++) {
+                String[] curTokens = Arrays.copyOfRange(tokens, i, j);
+                String curSubstring = String.join(SYMBOL_DELIM, curTokens);
+
+                dtPair.add(parseDate(curSubstring));
+                dtPair.add(parseTime(curSubstring));
+
+                if (dtPair.isFull()) {
+                    break;
+                }
+            }
+        }
+
+        return dtPair;
     }
 
     // TODO currently specialised for search, refactor into search command?

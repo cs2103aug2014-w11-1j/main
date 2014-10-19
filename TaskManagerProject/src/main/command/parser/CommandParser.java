@@ -193,7 +193,7 @@ public class CommandParser {
 
     private static String stripExtraDelims(String s) {
         String doubleDelim = SYMBOL_DELIM + SYMBOL_DELIM;
-        while (s.indexOf(doubleDelim) != -1) {
+        while (s.contains(doubleDelim)) {
             s = s.replace(doubleDelim, SYMBOL_DELIM);
         }
         return s;
