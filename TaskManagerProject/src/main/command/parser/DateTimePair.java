@@ -21,12 +21,12 @@ public class DateTimePair {
             return;
         }
 
-        if (count == 0) {
-            firstDate = d;
-        } else if (firstTime == null) {
-            secondDate = d;
+        // two dates in a row
+        if (hasFirstDate() && !hasFirstTime()) {
             max = 3;
-        } else if (secondTime == null) {
+        }
+
+        if (!hasFirstDate() && !hasSecondTime()) {
             firstDate = d;
         } else {
             secondDate = d;
@@ -40,12 +40,12 @@ public class DateTimePair {
             return;
         }
 
-        if (count == 0) {
-            firstTime = t;
-        } else if (firstDate == null) {
-            secondTime = t;
+        // two times in a row
+        if (hasFirstTime() && !hasFirstDate()) {
             max = 3;
-        } else if (secondDate == null) {
+        }
+
+        if (!hasFirstTime() && !hasSecondDate()) {
             firstTime = t;
         } else {
             secondTime = t;
