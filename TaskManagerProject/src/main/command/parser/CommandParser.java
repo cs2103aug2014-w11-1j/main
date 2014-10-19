@@ -81,10 +81,11 @@ public class CommandParser {
 
     /**
      * Extracts the ignored segment (surrounded by SYMBOL_IGNORE) from a string.
+     *
      * @param args
-     *      is the string to extract from.
-     * @return
-     *      null if no ignored segment exists, otherwise, the ignored segment.
+     *            is the string to extract from.
+     * @return null if no ignored segment exists, otherwise, the ignored
+     *         segment.
      */
     private static String getIgnoredSegment(String args) {
         int startIdx = args.indexOf(SYMBOL_IGNORE);
@@ -131,23 +132,27 @@ public class CommandParser {
                 !possibleTag.contains(SYMBOL_DELIM);
     }
 
-    public static Priority parsePriority(String args) {
+    public static Priority[] parsePriorities(String args) {
         args = stripIgnoredSegments(args);
         args = cleanCmdString(args);
         String[] words = args.split(SYMBOL_DELIM);
 
-        Priority p = DEFAULT_PRIORITY;
-
+        List<Priority> pList = new ArrayList<Priority>();
         for (String word : words) {
-            p = matchPriority(word);
+            Priority p = matchPriority(word);
 
-            // match only the first recognised priority
             if (p != DEFAULT_PRIORITY) {
-                break;
+                pList.add(p);
             }
         }
 
-        return p;
+        return pList.isEmpty() ? null :
+            pList.toArray(new Priority[pList.size()]);
+    }
+
+    public static Priority parsePriority(String args) {
+        Priority[] priorities = parsePriorities(args);
+        return priorities == null ? null : priorities[0];
     }
 
     private static boolean isPriority(String possiblePriority) {

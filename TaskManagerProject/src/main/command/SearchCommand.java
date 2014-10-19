@@ -52,16 +52,14 @@ public class SearchCommand extends Command {
             filterList.add(new DateTimeFilter(dateRange.get(0), dateRange.get(1)));
         }
 
-        Tag[] newTags = CommandParser.parseTags(args);
-        if (newTags != null) {
-            filterList.add(new TagFilter(newTags));
+        Tag[] tags = CommandParser.parseTags(args);
+        if (tags != null) {
+            filterList.add(new TagFilter(tags));
         }
 
-        Priority newPriority = CommandParser.parsePriority(args);
-        if (newPriority != null) {
-            // TODO support for multiple priorities
-            Priority[] pArr = {newPriority};
-            filterList.add(new PriorityFilter(pArr));
+        Priority[] priorities = CommandParser.parsePriorities(args);
+        if (priorities != null) {
+            filterList.add(new PriorityFilter(priorities));
         }
     }
 
