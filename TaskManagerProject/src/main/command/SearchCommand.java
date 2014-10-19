@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import main.command.parser.CommandParser;
-import main.command.parser.DateParser;
 import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
 import manager.StateManager;
@@ -41,7 +40,7 @@ public class SearchCommand extends Command {
             return;
         }
 
-        // TODO remove dates, tags, and priorities from keywords
+        // TODO set up a way to have a common repository of symbols, like DELIM
         String delim = " ";
         String taskName = CommandParser.parseName(args);
         String[] keywords = taskName.split(delim);
@@ -49,9 +48,7 @@ public class SearchCommand extends Command {
             filterList.add(new KeywordFilter(keywords));
         }
 
-        // TODO refactor date parser further
         List<LocalDateTime> dateRange = parseDateTimes(args);
-        //List<LocalDateTime> dateRange = DateParser.parseDateTime(args);
         if (dateRange != null) {
             filterList.add(new DateTimeFilter(dateRange.get(0), dateRange.get(1)));
         }
@@ -68,7 +65,7 @@ public class SearchCommand extends Command {
     }
 
     private List<LocalDateTime> parseDateTimes(String args) {
-        DateTimePair range = DateParser.parseDateTimes(args);
+        DateTimePair range = CommandParser.parseDateTimes(args);
         if (range.isEmpty()) {
             return null;
         }

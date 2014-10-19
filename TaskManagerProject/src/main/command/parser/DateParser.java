@@ -25,6 +25,7 @@ public class DateParser {
     private static LocalDate datePatternsLastUpdate;
     private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
 
+
     public static void parseDateTime(String dateTimeString, TaskInfo task) {
         while (dateTimeString.contains(SYMBOL_DELIM + SYMBOL_DELIM)) {
             dateTimeString = dateTimeString.replace(SYMBOL_DELIM + SYMBOL_DELIM, SYMBOL_DELIM);
@@ -95,9 +96,6 @@ public class DateParser {
         LocalTime timeA = null;
         LocalTime timeB = null;
 
-        // date off for when no date specified + the first time will occur tmr.
-        int dateOffset = 0;
-
         if (times.size() > 0) {
             timeA = times.get(0);
 
@@ -139,6 +137,7 @@ public class DateParser {
             }
         }
     }
+
 
     public static DateTimePair parseDateTimes(String dateTimeString) {
         String[] tokens = dateTimeString.split(SYMBOL_DELIM);

@@ -16,20 +16,6 @@ public class CommandParser {
     private final static String SYMBOL_PRIORITY = "+";
     private final static Priority DEFAULT_PRIORITY = null;
 
-    public static TaskInfo parseTask(String taskText) {
-        TaskInfo task = TaskInfo.create();
-
-        task.name = parseName(taskText);
-        parseDateTime(taskText, task);
-        task.tags = parseTags(taskText);
-        Priority p = parsePriority(taskText);
-        if (p != null) {
-            task.priority = p;
-        }
-
-        return task;
-    }
-
     public static String parseName(String args) {
         String name = parseNameRecurse(args);
         String cleanedName = cleanCmdString(name);
@@ -107,6 +93,11 @@ public class CommandParser {
     public static void parseDateTime(String args, TaskInfo task) {
         args = stripIgnoredSegments(args);
         DateParser.parseDateTime(args, task);
+    }
+
+    public static DateTimePair parseDateTimes(String args) {
+        args = stripIgnoredSegments(args);
+        return DateParser.parseDateTimes(args);
     }
 
     public static Tag[] parseTags(String args) {
