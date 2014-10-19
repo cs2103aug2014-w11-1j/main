@@ -85,4 +85,24 @@ public class DateTimePair {
         int second = secondTime == null ? 0 : 1;
         return first + second;
     }
+
+    public boolean hasFirstDate() {
+        return firstDate != null;
+    }
+
+    public boolean hasFirstTime() {
+        return firstTime != null;
+    }
+
+    public boolean hasSecondDate() {
+        return secondDate != null;
+    }
+
+    public boolean hasSecondTime() {
+        return secondTime != null;
+    }
+
+    public boolean isEmpty() {
+        return firstDate == null && firstTime == null;
+    }
 }
