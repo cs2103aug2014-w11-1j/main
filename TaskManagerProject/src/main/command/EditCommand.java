@@ -37,7 +37,7 @@ public class EditCommand extends TargetedCommand {
             // not edit mode
             args = tryParseIdsIntoSet(args);
             taskToEdit = parseEditParams(args);
-            
+
             /*Scanner sc = new Scanner(args);
             if (sc.hasNext()) {
                 taskId = parseTaskId(sc.next());
@@ -74,7 +74,7 @@ public class EditCommand extends TargetedCommand {
         switch (editType.toLowerCase()) {
             case "name" :
                 editParam = sc.nextLine().trim();
-                editTask.name = CommandParser.parseName(editParam);
+                editTask.name = editParam;
                 break;
             case "details" :
             case "description" :
