@@ -64,6 +64,7 @@ public class CommandParser {
                             DateParser.isDate(curSubstring) ||
                             DateParser.isTime(curSubstring)) {
                         toRemove.set(i, j);
+                        break;
                     }
                 }
             }
@@ -73,7 +74,7 @@ public class CommandParser {
             for (int i = toRemove.nextClearBit(0); i < tokens.length;
                     i = toRemove.nextClearBit(i + 1)) {
                 cleanedName.append(tokens[i]);
-                cleanedName.append(" ");
+                cleanedName.append(SYMBOL_DELIM);
             }
             return cleanedName.toString().trim();
         }
