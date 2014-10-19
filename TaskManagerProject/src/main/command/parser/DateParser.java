@@ -145,7 +145,7 @@ public class DateParser {
         DateTimePair dtPair = new DateTimePair();
 
         for (int i = 0; i < tokens.length; i++) {
-            for (int j = tokens.length; j > i; j++) {
+            for (int j = tokens.length; j > i; j--) {
                 String[] curTokens = Arrays.copyOfRange(tokens, i, j);
                 String curSubstring = String.join(SYMBOL_DELIM, curTokens);
 
@@ -159,105 +159,6 @@ public class DateParser {
         }
 
         return dtPair;
-    }
-
-    // TODO currently specialised for search, refactor into search command?
-    public static List<LocalDateTime> parseDateTime(String dateTimeString) {
-        int curIndex = 0;
-        List<LocalDate> dates = new ArrayList<LocalDate>();
-        List<LocalTime> times = new ArrayList<LocalTime>();
-        for (int i = 0; i < 2; i++) {
-            dates.add(null);
-            times.add(null);
-        }
-
-        LocalDate prevDate = null;
-        LocalTime prevTime = null;
-        for (int i = 0; i < dateTimeString.length(); i++) {
-            for (int j = dateTimeString.length(); j > i; j--) {
-                if (curIndex >= 2) {
-                    break;
-                }
-
-                String possibleDateTime = dateTimeString.substring(i, j);
-                LocalDate curDate = parseDate(possibleDateTime);
-                LocalTime curTime = parseTime(possibleDateTime);
-
-                // if nothing's found, continue; else move i-th index forward
-                if (curDate == null && curTime == null) {
-                    continue;
-                } else {
-                    i += possibleDateTime.length();
-                }
-
-                if (curDate != null) {
-                    if (prevDate != null) {
-                        ++curIndex;
-                    }
-                    dates.set(curIndex, curDate);
-                    if (prevTime != null) {
-                        ++curIndex;
-                        prevTime = null;
-                    } else {
-                        prevDate = curDate;
-                    }
-                }
-                if (curTime != null) {
-                    if (prevTime != null) {
-                        ++curIndex;
-                    }
-                    times.set(curIndex, curTime);
-                    if (prevDate != null) {
-                        ++curIndex;
-                        prevDate = null;
-                    } else {
-                        prevTime = curTime;
-                    }
-                }
-            }
-        }
-
-        // if no dates and times found, return null
-        if (dates.get(0) == null && dates.get(1) == null &&
-                times.get(0) == null && times.get(1) == null) {
-            return null;
-        }
-
-        // fill in missing data with magic circuit powar
-
-        // fill in start date
-        if (dates.get(0) == null) {
-            if (dates.get(1) != null) {
-                dates.set(0, dates.get(1));
-            } else {
-                dates.set(0, LocalDate.now());
-            }
-        }
-
-        // fill in end time
-        if (times.get(1) == null) {
-            if (times.get(0) != null && dates.get(1) == null) {
-                times.set(1, times.get(0));
-            } else {
-                times.set(1, LocalTime.MAX);
-            }
-        }
-
-        // fill in end date
-        if (dates.get(1) == null) {
-            dates.set(1, dates.get(0));
-        }
-
-        // fill in start time
-        if (times.get(0) == null) {
-            times.set(0, LocalTime.MIN);
-        }
-
-        List<LocalDateTime> dateTimes = new ArrayList<LocalDateTime>();
-        dateTimes.add(LocalDateTime.of(dates.get(0), times.get(0)));
-        dateTimes.add(LocalDateTime.of(dates.get(1), times.get(1)));
-
-        return dateTimes;
     }
 
     public static LocalDate parseDate(String dateString) {

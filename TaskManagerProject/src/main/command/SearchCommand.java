@@ -1,11 +1,14 @@
 package main.command;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import main.command.parser.CommandParser;
 import main.command.parser.DateParser;
+import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.SearchManager;
@@ -47,7 +50,8 @@ public class SearchCommand extends Command {
         }
 
         // TODO refactor date parser further
-        List<LocalDateTime> dateRange = DateParser.parseDateTime(args);
+        List<LocalDateTime> dateRange = parseDateTimes(args);
+        //List<LocalDateTime> dateRange = DateParser.parseDateTime(args);
         if (dateRange != null) {
             filterList.add(new DateTimeFilter(dateRange.get(0), dateRange.get(1)));
         }
@@ -61,6 +65,48 @@ public class SearchCommand extends Command {
         if (priorities != null) {
             filterList.add(new PriorityFilter(priorities));
         }
+    }
+
+    private List<LocalDateTime> parseDateTimes(String args) {
+        DateTimePair range = DateParser.parseDateTimes(args);
+        if (range.isEmpty()) {
+            return null;
+        }
+
+        LocalDate startDate = range.getFirstDate();
+        LocalTime startTime = range.getFirstTime();
+        LocalDate endDate = range.getSecondDate();
+        LocalTime endTime = range.getSecondTime();
+
+        if (!range.hasFirstDate()) {
+            if (range.hasSecondDate()) {
+                startDate = endDate;
+            } else {
+                startDate = LocalDate.now();
+            }
+        }
+
+        if (!range.hasSecondTime()) {
+            if (range.hasFirstTime() && !range.hasSecondDate()) {
+                endTime = startTime;
+            } else {
+                endTime = LocalTime.MAX;
+            }
+        }
+
+        if (!range.hasSecondDate()) {
+            endDate = startDate;
+        }
+
+        if (!range.hasFirstTime()) {
+            startTime = LocalTime.MIN;
+        }
+
+        List<LocalDateTime> dtRange = new ArrayList<LocalDateTime>();
+        dtRange.add(LocalDateTime.of(startDate, startTime));
+        dtRange.add(LocalDateTime.of(endDate, endTime));
+
+        return dtRange;
     }
 
     @Override
