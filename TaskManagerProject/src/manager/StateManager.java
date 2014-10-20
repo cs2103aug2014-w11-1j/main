@@ -61,6 +61,11 @@ public class StateManager {
 		this.updateManager = new UpdateManager(fileInputOutput, undoManager, searchManager);
 	}
 
+    public boolean canExit() {
+        return true;
+    }
+
+
 	public boolean canAdd() {
 		return true;
 	    //return currentState == State.AVAILABLE;
@@ -291,6 +296,8 @@ public class StateManager {
 	 */
 	private Message applyResult(Result result) {
 		switch (result.getType()){
+            case EXIT :
+                return new EnumMessage(EnumMessage.MessageType.EXIT);
                 
             case ADD_SUCCESS :
             	 AddResult addResult = (AddResult)result;

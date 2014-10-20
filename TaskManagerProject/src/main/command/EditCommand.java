@@ -6,7 +6,6 @@ import java.util.Scanner;
 import main.command.parser.CommandParser;
 import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
-import manager.StateManager;
 import manager.datamanager.EditManager;
 import manager.result.Result;
 import data.TaskId;
@@ -18,8 +17,6 @@ public class EditCommand extends TargetedCommand {
     private static final int TAG_DEL = -1;
 
     private final EditManager editManager;
-    private final StateManager stateManager;
-    //private final TaskId taskId;
     private final TaskInfo taskToEdit;
     private int tagOperation = 0;
 
@@ -27,7 +24,6 @@ public class EditCommand extends TargetedCommand {
             throws NoSuchElementException {
         super(managerHolder);
         editManager = managerHolder.getEditManager();
-        stateManager = managerHolder.getStateManager();
 
         // check if in edit mode
         if (stateManager.inEditMode()) {

@@ -33,6 +33,10 @@ public class MainController {
         Command curCommand = commandController.getCommand(commandString);
         log.log(Level.FINE, "Execute Command: " + curCommand.getClass().getName());
         Response curResponse = curCommand.execute();
+        
+        if (curResponse.isExitResponse()) {
+            setReadyToExit();
+        }
         Formatter formatter = new Formatter();
         return formatter.format(curResponse);
         //throw new UnsupportedOperationException("Not implemented yet");
@@ -40,5 +44,9 @@ public class MainController {
 
     public boolean isReadyToExit() {
         return readyToExit;
+    }
+    
+    private void setReadyToExit() {
+        readyToExit = true;
     }
 }

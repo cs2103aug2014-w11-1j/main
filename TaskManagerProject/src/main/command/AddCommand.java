@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import main.command.parser.CommandParser;
 import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
-import manager.StateManager;
 import manager.datamanager.AddManager;
 import manager.result.Result;
 import data.taskinfo.Priority;
@@ -14,13 +13,11 @@ import data.taskinfo.TaskInfo;
 
 public class AddCommand extends Command {
     private final AddManager addManager;
-    private final StateManager stateManager;
     private final TaskInfo taskToAdd;
 
     public AddCommand(String args, ManagerHolder managerHolder) {
         super(managerHolder);
         addManager = managerHolder.getAddManager();
-        stateManager = managerHolder.getStateManager();
 
     	taskToAdd = parse(args);
     }

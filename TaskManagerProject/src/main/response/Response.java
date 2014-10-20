@@ -1,5 +1,6 @@
 package main.response;
 
+import main.message.EnumMessage;
 import main.message.Message;
 import main.modeinfo.ModeInfo;
 
@@ -32,5 +33,18 @@ public class Response {
      */
     public ModeInfo getModeInfo() {
         return modeInfo;
+    }
+    
+    public boolean isExitResponse() {
+        if (message == null) {
+            return false;
+            
+        } else if (message.getType() != Message.Type.ENUM_MESSAGE) {
+            return false;
+            
+        } else {
+            EnumMessage enumMessage = (EnumMessage)message;
+            return (enumMessage.getMessageType() == EnumMessage.MessageType.EXIT);
+        }
     }
 }

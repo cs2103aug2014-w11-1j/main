@@ -6,7 +6,7 @@ public interface Message {
         ADD_SUCCESSFUL,
         EDIT_SUCCESSFUL,
         DELETE_SUCCESSFUL,
-        DETAILS
+        DETAILS,
     }
     
     public Type getType();

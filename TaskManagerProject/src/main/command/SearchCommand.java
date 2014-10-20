@@ -9,7 +9,6 @@ import java.util.List;
 import main.command.parser.CommandParser;
 import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
-import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.searchfilter.DateTimeFilter;
 import manager.datamanager.searchfilter.Filter;
@@ -22,13 +21,11 @@ import data.taskinfo.Tag;
 
 public class SearchCommand extends Command {
     private final SearchManager searchManager;
-    private final StateManager stateManager;
     private final List<Filter> filterList;
 
     public SearchCommand(String args, ManagerHolder managerHolder) {
         super(managerHolder);
         searchManager = managerHolder.getSearchManager();
-        stateManager = managerHolder.getStateManager();
 
         filterList = new ArrayList<Filter>();
         parse(args);

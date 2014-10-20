@@ -1,18 +1,15 @@
 package main.command;
 
 import manager.ManagerHolder;
-import manager.StateManager;
 import manager.datamanager.DeleteManager;
 import manager.result.Result;
 
 public class DeleteCommand extends TargetedCommand {
     private final DeleteManager deleteManager;
-    private final StateManager stateManager;
 
     public DeleteCommand(String args, ManagerHolder managerHolder) {
         super(managerHolder);
         deleteManager = managerHolder.getDeleteManager();
-        stateManager = managerHolder.getStateManager();
         
         parse(args);
     }

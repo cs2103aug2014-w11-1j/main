@@ -4,9 +4,9 @@ import manager.ManagerHolder;
 import manager.result.Result;
 import manager.result.SimpleResult;
 
-public class BackCommand extends Command {
-    
-    public BackCommand (ManagerHolder managerHolder) {
+public class ExitCommand extends Command {
+
+    public ExitCommand(ManagerHolder managerHolder) {
         super(managerHolder);
     }
 
@@ -17,12 +17,12 @@ public class BackCommand extends Command {
 
     @Override
     protected boolean isCommandAllowed() {
-        return stateManager.canGoBack();
+        return stateManager.canExit();
     }
 
     @Override
     protected Result executeAction() {
-        Result result = new SimpleResult(Result.Type.GO_BACK);
-        return result;
+        return new SimpleResult(Result.Type.EXIT);
     }
+
 }

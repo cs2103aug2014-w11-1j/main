@@ -2,16 +2,13 @@ package main.command;
 
 import main.response.Response;
 import manager.ManagerHolder;
-import manager.StateManager;
 import manager.result.Result;
 
 
 public class ArgumentCommand extends TargetedCommand {
-    private final StateManager stateManager;
 
     public ArgumentCommand(String args, ManagerHolder managerHolder) {
         super(managerHolder);
-        this.stateManager = managerHolder.getStateManager();
         parse(args);
     }
 

@@ -8,7 +8,7 @@ import manager.result.Result;
 import manager.result.SimpleResult;
 
 public abstract class Command {
-    private final StateManager stateManager;
+    protected final StateManager stateManager;
     
     public Command(ManagerHolder managerHolder) {
         stateManager = managerHolder.getStateManager();

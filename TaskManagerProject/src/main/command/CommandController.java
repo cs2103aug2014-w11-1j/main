@@ -54,7 +54,7 @@ public class CommandController {
                 return new BackCommand(managerHolder);
             case "exit" :
             case "quit" :
-                return null;
+                return new ExitCommand(managerHolder);
             default :
                 return new ArgumentCommand(cmdType + " " + cmdArgs, managerHolder);
         }

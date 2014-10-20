@@ -4,12 +4,10 @@ import java.util.LinkedList;
 
 import main.response.Response;
 import manager.ManagerHolder;
-import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.KeywordFilter;
 import manager.result.Result;
-import manager.result.SimpleResult;
 import data.TaskId;
 
 public abstract class TargetedCommand extends Command {
@@ -20,9 +18,13 @@ public abstract class TargetedCommand extends Command {
     private static final String DELIMITER_DASH_STRING = "-";
     
     private final SearchManager searchManager;
-    private final StateManager stateManager;
     protected TaskIdSet targetTaskIdSet;
     protected KeywordFilter keywordFilter;
+
+    public TargetedCommand(ManagerHolder managerHolder) {
+        super(managerHolder);
+        searchManager = managerHolder.getSearchManager();
+    }
     
     @Override
     public Response execute() {
@@ -50,12 +52,6 @@ public abstract class TargetedCommand extends Command {
         }
     }
     
-    
-    public TargetedCommand(ManagerHolder managerHolder) {
-        super(managerHolder);
-        searchManager = managerHolder.getSearchManager();
-        stateManager = managerHolder.getStateManager();
-    }
 
     /**
      * Add target taskIds to a stored TargetedCommand, so that the command

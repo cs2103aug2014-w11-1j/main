@@ -25,7 +25,8 @@ public interface Result {
         DETAILS,
         INVALID_COMMAND,
         INVALID_ARGUMENT,
-        FREE_DAY
+        FREE_DAY,
+        EXIT
     }
 
     public Type getType();    // implement this with the correct type.

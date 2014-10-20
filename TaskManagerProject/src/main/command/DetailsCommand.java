@@ -1,20 +1,17 @@
 package main.command;
 
 import manager.ManagerHolder;
-import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
 import data.TaskId;
 
 public class DetailsCommand extends TargetedCommand {
-    private final StateManager stateManager;
     private final SearchManager searchManager;
 
     private final TaskId taskId;
 
     public DetailsCommand(String args, ManagerHolder managerHolder) {
         super(managerHolder);
-        stateManager = managerHolder.getStateManager();
         searchManager = managerHolder.getSearchManager();
 
         taskId = parse(args);
