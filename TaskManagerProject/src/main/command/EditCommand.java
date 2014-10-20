@@ -75,19 +75,8 @@ public class EditCommand extends TargetedCommand {
                 parseDateTimes(editParam, editTask);
                 break;
             case "tag" :
-                String changeType = sc.next();
-                if (sc.hasNext()) {
-                    if (changeType.toLowerCase().equals("add")) {
-                        tagOperation = TAG_ADD;
-                    }
-                    if (changeType.toLowerCase().equals("del")){
-                        tagOperation = TAG_DEL;
-                    }
-                    if (tagOperation == TAG_ADD || tagOperation == TAG_DEL) {
-                        editParam = sc.next();
-                        editTask.tags = CommandParser.parseTags("#" + editParam);
-                    }
-                }
+                editParam = sc.nextLine().trim();
+                parseTags(editParam, editTask);
                 break;
             case "priority" :
                 editParam = sc.nextLine().trim();
@@ -134,6 +123,37 @@ public class EditCommand extends TargetedCommand {
                 editTask.endTime = editTask.startTime;
             }
         }
+    }
+
+    private void parseTags(String editParam, TaskInfo editTask) {
+        if (editParam.isEmpty()) {
+            return;
+        }
+    
+        Scanner sc = new Scanner(editParam);
+        String changeType = sc.next();
+    
+        // ensure it still has a tag to add / delete
+        if (sc.hasNext()) {
+            if (changeType.toLowerCase().equals("add")) {
+                tagOperation = TAG_ADD;
+            }
+            if (changeType.toLowerCase().equals("del")){
+                tagOperation = TAG_DEL;
+            }
+        }
+    
+        // ensure it is adding / deleting tags
+        if (tagOperation == TAG_ADD || tagOperation == TAG_DEL) {
+            StringBuilder tags = new StringBuilder();
+            while (sc.hasNext()) {
+                String tag = sc.next();
+                tags.append("#").append(tag).append(" ");
+            }
+            editTask.tags = CommandParser.parseTags(tags.toString());
+        }
+    
+        sc.close();
     }
 
     public TaskId convertStringtoTaskId(String stringId){
