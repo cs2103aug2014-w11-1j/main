@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DateTimePair {
-    private static final int MAX = 4;
-    private static final int MAX_WITH_DOUBLE = 3;
     private LocalDate firstDate;
     private LocalTime firstTime;
     private LocalDate secondDate;
     private LocalTime secondTime;
-    private int remain;
+    private int count;
+    private int max;
 
     DateTimePair() {
-        remain = MAX;
+        count = 0;
+        max = 4;
     }
 
     void add(LocalDate d) {
@@ -23,7 +23,7 @@ public class DateTimePair {
 
         // two dates in a row
         if (hasFirstDate() && !hasFirstTime()) {
-            remain = MAX_WITH_DOUBLE;
+            max = 3;
         }
 
         if (!hasFirstDate() && !hasSecondTime()) {
@@ -32,7 +32,7 @@ public class DateTimePair {
             secondDate = d;
         }
 
-        remain--;
+        count++;
     }
 
     void add(LocalTime t) {
@@ -42,7 +42,7 @@ public class DateTimePair {
 
         // two times in a row
         if (hasFirstTime() && !hasFirstDate()) {
-            remain = MAX_WITH_DOUBLE;
+            max = 3;
         }
 
         if (!hasFirstTime() && !hasSecondDate()) {
@@ -51,11 +51,11 @@ public class DateTimePair {
             secondTime = t;
         }
 
-        remain--;
+        count++;
     }
 
     boolean isFull() {
-        return remain == 0;
+        return count == max;
     }
 
     public LocalDate getFirstDate() {
