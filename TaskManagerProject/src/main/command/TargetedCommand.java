@@ -43,6 +43,8 @@ public abstract class TargetedCommand extends Command {
     private Response keywordFilterExecute() {
         if (isCommandAllowed() && stateManager.canSearch()) {
             Filter[] filters = new Filter[]{keywordFilter};
+            keywordFilter = null;
+            
             Result result = searchManager.searchTasks(filters);
             Response response = stateManager.updateAndStoreCommand(result, this);
             return response;
@@ -208,7 +210,7 @@ public abstract class TargetedCommand extends Command {
     }
 
     private TaskId retrieveAbsoluteTaskId(int relativeTaskId) {
-        if (stateManager.inSearchMode()) {
+        if (stateManager.canQueryStateManager()) {
             try {
                 TaskId result = searchManager.getAbsoluteIndex(relativeTaskId);
                 return result;

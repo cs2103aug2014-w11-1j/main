@@ -42,7 +42,7 @@ public class Taskline {
         UIDisplay uiDisplay = new UIDisplay(mainController);
         
         startCommandLoop(uiDisplay);
-        loggerFileHandler.close();
+        closeLoggerFileHandler();
     }
 
     private static void startCommandLoop(UIDisplay uiDisplay) {
@@ -73,5 +73,11 @@ public class Taskline {
         }
 
         log.log(Level.INFO, "Taskline initialised.");
+    }
+
+    private static void closeLoggerFileHandler() {
+        if (loggerFileHandler != null) {
+            loggerFileHandler.close();
+        }
     }
 }

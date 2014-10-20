@@ -19,6 +19,7 @@ public class ArgumentCommand extends TargetedCommand {
         }
     }
     
+    @Override
     public Response execute() {
         if (!isValidArguments()) {
             return updateInvalidCommand();

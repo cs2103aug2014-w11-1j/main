@@ -17,6 +17,7 @@ import main.message.Message;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.modeinfo.ModeInfo;
+import main.modeinfo.SearchModeInfo;
 import main.response.Response;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
@@ -53,7 +54,8 @@ public class StateManager {
 	    AVAILABLE,      // Normal state
 	    EDIT_MODE,      // Can edit the same task without re-specifying task ID
 	    SEARCH_MODE,    // In search mode, searchAgain is called after each command
-	    LOCKED_MODE     // In locked mode, no modifying data is allowed
+        WAITING_MODE,     // In waiting mode, a command is waiting for arguments before execution.
+        LOCKED_MODE     // In locked mode, no modifying data is allowed
 	}
 
 	public StateManager(FileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager) {
@@ -92,15 +94,16 @@ public class StateManager {
 	}
 
     public boolean canGoBack() {
-        return inEditMode() || inSearchMode();
+        return inState(State.EDIT_MODE) || inState(State.SEARCH_MODE) ||
+                inState(State.WAITING_MODE);
     }
     
     public boolean inEditMode() {
         return inState(State.EDIT_MODE);
     }
     
-    public boolean inSearchMode() {
-        return inState(State.SEARCH_MODE);
+    public boolean canQueryStateManager() {
+        return inState(State.SEARCH_MODE) || inState(State.WAITING_MODE);
     }
 	
 	private void setState(State newState) {
@@ -133,6 +136,9 @@ public class StateManager {
 	}
 
 	private boolean enterSearchMode() {
+	    if (inState(State.WAITING_MODE)) {
+	        return false;
+	    }
         if (inState(State.SEARCH_MODE)) {
             return false;
         }
@@ -150,33 +156,24 @@ public class StateManager {
 		}
 	}
 	
-	private boolean setSavedCommand(TargetedCommand command){
-		if (savedCommand == null){
-			this.savedCommand = command;
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	private boolean clearSavedCommand(){
-		if (savedCommand == null){
-			return false;
-		}else{
-			savedCommand = null;
-			return true;
-		}
-	}
-	
-	private TargetedCommand getSavedCommand(){
-		return savedCommand;
-	}
     
     /**
      * This method is called just before every command execution.
      */
     public void beforeCommandExecutionUpdate() {
        updateManager.preExecutionCheck();
+    }
+
+    
+    public boolean isWaitingForArguments() {
+        return inState(State.WAITING_MODE);
+    }
+    
+    public TargetedCommand retrieveStoredCommand() {
+        assert savedCommand != null;
+        assert inState(State.WAITING_MODE);
+        
+        return getAndClearSavedCommand();
     }
     
 	/**
@@ -185,10 +182,23 @@ public class StateManager {
 	 * @return response generated accordingly
 	 */
 	public Response update(Result result) {
+        getAndClearSavedCommand();
+        
+		return processResult(result);
+    }
+
+    public Response updateAndStoreCommand(Result result, TargetedCommand command) {
+        getAndClearSavedCommand();
+        
+        setSavedCommand(command);
+        return processResult(result);
+    }
+
+    protected Response processResult(Result result) {
         log.log(Level.FINER, "Apply StateManager update - Result = " + 
                 result.getType().name() + " / " + result.getClass().getName());
         
-		updateManager.updateUndoHistory();
+        updateManager.updateUndoHistory();
         
         Message message = applyResult(result);
         ModeInfo modeInfo = generateModeInfo(result);
@@ -202,21 +212,27 @@ public class StateManager {
         postUpdateLog(message, modeInfo);
         return new Response(message, modeInfo);
     }
-	
-	public boolean isWaitingForArguments() {
-        throw new UnsupportedOperationException("Not implemented yet");
-	}
-	
-	public TargetedCommand retrieveStoredCommand() {
-        throw new UnsupportedOperationException("Not implemented yet");
-	}
 
-	public Response updateAndStoreCommand(Result result, TargetedCommand command) {
-	    throw new UnsupportedOperationException("Not implemented yet");
-	    
-	    //Response response = update(result);
-	    //return response;
-	}
+    private boolean setSavedCommand(TargetedCommand command) {
+        assert savedCommand == null;
+        assert !inState(State.WAITING_MODE);
+        
+        this.savedCommand = command;
+        setState(State.WAITING_MODE);
+        return true;
+    }
+    
+    private TargetedCommand getAndClearSavedCommand() {
+        if (inState(State.WAITING_MODE)) {
+            TargetedCommand temp = savedCommand;
+            savedCommand = null;
+            setState(State.AVAILABLE);
+            return temp;
+        } else {
+            assert savedCommand == null;
+            return null;
+        }
+    }
 	
 	
     private void postUpdateLog(Message message, ModeInfo modeInfo) {
@@ -250,6 +266,11 @@ public class StateManager {
             case EDIT_MODE :
                 return editModeCheck(result);
                 
+            case WAITING_MODE :
+                SearchModeInfo modeInfo = searchModeCheck(result);
+                modeInfo.makeIntoWaitingModeInfo();
+                return modeInfo;
+                
             case LOCKED_MODE :
                 return new EmptyModeInfo();
                 
@@ -264,17 +285,10 @@ public class StateManager {
 	 * If any command is executed, except a search command again under search mode, 
 	 * update the SearchModeInfo by redoLastSearch and store it back to response
 	 */
-	private ModeInfo searchModeCheck(Result result) {
+	private SearchModeInfo searchModeCheck(Result result) {
 		if (result.getType() != Type.SEARCH_SUCCESS) {
-//		    searchManager.redoLastSearch();
 			updateManager.redoSearch();
 		}
-		
-//        SearchResult redoSearchResult = searchManager.getLastSearchResult();
-//        TaskInfo[] tasks = redoSearchResult.getTasks();
-//        TaskId[] taskIds = redoSearchResult.getTaskIds();
-//        SearchModeInfo searchModeInfo = new SearchModeInfo(tasks, taskIds);
-//        return searchModeInfo;
 		
 		return updateManager.getSearchModeInfo();
 	}

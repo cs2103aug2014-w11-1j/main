@@ -26,7 +26,7 @@ public class UpdateManager {
 		searchManager.redoLastSearch();
 	}
 	
-	public ModeInfo getSearchModeInfo(){
+	public SearchModeInfo getSearchModeInfo(){
 		SearchResult redoSearchResult = searchManager.getLastSearchResult();
         TaskInfo[] tasks = redoSearchResult.getTasks();
         TaskId[] taskIds = redoSearchResult.getTaskIds();

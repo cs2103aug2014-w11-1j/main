@@ -52,7 +52,9 @@ public class Formatter {
             new MessageModePair(Message.Type.ENUM_MESSAGE,
                     ModeInfo.Type.EDIT_MODE),
             new MessageModePair(Message.Type.EDIT_SUCCESSFUL,
-                    ModeInfo.Type.SEARCH_MODE)
+                    ModeInfo.Type.SEARCH_MODE),
+            new MessageModePair(Message.Type.ENUM_MESSAGE,
+                    ModeInfo.Type.WAITING_MODE),
     };
 
     /**
@@ -114,6 +116,7 @@ public class Formatter {
                 formattedModeInfo = editModeFormatter.format(editModeInfo);
                 break;
             case SEARCH_MODE :
+            case WAITING_MODE :
                 SearchModeInfo searchModeInfo = (SearchModeInfo) modeInfo;
                 formattedModeInfo = searchModeFormatter.format(searchModeInfo);
                 break;

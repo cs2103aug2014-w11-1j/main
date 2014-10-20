@@ -197,7 +197,7 @@ class StubStateManager extends StateManager {
         super(null, null, null);
     }
 
-    public boolean inSearchMode() {
+    public boolean canQueryStateManager() {
         return true;
     }
     

@@ -12,6 +12,7 @@ public class SearchModeInfo implements ModeInfo {
     private String[] suggestions;
     private TaskInfo[] tasks;
     private TaskId[] taskIds;
+    private boolean inWaitingMode;
     
     /**
      * Constructor for SearchModeInfo.
@@ -29,7 +30,11 @@ public class SearchModeInfo implements ModeInfo {
      * Get the type of this ModeInfo, which is Type.SEARCH_MODE.
      */
     public Type getType() {
-        return Type.SEARCH_MODE;
+        if (inWaitingMode) {
+            return Type.WAITING_MODE;
+        } else {
+            return Type.SEARCH_MODE;
+        }
     }
     
     /**
@@ -50,5 +55,9 @@ public class SearchModeInfo implements ModeInfo {
     
     public String[] getSuggestions() {
         return suggestions;
+    }
+    
+    public void  makeIntoWaitingModeInfo() {
+        inWaitingMode = true;
     }
 }
