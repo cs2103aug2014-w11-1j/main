@@ -69,10 +69,10 @@ public class AddCommand extends Command {
         // no date, get the next possible date for the times
         if (!range.hasFirstDate() && !range.hasSecondDate()) {
             task.startDate = task.endDate = getNextOccurrence(
-                task.startTime, LocalTime.now(), LocalDate.now());
+                range.getFirstTime(), LocalTime.now(), LocalDate.now());
             if (range.hasSecondTime()) {
                 task.endDate = getNextOccurrence(
-                    task.endTime, range.getFirstTime(), task.startDate);
+                    range.getSecondTime(), range.getFirstTime(), task.startDate);
             }
         }
 
