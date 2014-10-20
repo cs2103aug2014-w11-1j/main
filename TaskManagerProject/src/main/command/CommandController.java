@@ -52,6 +52,9 @@ public class CommandController {
                 return new RedoCommand(managerHolder);
             case "back" :
                 return new BackCommand(managerHolder);
+            case "exit" :
+            case "quit" :
+                return null;
             default :
                 return new ArgumentCommand(cmdType + " " + cmdArgs, managerHolder);
         }
