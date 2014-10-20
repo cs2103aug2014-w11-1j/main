@@ -61,11 +61,9 @@ public class AddCommand extends Command {
         }
 
         // one date, use the same for both
-        if (range.hasFirstDate() && !range.hasSecondDate()) {
-            task.startDate = task.endDate = range.getFirstDate();
-        }
-        if (range.hasSecondDate() && !range.hasFirstDate()) {
-            task.startDate = task.endDate = range.getSecondDate();
+        if (range.hasFirstDate() != range.hasSecondDate()) {
+            task.startDate = task.endDate = range.hasFirstDate() ?
+                range.getFirstDate() : range.getSecondDate();
         }
 
         // no date, get the next possible date for the times
