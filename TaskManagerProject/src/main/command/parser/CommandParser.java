@@ -18,7 +18,7 @@ public class CommandParser {
 
     public static String parseName(String args) {
         String name = parseNameRecurse(args);
-        String cleanedName = cleanCmdString(name);
+        String cleanedName = cleanCmdString(name).trim();
         return cleanedName;
     }
 
