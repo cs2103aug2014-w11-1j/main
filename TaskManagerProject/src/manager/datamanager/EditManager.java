@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import main.command.TaskIdSet;
 import main.message.EditSuccessfulMessage;
-import manager.result.DeleteResult;
 import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.SimpleResult;
@@ -15,13 +14,13 @@ import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 /**
- * This is a edit manager that enables editing a certain TaskInfo with specific 
+ * This is a edit manager that enables editing a certain TaskInfo with specific
  * taskId in the taskData.
  * @author BRUCE
  *
  */
 public class EditManager extends AbstractManager {
-    
+
     private TaskIdSet editingTasks;
 
     public EditManager(TaskData taskData) {
@@ -29,12 +28,12 @@ public class EditManager extends AbstractManager {
     }
 
     public Result editTask(TaskInfo taskInfo, TaskIdSet taskIdSet) {
-    	
+
         boolean allSuccessful = true;
         TaskId returnTaskId = null;
         TaskInfo editedTask = null;
         EditSuccessfulMessage.Field[] fields = setChangedFields(taskInfo);
-        
+
         for (TaskId taskId : taskIdSet) {
             if (taskId == null){
                 allSuccessful = false;
@@ -49,13 +48,13 @@ public class EditManager extends AbstractManager {
             editedTask = mergeTasks(originTask, taskInfo);
             returnTaskId = taskId;
             boolean isSuccessful = taskData.setTaskInfo(taskId, editedTask);
-            
+
             if (!isSuccessful){
                 allSuccessful = false;
                 break;
             }
         }
-        
+
         if (allSuccessful) {
             return new EditResult(Result.Type.EDIT_SUCCESS,editedTask,
                     returnTaskId, fields);
@@ -64,43 +63,43 @@ public class EditManager extends AbstractManager {
             return new SimpleResult(Result.Type.EDIT_FAILURE);
         }
     }
-    
+
     public TaskIdSet getEditingTasks() {
         return editingTasks;
     }
-    
+
     public Result startEditMode(TaskIdSet taskIdSet) {
         editingTasks = taskIdSet;
         return new StartEditModeResult(taskIdSet);
     }
-    
+
     public Result endEditMode() {
         editingTasks = null;
         return new SimpleResult(Result.Type.EDIT_MODE_END);
     }
-    
+
     public Result addTaskTags(Tag[] tags, TaskIdSet taskIdSet){
         boolean allSuccessful = true;
         TaskId returnTaskId = null;
-        
+
         for (TaskId taskId : taskIdSet) {
             if (taskId == null){
                 allSuccessful = false;
                 break;
             }
-            
+
             returnTaskId = taskId;
             boolean isSuccessful = taskData.taskExists(taskId);
             for (Tag tag : tags) {
                 boolean isTagSuccess = taskData.addTag(taskId, tag);
             }
-            
+
             if (!isSuccessful) {
                 allSuccessful = false;
                 break;
             }
         }
-        
+
         if (allSuccessful) {
             return new EditResult(Result.Type.TAG_ADD_SUCCESS,taskData.getTaskInfo(returnTaskId),
                     returnTaskId, EditSuccessfulMessage.Field.TAGS_ADD);
@@ -109,18 +108,19 @@ public class EditManager extends AbstractManager {
             return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
         }
     }
-    
+
     public Result deleteTaskTags(Tag[] tags, TaskIdSet taskIdSet){
 
         boolean allSuccessful = true;
         TaskId returnTaskId = null;
-        
+
         for (TaskId taskId : taskIdSet) {
             if (taskId == null) {
                 allSuccessful = false;
                 break;
             }
-            
+
+            returnTaskId = taskId;
             boolean isSuccessful = taskData.taskExists(taskId);
             for (Tag tag : tags) {
                 boolean isTagSuccess = taskData.removeTag(taskId, tag);
@@ -131,7 +131,7 @@ public class EditManager extends AbstractManager {
                 break;
             }
         }
-    	
+
         if (allSuccessful) {
             return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(returnTaskId),
                     returnTaskId, EditSuccessfulMessage.Field.TAGS_DELETE);
@@ -140,11 +140,11 @@ public class EditManager extends AbstractManager {
             return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
         }
     }
-    
+
 //    public Result editTaskwithTag(Tag tag, int operation, TaskId taskId){
 //    	boolean isTagSuccess;
 //    	if (operation == 1) {  //add
-//    		isTagSuccess = taskData.addTag(taskId, tag); 
+//    		isTagSuccess = taskData.addTag(taskId, tag);
 //    		if (!isTagSuccess){
 //    			return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
 //    		}else{
@@ -157,13 +157,13 @@ public class EditManager extends AbstractManager {
 //    			return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
 //    		}else{
 //    			return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(taskId),
-//    					taskId, EditSuccessfulMessage.Field.TAGS_DELETE);    		
+//    					taskId, EditSuccessfulMessage.Field.TAGS_DELETE);
 //    			}
 //    	}
-//    	
+//
 //    }
-    
-    
+
+
     /**
      * This method is to modify origin task with some changes specified
      * in modifTask, and return the modified task
@@ -205,11 +205,11 @@ public class EditManager extends AbstractManager {
     	}
        	return mergedTask;
     }
-    
-   
+
+
     private EditSuccessfulMessage.Field[] setChangedFields(TaskInfo taskInfo){
-    	
-        ArrayList<EditSuccessfulMessage.Field> fields = 
+
+        ArrayList<EditSuccessfulMessage.Field> fields =
                 new ArrayList<EditSuccessfulMessage.Field>();
     	int index = 0;
     	if (taskInfo.name != null){
@@ -228,13 +228,13 @@ public class EditManager extends AbstractManager {
     	        (taskInfo.endTime != null) || (taskInfo.endDate != null)) {
     		fields.add(EditSuccessfulMessage.Field.TIME);
     	}
-    	
-    	EditSuccessfulMessage.Field[] fieldsArray = 
+
+    	EditSuccessfulMessage.Field[] fieldsArray =
     	        new EditSuccessfulMessage.Field[fields.size()];
     	for (int i = 0; i < fields.size(); i++) {
     	    fieldsArray[i] = fields.get(i);
     	}
-    	
+
     	return fieldsArray;
     }
 }
