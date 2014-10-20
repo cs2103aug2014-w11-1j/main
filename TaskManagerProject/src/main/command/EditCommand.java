@@ -38,20 +38,6 @@ public class EditCommand extends TargetedCommand {
             // not edit mode
             args = tryParseIdsIntoSet(args);
             taskToEdit = parseEditParams(args);
-
-            /*Scanner sc = new Scanner(args);
-            if (sc.hasNext()) {
-                taskId = parseTaskId(sc.next());
-                if (sc.hasNext()) {
-                    taskToEdit = parseEditParams(sc.nextLine());
-                } else {
-                    taskToEdit = null;
-                }
-            } else {
-                taskId = null;
-                taskToEdit = null;
-            }
-            sc.close();*/
         }
     }
 
@@ -171,9 +157,9 @@ public class EditCommand extends TargetedCommand {
             result = editManager.startEditMode(targetTaskIdSet);
         } else {
             if (tagOperation == TAG_ADD) {
-                result = editManager.addTaskTag(taskToEdit.tags[0], targetTaskIdSet);
+                result = editManager.addTaskTags(taskToEdit.tags, targetTaskIdSet);
             } else if (tagOperation == TAG_DEL) {
-                result = editManager.deleteTaskTag(taskToEdit.tags[0], targetTaskIdSet);
+                result = editManager.deleteTaskTags(taskToEdit.tags, targetTaskIdSet);
             } else {
                 result = editManager.editTask(taskToEdit, targetTaskIdSet);
             }

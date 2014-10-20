@@ -79,7 +79,7 @@ public class EditManager extends AbstractManager {
         return new SimpleResult(Result.Type.EDIT_MODE_END);
     }
     
-    public Result addTaskTag(Tag tag, TaskIdSet taskIdSet){
+    public Result addTaskTags(Tag[] tags, TaskIdSet taskIdSet){
         boolean allSuccessful = true;
         TaskId returnTaskId = null;
         
@@ -89,8 +89,11 @@ public class EditManager extends AbstractManager {
                 break;
             }
             
+            returnTaskId = taskId;
             boolean isSuccessful = taskData.taskExists(taskId);
-            boolean isTagSuccess = taskData.addTag(taskId, tag);
+            for (Tag tag : tags) {
+                boolean isTagSuccess = taskData.addTag(taskId, tag);
+            }
             
             if (!isSuccessful) {
                 allSuccessful = false;
@@ -107,19 +110,21 @@ public class EditManager extends AbstractManager {
         }
     }
     
-    public Result deleteTaskTag(Tag tag, TaskIdSet taskIdSet){
+    public Result deleteTaskTags(Tag[] tags, TaskIdSet taskIdSet){
 
         boolean allSuccessful = true;
         TaskId returnTaskId = null;
         
         for (TaskId taskId : taskIdSet) {
-            if (taskId == null){
+            if (taskId == null) {
                 allSuccessful = false;
                 break;
             }
             
-        	boolean isTagSuccess = taskData.removeTag(taskId, tag);
             boolean isSuccessful = taskData.taskExists(taskId);
+            for (Tag tag : tags) {
+                boolean isTagSuccess = taskData.removeTag(taskId, tag);
+            }
 
             if (!isSuccessful) {
                 allSuccessful = false;
