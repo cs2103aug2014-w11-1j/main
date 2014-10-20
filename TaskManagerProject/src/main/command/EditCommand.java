@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import main.command.parser.CommandParser;
+import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.EditManager;
@@ -82,14 +83,10 @@ public class EditCommand extends TargetedCommand {
                 editTask.details = CommandParser.parseName(editParam);
                 break;
             case "date" :
-                editParam = sc.nextLine().trim();
-                CommandParser.parseDateTime(editParam, editTask);
-                // TODO modify date somehow
-                break;
             case "time" :
+            case "datetime" :
                 editParam = sc.nextLine().trim();
-                CommandParser.parseDateTime(editParam, editTask);
-                // TODO modify time somehow
+                parseDateTimes(editParam, editTask);
                 break;
             case "tag" :
                 String changeType = sc.next();
@@ -120,6 +117,37 @@ public class EditCommand extends TargetedCommand {
         sc.close();
 
         return editTask;
+    }
+
+    private void parseDateTimes(String editParam, TaskInfo editTask) {
+        DateTimePair dtPair = CommandParser.parseDateTimes(editParam);
+        if (dtPair.isEmpty()) {
+            return;
+        }
+
+        // either a single date and/or time
+        if (!dtPair.hasSecondDate() && !dtPair.hasSecondTime()) {
+            if (dtPair.hasFirstDate()) {
+                editTask.endDate = dtPair.getFirstDate();
+            }
+            if (dtPair.hasFirstTime()) {
+                editTask.endTime = dtPair.getFirstTime();
+            }
+        } else {
+            // set everything first
+            editTask.startDate = dtPair.getFirstDate();
+            editTask.startTime = dtPair.getFirstTime();
+            editTask.endDate = dtPair.getSecondDate();
+            editTask.endTime = dtPair.getFirstTime();
+
+            // handle the case where one value has to be filled in
+            if (!dtPair.hasSecondDate()) {
+                editTask.endDate = editTask.startDate;
+            }
+            if (!dtPair.hasSecondTime()) {
+                editTask.endTime = editTask.startTime;
+            }
+        }
     }
 
     public TaskId convertStringtoTaskId(String stringId){
