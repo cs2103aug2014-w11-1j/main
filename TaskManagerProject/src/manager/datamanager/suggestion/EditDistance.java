@@ -1,7 +1,5 @@
 package manager.datamanager.suggestion;
 
-import java.util.Arrays;
-
 public class EditDistance {
     private int dpTable[][];
     private boolean calculated[][];

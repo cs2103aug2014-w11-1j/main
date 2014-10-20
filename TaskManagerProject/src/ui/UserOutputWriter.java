@@ -27,9 +27,6 @@ public class UserOutputWriter {
         
         lines.addAll(Arrays.asList(array));
         
-        int currentSize = lines.size();
-        int height = reader.getTermheight();
-        
         int start = prevSize;
         show(start);
     }

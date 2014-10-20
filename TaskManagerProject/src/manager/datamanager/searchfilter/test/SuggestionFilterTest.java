@@ -5,18 +5,26 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.KeywordFilter;
+import manager.datamanager.searchfilter.SuggestionFilter;
 
 import org.junit.Test;
 
 import data.taskinfo.TaskInfo;
 
-public class KeywordFilterTest {
+public class SuggestionFilterTest {
 
     @Test
     public void testType() {
         String[] words = new String[]{"test"};
-        KeywordFilter filter = new KeywordFilter(words);
-        assertEquals(Filter.Type.FILTER_KEYWORD, filter.getType());
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertEquals(Filter.Type.FILTER_SUGGESTION, filter.getType());
+    }
+    
+    @Test
+    public void testTopSuggestion() {
+        String[] words = new String[]{"test", "abcd", "efgh"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertEquals("test", filter.getTopSuggestion());
     }
     
     @Test
@@ -25,7 +33,7 @@ public class KeywordFilterTest {
         testedTask.name = "I am going to test this task";
         testedTask.details = null;
         String[] words = new String[]{"test"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertTrue(filter.filter(testedTask));
     }
     
@@ -35,7 +43,7 @@ public class KeywordFilterTest {
         testedTask.details = "I am going to test this task";
         testedTask.name = null;
         String[] words = new String[]{"test"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertTrue(filter.filter(testedTask));
     }
 
@@ -45,7 +53,7 @@ public class KeywordFilterTest {
         testedTask.name = "I am going to test this task";
         testedTask.details = null;
         String[] words = new String[]{"doesntexist"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertFalse(filter.filter(testedTask));
     }
     
@@ -65,7 +73,7 @@ public class KeywordFilterTest {
         testedTask.name = null;
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"doesntexist"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertFalse(filter.filter(testedTask));
     }
     
@@ -75,7 +83,7 @@ public class KeywordFilterTest {
         testedTask.name = "This exist.";
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"exist"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertTrue(filter.filter(testedTask));
     }
  
@@ -85,8 +93,8 @@ public class KeywordFilterTest {
         testedTask.name = null;
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"task", "exist"};
-        KeywordFilter filter = new KeywordFilter(words);
-        assertFalse(filter.filter(testedTask));
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
     }
     
     @Test
@@ -95,7 +103,7 @@ public class KeywordFilterTest {
         testedTask.name = "I am going to test this task";
         testedTask.details = null;
         String[] words = new String[]{"TeSt"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertTrue(filter.filter(testedTask));
     }
     
@@ -104,7 +112,7 @@ public class KeywordFilterTest {
         TaskInfo testedTask = TaskInfo.create();
         testedTask.name = "abcd\ttest\tjaksldjf";
         String[] words = new String[]{"test"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertTrue(filter.filter(testedTask));
     }
     
@@ -113,7 +121,7 @@ public class KeywordFilterTest {
         TaskInfo testedTask = TaskInfo.create();
         testedTask.name = "hahaha\ntest\nhahaha";
         String[] words = new String[]{"test"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertTrue(filter.filter(testedTask));
     }
     @Test
@@ -121,7 +129,7 @@ public class KeywordFilterTest {
         TaskInfo testedTask = TaskInfo.create();
         testedTask.name = "hahaha$%^$%^$!@#test^$&@#$hahaha";
         String[] words = new String[]{"test"};
-        KeywordFilter filter = new KeywordFilter(words);
+        SuggestionFilter filter = new SuggestionFilter(words);
         assertTrue(filter.filter(testedTask));
     }
 }
