@@ -168,6 +168,9 @@ public class CommandParser {
                 case "low" :
                     p = Priority.LOW;
                     break;
+                case "none" :
+                    p = Priority.NONE;
+                    break;
             }
         }
 
