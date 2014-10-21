@@ -15,13 +15,11 @@ import java.util.ArrayList;
  */
 public class FreeDayResult implements Result{
 
-	private Type type;
 	private ArrayList<LocalDate> freeDate;
 	private LocalDate lastTaskEndDate;
 	private LocalDate firstTaskDate;
 	
-	public FreeDayResult(Type type, ArrayList<LocalDate> freeDate, LocalDate startDate, LocalDate lastTaskEndDate){
-		this.type = type;
+	public FreeDayResult(ArrayList<LocalDate> freeDate, LocalDate startDate, LocalDate lastTaskEndDate) {
 		this.freeDate = freeDate;
 		this.firstTaskDate = startDate;
 		this.lastTaskEndDate = lastTaskEndDate;
@@ -29,7 +27,7 @@ public class FreeDayResult implements Result{
 	
 	@Override
 	public Type getType() {
-		return type;
+		return Result.Type.FREE_DAY;
 		
 	}
 	

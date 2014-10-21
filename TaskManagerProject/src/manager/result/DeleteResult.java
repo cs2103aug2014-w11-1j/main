@@ -5,20 +5,17 @@ import data.taskinfo.TaskInfo;
 
 public class DeleteResult implements Result{
 	
-	private Type type;
 	private TaskId taskId;
 	private TaskInfo taskInfo;
 	
-	public DeleteResult(Type type, TaskId taskId, TaskInfo taskInfo){
-	    assert type == Type.DELETE_SUCCESS;
-		this.type = type;
+	public DeleteResult(TaskId taskId, TaskInfo taskInfo){
 		this.taskId = taskId;
 		this.taskInfo = taskInfo;
 	}
 
 	@Override
 	public Type getType() {
-		return type;
+		return Type.DELETE_SUCCESS;
 	}
 	
 	public TaskId getTaskId(){

@@ -9,21 +9,17 @@ import java.util.Comparator;
 import manager.result.FreeDayResult;
 import manager.result.Result;
 import manager.result.Result.Type;
-import data.Task;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class FreeTimeSlotManager extends AbstractManager {
 
-	public ArrayList<TaskInfo> taskList;
+	private ArrayList<TaskInfo> taskList;
 	private int size;
 
 	public FreeTimeSlotManager(TaskData taskData) {
 		super(taskData);
-		taskList = TaskListWithDate();
-		sortTask();
-		size = taskList.size();
 	}
 
 	private ArrayList<TaskInfo> TaskListWithDate() {
@@ -39,9 +35,21 @@ public class FreeTimeSlotManager extends AbstractManager {
 		}
 		return taskListWithDate;
 	}
+	
+	private void updateTaskList() {
+        taskList = TaskListWithDate();
+        sortTask();
+        size = taskList.size();
+	}
 
+	private void clearMemory() {
+	    taskList.clear();
+        taskList = null;   
+	}
 	public Result searchFreeTimeSlot(LocalTime startTime, LocalDate startDate,
 			LocalTime endTime, LocalDate EndDate) {
+	    updateTaskList();
+	    
 		LocalDate checkDate = null;
 		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>();
 		ArrayList<TaskInfo> taskListContainingTimeSlot = findTaskContainingTimeSlot(
@@ -71,10 +79,13 @@ public class FreeTimeSlotManager extends AbstractManager {
 			}
 		}
 
-		return new FreeDayResult(Type.FREE_DAY, freeDays, firstStartDate, checkDate);
+		clearMemory();
+		return new FreeDayResult(freeDays, firstStartDate, checkDate);
 	}
 
 	public Result searchFreeDay(LocalDate startDate, LocalDate endDate) {
+        updateTaskList();
+        
 		LocalDate checkDate = null;
 		LocalDate firststartDate = getTaskStartDate(taskList.get(0));
 		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>();
@@ -110,8 +121,8 @@ public class FreeTimeSlotManager extends AbstractManager {
 			}
 		}
 
-		return new FreeDayResult(Type.FREE_DAY, freeDays, firststartDate,
-				checkDate);
+		clearMemory();
+		return new FreeDayResult(freeDays, firststartDate, checkDate);
 	}
 
 	private void sortTask() {
