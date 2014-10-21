@@ -38,14 +38,21 @@ public class SearchModeFormatter {
         return dateString + " ---";
     }
     
-    private String getTimeString(LocalTime time) {
-        if(time == null) {
+    private String getTimeString(LocalTime startTime, LocalTime endTime) {
+        if(startTime == null && endTime == null) {
             return "              ";
+        } else if (startTime == null) {
+            DateTimeFormatter formatter = 
+                    DateTimeFormatter.ofPattern("HH:mm");
+            String addedFormat = "[   %1$s   ] ";
+            return String.format(addedFormat, formatter.format(endTime));
+        } else {
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("HH:mm");
+            String addedFormat = "[%1$s-%2$s] ";
+            return String.format(addedFormat, formatter.format(startTime), 
+                    formatter.format(endTime));
         }
-        DateTimeFormatter formatter = 
-                DateTimeFormatter.ofPattern("HH:mm");
-        String addedFormat = "[   %1$s   ] ";
-        return String.format(addedFormat, formatter.format(time));
     }
     
     int numberLength(int number) {
@@ -99,7 +106,7 @@ public class SearchModeFormatter {
         int taskNameWidth = WIDTH_LINE - WIDTH_ABSOLUTE - WIDTH_TIME - 
                 numberWidth;
         line.append(getTaskNumberString(taskNumber, numberWidth));
-        line.append(getTimeString(task.endTime));
+        line.append(getTimeString(task.startTime, task.endTime));
         line.append(getTaskNameString(task.name, taskNameWidth));
         line.append(getAbsoluteTaskIdString(taskId));
         return line.toString();
