@@ -55,8 +55,8 @@ public class DateTimePair {
 
         // avoid duplicate start / end datetimes
         if (isFull() && arePairsSame()) {
-            firstDate = null;
-            firstTime = null;
+            secondDate = null;
+            secondTime = null;
         }
     }
 
