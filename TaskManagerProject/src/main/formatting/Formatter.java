@@ -26,6 +26,7 @@ public class Formatter {
     private EditModeFormatter editModeFormatter;
     private SearchModeFormatter searchModeFormatter;
     private EmptyModeFormatter emptyModeFormatter;
+    private WaitingModeFormatter waitingModeFormatter;
     
     class MessageModePair {
         public Message.Type messageType;
@@ -70,6 +71,7 @@ public class Formatter {
         editModeFormatter = new EditModeFormatter();
         searchModeFormatter = new SearchModeFormatter();
         emptyModeFormatter = new EmptyModeFormatter();
+        waitingModeFormatter = new WaitingModeFormatter();
     }
     
     private String formatMessage(Message message) {
@@ -116,9 +118,12 @@ public class Formatter {
                 formattedModeInfo = editModeFormatter.format(editModeInfo);
                 break;
             case SEARCH_MODE :
+                SearchModeInfo waitingModeInfo = (SearchModeInfo) modeInfo;
+                formattedModeInfo = searchModeFormatter.format(waitingModeInfo);
+                break;
             case WAITING_MODE :
                 SearchModeInfo searchModeInfo = (SearchModeInfo) modeInfo;
-                formattedModeInfo = searchModeFormatter.format(searchModeInfo);
+                formattedModeInfo = waitingModeFormatter.format(searchModeInfo);
                 break;
         }
         return formattedModeInfo;

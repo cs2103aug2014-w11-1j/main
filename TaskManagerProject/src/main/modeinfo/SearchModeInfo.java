@@ -18,6 +18,7 @@ public class SearchModeInfo implements ModeInfo {
      * Constructor for SearchModeInfo.
      * @param tasks The TaskInfo of the search results.
      * @param taskIds The TaskId of the search results.
+     * @param suggestions The suggestions of the search.
      */
     public SearchModeInfo(TaskInfo[] tasks, TaskId[] taskIds, 
             String[] suggestions) {
