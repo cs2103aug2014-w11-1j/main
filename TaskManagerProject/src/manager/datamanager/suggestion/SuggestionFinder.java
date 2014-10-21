@@ -87,7 +87,7 @@ public class SuggestionFinder {
                         currentWord);
                 KeywordSuggestion newKeyword = new KeywordSuggestion(
                         currentWord, editDistance.getDistance());
-                if (newKeyword.getDistance() <= getLimit(string)) {
+                if (newKeyword.getDistance() <= getLimit(filterString)) {
                     updateKeywordList(keywords, newKeyword);
                 }
             }
