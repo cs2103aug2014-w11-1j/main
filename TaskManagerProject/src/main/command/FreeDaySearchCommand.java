@@ -3,11 +3,11 @@ package main.command;
 import main.command.parser.CommandParser;
 import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
-import manager.datamanager.FreeTimeSlotManager;
+import manager.datamanager.FreeDaySearchManager;
 import manager.result.Result;
 
 public class FreeDaySearchCommand extends Command {
-    private FreeTimeSlotManager freeDaySearchManager;
+    private FreeDaySearchManager freeDaySearchManager;
     private DateTimePair dateTimePair;
 
     public FreeDaySearchCommand(String args, ManagerHolder managerHolder) {
@@ -42,7 +42,7 @@ public class FreeDaySearchCommand extends Command {
     @Override
     protected Result executeAction() {
         if (dateTimePair.hasFirstTime()) {
-            return freeDaySearchManager.searchFreeTimeSlot(
+            return freeDaySearchManager.searchFreeDay(
                     dateTimePair.getFirstTime(),
                     dateTimePair.getFirstDate(),
                     dateTimePair.getSecondTime(),

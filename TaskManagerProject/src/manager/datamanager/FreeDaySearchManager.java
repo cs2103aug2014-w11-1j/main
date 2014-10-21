@@ -12,12 +12,12 @@ import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
-public class FreeTimeSlotManager extends AbstractManager {
+public class FreeDaySearchManager extends AbstractManager {
 
 	private ArrayList<TaskInfo> taskList;
 	private int size;
 
-	public FreeTimeSlotManager(TaskData taskData) {
+	public FreeDaySearchManager(TaskData taskData) {
 		super(taskData);
 	}
 
@@ -45,7 +45,7 @@ public class FreeTimeSlotManager extends AbstractManager {
 		taskList.clear();
 		taskList = null;   
 	}
-	public Result searchFreeTimeSlot(LocalTime startTime, LocalDate startDate,
+	public Result searchFreeDay(LocalTime startTime, LocalDate startDate,
 			LocalTime endTime, LocalDate endDate) {
 		updateTaskList();
 

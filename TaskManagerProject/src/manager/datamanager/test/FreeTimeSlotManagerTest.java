@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-import manager.datamanager.FreeTimeSlotManager;
+import manager.datamanager.FreeDaySearchManager;
 import manager.result.FreeDayResult;
 import manager.result.Result;
 
@@ -34,7 +34,7 @@ public class FreeTimeSlotManagerTest {
 		taskData.add(task2);
 		taskData.add(task3);
 		
-		FreeTimeSlotManager manager = new FreeTimeSlotManager(taskData);
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
 		Result result;
 		
 		result = manager.searchFreeDay(getDate(10,9), getDate(11, 28));
@@ -63,7 +63,7 @@ public class FreeTimeSlotManagerTest {
 		taskData.add(task8);
 
 		
-		FreeTimeSlotManager manager = new FreeTimeSlotManager(taskData);
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
 		Result result;
 		
 		result = manager.searchFreeDay(getDate(10,9), getDate(11, 18));
@@ -109,11 +109,11 @@ public class FreeTimeSlotManagerTest {
 		taskData.add(task8);
 
 		
-		FreeTimeSlotManager manager = new FreeTimeSlotManager(taskData);
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
 		Result result;
 		
 		
-		result = manager.searchFreeTimeSlot(getTime(6, 0), getDate(10, 9), getTime(8, 0), getDate(11, 28));
+		result = manager.searchFreeDay(getTime(6, 0), getDate(10, 9), getTime(8, 0), getDate(11, 28));
 		FreeDayResult finResult = (FreeDayResult) result;
 		
 		ArrayList<LocalDate> freeDates = new ArrayList<>();
@@ -144,11 +144,11 @@ public class FreeTimeSlotManagerTest {
 		taskData.add(task8);
 
 		
-		FreeTimeSlotManager manager = new FreeTimeSlotManager(taskData);
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
 		Result result;
 		
 		
-		result = manager.searchFreeTimeSlot(getTime(6, 0), getDate(11,14), getTime(8, 0), getDate(11, 28));
+		result = manager.searchFreeDay(getTime(6, 0), getDate(11,14), getTime(8, 0), getDate(11, 28));
 		FreeDayResult finResult = (FreeDayResult) result;
 		
 		ArrayList<LocalDate> freeDates = new ArrayList<>();
@@ -165,10 +165,10 @@ public class FreeTimeSlotManagerTest {
 
     }
     private void assertResultEquals(FreeDayResult actual, FreeDayResult output) {
-        assertEquals(actual.getFreeDate().size(), output.getFreeDate().size());
-        assertEquals(actual.getFreeDate(), output.getFreeDate());
-        assertEquals(actual.getStartDate(), output.getStartDate());
-        assertEquals(actual.getLastTaskEndDate(), output.getLastTaskEndDate());
+        assertEquals(actual.getFreeDateList().size(), output.getFreeDateList().size());
+        assertEquals(actual.getFreeDateList(), output.getFreeDateList());
+        assertEquals(actual.getFirstBusyDate(), output.getFirstBusyDate());
+        assertEquals(actual.getLastBusyDate(), output.getLastBusyDate());
     }
 	
 	

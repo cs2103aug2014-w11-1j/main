@@ -6,13 +6,13 @@ import java.util.ArrayList;
 public class FreeDaySearchMessage implements Message {
 
 
-    private ArrayList<LocalDate> freeDate;
+    private ArrayList<LocalDate> freeDates;
     private LocalDate lastBusyDate;
     private LocalDate firstBusyDate;
     
-    public FreeDaySearchMessage(ArrayList<LocalDate> freeDate,
+    public FreeDaySearchMessage(ArrayList<LocalDate> freeDates,
             LocalDate startDate, LocalDate lastTaskEndDate) {
-        this.freeDate = freeDate;
+        this.freeDates = freeDates;
         this.firstBusyDate = startDate;
         this.lastBusyDate = lastTaskEndDate;
     }
@@ -20,11 +20,10 @@ public class FreeDaySearchMessage implements Message {
     @Override
     public Type getType() {
         return Type.FREE_DAY_SEARCH_SUCCESSFUL;
-        
     }
     
-    public ArrayList<LocalDate> getFreeDate(){
-        return freeDate;
+    public ArrayList<LocalDate> getFreeDateList(){
+        return freeDates;
     }
     
     public LocalDate getLastBusyDate(){
