@@ -52,6 +52,9 @@ public class EnumFormatter {
     private final static String MESSAGE_SEARCH_ENDED =
             "Search ended." +
             System.lineSeparator();
+    private final static String MESSAGE_EXIT = 
+            "Exiting Taskline." +
+            System.lineSeparator();
     private final static String MESSAGE_EMPTY = "";
 
     /**
@@ -112,6 +115,9 @@ public class EnumFormatter {
                 break;
             case SEARCH_ENDED :
                 formattedResult = MESSAGE_SEARCH_ENDED;
+                break;
+            case EXIT :
+                formattedResult = MESSAGE_EXIT;
                 break;
             default :
                 formattedResult = "";
