@@ -33,10 +33,33 @@ public class EditCommand extends TargetedCommand {
         } else {
             // not edit mode
             args = tryParseIdsIntoSet(args);
-            taskToEdit = parseEditParams(args);
+            if (targetTaskIdSet == null) {
+                taskToEdit = parseKeywordAndEditParams(args);
+            } else {
+                taskToEdit = parseEditParams(args);
+            }
         }
     }
-
+    
+    private TaskInfo parseKeywordAndEditParams(String args) {
+        StringBuilder keywords = new StringBuilder();
+        
+        TaskInfo taskInfo = parseEditParams(args);
+        while (taskInfo == null && !args.isEmpty()) {
+            String[] split = args.split(" ", 2);
+            if (split.length <= 1) {
+                break;
+            }
+            keywords.append(split[0]).append(" ");
+            args = split[1];
+            taskInfo = parseEditParams(args);
+        }
+        
+        parseAsSearchString(keywords.toString());
+        return taskInfo;
+    }
+    
+    
     private TaskInfo parseEditParams(String args) {
         assert args != null : "There should not be a null passed in.";
 

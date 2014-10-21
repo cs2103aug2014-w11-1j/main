@@ -117,17 +117,18 @@ public class TaskInfo {
     	return endTime;
     }
     
-    public void assertValidDateTime() {
-        assert validDateTime() : "Invalid Date/Time combination!";
-    }
-
     /**
      * Requirements:<br>
      * Keyword: D/T fields = date/time fields.<br>
      * If startTime or startDate exists, then all four D/T fields cannot be null.<br>
-     * if endTime exists, then endDate cannot be null.
-     * @return
+     * if endTime exists, then endDate cannot be null.<br>
+     * If they exist, startTime cannot be equal to endTime,<br>
+     * and startDate cannot be equal to endDate.
      */
+    public void assertValidDateTime() {
+        assert validDateTime() : "Invalid Date/Time combination!";
+    }
+
     private boolean validDateTime() {
         if (startTime == null) {
             if (startDate != null) {
@@ -145,6 +146,12 @@ public class TaskInfo {
         
         if (endTime != null) {
             if (endDate == null) {
+                return false;
+            }
+        }
+        
+        if (startTime != null) {
+            if (startTime.equals(endTime) && startDate.equals(endDate)) {
                 return false;
             }
         }

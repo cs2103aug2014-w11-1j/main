@@ -47,7 +47,6 @@ public class StateManager {
 	private State currentState;
 	private TaskIdSet editingTaskIdSet;
 	private UpdateManager updateManager;
-	//private Response response;
 	private TargetedCommand savedCommand;
 	
 	public enum State {
@@ -102,7 +101,7 @@ public class StateManager {
         return inState(State.EDIT_MODE);
     }
     
-    public boolean canQueryStateManager() {
+    public boolean canQuerySearchManager() {
         return inState(State.SEARCH_MODE) || inState(State.WAITING_MODE);
     }
 	

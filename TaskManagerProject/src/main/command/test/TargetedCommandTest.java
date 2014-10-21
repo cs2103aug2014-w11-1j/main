@@ -3,14 +3,9 @@ package main.command.test;
 import static org.junit.Assert.assertEquals;
 import main.command.TargetedCommand;
 import main.command.TaskIdSet;
-import manager.ManagerHolder;
-import manager.StateManager;
-import manager.datamanager.SearchManager;
 import manager.result.Result;
 
 import org.junit.Test;
-
-import data.TaskId;
 
 public class TargetedCommandTest {
 
@@ -86,9 +81,9 @@ public class TargetedCommandTest {
         result = command.tryParseIdsIntoSet(args);
         assertEquals("3,4", command.toString());
         assertEquals("3", result);
-        
-        
-        
+
+
+
         // Invalid inputs
         assertInvalidInput("3,3-3,e 3", command);
         assertInvalidInput("3 , - 3 a", command);
@@ -133,18 +128,20 @@ class StubTargetedCommand extends TargetedCommand {
         super(new StubManagerHolder());
     }
 
+    @Override
     public String toString() {
         return targetTaskIdSet.numericIdString();
     }
-    
+
     public TaskIdSet getTargetIdSet() {
         return targetTaskIdSet;
     }
-    
+
+    @Override
     public String tryParseIdsIntoSet(String args) {
         return super.tryParseIdsIntoSet(args);
     }
-    
+
     @Override
     protected boolean isValidArguments() {
         return false;
@@ -159,46 +156,6 @@ class StubTargetedCommand extends TargetedCommand {
     protected Result executeAction() {
         return null;
     }
-    
+
 }
 
-class StubManagerHolder extends ManagerHolder {
-
-    public StubManagerHolder() {
-        super(null, null);
-    }
-
-    @Override
-    public SearchManager getSearchManager() {
-        return new StubSearchManager();
-    }
-
-    @Override
-    public StateManager getStateManager() {
-        return new StubStateManager();
-    }
-    
-}
-
-class StubSearchManager extends SearchManager {
-
-    public StubSearchManager() {
-        super(null);
-    }
-
-    public TaskId getAbsoluteIndex(int relativeTaskId) {
-        return new TaskId(relativeTaskId);
-    }
-}
-
-class StubStateManager extends StateManager {
-
-    public StubStateManager() {
-        super(null, null, null);
-    }
-
-    public boolean canQueryStateManager() {
-        return true;
-    }
-    
-}
