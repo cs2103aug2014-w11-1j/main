@@ -311,6 +311,11 @@ public class StateManager {
 	private Message applyResult(Result result) {
 		switch (result.getType()){
             case EXIT :
+                if (inState(State.EDIT_MODE)) {
+                    exitEditMode();
+                } else if (inState(State.SEARCH_MODE)) {
+                    exitSearchMode();
+                }
                 return new EnumMessage(EnumMessage.MessageType.EXIT);
                 
             case ADD_SUCCESS :
