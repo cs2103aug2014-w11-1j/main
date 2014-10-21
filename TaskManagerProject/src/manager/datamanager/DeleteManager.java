@@ -45,8 +45,7 @@ public class DeleteManager extends AbstractManager {
         }
         
         if (allSuccessful) {
-            return new DeleteResult(Result.Type.DELETE_SUCCESS,
-                    returnTaskId, returnTaskInfo);
+            return new DeleteResult(returnTaskId, returnTaskInfo);
         } else {
             taskData.reverseLastChange();
             return new SimpleResult(Result.Type.DELETE_FAILURE);

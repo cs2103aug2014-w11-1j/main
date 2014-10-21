@@ -1,7 +1,6 @@
 package manager.result;
 
 import main.command.TaskIdSet;
-import data.TaskId;
 
 public class StartEditModeResult implements Result {
 

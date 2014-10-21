@@ -1,10 +1,12 @@
 package manager.datamanager.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 import manager.datamanager.FreeTimeSlotManager;
-import manager.result.AddResult;
 import manager.result.FreeDayResult;
 import manager.result.Result;
 
@@ -20,7 +22,7 @@ public class FreeTimeSlotManagerTest {
     public void test() {
 		
 		TaskData taskData = new TaskData();
-		
+
 		TaskInfo task1 = createTask("apple", getTime(3,0), getDate(11,16),getTime(9, 0), getDate(11, 16));
 		TaskInfo task2 = createTask("banana", getTime(5, 0), getDate(11, 16), getTime(12, 0), getDate(11, 17));
 		TaskInfo task3 = createTask("cheese", getTime(13, 0), getDate(11,20), getTime(19, 0), getDate(11, 20));
@@ -42,15 +44,18 @@ public class FreeTimeSlotManagerTest {
 
 		
 		FreeTimeSlotManager manager = new FreeTimeSlotManager(taskData);
-		System.out.println(manager.taskList.size());
 		Result result;
 		
 		result = manager.searchFreeDay(getDate(10,9), getDate(10, 28));
 		FreeDayResult finResult = (FreeDayResult) result;
-		System.out.println(finResult.getFreeDate().size());
-		System.out.println(finResult.getFreeDate());
-		System.out.println(finResult.getStartDate());
-		System.out.println(finResult.getLastTaskEndDate());
+		
+		
+		ArrayList<LocalDate> freeDates = new ArrayList<>();
+		LocalDate startDate = null;
+        LocalDate lastTaskEndDate = null;
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate);
+		
+		assertResultEquals(templateResult, finResult);
 		
 //		result = manager.searchFreeTimeSlot(getTime(6, 0), getDate(10, 9), getTime(8, 0), getDate(10, 28));
 //		FreeDayResult finResult = (FreeDayResult) result;
@@ -60,6 +65,13 @@ public class FreeTimeSlotManagerTest {
 //		System.out.println(finResult.getLastTaskEndDate());
 		
 	}
+    
+    private void assertResultEquals(FreeDayResult actual, FreeDayResult output) {
+        assertEquals(actual.getFreeDate().size(), output.getFreeDate().size());
+        assertEquals(actual.getFreeDate(), output.getFreeDate());
+        assertEquals(actual.getStartDate(), output.getStartDate());
+        assertEquals(actual.getLastTaskEndDate(), output.getLastTaskEndDate());
+    }
 	
 	
 	private static TaskInfo createTask(String name,LocalTime startTime, LocalDate startDate,

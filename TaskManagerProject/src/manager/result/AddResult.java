@@ -5,19 +5,16 @@ import data.taskinfo.TaskInfo;
 
 public class AddResult implements Result {
 	
-	private Type type;
 	private TaskInfo taskInfo;
 	private TaskId taskId;
 
-	public AddResult (Type type, TaskInfo taskInfo, TaskId taskId){
-	    assert type == Type.ADD_SUCCESS;
-		this.type = type;
+	public AddResult (TaskInfo taskInfo, TaskId taskId) {
 		this.taskInfo = taskInfo;
 		this.taskId = taskId;
 	}
 	@Override
 	public Type getType() {
-		return type;
+		return Type.ADD_SUCCESS;
 	}
 	
 	public TaskInfo getTaskInfo(){
