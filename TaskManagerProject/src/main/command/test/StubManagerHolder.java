@@ -6,7 +6,7 @@ import manager.StateManager;
 import manager.datamanager.AddManager;
 import manager.datamanager.DeleteManager;
 import manager.datamanager.EditManager;
-import manager.datamanager.FreeTimeSlotManager;
+import manager.datamanager.FreeDaySearchManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.searchfilter.Filter;
 import manager.result.Result;
@@ -79,8 +79,8 @@ class StubEditManager extends EditManager {
     }
 }
 
-class StubFreeTimeSlotManager extends FreeTimeSlotManager {
-    public StubFreeTimeSlotManager() {
+class StubFreeDaySearchManager extends FreeDaySearchManager {
+    public StubFreeDaySearchManager() {
         super(null);
     }
 }
