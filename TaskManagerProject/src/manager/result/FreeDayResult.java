@@ -27,7 +27,7 @@ public class FreeDayResult implements Result{
 	
 	@Override
 	public Type getType() {
-		return Result.Type.FREE_DAY;
+		return Type.FREE_DAY;
 		
 	}
 	
