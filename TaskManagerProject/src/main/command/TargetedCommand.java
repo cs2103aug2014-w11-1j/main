@@ -8,6 +8,7 @@ import manager.datamanager.SearchManager;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.KeywordFilter;
 import manager.result.Result;
+import manager.result.SearchResult;
 import data.TaskId;
 
 public abstract class TargetedCommand extends Command {
@@ -51,7 +52,12 @@ public abstract class TargetedCommand extends Command {
             keywordFilter = null;
             
             Result result = searchManager.searchTasks(filters);
-            Response response = stateManager.updateAndStoreCommand(result, this);
+            Response response = null;
+            if (onlyOneSearchResult(result)) {
+                response = executeOnSearchResult(result);
+            } else {
+                response = stateManager.updateAndStoreCommand(result, this);
+            }
             return response;
             
         } else {
@@ -59,6 +65,24 @@ public abstract class TargetedCommand extends Command {
         }
     }
     
+    private boolean onlyOneSearchResult(Result result) {
+        if (result.getType() != Result.Type.SEARCH_SUCCESS) {
+            return false;
+        }
+        SearchResult searchResult = (SearchResult)result;
+        return searchResult.onlyOneSearchResult();
+    }
+    
+    private Response executeOnSearchResult(Result result) {
+        assert result.getType() == Result.Type.SEARCH_SUCCESS;
+        SearchResult searchResult = (SearchResult)result;
+
+        targetTaskIdSet = new TaskIdSet();
+        targetTaskIdSet.add(searchResult.getOnlySearchResult());
+        keywordFilter = null;
+        
+        return execute();
+    }
 
     /**
      * Add target taskIds to a stored TargetedCommand, so that the command
@@ -97,8 +121,12 @@ public abstract class TargetedCommand extends Command {
      */
     protected void parseAsSearchString(String searchString) {
         assert targetTaskIdSet == null : "targetTaskIdSet needs to be null";
-        String[] keywords = searchString.split(" ");
-        keywordFilter = new KeywordFilter(keywords);
+        
+        searchString = searchString.trim();
+        if (!searchString.isEmpty()) {
+            String[] keywords = searchString.split(" ");
+            keywordFilter = new KeywordFilter(keywords);
+        }
     }
 
     /**
