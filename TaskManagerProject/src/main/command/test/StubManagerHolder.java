@@ -20,25 +20,52 @@ class StubManagerHolder extends ManagerHolder {
     }
 
     @Override
+    public StateManager getStateManager() {
+        return new StubStateManager();
+    }
+
+    @Override
+    public AddManager getAddManager() {
+        return new StubAddManager();
+    }
+
+    @Override
     public SearchManager getSearchManager() {
         return new StubSearchManager();
     }
 
     @Override
-    public StateManager getStateManager() {
-        return new StubStateManager();
+    public EditManager getEditManager() {
+        return new StubEditManager();
+    }
+
+    @Override
+    public DeleteManager getDeleteManager() {
+        return new StubDeleteManager();
+    }
+
+    @Override
+    public FreeDaySearchManager getFreeDaySearchManager() {
+        return new StubFreeDaySearchManager();
     }
 
 }
 
 class StubAddManager extends AddManager {
+    TaskInfo taskInfo;
+
     public StubAddManager() {
         super(null);
     }
 
     @Override
     public Result addTask(TaskInfo taskInfo) {
+        this.taskInfo = taskInfo;
         return null;
+    }
+
+    public TaskInfo getTaskInfo() {
+        return taskInfo;
     }
 }
 
