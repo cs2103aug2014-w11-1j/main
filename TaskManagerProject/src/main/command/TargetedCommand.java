@@ -40,6 +40,11 @@ public abstract class TargetedCommand extends Command {
         }
     }
     
+    /**
+     * This is used to execute the command using a keyword filter instead
+     * of a target TaskIdSet. (aka delete by name)
+     * @return
+     */
     private Response keywordFilterExecute() {
         if (isCommandAllowed() && stateManager.canSearch()) {
             Filter[] filters = new Filter[]{keywordFilter};

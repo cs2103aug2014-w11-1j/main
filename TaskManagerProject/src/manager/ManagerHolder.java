@@ -4,6 +4,7 @@ import io.FileInputOutput;
 import manager.datamanager.AddManager;
 import manager.datamanager.DeleteManager;
 import manager.datamanager.EditManager;
+import manager.datamanager.FreeTimeSlotManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
 import data.TaskData;
@@ -15,6 +16,7 @@ public class ManagerHolder {
     private EditManager editManager;
     private DeleteManager deleteManager;
     private UndoManager undoManager;
+    private FreeTimeSlotManager freeDaySearchManager;
     
 
     public ManagerHolder(TaskData taskData, FileInputOutput fileInputOutput) {
@@ -23,6 +25,7 @@ public class ManagerHolder {
         editManager = new EditManager(taskData);
         deleteManager = new DeleteManager(taskData);
         undoManager = new UndoManager(taskData);
+        freeDaySearchManager = new FreeTimeSlotManager(taskData);
         stateManager = new StateManager(fileInputOutput, undoManager, searchManager);
     }
 
@@ -48,5 +51,9 @@ public class ManagerHolder {
     
     public UndoManager getUndoManager() {
         return undoManager;
+    }
+    
+    public FreeTimeSlotManager getFreeDaySearchManager() {
+        return freeDaySearchManager;
     }
 }
