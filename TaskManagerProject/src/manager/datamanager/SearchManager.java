@@ -166,26 +166,13 @@ public class SearchManager extends AbstractManager {
         lastSearchedTasks = getTaskInfoIdArray(taskIds);
     }
     
-    private SearchResult getResultFromIds(Collection<TaskId> taskIds) {
-        TaskId idArray[] = new TaskId[taskIds.size()];
-        TaskInfo taskArray[] = new TaskInfo[taskIds.size()];
-        
-        taskIds.toArray(idArray);
-        
-        for (int i = 0; i < idArray.length; i++) {
-            taskArray[i] = taskData.getTaskInfo(idArray[i]);
-        }
-        
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
-                taskArray, idArray);
-        return result;
-    }
-    
     public SearchResult searchWithSuggestion(Filter[] filters) {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         
         updateSearchedTasks(taskIds);
-        SearchResult result = getResultFromIds(taskIds);
+        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
+                getInfoArray(lastSearchedTasks),
+                getIdArray(lastSearchedTasks));
         
         List<String> suggestions = new ArrayList<String>();
         for (int i = 0; i < filters.length; i++) {
