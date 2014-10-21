@@ -8,7 +8,6 @@ import java.util.Comparator;
 
 import manager.result.FreeDayResult;
 import manager.result.Result;
-import manager.result.Result.Type;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
@@ -35,21 +34,21 @@ public class FreeTimeSlotManager extends AbstractManager {
 		}
 		return taskListWithDate;
 	}
-	
+
 	private void updateTaskList() {
-        taskList = TaskListWithDate();
-        sortTask();
-        size = taskList.size();
+		taskList = TaskListWithDate();
+		sortTask();
+		size = taskList.size();
 	}
 
 	private void clearMemory() {
-	    taskList.clear();
-        taskList = null;   
+		taskList.clear();
+		taskList = null;   
 	}
 	public Result searchFreeTimeSlot(LocalTime startTime, LocalDate startDate,
-			LocalTime endTime, LocalDate EndDate) {
-	    updateTaskList();
-	    
+			LocalTime endTime, LocalDate endDate) {
+		updateTaskList();
+
 		LocalDate checkDate = null;
 		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>();
 		ArrayList<TaskInfo> taskListContainingTimeSlot = findTaskContainingTimeSlot(
@@ -58,7 +57,9 @@ public class FreeTimeSlotManager extends AbstractManager {
 
 		for (TaskInfo task : taskListContainingTimeSlot) {
 			if (lastContainingDate(task, startTime, endTime).isAfter(
-					LocalDate.now())) {
+					LocalDate.now())
+					&& lastContainingDate(task, startTime, endTime).isAfter(startDate) 
+					&& (getTaskStartDate(task).isBefore(endDate))) {
 				if (checkDate == null) {
 					checkDate = lastContainingDate(task, startTime, endTime);
 				} else {
@@ -67,13 +68,17 @@ public class FreeTimeSlotManager extends AbstractManager {
 						LocalDate tempDate = checkDate.minusDays(-1);
 						while (tempDate.isBefore(firstContainingDate(task,
 								startTime, endTime))) {
-							freeDays.add(tempDate);
+							
+							if (tempDate.isAfter(startDate.minusDays(1))
+									&& (tempDate.isBefore(endDate.minusDays(-1)))){
+								freeDays.add(tempDate);
+							}
 							tempDate = tempDate.minusDays(-1);
 						}
 					}
 					checkDate = lastContainingDate(task, startTime, endTime)
 							.isBefore(checkDate) ? checkDate
-							: lastContainingDate(task, startTime, endTime);
+									: lastContainingDate(task, startTime, endTime);
 
 				}
 			}
@@ -84,27 +89,31 @@ public class FreeTimeSlotManager extends AbstractManager {
 	}
 
 	public Result searchFreeDay(LocalDate startDate, LocalDate endDate) {
-        updateTaskList();
-        
+		updateTaskList();
+
 		LocalDate checkDate = null;
 		LocalDate firststartDate = getTaskStartDate(taskList.get(0));
 		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>();
 
 		for (TaskInfo task : taskList) {
-			if (task.getEndDate().isAfter(LocalDate.now())) { // search start
-																// from today,
-																// for those
-																// tasks end in
-																// future
+			if (task.getEndDate().isAfter(LocalDate.now()) 
+					&& (task.getEndDate().isAfter(startDate))
+					&& (getTaskStartDate(task).isBefore(endDate))) { // search start
+				// from today,
+				// for those
+				// tasks end in
+				// future
 				if (checkDate == null) { // first task initialization
 					checkDate = task.getEndDate();
 				} else { // if new task's start date < checkDate, update
-							// freeDay, else update checkDate
+					// freeDay, else update checkDate
 					if (getTaskStartDate(task).isAfter(checkDate)) {
 						LocalDate tempDate = checkDate.minusDays(-1);
 						while (tempDate.isBefore(getTaskStartDate(task))) {
-						
-							freeDays.add(tempDate);
+							if (tempDate.isAfter(startDate.minusDays(1))
+									&& (tempDate.isBefore(endDate.minusDays(-1)))){
+								freeDays.add(tempDate);
+							}
 							tempDate = tempDate.minusDays(-1);
 						}
 
@@ -144,20 +153,20 @@ public class FreeTimeSlotManager extends AbstractManager {
 
 	private boolean isContainTimeSlot(TaskInfo task, LocalTime startTime,
 			LocalTime endTime) {
-		
+
 		if (task.endTime == null){	  // no time task, not count
 			return false;
 		}
-		
+
 		if (getTaskStartDate(task).equals(task.getEndDate())) { // One day task
 			if ((getTaskStartTime(task).isAfter(endTime))
 					|| (task.getEndTime().isBefore(startTime))) {
 				return false;
 			}
 		} else if (getTaskStartDate(task) != task.getEndDate()) { // Task that
-																	// last more
-																	// than 1
-																	// day
+			// last more
+			// than 1
+			// day
 			if ((getTaskStartDate(task).minusDays(-1)
 					.isEqual(task.getEndDate()))
 					&& (getTaskStartTime(task).isAfter(endTime))
