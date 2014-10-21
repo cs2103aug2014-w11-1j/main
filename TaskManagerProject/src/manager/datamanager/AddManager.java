@@ -23,10 +23,10 @@ public class AddManager extends AbstractManager {
     }
 
     public Result addTask(TaskInfo taskInfo) {
-    	
     	if (taskInfo == null){
     		return new SimpleResult(Result.Type.ADD_FAILURE);
     	}
+    	taskInfo.assertValidDateTime();
     	
     	id = taskData.add(taskInfo);
     	

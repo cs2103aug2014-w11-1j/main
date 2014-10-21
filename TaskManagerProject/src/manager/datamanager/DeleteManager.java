@@ -28,7 +28,7 @@ public class DeleteManager extends AbstractManager {
         TaskInfo returnTaskInfo = null;
         
         for (TaskId taskId : taskIdSet) {
-        	if (taskId == null){
+        	if (taskId == null) {
         	    allSuccessful = false;
         	    break;
         	}
