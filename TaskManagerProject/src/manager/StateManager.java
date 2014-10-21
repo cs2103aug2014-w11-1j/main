@@ -102,7 +102,7 @@ public class StateManager {
         return inState(State.EDIT_MODE);
     }
     
-    public boolean canQueryStateManager() {
+    public boolean canQuerySearchManager() {
         return inState(State.SEARCH_MODE) || inState(State.WAITING_MODE);
     }
 	

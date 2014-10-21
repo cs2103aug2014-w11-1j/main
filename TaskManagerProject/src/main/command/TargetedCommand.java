@@ -210,7 +210,7 @@ public abstract class TargetedCommand extends Command {
     }
 
     private TaskId retrieveAbsoluteTaskId(int relativeTaskId) {
-        if (stateManager.canQueryStateManager()) {
+        if (stateManager.canQuerySearchManager()) {
             try {
                 TaskId result = searchManager.getAbsoluteIndex(relativeTaskId);
                 return result;

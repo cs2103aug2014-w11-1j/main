@@ -69,24 +69,24 @@
     <end type="TARGET" refId="2"/>  
   </generalization>  
   <generalization id="9">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <generalization id="10">    
     <bendpoint x="392" y="619"/>    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="10">    
+  <generalization id="11">    
     <bendpoint x="336" y="214"/>    
     <bendpoint x="336" y="484"/>    
     <end type="SOURCE" refId="6"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
-  <generalization id="11">    
+  <generalization id="12">    
     <bendpoint x="314" y="368"/>    
     <bendpoint x="314" y="522"/>    
     <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="2"/>  
-  </generalization>  
-  <generalization id="12">    
-    <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
