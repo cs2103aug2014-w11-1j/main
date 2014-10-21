@@ -52,10 +52,28 @@ public class DateTimePair {
         }
 
         count++;
+
+        // avoid duplicate start / end datetimes
+        if (isFull() && arePairsSame()) {
+            firstDate = null;
+            firstTime = null;
+        }
     }
 
     boolean isFull() {
         return count == max;
+    }
+
+    private boolean arePairsSame() {
+        if (!(hasFirstDate() && hasFirstTime() &&
+                hasSecondDate() && hasSecondTime())) {
+            return false;
+        }
+
+        boolean areDatesSame = firstDate.equals(secondDate);
+        boolean areTimesSame = firstTime.equals(secondTime);
+
+        return areDatesSame && areTimesSame;
     }
 
     public LocalDate getFirstDate() {
