@@ -1,10 +1,6 @@
 package main.command.parser.test;
 
 import static org.junit.Assert.assertEquals;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import main.command.parser.CommandParser;
 
 import org.junit.Test;
@@ -46,11 +42,6 @@ public class CommandParserTest {
         }
     }
 
-    private static final LocalTime TIME_LONG_1 = LocalTime.of(9, 46);
-    private static final LocalTime TIME_SHORT_1 = LocalTime.of(9, 0);
-    private static final LocalTime TIME_LONG_2 = LocalTime.of(15, 16);
-    private static final LocalTime TIME_SHORT_2 = LocalTime.of(15, 0);
-
     private enum DateTest {
         ABS_D_MMMM_1      ("24 August"),
         ABS_DMMM_1        ("24Aug"),
@@ -77,32 +68,6 @@ public class CommandParserTest {
         }
     }
 
-    private static final LocalDate DATE_1 = LocalDate.of(2014, 8, 24);
-    private static final LocalDate DATE_2 = LocalDate.of(2014, 9, 13);
-
-    /*
-    @Test
-    public void testParseTask() {
-        // terms, ignored terms, 2 tags, 1 priority, 1 date, 1 time
-        String test1 = mergeStrings(new String[]{TERM_1, IGNORE+TERM_2+IGNORE,
-                TAG+TERM_7, TERM_3, IGNORE, TAG+TERM_4, IGNORE, PRIORITY+PRI_HIGH,
-                PRIORITY+TERM_5, TimeTest.ABS_12_HOURS_LONG_1.type,
-                DateTest.ABS_DMMMY_1.type, TAG+TERM_6});
-        TaskInfo t = CommandParser.parseTask(test1);
-        assertEquals(t.name, mergeStrings(new String[]{TERM_1, TERM_2, TERM_3,
-                TAG+TERM_4, PRIORITY+TERM_5}));
-        assertEquals(t.endDate, DATE_1);
-        assertEquals(t.endTime, TIME_LONG_1);
-        assertEquals(t.startDate, null);
-        assertEquals(t.startTime, null);
-        assertEquals(t.priority, Priority.HIGH);
-        StringBuilder result = new StringBuilder();
-        for (Tag tag : t.tags) {
-            result.append(tag.toString()).append(' ');
-        }
-        assertEquals(result.toString().trim(), TERM_7 + " " + TERM_6);
-    }
-    */
 
     @Test
     public void testParseName() {
@@ -114,104 +79,6 @@ public class CommandParserTest {
         assertEquals(name1, mergeStrings(new String[]{TERM_1, TERM_2, TERM_3,
                 TAG+TERM_4, PRIORITY+TERM_5}));
     }
-
-    /*
-    @Test
-    public void testParseDateTime() {
-        TaskInfo t = TaskInfo.create();
-        // nothing: null
-        String test1 = mergeStrings(new String[]{TERM_2});
-        CommandParser.parseDateTime(test1, t);
-        assertEquals(t.endDate, null);
-        assertEquals(t.endTime, null);
-        assertEquals(t.startDate, null);
-        assertEquals(t.startTime, null);
-
-        t = TaskInfo.create();
-        // one date: null
-        String test2 = mergeStrings(new String[]{DateTest.ABS_D_M_YY_1.type});
-        CommandParser.parseDateTime(test2, t);
-        assertEquals(t.endDate, null);
-        assertEquals(t.endTime, null);
-        assertEquals(t.startDate, null);
-        assertEquals(t.startTime, null);
-
-        t = TaskInfo.create();
-        // two dates: null
-        String test3 = mergeStrings(new String[]{DateTest.ABS_D_MMMM_1.type,
-                DateTest.ABS_D_MMMM_2.type});
-        CommandParser.parseDateTime(test3, t);
-        assertEquals(t.endDate, null);
-        assertEquals(t.endTime, null);
-        assertEquals(t.startDate, null);
-        assertEquals(t.startTime, null);
-
-        t = TaskInfo.create();
-        // one time, zero date: next occurrence of time
-        String test4 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_1.type});
-        CommandParser.parseDateTime(test4, t);
-        if (LocalTime.now().isBefore(TIME_LONG_1)) {
-            assertEquals(t.endDate, LocalDate.now());
-        } else {
-            assertEquals(t.endDate, LocalDate.now().plusDays(1));
-        }
-        assertEquals(t.endTime, TIME_LONG_1);
-        assertEquals(t.startDate, null);
-        assertEquals(t.startTime, null);
-
-        t = TaskInfo.create();
-        // one time, one date: time on that date
-        String test5 = mergeStrings(new String[]{DateTest.ABS_DMMM_2.type,
-                TimeTest.ABS_24_HOURS_LONG_2.type});
-        CommandParser.parseDateTime(test5, t);
-        assertEquals(t.endDate, DATE_2);
-        assertEquals(t.endTime, TIME_LONG_2);
-        assertEquals(t.startDate, null);
-        assertEquals(t.startTime, null);
-
-        t = TaskInfo.create();
-        // one time, two date: null
-        String test6 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_SHORT_2.type,
-                DateTest.ABS_D_MMMM_1.type, DateTest.ABS_DMMMYY_2.type});
-        CommandParser.parseDateTime(test6, t);
-        assertEquals(t.endDate, null);
-        assertEquals(t.endTime, null);
-        assertEquals(t.startDate, null);
-        assertEquals(t.startTime, null);
-
-        t = TaskInfo.create();
-        // two time, zero date: next occurrence of first time
-        String test7 = mergeStrings(new String[]{TimeTest.ABS_12_HOURS_LONG_2.type,
-                TimeTest.ABS_12_HOURS_SHORT_1.type});
-        CommandParser.parseDateTime(test7, t);
-        if (LocalTime.now().isBefore(TIME_LONG_2)) {
-            if (TIME_LONG_2.isAfter(TIME_SHORT_1)) {
-                assertEquals(t.endDate, LocalDate.now().plusDays(1));
-                assertEquals(t.endTime, TIME_SHORT_1);
-                assertEquals(t.startDate, LocalDate.now());
-                assertEquals(t.startTime, TIME_LONG_2);
-            } else {
-                assertEquals(t.endDate, LocalDate.now());
-                assertEquals(t.endTime, TIME_SHORT_1);
-                assertEquals(t.startDate, LocalDate.now());
-                assertEquals(t.startTime, TIME_LONG_2);
-            }
-        } else {
-            if (TIME_LONG_2.isAfter(TIME_SHORT_1)) {
-                assertEquals(t.endDate, LocalDate.now().plusDays(2));
-                assertEquals(t.endTime, TIME_SHORT_1);
-                assertEquals(t.startDate, LocalDate.now().plusDays(1));
-                assertEquals(t.startTime, TIME_LONG_2);
-            } else {
-                assertEquals(t.endDate, LocalDate.now().plusDays(1));
-                assertEquals(t.endTime, TIME_SHORT_1);
-                assertEquals(t.startDate, LocalDate.now().plusDays(1));
-                assertEquals(t.startTime, TIME_LONG_2);
-            }
-        }
-        assertEquals(t.endTime, TIME_SHORT_1);
-    }
-    */
 
     @Test
     public void testParseTags() {

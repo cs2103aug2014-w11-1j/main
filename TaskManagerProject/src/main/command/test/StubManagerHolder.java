@@ -1,6 +1,7 @@
 package main.command.test;
 
 import main.command.TaskIdSet;
+import main.response.Response;
 import manager.ManagerHolder;
 import manager.StateManager;
 import manager.datamanager.AddManager;
@@ -15,8 +16,11 @@ import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 class StubManagerHolder extends ManagerHolder {
+    StubAddManager stubAddManager;
+
     public StubManagerHolder() {
         super(null, null);
+        stubAddManager = new StubAddManager();
     }
 
     @Override
@@ -25,8 +29,8 @@ class StubManagerHolder extends ManagerHolder {
     }
 
     @Override
-    public AddManager getAddManager() {
-        return new StubAddManager();
+    public StubAddManager getAddManager() {
+        return stubAddManager;
     }
 
     @Override
@@ -52,7 +56,7 @@ class StubManagerHolder extends ManagerHolder {
 }
 
 class StubAddManager extends AddManager {
-    TaskInfo taskInfo;
+    public TaskInfo taskInfo;
 
     public StubAddManager() {
         super(null);
@@ -62,10 +66,6 @@ class StubAddManager extends AddManager {
     public Result addTask(TaskInfo taskInfo) {
         this.taskInfo = taskInfo;
         return null;
-    }
-
-    public TaskInfo getTaskInfo() {
-        return taskInfo;
     }
 }
 
@@ -136,6 +136,16 @@ class StubSearchManager extends SearchManager {
 class StubStateManager extends StateManager {
     public StubStateManager() {
         super(null, null, null);
+    }
+
+    @Override
+    public void beforeCommandExecutionUpdate() {
+        return;
+    }
+
+    @Override
+    public Response update(Result result) {
+        return null;
     }
 
     @Override
