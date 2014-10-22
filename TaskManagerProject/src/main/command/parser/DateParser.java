@@ -145,13 +145,20 @@ public class DateParser {
 
         for (int i = 0; i < tokens.length; i++) {
             for (int j = tokens.length; j > i; j--) {
+                if (dtPair.isFull()) {
+                    break;
+                }
+
                 String[] curTokens = Arrays.copyOfRange(tokens, i, j);
                 String curSubstring = String.join(SYMBOL_DELIM, curTokens);
 
-                dtPair.add(parseDate(curSubstring));
-                dtPair.add(parseTime(curSubstring));
+                LocalDate d = parseDate(curSubstring);
+                LocalTime t = parseTime(curSubstring);
 
-                if (dtPair.isFull()) {
+                dtPair.add(d);
+                dtPair.add(t);
+
+                if (d != null || t != null) {
                     break;
                 }
             }
