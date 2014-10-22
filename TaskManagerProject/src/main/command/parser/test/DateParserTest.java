@@ -14,7 +14,7 @@ import org.junit.Test;
 public class DateParserTest {
 
     @Test
-    public void testParseDateTimes() {
+    public void testParseDateTimePairs() {
         LocalDate d1 = LocalDate.of(2014, 10, 17);
         LocalDate d2 = LocalDate.of(2014, 10, 18);
         LocalTime t1 = LocalTime.of(15, 0);
@@ -108,59 +108,6 @@ public class DateParserTest {
         assertEquals(dtPair.getFirstTime(), t1);
         assertEquals(dtPair.getSecondDate(), d2);
         assertEquals(dtPair.getSecondTime(), t2);
-
-        /*
-        List<LocalDateTime> dtList = DateParser.parseDateTime(testNull);
-        assertEquals(dtList, null);
-
-        dtList = DateParser.parseDateTime(testT);
-        assertEquals(dtList.get(0), LocalDateTime.of(dNow, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(dNow, t1));
-
-        dtList = DateParser.parseDateTime(testTT);
-        assertEquals(dtList.get(0), LocalDateTime.of(dNow, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(dNow, t2));
-
-        dtList = DateParser.parseDateTime(testD);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, tMin));
-        assertEquals(dtList.get(1), LocalDateTime.of(d1, tMax));
-
-        dtList = DateParser.parseDateTime(testDT);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(d1, t1));
-
-        dtList = DateParser.parseDateTime(testDTT);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(d1, t2));
-
-        dtList = DateParser.parseDateTime(testTDT);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(d1, t2));
-
-        dtList = DateParser.parseDateTime(testTTD);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(d1, t2));
-
-        dtList = DateParser.parseDateTime(testDD);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, tMin));
-        assertEquals(dtList.get(1), LocalDateTime.of(d2, tMax));
-
-        dtList = DateParser.parseDateTime(testTDD);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(d2, tMax));
-
-        dtList = DateParser.parseDateTime(testDTD);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(d2, tMax));
-
-        dtList = DateParser.parseDateTime(testDDT);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, tMin));
-        assertEquals(dtList.get(1), LocalDateTime.of(d2, t1));
-
-        dtList = DateParser.parseDateTime(testTTDD);
-        assertEquals(dtList.get(0), LocalDateTime.of(d1, t1));
-        assertEquals(dtList.get(1), LocalDateTime.of(d2, t2));
-        */
     }
 
 }

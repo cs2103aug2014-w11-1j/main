@@ -17,10 +17,12 @@ import data.taskinfo.TaskInfo;
 
 class StubManagerHolder extends ManagerHolder {
     StubAddManager stubAddManager;
+    StubSearchManager stubSearchManager;
 
     public StubManagerHolder() {
         super(null, null);
         stubAddManager = new StubAddManager();
+        stubSearchManager = new StubSearchManager();
     }
 
     @Override
@@ -34,8 +36,8 @@ class StubManagerHolder extends ManagerHolder {
     }
 
     @Override
-    public SearchManager getSearchManager() {
-        return new StubSearchManager();
+    public StubSearchManager getSearchManager() {
+        return stubSearchManager;
     }
 
     @Override
@@ -113,6 +115,8 @@ class StubFreeDaySearchManager extends FreeDaySearchManager {
 }
 
 class StubSearchManager extends SearchManager {
+    public Filter[] filters;
+
     public StubSearchManager() {
         super(null);
     }
@@ -124,6 +128,7 @@ class StubSearchManager extends SearchManager {
 
     @Override
     public Result searchTasks(Filter[] filters) {
+        this.filters = filters;
         return null;
     }
 
