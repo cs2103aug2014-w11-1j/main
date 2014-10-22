@@ -17,9 +17,15 @@ public class TaskDataTest {
         
         TaskData taskData = new TaskData();
         
+        // Original task list should be empty.
         assertEquals(0, taskData.getSize());
         testSizeAndIteration(taskData, 0);
         
+        //Note: every test tests the taskData size and iteration together.
+        // Testing iteration means looping through the entire next()/previous() structure
+        // and checking whether all the task IDs are iterated through correctly.
+        
+        // Testing adding of tasks
         TaskId id1 = taskData.add(dummyTask);
         testSizeAndIteration(taskData, 1);
         assertEquals("testname1", taskData.getTaskName(id1));
@@ -40,6 +46,7 @@ public class TaskDataTest {
         assertEquals("testname4", taskData.getTaskName(id4));
 
 
+        // Testing removing of tasks
         assertEquals(true, taskData.remove(id2));
         testSizeAndIteration(taskData, 3);
         assertEquals("testname1", taskData.getTaskName(id1));
@@ -96,6 +103,7 @@ public class TaskDataTest {
         assertEquals("testname6", taskData.getTaskName(id6));
         
 
+        // Testing clearing of tasks (emptying task data)
         assertEquals(true, taskData.remove(id1));
         assertEquals(false, taskData.remove(id2));
         assertEquals(true, taskData.remove(id3));

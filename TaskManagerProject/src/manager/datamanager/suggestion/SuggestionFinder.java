@@ -71,6 +71,10 @@ public class SuggestionFinder {
         }
     }
     
+    private int getLimit(String string) {
+        return string.length() * 2 / 5;
+    }
+    
     Set<KeywordSuggestion> findKeywords(String filterString, String string) {
         Set<KeywordSuggestion> keywords = new HashSet<KeywordSuggestion>();
         if (string != null) {
@@ -83,7 +87,9 @@ public class SuggestionFinder {
                         currentWord);
                 KeywordSuggestion newKeyword = new KeywordSuggestion(
                         currentWord, editDistance.getDistance());
-                updateKeywordList(keywords, newKeyword);
+                if (newKeyword.getDistance() <= getLimit(filterString)) {
+                    updateKeywordList(keywords, newKeyword);
+                }
             }
         }
         return keywords;
