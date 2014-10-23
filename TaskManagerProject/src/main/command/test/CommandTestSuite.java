@@ -5,7 +5,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TargetedCommandTest.class
+    TargetedCommandTest.class,
+    AddCommandTest.class,
+    SearchCommandTest.class
 })
 public class CommandTestSuite {
 }

@@ -159,6 +159,7 @@ public class DateParser {
                 dtPair.add(t);
 
                 if (d != null || t != null) {
+                    i = j;
                     break;
                 }
             }
