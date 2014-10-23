@@ -12,6 +12,7 @@ import main.message.DeleteSuccessfulMessage;
 import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
+import main.message.FreeDaySearchMessage;
 import main.message.EnumMessage.MessageType;
 import main.message.Message;
 import main.modeinfo.EditModeInfo;
@@ -25,6 +26,7 @@ import manager.result.AddResult;
 import manager.result.DeleteResult;
 import manager.result.DetailsResult;
 import manager.result.EditResult;
+import manager.result.FreeDayResult;
 import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.StartEditModeResult;
@@ -416,6 +418,12 @@ public class StateManager {
 
             case INVALID_ARGUMENT : 
                 return new EnumMessage(MessageType.INVALID_ARGUMENT);
+                
+            case FREE_DAY : 
+            	FreeDayResult freeDayResult = (FreeDayResult) result;
+            	FreeDaySearchMessage freeDayMessage = 
+            			new FreeDaySearchMessage(freeDayResult.getFreeDateList(), freeDayResult.getFirstBusyDate(), freeDayResult.getLastBusyDate());
+            	return freeDayMessage;
                 
             case DETAILS :
                 DetailsResult detailsResult = (DetailsResult)result;
