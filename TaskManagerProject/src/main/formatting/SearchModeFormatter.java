@@ -31,7 +31,12 @@ public class SearchModeFormatter {
     private final static String LINE_SUGGESTION = "Did you mean: ";
 
     
-    private String getDateLine(LocalDate date) {
+    private String getDateLine(TaskInfo task) {
+    	LocalDate date;
+    	date = task.endDate;
+    	if (task.startDate != null && task.endTime == LocalTime.MIDNIGHT){
+    		date = task.endDate.plusDays(-1);
+    	}
         DateTimeFormatter formatter = 
                 DateTimeFormatter.ofPattern("E, d MMM u");
         String dateString = formatter.format(date);
@@ -50,8 +55,12 @@ public class SearchModeFormatter {
             DateTimeFormatter formatter =
                     DateTimeFormatter.ofPattern("HH:mm");
             String addedFormat = "[%1$s-%2$s] ";
-            return String.format(addedFormat, formatter.format(startTime), 
-                    formatter.format(endTime));
+            String startTimeString = formatter.format(startTime);
+            String endTimeString = formatter.format(endTime);
+            if (endTimeString.equals("00:00")) {
+            	endTimeString = "24:00";
+            }
+            return String.format(addedFormat, startTimeString, endTimeString);
         }
     }
     
@@ -72,6 +81,7 @@ public class SearchModeFormatter {
         }
         return builder.toString();
     }
+    
     
     private String padLeftToWidth(String s, int width) {
         StringBuilder builder = new StringBuilder("");
@@ -124,6 +134,41 @@ public class SearchModeFormatter {
         return builder.toString();
     }
     
+    private boolean isEndingAtMidnight(TaskInfo task) {
+    	LocalTime midnight = LocalTime.parse("00:00");
+    	return task.startTime != null && task.endTime.equals(midnight);
+    }
+    
+    private boolean isOneDayAfter(TaskInfo taskBefore, TaskInfo taskAfter) {
+    	return taskBefore.endDate.plusDays(1).equals(taskAfter.endDate);
+    }
+    
+    private boolean isDifferentDate(TaskInfo task1, TaskInfo task2) {
+    	if (task1.endTime == null && task2.endTime != null) {
+    		return true;
+    	} else if (task1.endTime != null && task2.endTime == null) {
+    		return true;
+    	} else if (task1.endTime == null && task2.endTime == null) {
+    		return false;
+    	} else {
+    		if (task1.endDate.equals(task2.endDate)) {
+    			if (isEndingAtMidnight(task1) && !isEndingAtMidnight(task2)) {
+    				return true;
+    			} else if (!isEndingAtMidnight(task1) && isEndingAtMidnight(task2)) {
+    				return true;
+    			} else {
+    				return false;
+    			}
+    		} else if (isOneDayAfter(task1, task2)){
+    			return isEndingAtMidnight(task1) || !isEndingAtMidnight(task2);
+    		} else if (isOneDayAfter(task2, task1)) {
+    			return !isEndingAtMidnight(task1) || isEndingAtMidnight(task1);
+    		} else {
+    			return false;
+    		}
+    	}
+    }
+    
     private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
             TaskId[] taskIds, String[] suggestions) {
         ArrayList<String> result = new ArrayList<String>();
@@ -141,8 +186,8 @@ public class SearchModeFormatter {
                     }
                 }
                 else {
-                    if (i == 0 || !tasks[i].endDate.equals(tasks[i-1].endDate)) {
-                        result.add(getDateLine(tasks[i].endDate));
+                    if (i == 0 || isDifferentDate(tasks[i], tasks[i-1])) {
+                        result.add(getDateLine(tasks[i]));
                     }
                 }
                 result.add(getTaskInfoLine(tasks[i], taskIds[i], 
@@ -170,4 +215,6 @@ public class SearchModeFormatter {
                 formatToArrayList(tasks, taskIds, suggestions);
         return arrayListToStringLines(formattedTaskArray);
     }
+    
+    
 }
