@@ -60,29 +60,14 @@ public class FreeDaySearchManager extends AbstractManager {
 		}
 		
 		for (TaskInfo task : taskListContainingTimeSlot) {
-			if (lastContainingDate(task, startTime, endTime).isAfter(
-					LocalDate.now())
-					&& lastContainingDate(task, startTime, endTime).isAfter(startDate) 
-					&& (getTaskStartDate(task).isBefore(endDate))) {
+			if (isMatchTimeSlot(startTime, startDate, endTime, endDate, task)) {
 				if (checkDate == null) {
 					checkDate = lastContainingDate(task, startTime, endTime);
 				} else {
-					if (firstContainingDate(task, startTime, endTime).isAfter(
-							checkDate)) {
-						LocalDate tempDate = checkDate.minusDays(-1);
-						while (tempDate.isBefore(firstContainingDate(task,
-								startTime, endTime))) {
-							
-							if (tempDate.isAfter(startDate.minusDays(1))
-									&& (tempDate.isBefore(endDate.minusDays(-1)))){
-								freeDays.add(tempDate);
-							}
-							tempDate = tempDate.minusDays(-1);
-						}
-					}
+					uodateFreeDay(startTime, startDate, endTime, endDate,
+							checkDate, freeDays, task);
 					checkDate = lastContainingDate(task, startTime, endTime)
-							.isBefore(checkDate) ? checkDate
-									: lastContainingDate(task, startTime, endTime);
+							.isBefore(checkDate) ? checkDate : lastContainingDate(task, startTime, endTime);
 
 				}
 			}
@@ -90,6 +75,31 @@ public class FreeDaySearchManager extends AbstractManager {
 
 		clearMemory();
 		return new FreeDayResult(freeDays, firstStartDate, checkDate, startDate, endDate);
+	}
+
+	private void uodateFreeDay(LocalTime startTime, LocalDate startDate,
+			LocalTime endTime, LocalDate endDate, LocalDate checkDate,
+			ArrayList<LocalDate> freeDays, TaskInfo task) {
+		if (firstContainingDate(task, startTime, endTime).isAfter(
+				checkDate)) {
+			LocalDate tempDate = checkDate.minusDays(-1);
+			while (tempDate.isBefore(firstContainingDate(task,
+					startTime, endTime))) {
+				
+				if (tempDate.isAfter(startDate.minusDays(1))
+						&& (tempDate.isBefore(endDate.minusDays(-1)))){
+					freeDays.add(tempDate);
+				}
+				tempDate = tempDate.minusDays(-1);
+			}
+		}
+	}
+
+	private boolean isMatchTimeSlot(LocalTime startTime, LocalDate startDate,
+			LocalTime endTime, LocalDate endDate, TaskInfo task) {
+		return lastContainingDate(task, startTime, endTime).isAfter(LocalDate.now())
+				&& lastContainingDate(task, startTime, endTime).isAfter(startDate) 
+				&& (getTaskStartDate(task).isBefore(endDate));
 	}
 
 	
@@ -100,16 +110,12 @@ public class FreeDaySearchManager extends AbstractManager {
 		LocalDate firststartDate = getTaskStartDate(taskList.get(0));
 		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>();
 
-		
-		//
 		if (taskList.size() == 0){
 			return new FreeDayResult(null, null, null,startDate, endDate);
 		}
 		
 		for (TaskInfo task : taskList) {
-			if (task.getEndDate().isAfter(LocalDate.now()) 
-					&& (task.getEndDate().isAfter(startDate))
-					&& (getTaskStartDate(task).isBefore(endDate))) {
+			if (isMatchDay(startDate, endDate, task)) {
 				if (checkDate == null) { // first task initialization
 					checkDate = task.getEndDate();
 				} else { // if new task's start date < checkDate, update
@@ -139,6 +145,13 @@ public class FreeDaySearchManager extends AbstractManager {
 
 		clearMemory();
 		return new FreeDayResult(freeDays, firststartDate, checkDate, startDate, endDate);
+	}
+
+	private boolean isMatchDay(LocalDate startDate, LocalDate endDate,
+			TaskInfo task) {
+		return task.getEndDate().isAfter(LocalDate.now()) 
+				&& (task.getEndDate().isAfter(startDate))
+				&& (getTaskStartDate(task).isBefore(endDate));
 	}
 
 	private void sortTask() {
