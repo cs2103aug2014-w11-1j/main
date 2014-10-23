@@ -88,6 +88,7 @@ public class FreeDaySearchManager extends AbstractManager {
 		return new FreeDayResult(freeDays, firstStartDate, checkDate);
 	}
 
+	
 	public Result searchFreeDay(LocalDate startDate, LocalDate endDate) {
 		updateTaskList();
 
