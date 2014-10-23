@@ -422,7 +422,9 @@ public class StateManager {
             case FREE_DAY : 
             	FreeDayResult freeDayResult = (FreeDayResult) result;
             	FreeDaySearchMessage freeDayMessage = 
-            			new FreeDaySearchMessage(freeDayResult.getFreeDateList(), freeDayResult.getFirstBusyDate(), freeDayResult.getLastBusyDate());
+            			new FreeDaySearchMessage(freeDayResult.getFreeDateList(),
+            					freeDayResult.getFirstBusyDate(), freeDayResult.getLastBusyDate(),
+            					freeDayResult.getSearchStartDate(),freeDayResult.getSearchEndDate());
             	return freeDayMessage;
                 
             case DETAILS :
