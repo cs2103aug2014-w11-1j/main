@@ -123,8 +123,8 @@ public class SearchManager extends AbstractManager {
                 TaskId taskId = task.taskId;
                 taskInfo.startTime = currentTime;
                 taskInfo.startDate = currentDate;
-                taskInfo.endTime = LocalTime.MAX;
-                taskInfo.endDate = currentDate;
+                taskInfo.endTime = LocalTime.MIDNIGHT;
+                taskInfo.endDate = currentDate.plusDays(1);
                 TaskInfoId taskInfoId = new TaskInfoId(taskInfo, taskId);
                 result.add(taskInfoId);
                 currentTime = LocalTime.parse("00:00");
