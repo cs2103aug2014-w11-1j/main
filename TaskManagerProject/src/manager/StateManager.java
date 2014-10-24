@@ -189,7 +189,7 @@ public class StateManager {
     }
 
     public Response updateAndStoreCommand(Result result, TargetedCommand command) {
-        getAndClearSavedCommand();
+        exitWaitingMode();
         
         setSavedCommand(command);
         return processResult(result);
@@ -221,6 +221,10 @@ public class StateManager {
         this.savedCommand = command;
         setState(State.WAITING_MODE);
         return true;
+    }
+    
+    private void exitWaitingMode() {
+        getAndClearSavedCommand();
     }
     
     private TargetedCommand getAndClearSavedCommand() {
@@ -359,6 +363,8 @@ public class StateManager {
                     return new EnumMessage(EnumMessage.MessageType.EDIT_ENDED);
                 } else if (inState(State.SEARCH_MODE)) {
                     exitSearchMode();
+                    return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
+                } else {
                     return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
                 }
 
