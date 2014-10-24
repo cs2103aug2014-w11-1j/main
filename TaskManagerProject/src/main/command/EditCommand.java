@@ -10,6 +10,7 @@ import manager.datamanager.EditManager;
 import manager.result.Result;
 import data.TaskId;
 import data.taskinfo.Priority;
+import data.taskinfo.Status;
 import data.taskinfo.TaskInfo;
 
 public class EditCommand extends TargetedCommand {
@@ -40,10 +41,10 @@ public class EditCommand extends TargetedCommand {
             }
         }
     }
-    
+
     private TaskInfo parseKeywordAndEditParams(String args) {
         StringBuilder keywords = new StringBuilder();
-        
+
         TaskInfo taskInfo = parseEditParams(args);
         while (taskInfo == null && !args.isEmpty()) {
             String[] split = args.split(" ", 2);
@@ -54,12 +55,12 @@ public class EditCommand extends TargetedCommand {
             args = split[1];
             taskInfo = parseEditParams(args);
         }
-        
+
         parseAsSearchString(keywords.toString());
         return taskInfo;
     }
-    
-    
+
+
     private TaskInfo parseEditParams(String args) {
         assert args != null : "There should not be a null passed in.";
 
@@ -103,6 +104,13 @@ public class EditCommand extends TargetedCommand {
                 if (p != null) {
                     editTask.priority = p;
                 }
+                break;
+            case "status" :
+                editParam = sc.nextLine().trim();
+                Status s = CommandParser.parseStatus(editParam);
+                if (s != null) {
+                    editTask.status = s;
+                };
                 break;
             default :
                 editTask = null;
@@ -148,10 +156,10 @@ public class EditCommand extends TargetedCommand {
         if (editParam.isEmpty()) {
             return;
         }
-    
+
         Scanner sc = new Scanner(editParam);
         String changeType = sc.next();
-    
+
         // ensure it still has a tag to add / delete
         if (sc.hasNext()) {
             if (changeType.toLowerCase().equals("add")) {
@@ -161,7 +169,7 @@ public class EditCommand extends TargetedCommand {
                 tagOperation = TAG_DEL;
             }
         }
-    
+
         // ensure it is adding / deleting tags
         if (tagOperation == TAG_ADD || tagOperation == TAG_DEL) {
             StringBuilder tags = new StringBuilder();
@@ -171,7 +179,7 @@ public class EditCommand extends TargetedCommand {
             }
             editTask.tags = CommandParser.parseTags(tags.toString());
         }
-    
+
         sc.close();
     }
 

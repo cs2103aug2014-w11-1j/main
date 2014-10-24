@@ -6,6 +6,7 @@ import java.util.BitSet;
 import java.util.List;
 
 import data.taskinfo.Priority;
+import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
@@ -175,6 +176,22 @@ public class CommandParser {
         }
 
         return p;
+    }
+
+    public static Status parseStatus(String args) {
+        Status s = null;
+        switch (args) {
+            case "undone" :
+                s = Status.UNDONE;
+                break;
+            case "done" :
+                s = Status.DONE;
+                break;
+            default:
+                break;
+        }
+
+        return s;
     }
 
     private static String removeFirstChar(String s) {

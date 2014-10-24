@@ -26,24 +26,24 @@ public class DetailsUtility {
     private final static String FORMAT_PRIORITY = "Priority: %1$s";
     private final static String FORMAT_DESCRIPTION = "Description: %1$s";
     private final static String FORMAT_STATUS = "Status: %1$s";
-    
+
     private final static String ERROR_PRIORITY_NULL = "Priority is null.";
     private final static String ERROR_STATUS_NULL = "Status is null.";
-    
+
     private String formatTime(LocalTime time) {
-        DateTimeFormatter formatter = 
+        DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern(DATETIME_FORMAT_TIME);
         String formattedTime = formatter.format(time);
         return String.format(FORMAT_TIME, formattedTime);
     }
-    
+
     private String formatDate(LocalDate date) {
-        DateTimeFormatter formatter = 
+        DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern(DATETIME_FORMAT_DATE);
         String formattedDate = formatter.format(date);
         return String.format(FORMAT_DATE, formattedDate);
     }
-    
+
     private String buildTagsString(Tag[] tags) {
         StringBuilder builder = new StringBuilder("");
         for (int i = 0; i < tags.length; i++) {
@@ -54,7 +54,7 @@ public class DetailsUtility {
         }
         return builder.toString();
     }
-    
+
     private String getPriorityString(Priority priority) {
         assert priority != null : ERROR_PRIORITY_NULL;
         String priorityString = "";
@@ -73,20 +73,22 @@ public class DetailsUtility {
         }
         return priorityString;
     }
-    
+
     private String getStatusString(Status status) {
         assert status != null : ERROR_STATUS_NULL;
-        
+
         String statusString = "";
         switch (status) {
             case DONE :
                 statusString = "Done";
+                break;
             case UNDONE :
                 statusString = "Not done";
+                break;
         }
         return statusString;
     }
-    
+
     private String addIndentation(String s, int numberOfSpaces) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < numberOfSpaces; i++) {
@@ -95,9 +97,9 @@ public class DetailsUtility {
         builder.append(s);
         return builder.toString();
     }
-    
+
     /**
-     * Format a pair of TaskInfo and TaskId to an ArrayList of String, where 
+     * Format a pair of TaskInfo and TaskId to an ArrayList of String, where
      * each entry of the ArrayList corresponds to a line of output.
      * @param task The TaskInfo to be formatted.
      * @param taskId The TaskId to be formatted.
@@ -105,41 +107,41 @@ public class DetailsUtility {
      */
     public ArrayList<String> formatToArray(TaskInfo task, TaskId taskId) {
         ArrayList<String> result = new ArrayList<String>();
-        
+
         result.add(String.format(FORMAT_ID, taskId.toString()));
-        
+
         String nameLine = String.format(FORMAT_NAME,  task.name);
         result.add(addIndentation(nameLine, 3));
-        
+
         if (task.endTime != null) {
             String timeLine = formatTime(task.endTime);
             result.add(addIndentation(timeLine, 3));
         }
-        
-        if (task.endDate != null) { 
+
+        if (task.endDate != null) {
             String dateLine = formatDate(task.endDate);
             result.add(addIndentation(dateLine, 3));
         }
-        
+
         if (task.tags != null) {
-            String tagsLine = String.format(FORMAT_TAGS, 
+            String tagsLine = String.format(FORMAT_TAGS,
                     buildTagsString(task.tags));
             result.add(addIndentation(tagsLine, 3));
         }
-        
-        String priorityLine = String.format(FORMAT_PRIORITY, 
+
+        String priorityLine = String.format(FORMAT_PRIORITY,
                 getPriorityString(task.priority));
         result.add(addIndentation(priorityLine, 3));
-        
+
         String statusLine = String.format(FORMAT_STATUS, getStatusString(task.status));
         result.add(addIndentation(statusLine, 3));
-        
+
         if (task.details != null) {
-            String descriptionLine = String.format(FORMAT_DESCRIPTION, 
+            String descriptionLine = String.format(FORMAT_DESCRIPTION,
                     task.details);
             result.add(addIndentation(descriptionLine, 3));
         }
-        
+
         return result;
     }
 }
