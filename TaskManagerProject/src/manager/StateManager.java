@@ -12,8 +12,8 @@ import main.message.DeleteSuccessfulMessage;
 import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
-import main.message.FreeDaySearchMessage;
 import main.message.EnumMessage.MessageType;
+import main.message.FreeDaySearchMessage;
 import main.message.Message;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
@@ -22,6 +22,7 @@ import main.modeinfo.SearchModeInfo;
 import main.response.Response;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
+import manager.datamanager.searchfilter.Filter;
 import manager.result.AddResult;
 import manager.result.DeleteResult;
 import manager.result.DetailsResult;
@@ -29,6 +30,7 @@ import manager.result.EditResult;
 import manager.result.FreeDayResult;
 import manager.result.Result;
 import manager.result.Result.Type;
+import manager.result.SearchResult;
 import manager.result.StartEditModeResult;
 import taskline.debug.Taskline;
 import data.TaskId;
@@ -50,6 +52,7 @@ public class StateManager {
 	private TaskIdSet editingTaskIdSet;
 	private UpdateManager updateManager;
 	private TargetedCommand savedCommand;
+	private Filter[] lastSearchFilters;
 	
 	public enum State {
 	    AVAILABLE,      // Normal state
@@ -292,7 +295,13 @@ public class StateManager {
 	 */
 	private SearchModeInfo searchModeCheck(Result result) {
 		if (result.getType() != Type.SEARCH_SUCCESS) {
-			updateManager.redoSearch();
+			updateManager.redoSearch(lastSearchFilters);
+		} else {
+		    SearchResult searchResult = (SearchResult)result;
+		    Filter[] newFilters = searchResult.getFilters();
+		    if (newFilters != null) {
+		        lastSearchFilters = newFilters;
+		    }
 		}
 		
 		return updateManager.getSearchModeInfo();

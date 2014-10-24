@@ -1,13 +1,13 @@
 package manager;
 
-import data.TaskId;
-import data.taskinfo.TaskInfo;
 import io.FileInputOutput;
-import main.modeinfo.ModeInfo;
 import main.modeinfo.SearchModeInfo;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
+import manager.datamanager.searchfilter.Filter;
 import manager.result.SearchResult;
+import data.TaskId;
+import data.taskinfo.TaskInfo;
 
 public class UpdateManager {
 
@@ -22,8 +22,9 @@ public class UpdateManager {
 		this.searchManager = searchManager;	
 	}
 
-	public void redoSearch(){
-		searchManager.redoLastSearch();
+	public void redoSearch(Filter[] filters){
+	    assert filters != null : "Can't search with null filters!";
+		searchManager.searchTasks(filters);
 	}
 	
 	public SearchModeInfo getSearchModeInfo(){

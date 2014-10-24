@@ -1,5 +1,6 @@
 package manager.result;
 
+import manager.datamanager.searchfilter.Filter;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
@@ -7,13 +8,16 @@ public class SearchResult implements Result {
 
     private TaskInfo[] tasks;
     private TaskId[] taskIds;
+    private Filter[] filtersUsed;
     Type type;
     private String[] suggestions;
     
-    public SearchResult(Type type, TaskInfo[] tasks, TaskId[] taskIds) {
+    public SearchResult(Type type, TaskInfo[] tasks, TaskId[] taskIds,
+            Filter[] filtersUsed) {
         this.type = type;
         this.tasks = tasks;
         this.taskIds = taskIds;
+        this.filtersUsed = filtersUsed;
     }
     
     public TaskId[] getTaskIds() {
@@ -24,6 +28,10 @@ public class SearchResult implements Result {
     public TaskInfo[] getTasks() {
         assert tasks.length == taskIds.length;
         return tasks;
+    }
+    
+    public Filter[] getFilters() {
+        return filtersUsed;
     }
     
     public void setSuggestion(String[] suggestions) {
