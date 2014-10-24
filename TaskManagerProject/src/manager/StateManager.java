@@ -15,6 +15,7 @@ import main.message.EnumMessage;
 import main.message.EnumMessage.MessageType;
 import main.message.FreeDaySearchMessage;
 import main.message.Message;
+import main.message.ReportMessage;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.modeinfo.ModeInfo;
@@ -28,6 +29,7 @@ import manager.result.DeleteResult;
 import manager.result.DetailsResult;
 import manager.result.EditResult;
 import manager.result.FreeDayResult;
+import manager.result.ReportResult;
 import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
@@ -433,6 +435,9 @@ public class StateManager {
 
             case INVALID_ARGUMENT : 
                 return new EnumMessage(MessageType.INVALID_ARGUMENT);
+            case REPORT : 
+            	ReportResult reportResult = (ReportResult) result;
+            	return new ReportMessage(reportResult.countTodayTask(), reportResult.countTmrTask(), reportResult.getUrgentTask());
                 
             case FREE_DAY : 
             	FreeDayResult freeDayResult = (FreeDayResult) result;
