@@ -195,8 +195,8 @@ public class SearchManager extends AbstractManager {
         TaskInfoId[] infoIds = getTaskInfoIdArray(taskIds);
         
         SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
-                getInfoArray(lastSearchedTasks),
-                getIdArray(lastSearchedTasks));
+                getInfoArray(infoIds),
+                getIdArray(infoIds));
         
         return result;
     }
