@@ -26,7 +26,6 @@ public class EditCommand extends TargetedCommand {
         super(managerHolder);
         editManager = managerHolder.getEditManager();
 
-        // check if in edit mode
         if (stateManager.inEditMode()) {
             // edit mode
             targetTaskIdSet = editManager.getEditingTasks();
@@ -48,12 +47,14 @@ public class EditCommand extends TargetedCommand {
         TaskInfo taskInfo = parseEditParams(args);
         while (taskInfo == null && !args.isEmpty()) {
             String[] split = args.split(" ", 2);
-            if (split.length <= 1) {
-                break;
-            }
             keywords.append(split[0]).append(" ");
-            args = split[1];
-            taskInfo = parseEditParams(args);
+            
+            if (split.length > 1) {
+                args = split[1];
+                taskInfo = parseEditParams(args);
+            } else {
+                args = "";
+            }
         }
 
         parseAsSearchString(keywords.toString());
