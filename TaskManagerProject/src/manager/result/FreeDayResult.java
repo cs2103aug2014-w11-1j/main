@@ -18,11 +18,16 @@ public class FreeDayResult implements Result{
 	private ArrayList<LocalDate> freeDates;
 	private LocalDate lastBusyDate;
 	private LocalDate firstBusyDate;
+	private LocalDate searchStartDate;
+	private LocalDate searchEndDate;
 	
-	public FreeDayResult(ArrayList<LocalDate> freeDate, LocalDate startDate, LocalDate lastTaskEndDate) {
+	public FreeDayResult(ArrayList<LocalDate> freeDate, LocalDate startDate, LocalDate lastTaskEndDate,
+			LocalDate searchStartDate, LocalDate searchEndDate) {
 		this.freeDates = freeDate;
 		this.firstBusyDate = startDate;
 		this.lastBusyDate = lastTaskEndDate;
+		this.searchStartDate = searchStartDate;
+		this.searchEndDate = searchEndDate;
 	}
 	
 	@Override
@@ -41,6 +46,14 @@ public class FreeDayResult implements Result{
 	
 	public LocalDate getFirstBusyDate(){
 		return firstBusyDate;
+	}
+	
+	public LocalDate getSearchStartDate(){
+		return searchStartDate;
+	}
+	
+	public LocalDate getSearchEndDate(){
+		return searchEndDate;
 	}
 
 }

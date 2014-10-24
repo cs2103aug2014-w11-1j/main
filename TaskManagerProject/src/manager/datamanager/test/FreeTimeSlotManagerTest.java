@@ -45,7 +45,7 @@ public class FreeTimeSlotManagerTest {
 		freeDates.add(getDate(11, 19));
 		LocalDate startDate = getDate(11, 16);
         LocalDate lastTaskEndDate = getDate(11, 20);
-        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
 		
 		assertResultEquals(templateResult, finResult);
 	}
@@ -84,7 +84,7 @@ public class FreeTimeSlotManagerTest {
 		
 		LocalDate startDate = getDate(11, 3);
 		LocalDate lastTaskEndDate = getDate(11, 17);
-        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
 		
 		assertResultEquals(templateResult, finResult);
 		
@@ -127,7 +127,7 @@ public class FreeTimeSlotManagerTest {
 		
 		LocalDate startDate = getDate(11, 9);
         LocalDate lastTaskEndDate = getDate(11, 17);
-        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
 		
 		assertResultEquals(templateResult, finResult);
     }
@@ -159,7 +159,7 @@ public class FreeTimeSlotManagerTest {
 		// PROBLEM....
 		LocalDate startDate = getDate(11, 9);
         LocalDate lastTaskEndDate = getDate(11, 17);
-        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
 		
 		assertResultEquals(templateResult, finResult);
 
