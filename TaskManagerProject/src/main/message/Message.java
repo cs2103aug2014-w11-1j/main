@@ -8,6 +8,7 @@ public interface Message {
         DELETE_SUCCESSFUL,
         FREE_DAY_SEARCH_SUCCESSFUL,
         DETAILS,
+        REPORT
     }
     
     public Type getType();
