@@ -162,11 +162,11 @@ public class SearchManager extends AbstractManager {
         return resultArray;
     }
     
-    void updateSearchedTasks(Set<TaskId> taskIds) {
+    private void updateSearchedTasks(Set<TaskId> taskIds) {
         lastSearchedTasks = getTaskInfoIdArray(taskIds);
     }
     
-    public SearchResult searchWithSuggestion(Filter[] filters) {
+    private SearchResult searchWithSuggestion(Filter[] filters) {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         
         updateSearchedTasks(taskIds);
@@ -186,6 +186,17 @@ public class SearchManager extends AbstractManager {
         suggestions.toArray(suggestionArray);
         result.setSuggestion(suggestionArray);
         lastSearchedSuggestions = suggestionArray;
+        
+        return result;
+    }
+    
+    public SearchResult searchWithoutUpdate(Filter[] filters) {
+        Set <TaskId> taskIds = findMatchingTasks(filters);
+        TaskInfoId[] infoIds = getTaskInfoIdArray(taskIds);
+        
+        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
+                getInfoArray(lastSearchedTasks),
+                getIdArray(lastSearchedTasks));
         
         return result;
     }
