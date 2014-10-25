@@ -69,11 +69,6 @@ public class DateTimeSequence extends DateTimePair {
     }
 
     private boolean arePairsSame() {
-        if (!(hasFirstDate() && hasFirstTime() &&
-                hasSecondDate() && hasSecondTime())) {
-            return false;
-        }
-
         boolean areDatesSame = dates.areDatesSame();
         boolean areTimesSame = times.areTimesSame();
 

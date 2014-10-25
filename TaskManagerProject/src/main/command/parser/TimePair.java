@@ -43,7 +43,7 @@ public class TimePair {
     }
 
     boolean areTimesSame() {
-        return firstTime.equals(secondTime);
+        return hasFirstTime() ? firstTime.equals(secondTime) : false;
     }
 
     boolean isFull() {

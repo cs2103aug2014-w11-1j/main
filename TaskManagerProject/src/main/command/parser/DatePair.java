@@ -43,7 +43,7 @@ public class DatePair {
     }
 
     boolean areDatesSame() {
-        return firstDate.equals(secondDate);
+        return hasFirstDate() ? firstDate.equals(secondDate) : false;
     }
 
     boolean isFull() {
