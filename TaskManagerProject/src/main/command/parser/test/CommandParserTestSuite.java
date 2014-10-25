@@ -6,7 +6,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     CommandParserTest.class,
-    DateParserTest.class
+    DateTimeParserTest.class
 })
 public class CommandParserTestSuite {
 
