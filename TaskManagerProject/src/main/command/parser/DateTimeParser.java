@@ -7,9 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class DateTimeParser {
     private static final String SYMBOL_DELIM = " ";
@@ -18,6 +20,7 @@ public class DateTimeParser {
     private static Map<DateTimeFormatter, String> dateFullFormatPatterns;
     private static LocalDate datePatternsLastUpdate;
     private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
+    private static Set<String> prepositions;
 
     public static DateTimePair parseDateTimesInSequence(String dateTimeString) {
         return parseDateTimes(dateTimeString, true);
@@ -41,6 +44,7 @@ public class DateTimeParser {
 
                 String[] curTokens = Arrays.copyOfRange(tokens, i, j);
                 String curSubstring = String.join(SYMBOL_DELIM, curTokens);
+                curSubstring = removePrepositions(curSubstring);
 
                 LocalDate d = parseDate(curSubstring);
                 LocalTime t = parseTime(curSubstring);
@@ -215,6 +219,37 @@ public class DateTimeParser {
             }
 
         return null;
+    }
+
+    private static String removePrepositions(String string) {
+        buildPrepositionsSet();
+
+        int firstNonPreposition = 0;
+        String[] tokens = string.toLowerCase().split(SYMBOL_DELIM);
+
+        while (tokens.length > firstNonPreposition &&
+                prepositions.contains(tokens[firstNonPreposition])) {
+            ++firstNonPreposition;
+        }
+
+        if (firstNonPreposition == 0) {
+            return string;
+        } else {
+            String[] curTokens = Arrays.copyOfRange(
+                    tokens, firstNonPreposition, tokens.length);
+            return String.join(SYMBOL_DELIM, curTokens).trim();
+        }
+    }
+
+    private static void buildPrepositionsSet() {
+        if (prepositions != null) {
+            return;
+        }
+
+        String[] preArr = {"about", "after", "around", "at", "before",
+                "between", "by", "for", "from", "in", "near", "past", "round",
+                "since", "till", "to", "until", "within"};
+        prepositions = new HashSet<String>(Arrays.asList(preArr));
     }
 
     private static void buildTimePatternHashMap() {
