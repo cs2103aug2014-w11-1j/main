@@ -18,11 +18,11 @@ public class TimePair {
         }
     }
 
-    public LocalTime getFirstTime() {
+    LocalTime getFirstTime() {
         return firstTime;
     }
 
-    public LocalTime getSecondTime() {
+    LocalTime getSecondTime() {
         return secondTime;
     }
 
@@ -34,19 +34,19 @@ public class TimePair {
         this.secondTime = secondTime;
     }
 
-    public boolean hasFirstTime() {
+    boolean hasFirstTime() {
         return firstTime != null;
     }
 
-    public boolean hasSecondTime() {
+    boolean hasSecondTime() {
         return secondTime != null;
     }
 
-    public boolean areTimesSame() {
+    boolean areTimesSame() {
         return firstTime.equals(secondTime);
     }
 
-    public boolean isFull() {
+    boolean isFull() {
         return hasFirstTime() && hasSecondTime();
     }
 }

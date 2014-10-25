@@ -18,11 +18,11 @@ public class DatePair {
         }
     }
 
-    public LocalDate getFirstDate() {
+    LocalDate getFirstDate() {
         return firstDate;
     }
 
-    public LocalDate getSecondDate() {
+    LocalDate getSecondDate() {
         return secondDate;
     }
 
@@ -34,19 +34,19 @@ public class DatePair {
         this.secondDate = secondDate;
     }
 
-    public boolean hasSecondDate() {
+    boolean hasSecondDate() {
         return secondDate != null;
     }
 
-    public boolean hasFirstDate() {
+    boolean hasFirstDate() {
         return firstDate != null;
     }
 
-    public boolean areDatesSame() {
+    boolean areDatesSame() {
         return firstDate.equals(secondDate);
     }
 
-    public boolean isFull() {
+    boolean isFull() {
         return hasFirstDate() && hasSecondDate();
     }
 }
