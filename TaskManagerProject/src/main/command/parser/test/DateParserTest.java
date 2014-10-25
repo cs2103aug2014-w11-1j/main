@@ -34,80 +34,80 @@ public class DateParserTest {
         String testDDT = "17/10/14 18/10/14 6 PM";
         String testTDTD = "3 PM 17/10/14 6 PM 18/10/14";
 
-        DateTimePair dtPair = DateParser.parseDateTimes(testNull);
+        DateTimePair dtPair = DateParser.parseDateTimesInSequence(testNull);
         assertTrue(dtPair.isEmpty());
 
-        dtPair = DateParser.parseDateTimes(testT);
-        assertEquals(dtPair.getFirstDate(), null);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), null);
-        assertEquals(dtPair.getSecondTime(), null);
+        dtPair = DateParser.parseDateTimesInSequence(testT);
+        assertEquals(null, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testTT);
-        assertEquals(dtPair.getFirstDate(), null);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), null);
-        assertEquals(dtPair.getSecondTime(), t2);
+        dtPair = DateParser.parseDateTimesInSequence(testTT);
+        assertEquals(null, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testD);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), null);
-        assertEquals(dtPair.getSecondDate(), null);
-        assertEquals(dtPair.getSecondTime(), null);
+        dtPair = DateParser.parseDateTimesInSequence(testD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(null, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testDT);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), null);
-        assertEquals(dtPair.getSecondTime(), null);
+        dtPair = DateParser.parseDateTimesInSequence(testDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testDTT);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), null);
-        assertEquals(dtPair.getSecondTime(), t2);
+        dtPair = DateParser.parseDateTimesInSequence(testDTT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testTDT);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), null);
-        assertEquals(dtPair.getSecondTime(), t2);
+        dtPair = DateParser.parseDateTimesInSequence(testTDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testTTD);
-        assertEquals(dtPair.getFirstDate(), null);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), d1);
-        assertEquals(dtPair.getSecondTime(), t2);
+        dtPair = DateParser.parseDateTimesInSequence(testTTD);
+        assertEquals(null, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d1, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testDD);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), null);
-        assertEquals(dtPair.getSecondDate(), d2);
-        assertEquals(dtPair.getSecondTime(), null);
+        dtPair = DateParser.parseDateTimesInSequence(testDD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(null, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testTDD);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), d2);
-        assertEquals(dtPair.getSecondTime(), null);
+        dtPair = DateParser.parseDateTimesInSequence(testTDD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testDTD);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), d2);
-        assertEquals(dtPair.getSecondTime(), null);
+        dtPair = DateParser.parseDateTimesInSequence(testDTD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testDDT);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), null);
-        assertEquals(dtPair.getSecondDate(), d2);
-        assertEquals(dtPair.getSecondTime(), t2);
+        dtPair = DateParser.parseDateTimesInSequence(testDDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(null, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
 
-        dtPair = DateParser.parseDateTimes(testTDTD);
-        assertEquals(dtPair.getFirstDate(), d1);
-        assertEquals(dtPair.getFirstTime(), t1);
-        assertEquals(dtPair.getSecondDate(), d2);
-        assertEquals(dtPair.getSecondTime(), t2);
+        dtPair = DateParser.parseDateTimesInSequence(testTDTD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
     }
 
 }
