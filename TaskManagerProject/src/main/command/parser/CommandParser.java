@@ -96,6 +96,11 @@ public class CommandParser {
         DateParser.parseDateTime(args, task);
     }
 
+    public static DateTimePair parseDateTimesInSequence(String args) {
+        args = stripIgnoredSegments(args);
+        return DateParser.parseDateTimesInSequence(args);
+    }
+
     public static DateTimePair parseDateTimes(String args) {
         args = stripIgnoredSegments(args);
         return DateParser.parseDateTimes(args);

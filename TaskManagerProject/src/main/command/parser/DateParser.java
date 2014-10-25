@@ -139,9 +139,19 @@ public class DateParser {
     }
 
 
+    public static DateTimePair parseDateTimesInSequence(String dateTimeString) {
+        return parseDateTimes(dateTimeString, true);
+    }
+
     public static DateTimePair parseDateTimes(String dateTimeString) {
+        return parseDateTimes(dateTimeString, false);
+    }
+
+    private static DateTimePair parseDateTimes(
+            String dateTimeString, boolean isInSequence) {
         String[] tokens = dateTimeString.split(SYMBOL_DELIM);
-        DateTimePair dtPair = new DateTimePair();
+        DateTimePair dtPair = isInSequence ?
+                new DateTimeSequence() : new DateTimePair();
 
         for (int i = 0; i < tokens.length; i++) {
             for (int j = tokens.length; j > i; j--) {
