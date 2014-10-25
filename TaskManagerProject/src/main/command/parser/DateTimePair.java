@@ -42,7 +42,7 @@ public class DateTimePair {
     }
 
     public LocalDate getSecondDate() {
-        return dates.getFirstDate();
+        return dates.getSecondDate();
     }
 
     public LocalTime getFirstTime() {
@@ -54,14 +54,14 @@ public class DateTimePair {
     }
 
     public int getNumOfDates() {
-        int first = hasFirstDate() ? 0 : 1;
-        int second = hasSecondDate() ? 0 : 1;
+        int first = hasFirstDate() ? 1 : 0;
+        int second = hasSecondDate() ? 1 : 0;
         return first + second;
     }
 
     public int getNumOfTimes() {
-        int first = hasFirstTime() ? 0 : 1;
-        int second = hasSecondTime() ? 0 : 1;
+        int first = hasFirstTime() ? 1 : 0;
+        int second = hasSecondTime() ? 1 : 0;
         return first + second;
     }
 
