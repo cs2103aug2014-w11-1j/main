@@ -9,12 +9,10 @@ public class SearchResult implements Result {
     private TaskInfo[] tasks;
     private TaskId[] taskIds;
     private Filter[] filtersUsed;
-    Type type;
     private String[] suggestions;
     
-    public SearchResult(Type type, TaskInfo[] tasks, TaskId[] taskIds,
+    public SearchResult(TaskInfo[] tasks, TaskId[] taskIds,
             Filter[] filtersUsed) {
-        this.type = type;
         this.tasks = tasks;
         this.taskIds = taskIds;
         this.filtersUsed = filtersUsed;
@@ -44,7 +42,7 @@ public class SearchResult implements Result {
     
     @Override
     public Type getType() {
-        return type;
+        return Type.SEARCH_SUCCESS;
     }
 
     /**

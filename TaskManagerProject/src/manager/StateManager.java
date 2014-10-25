@@ -163,14 +163,6 @@ public class StateManager {
 	}
 	
     
-    /**
-     * This method is called just before every command execution.
-     */
-    public void beforeCommandExecutionUpdate() {
-       updateManager.preExecutionCheck();
-    }
-
-    
     public boolean isWaitingForArguments() {
         return inState(State.WAITING_MODE);
     }
@@ -181,6 +173,14 @@ public class StateManager {
         
         return getAndClearSavedCommand();
     }
+
+    /**
+     * This method is called just before every command execution.
+     */
+    public void beforeCommandExecutionUpdate() {
+       updateManager.preExecutionCheck();
+    }
+
     
 	/**
 	 * Updates the program's state using the result obtained from the managers.
@@ -200,7 +200,7 @@ public class StateManager {
         return processResult(result);
     }
 
-    protected Response processResult(Result result) {
+    private Response processResult(Result result) {
         log.log(Level.FINER, "Apply StateManager update - Result = " + 
                 result.getType().name() + " / " + result.getClass().getName());
         
@@ -210,10 +210,6 @@ public class StateManager {
         ModeInfo modeInfo = generateModeInfo(result);
         
         updateManager.writeToFile();
-        
-        searchModeCheck(result);
-        
-        searchModeEnterCheck(result);
 
         postUpdateLog(message, modeInfo);
         return new Response(message, modeInfo);
@@ -409,11 +405,8 @@ public class StateManager {
             	return new EnumMessage(MessageType.ADD_TAG_FAILED);
 
             case SEARCH_SUCCESS : 
-            	//SearchResult searchResult = (SearchResult)result;
                 enterSearchMode();
             	return new EnumMessage(MessageType.SEARCH_SUCCESS);
-            	//SearchModeInfo searchModeInfo = new SearchModeInfo(searchResult.getTasks(), searchResult.getTaskIds());
-            	//response = new Response(searchSuccessMessage, searchModeInfo);
                 
             case SEARCH_FAILURE : 
                 return new EnumMessage(MessageType.SEARCH_FAILED);

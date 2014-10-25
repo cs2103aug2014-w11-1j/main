@@ -35,7 +35,7 @@ public class StateManagerTest {
         stateManager.beforeCommandExecutionUpdate();
         assertEquals("read\n", testOutput.getOutputAndClear());
         stateManager.update(result);
-        
+        assertEquals("update undo\nwrite\n", testOutput.getOutputAndClear());
     }
 }
 
@@ -92,10 +92,8 @@ class StubSearchManager extends SearchManager {
     public SearchResult getLastSearchResult() {
         TaskInfo[] tasks = new TaskInfo[0];
         TaskId[] taskIds = new TaskId[0];
-        return new SearchResult(Result.Type.SEARCH_SUCCESS, tasks, taskIds, null);
+        return new SearchResult(tasks, taskIds, null);
     }
-    
-    
     
 }
 

@@ -169,10 +169,8 @@ public class SearchManager extends AbstractManager {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         
         updateSearchedTasks(taskIds);
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
-                getInfoArray(lastSearchedTasks),
-                getIdArray(lastSearchedTasks),
-                filters);
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
+                getIdArray(lastSearchedTasks), filters);
         
         List<String> suggestions = new ArrayList<String>();
         for (int i = 0; i < filters.length; i++) {
@@ -206,10 +204,8 @@ public class SearchManager extends AbstractManager {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         updateSearchedTasks(taskIds);
         
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
-                getInfoArray(lastSearchedTasks), 
-                getIdArray(lastSearchedTasks),
-                filters);
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
+                getIdArray(lastSearchedTasks), filters);
         
         lastSearchedSuggestions = null;
         return result;
@@ -249,17 +245,10 @@ public class SearchManager extends AbstractManager {
             return result;
         }
     }
-
-    /*public Result redoLastSearch() {
-        return searchTasks(lastSearchFilters);
-    }*/
     
     public SearchResult getLastSearchResult() {
-        //SearchResult result = (SearchResult) redoLastSearch();
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
-                getInfoArray(lastSearchedTasks),
-                getIdArray(lastSearchedTasks),
-                null);
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks),
+                getIdArray(lastSearchedTasks), null);
 
         return result;
     }
