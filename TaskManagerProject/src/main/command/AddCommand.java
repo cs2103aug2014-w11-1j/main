@@ -37,7 +37,7 @@ public class AddCommand extends Command {
     }
 
     private void parseDateTimes(String args, TaskInfo task) {
-        DateTimePair range = CommandParser.parseDateTimes(args);
+        DateTimePair range = CommandParser.parseDateTimesInSequence(args);
         if (range.isEmpty() ||
                 range.getNumOfTimes() < range.getNumOfDates()) {
             return;
