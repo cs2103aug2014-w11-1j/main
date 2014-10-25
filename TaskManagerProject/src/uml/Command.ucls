@@ -136,56 +136,55 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <dependency id="16">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="13"/>  
-  </dependency>  
-  <generalization id="17">    
+  <generalization id="16">    
     <bendpoint x="352" y="254"/>    
     <bendpoint x="352" y="142"/>    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="15"/>  
   </generalization>  
-  <generalization id="18">    
-    <bendpoint x="352" y="544"/>    
-    <bendpoint x="352" y="142"/>    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="15"/>  
-  </generalization>  
-  <generalization id="19">    
-    <bendpoint x="368" y="610"/>    
-    <bendpoint x="368" y="310"/>    
-    <end type="SOURCE" refId="10"/>    
-    <end type="TARGET" refId="8"/>  
-  </generalization>  
-  <generalization id="20">    
-    <bendpoint x="352" y="324"/>    
-    <bendpoint x="352" y="142"/>    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="15"/>  
-  </generalization>  
-  <dependency id="21">    
-    <bendpoint x="336" y="162"/>    
-    <bendpoint x="336" y="62"/>    
-    <bendpoint x="506" y="62"/>    
-    <end type="SOURCE" refId="13"/>    
-    <end type="TARGET" refId="15"/>  
-  </dependency>  
-  <generalization id="22">    
+  <generalization id="17">    
     <bendpoint x="368" y="690"/>    
     <bendpoint x="368" y="310"/>    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="8"/>  
   </generalization>  
-  <generalization id="23">    
-    <end type="SOURCE" refId="8"/>    
+  <generalization id="18">    
+    <bendpoint x="352" y="324"/>    
+    <bendpoint x="352" y="142"/>    
+    <end type="SOURCE" refId="12"/>    
     <end type="TARGET" refId="15"/>  
   </generalization>  
-  <generalization id="24">    
+  <generalization id="19">    
     <bendpoint x="368" y="690"/>    
     <bendpoint x="368" y="310"/>    
     <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="8"/>  
+  </generalization>  
+  <dependency id="20">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="13"/>  
+  </dependency>  
+  <generalization id="21">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="15"/>  
+  </generalization>  
+  <generalization id="22">    
+    <bendpoint x="352" y="474"/>    
+    <bendpoint x="352" y="142"/>    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="15"/>  
+  </generalization>  
+  <generalization id="23">    
+    <bendpoint x="352" y="402"/>    
+    <bendpoint x="352" y="142"/>    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="15"/>  
+  </generalization>  
+  <generalization id="24">    
+    <bendpoint x="352" y="544"/>    
+    <bendpoint x="352" y="142"/>    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="15"/>  
   </generalization>  
   <association id="25">    
     <end type="SOURCE" refId="8" navigable="false">      
@@ -197,17 +196,18 @@
     <end type="TARGET" refId="14" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="28">    
-    <bendpoint x="352" y="402"/>    
-    <bendpoint x="352" y="142"/>    
-    <end type="SOURCE" refId="2"/>    
+  <dependency id="28">    
+    <bendpoint x="336" y="162"/>    
+    <bendpoint x="336" y="62"/>    
+    <bendpoint x="506" y="62"/>    
+    <end type="SOURCE" refId="13"/>    
     <end type="TARGET" refId="15"/>  
-  </generalization>  
+  </dependency>  
   <generalization id="29">    
-    <bendpoint x="352" y="474"/>    
-    <bendpoint x="352" y="142"/>    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="15"/>  
+    <bendpoint x="368" y="610"/>    
+    <bendpoint x="368" y="310"/>    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="8"/>  
   </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    

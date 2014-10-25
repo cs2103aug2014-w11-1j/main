@@ -2,6 +2,7 @@ package main.command;
 
 import java.util.Scanner;
 
+import main.command.EditCommand.ParseType;
 import manager.ManagerHolder;
 
 /**
@@ -40,6 +41,14 @@ public class CommandController {
                 return new SearchCommand(cmdArgs, managerHolder);
             case "edit" :
                 return new EditCommand(cmdArgs, managerHolder);
+            case "mark" :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.MARK);
+            case "unmark" :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.UNMARK);
+            case "status" :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.STATUS);
+            case "reschedule" :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.RESCHEDULE);
             case "del" :
             case "delete" :
                 return new DeleteCommand(cmdArgs, managerHolder);
