@@ -61,4 +61,12 @@ public class SearchResult implements Result {
         assert onlyOneSearchResult();
         return taskIds[0];
     }
+    
+    /**
+     * @return true iff there are no tasks in the search result.
+     */
+    public boolean noTasksFound() {
+        assert tasks.length == taskIds.length;
+        return taskIds.length == 0;
+    }
 }

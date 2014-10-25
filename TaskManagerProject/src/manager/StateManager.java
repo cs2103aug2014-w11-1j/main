@@ -141,8 +141,12 @@ public class StateManager {
 		}
 	}
 
-	private boolean enterSearchMode() {
+	private boolean enterSearchMode(SearchResult searchResult) {
 	    if (inState(State.WAITING_MODE)) {
+	        if (searchResult.noTasksFound()) {
+	            exitWaitingMode();
+	            setState(State.SEARCH_MODE);
+	        }
 	        return false;
 	    }
         if (inState(State.SEARCH_MODE)) {
@@ -250,17 +254,6 @@ public class StateManager {
                 modeInfo.getClass().getName());
     }
 
-	/**
-	 * This method is to check whether the state should enter search mode
-	 * if a search is successfully executed, enter search mode
-	 * @param result result to be checked
-	 */
-	private void searchModeEnterCheck(Result result) {
-		if (result.getType() == Type.SEARCH_SUCCESS){
-        	enterSearchMode();
-        }
-	}
-	
 	private ModeInfo generateModeInfo(Result result) {
 	    switch (currentState) {
 	        case AVAILABLE :
@@ -405,7 +398,7 @@ public class StateManager {
             	return new EnumMessage(MessageType.ADD_TAG_FAILED);
 
             case SEARCH_SUCCESS : 
-                enterSearchMode();
+                enterSearchMode((SearchResult)result);
             	return new EnumMessage(MessageType.SEARCH_SUCCESS);
                 
             case SEARCH_FAILURE : 
