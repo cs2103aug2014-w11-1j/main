@@ -72,7 +72,7 @@ public class EditCommand extends TargetedCommand {
         StringBuilder keywords = new StringBuilder();
 
         TaskInfo taskInfo = parseCommandParams(args);
-        while (taskInfo == null && !args.isEmpty()) {
+        while (!args.isEmpty() && (taskInfo == null || keywords.length() == 0)) {
             String[] split = args.split(" ", 2);
             keywords.append(split[0]).append(" ");
             
@@ -84,6 +84,7 @@ public class EditCommand extends TargetedCommand {
             }
         }
 
+        taskInfo = parseCommandParams(args);
         parseAsSearchString(keywords.toString());
         return taskInfo;
     }
@@ -189,6 +190,8 @@ public class EditCommand extends TargetedCommand {
                 Priority p = CommandParser.parsePriority("+" + editParam);
                 if (p != null) {
                     editTask.priority = p;
+                } else {
+                    editTask = null;
                 }
                 break;
             case ARGUMENT_STATUS :
@@ -196,7 +199,9 @@ public class EditCommand extends TargetedCommand {
                 Status s = CommandParser.parseStatus(editParam);
                 if (s != null) {
                     editTask.status = s;
-                };
+                } else {
+                    editTask = null;
+                }
                 break;
             default :
                 editTask = null;
