@@ -44,7 +44,6 @@ public class DateTimeParser {
 
                 String[] curTokens = Arrays.copyOfRange(tokens, i, j);
                 String curSubstring = String.join(SYMBOL_DELIM, curTokens);
-                curSubstring = removePrepositions(curSubstring);
 
                 LocalDate d = parseDate(curSubstring);
                 LocalTime t = parseTime(curSubstring);
@@ -93,9 +92,6 @@ public class DateTimeParser {
     }
 
     private static LocalDate parseAbsoluteDate(String dateString) {
-        // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
-        dateString = capitaliseFirstLetter(dateString);
-
         // match full before partial in order to prevent matching more than one.
         LocalDate date = matchDatePatterns(dateFullFormatPatterns, dateString);
         if (date == null) {
@@ -107,6 +103,9 @@ public class DateTimeParser {
 
     private static LocalDate matchDatePatterns(
             Map<DateTimeFormatter, String> dateMap, String dateString) {
+        dateString = removePrepositions(dateString);
+        // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
+        dateString = capitaliseFirstLetter(dateString);
 
         Iterator<Entry<DateTimeFormatter, String>> i =
             dateMap.entrySet().iterator();
@@ -194,14 +193,15 @@ public class DateTimeParser {
     }
 
     private static LocalTime parseAbsoluteTime(String timeString) {
-        // 3 pm -> 3 PM
-        timeString = timeString.toUpperCase();
         LocalTime time = matchTimePatterns(timeFullFormatPatterns, timeString);
         return time;
     }
 
     private static LocalTime matchTimePatterns(
             Map<DateTimeFormatter, String> timeMap, String timeString) {
+        timeString = removePrepositions(timeString);
+        // 3 pm -> 3 PM
+        timeString = timeString.toUpperCase();
 
         Iterator<Entry<DateTimeFormatter, String>> i =
                 timeMap.entrySet().iterator();
@@ -224,19 +224,19 @@ public class DateTimeParser {
     private static String removePrepositions(String string) {
         buildPrepositionsSet();
 
-        int firstNonPreposition = 0;
+        int lastFoundPreposition = 0;
         String[] tokens = string.toLowerCase().split(SYMBOL_DELIM);
 
-        while (tokens.length > firstNonPreposition &&
-                prepositions.contains(tokens[firstNonPreposition])) {
-            ++firstNonPreposition;
+        while (tokens.length > lastFoundPreposition &&
+                prepositions.contains(tokens[lastFoundPreposition])) {
+            ++lastFoundPreposition;
         }
 
-        if (firstNonPreposition == 0) {
+        if (lastFoundPreposition == 0) {
             return string;
         } else {
             String[] curTokens = Arrays.copyOfRange(
-                    tokens, firstNonPreposition, tokens.length);
+                    tokens, lastFoundPreposition, tokens.length);
             return String.join(SYMBOL_DELIM, curTokens).trim();
         }
     }
@@ -247,8 +247,8 @@ public class DateTimeParser {
         }
 
         String[] preArr = {"about", "after", "around", "at", "before",
-                "between", "by", "for", "from", "in", "near", "past", "round",
-                "since", "till", "to", "until", "within"};
+                "between", "by", "for", "from", "in", "near", "on", "past",
+                "round", "since", "till", "to", "until", "within"};
         prepositions = new HashSet<String>(Arrays.asList(preArr));
     }
 
