@@ -3,7 +3,6 @@ package manager.datamanager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -12,6 +11,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import main.message.Message.Type;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.SuggestionFilter;
 import manager.datamanager.suggestion.SuggestionFinder;
@@ -30,7 +30,7 @@ public class SearchManager extends AbstractManager {
     SuggestionFinder suggestionFinder;
     TaskInfoId[] lastSearchedTasks;
     String[] lastSearchedSuggestions;
-    Filter[] lastSearchFilters;
+    //Filter[] lastSearchFilters;
 
     class TaskInfoId {
         public TaskInfo taskInfo;
@@ -43,7 +43,6 @@ public class SearchManager extends AbstractManager {
     
     public SearchManager(TaskData taskData) {
         super(taskData);
-        lastSearchFilters = new Filter[0];
         suggestionFinder = new SuggestionFinder(taskData);
     }
 
@@ -170,9 +169,8 @@ public class SearchManager extends AbstractManager {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         
         updateSearchedTasks(taskIds);
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
-                getInfoArray(lastSearchedTasks),
-                getIdArray(lastSearchedTasks));
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
+                getIdArray(lastSearchedTasks), filters);
         
         List<String> suggestions = new ArrayList<String>();
         for (int i = 0; i < filters.length; i++) {
@@ -190,24 +188,24 @@ public class SearchManager extends AbstractManager {
         return result;
     }
     
-    public SearchResult searchWithoutUpdate(Filter[] filters) {
+    /*public SearchResult searchWithoutUpdate(Filter[] filters) {
         Set <TaskId> taskIds = findMatchingTasks(filters);
         TaskInfoId[] infoIds = getTaskInfoIdArray(taskIds);
         
         SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
                 getInfoArray(infoIds),
-                getIdArray(infoIds));
+                getIdArray(infoIds),
+                filters);
         
         return result;
-    }
+    }*/
     
     private SearchResult searchAndUpdate(Filter[] filters) {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         updateSearchedTasks(taskIds);
         
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS, 
-                getInfoArray(lastSearchedTasks), 
-                getIdArray(lastSearchedTasks));
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
+                getIdArray(lastSearchedTasks), filters);
         
         lastSearchedSuggestions = null;
         return result;
@@ -230,7 +228,7 @@ public class SearchManager extends AbstractManager {
     }
     
     public Result searchTasks(Filter[] filters) {
-        lastSearchFilters = filters;
+        assert filters != null : "filters can't be null";
         log.log(Level.FINER, "Conduct search: " + filters.length + " filters");
         
         SearchResult result = searchAndUpdate(filters);
@@ -247,13 +245,11 @@ public class SearchManager extends AbstractManager {
             return result;
         }
     }
-
-    public Result redoLastSearch() {
-        return searchTasks(lastSearchFilters);
-    }
     
     public SearchResult getLastSearchResult() {
-        SearchResult result = (SearchResult) redoLastSearch();
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks),
+                getIdArray(lastSearchedTasks), null);
+
         return result;
     }
     

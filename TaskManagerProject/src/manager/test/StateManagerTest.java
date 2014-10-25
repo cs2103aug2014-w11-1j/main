@@ -5,6 +5,7 @@ import io.FileInputOutput;
 import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
+import manager.datamanager.searchfilter.Filter;
 import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
@@ -17,21 +18,6 @@ import data.taskinfo.TaskInfo;
 
 public class StateManagerTest {
 	
-		
-	/*@Test
-	public void addTest(){
-		TaskInfo testTaskInfo1 = new TaskInfo();
-		testTaskInfo1.name = "Test1";
-		testTaskInfo1.details = "No details";
-		TeskInfo 
-		
-		StateManagerWithoutFileForTest stateManager =
-				new StateManagerWithoutFileForTest(null, null);
-		AddResult addResult = new AddResult(Result.Type.ADD_SUCCESS, testTaskInfo1, taskId)
-	}*/
-	
-	
-
     @Test
     public void test() {
         TestOutput testOutput = new TestOutput();
@@ -49,7 +35,7 @@ public class StateManagerTest {
         stateManager.beforeCommandExecutionUpdate();
         assertEquals("read\n", testOutput.getOutputAndClear());
         stateManager.update(result);
-        
+        assertEquals("update undo\nwrite\n", testOutput.getOutputAndClear());
     }
 }
 
@@ -97,8 +83,8 @@ class StubSearchManager extends SearchManager {
     }
 
     @Override
-    public Result redoLastSearch() {
-        testOutput.writeOutput("redo search");
+    public Result searchTasks(Filter[] filters) {
+        testOutput.writeOutput("do a search");
         return null;
     }
 
@@ -106,10 +92,8 @@ class StubSearchManager extends SearchManager {
     public SearchResult getLastSearchResult() {
         TaskInfo[] tasks = new TaskInfo[0];
         TaskId[] taskIds = new TaskId[0];
-        return new SearchResult(Result.Type.SEARCH_SUCCESS, tasks, taskIds);
+        return new SearchResult(tasks, taskIds, null);
     }
-    
-    
     
 }
 

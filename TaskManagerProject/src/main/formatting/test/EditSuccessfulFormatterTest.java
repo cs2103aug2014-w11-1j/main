@@ -53,7 +53,7 @@ public class EditSuccessfulFormatterTest {
                 "   Date: Thursday, 2 Oct 2014" + System.lineSeparator() +
                 "   Tags: abcd, efgh" + System.lineSeparator() + 
                 "   Priority: High" + System.lineSeparator() +
-                "   Status: Not done" + System.lineSeparator() +
+                "   Status: Done" + System.lineSeparator() +
                 "   Description: HAHAHAHA" + System.lineSeparator();
         
         Assert.assertEquals(expectedString, formattedString);

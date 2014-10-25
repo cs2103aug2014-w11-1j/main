@@ -14,29 +14,56 @@ import data.taskinfo.Status;
 import data.taskinfo.TaskInfo;
 
 public class EditCommand extends TargetedCommand {
+    private static final String ARGUMENT_DATETIME = "datetime";
+    private static final String ARGUMENT_STATUS = "status";
+    
     private static final int TAG_ADD = 1;
     private static final int TAG_DEL = -1;
 
     private final EditManager editManager;
-    private final TaskInfo taskToEdit;
+    private TaskInfo taskToEdit;
     private int tagOperation = 0;
+    
+    private final ParseType parseType;
+    
+    public enum ParseType {
+        NORMAL,
+        MARK,
+        UNMARK,
+        STATUS,
+        RESCHEDULE
+    }
 
     public EditCommand(String args, ManagerHolder managerHolder)
             throws NoSuchElementException {
         super(managerHolder);
         editManager = managerHolder.getEditManager();
 
+        this.parseType = ParseType.NORMAL;
+        parse(args);
+    }
+
+    
+    public EditCommand(String args, ManagerHolder managerHolder, ParseType parseType) {
+        super(managerHolder);
+        editManager = managerHolder.getEditManager();
+
+        this.parseType = parseType;
+        parse(args);
+    }
+
+    private void parse(String args) {
         if (stateManager.inEditMode()) {
             // edit mode
             targetTaskIdSet = editManager.getEditingTasks();
-            taskToEdit = parseEditParams(args);
+            taskToEdit = parseCommandParams(args);
         } else {
             // not edit mode
             args = tryParseIdsIntoSet(args);
             if (targetTaskIdSet == null) {
                 taskToEdit = parseKeywordAndEditParams(args);
             } else {
-                taskToEdit = parseEditParams(args);
+                taskToEdit = parseCommandParams(args);
             }
         }
     }
@@ -44,27 +71,86 @@ public class EditCommand extends TargetedCommand {
     private TaskInfo parseKeywordAndEditParams(String args) {
         StringBuilder keywords = new StringBuilder();
 
-        TaskInfo taskInfo = parseEditParams(args);
-        while (taskInfo == null && !args.isEmpty()) {
+        TaskInfo taskInfo = parseCommandParams(args);
+        while (!args.isEmpty() && (taskInfo == null || keywords.length() == 0)) {
             String[] split = args.split(" ", 2);
             keywords.append(split[0]).append(" ");
             
             if (split.length > 1) {
                 args = split[1];
-                taskInfo = parseEditParams(args);
+                taskInfo = parseCommandParams(args);
             } else {
                 args = "";
             }
         }
 
+        taskInfo = parseCommandParams(args);
         parseAsSearchString(keywords.toString());
         return taskInfo;
     }
 
 
-    private TaskInfo parseEditParams(String args) {
+    private TaskInfo parseCommandParams(String args) {
         assert args != null : "There should not be a null passed in.";
 
+        switch (parseType) {
+            case NORMAL :
+                return parseEditParams(args);
+            case MARK :
+                return parseMarkParams(args);
+            case UNMARK :
+                return parseUnmarkParams(args);
+            case STATUS :
+                return parseStatusParams(args);
+            case RESCHEDULE :
+                return parseRescheduleParams(args);
+            default :
+                throw new UnsupportedOperationException("Unknown Parse Type: " +
+                        parseType.name());
+        }
+    }
+    
+    private TaskInfo parseMarkParams(String args) {
+        TaskInfo taskInfo = TaskInfo.createEmpty();
+        
+        args = args.trim();
+        if (args.length() == 0) {
+            taskInfo.status = Status.DONE;
+            return taskInfo;
+        }
+
+        return parseEditParams(ARGUMENT_STATUS + " " + args);
+    }
+    
+    private TaskInfo parseUnmarkParams(String args) {
+        TaskInfo taskInfo = TaskInfo.createEmpty();
+        
+        args = args.trim();
+        if (args.length() == 0) {
+            taskInfo.status = Status.UNDONE;
+            return taskInfo;
+        }
+        return null;
+    }
+    
+    /*protected TaskInfo readStatusIntoTaskInfo(String args, TaskInfo taskInfo) {
+        try {
+            taskInfo.status = Status.valueOf(args.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            taskInfo = null;
+        }
+        return taskInfo;
+    }*/
+
+    private TaskInfo parseStatusParams(String args) {
+        return parseEditParams(ARGUMENT_STATUS + " " + args);
+    }
+    
+    private TaskInfo parseRescheduleParams(String args) {
+        return parseEditParams(ARGUMENT_DATETIME + " " + args);
+    }
+
+    private TaskInfo parseEditParams(String args) {
         Scanner sc = new Scanner(args);
         if (!sc.hasNext()) {
             sc.close();
@@ -91,7 +177,7 @@ public class EditCommand extends TargetedCommand {
                 break;
             case "date" :
             case "time" :
-            case "datetime" :
+            case ARGUMENT_DATETIME :
                 editParam = sc.nextLine().trim();
                 parseDateTimes(editParam, editTask);
                 break;
@@ -104,14 +190,18 @@ public class EditCommand extends TargetedCommand {
                 Priority p = CommandParser.parsePriority("+" + editParam);
                 if (p != null) {
                     editTask.priority = p;
+                } else {
+                    editTask = null;
                 }
                 break;
-            case "status" :
+            case ARGUMENT_STATUS :
                 editParam = sc.nextLine().trim();
                 Status s = CommandParser.parseStatus(editParam);
                 if (s != null) {
                     editTask.status = s;
-                };
+                } else {
+                    editTask = null;
+                }
                 break;
             default :
                 editTask = null;
@@ -190,6 +280,9 @@ public class EditCommand extends TargetedCommand {
 
     @Override
     protected boolean isValidArguments() {
+        if (taskToEdit == null && parseType != ParseType.NORMAL) {
+            return false;
+        }
         return targetTaskIdSet != null;
     }
 

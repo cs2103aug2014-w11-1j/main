@@ -12,9 +12,10 @@ import main.message.DeleteSuccessfulMessage;
 import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
-import main.message.FreeDaySearchMessage;
 import main.message.EnumMessage.MessageType;
+import main.message.FreeDaySearchMessage;
 import main.message.Message;
+import main.message.ReportMessage;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.modeinfo.ModeInfo;
@@ -22,13 +23,16 @@ import main.modeinfo.SearchModeInfo;
 import main.response.Response;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
+import manager.datamanager.searchfilter.Filter;
 import manager.result.AddResult;
 import manager.result.DeleteResult;
 import manager.result.DetailsResult;
 import manager.result.EditResult;
 import manager.result.FreeDayResult;
+import manager.result.ReportResult;
 import manager.result.Result;
 import manager.result.Result.Type;
+import manager.result.SearchResult;
 import manager.result.StartEditModeResult;
 import taskline.debug.Taskline;
 import data.TaskId;
@@ -50,6 +54,7 @@ public class StateManager {
 	private TaskIdSet editingTaskIdSet;
 	private UpdateManager updateManager;
 	private TargetedCommand savedCommand;
+	private Filter[] lastSearchFilters;
 	
 	public enum State {
 	    AVAILABLE,      // Normal state
@@ -136,8 +141,12 @@ public class StateManager {
 		}
 	}
 
-	private boolean enterSearchMode() {
+	private boolean enterSearchMode(SearchResult searchResult) {
 	    if (inState(State.WAITING_MODE)) {
+	        if (searchResult.noTasksFound()) {
+	            exitWaitingMode();
+	            setState(State.SEARCH_MODE);
+	        }
 	        return false;
 	    }
         if (inState(State.SEARCH_MODE)) {
@@ -158,14 +167,6 @@ public class StateManager {
 	}
 	
     
-    /**
-     * This method is called just before every command execution.
-     */
-    public void beforeCommandExecutionUpdate() {
-       updateManager.preExecutionCheck();
-    }
-
-    
     public boolean isWaitingForArguments() {
         return inState(State.WAITING_MODE);
     }
@@ -176,6 +177,14 @@ public class StateManager {
         
         return getAndClearSavedCommand();
     }
+
+    /**
+     * This method is called just before every command execution.
+     */
+    public void beforeCommandExecutionUpdate() {
+       updateManager.preExecutionCheck();
+    }
+
     
 	/**
 	 * Updates the program's state using the result obtained from the managers.
@@ -195,7 +204,7 @@ public class StateManager {
         return processResult(result);
     }
 
-    protected Response processResult(Result result) {
+    private Response processResult(Result result) {
         log.log(Level.FINER, "Apply StateManager update - Result = " + 
                 result.getType().name() + " / " + result.getClass().getName());
         
@@ -205,10 +214,6 @@ public class StateManager {
         ModeInfo modeInfo = generateModeInfo(result);
         
         updateManager.writeToFile();
-        
-        searchModeCheck(result);
-        
-        searchModeEnterCheck(result);
 
         postUpdateLog(message, modeInfo);
         return new Response(message, modeInfo);
@@ -249,17 +254,6 @@ public class StateManager {
                 modeInfo.getClass().getName());
     }
 
-	/**
-	 * This method is to check whether the state should enter search mode
-	 * if a search is successfully executed, enter search mode
-	 * @param result result to be checked
-	 */
-	private void searchModeEnterCheck(Result result) {
-		if (result.getType() == Type.SEARCH_SUCCESS){
-        	enterSearchMode();
-        }
-	}
-	
 	private ModeInfo generateModeInfo(Result result) {
 	    switch (currentState) {
 	        case AVAILABLE :
@@ -292,7 +286,13 @@ public class StateManager {
 	 */
 	private SearchModeInfo searchModeCheck(Result result) {
 		if (result.getType() != Type.SEARCH_SUCCESS) {
-			updateManager.redoSearch();
+			updateManager.redoSearch(lastSearchFilters);
+		} else {
+		    SearchResult searchResult = (SearchResult)result;
+		    Filter[] newFilters = searchResult.getFilters();
+		    if (newFilters != null) {
+		        lastSearchFilters = newFilters;
+		    }
 		}
 		
 		return updateManager.getSearchModeInfo();
@@ -398,11 +398,8 @@ public class StateManager {
             	return new EnumMessage(MessageType.ADD_TAG_FAILED);
 
             case SEARCH_SUCCESS : 
-            	//SearchResult searchResult = (SearchResult)result;
-                enterSearchMode();
+                enterSearchMode((SearchResult)result);
             	return new EnumMessage(MessageType.SEARCH_SUCCESS);
-            	//SearchModeInfo searchModeInfo = new SearchModeInfo(searchResult.getTasks(), searchResult.getTaskIds());
-            	//response = new Response(searchSuccessMessage, searchModeInfo);
                 
             case SEARCH_FAILURE : 
                 return new EnumMessage(MessageType.SEARCH_FAILED);
@@ -424,6 +421,9 @@ public class StateManager {
 
             case INVALID_ARGUMENT : 
                 return new EnumMessage(MessageType.INVALID_ARGUMENT);
+            case REPORT : 
+            	ReportResult reportResult = (ReportResult) result;
+            	return new ReportMessage(reportResult.countTodayTask(), reportResult.countTmrTask(), reportResult.getUrgentTask());
                 
             case FREE_DAY : 
             	FreeDayResult freeDayResult = (FreeDayResult) result;
