@@ -53,6 +53,10 @@ public class TaskIdSet implements Iterable<TaskId>{
         }
     }
     
+    public int size() {
+        return idList.size();
+    }
+    
     @Override
     public String toString() {
         return idList.toString();

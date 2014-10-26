@@ -17,12 +17,16 @@ public class EditCommand extends TargetedCommand {
     private static final String ARGUMENT_DATETIME = "datetime";
     private static final String ARGUMENT_STATUS = "status";
     
-    private static final int TAG_ADD = 1;
-    private static final int TAG_DEL = -1;
-
     private final EditManager editManager;
     private TaskInfo taskToEdit;
-    private int tagOperation = 0;
+    private Operation specialOperation = Operation.NONE;
+    
+    private enum Operation {
+        NONE,
+        EDIT_MODE,
+        TAG_ADD,
+        TAG_DELETE
+    }
     
     private final ParseType parseType;
     
@@ -133,15 +137,6 @@ public class EditCommand extends TargetedCommand {
         return null;
     }
     
-    /*protected TaskInfo readStatusIntoTaskInfo(String args, TaskInfo taskInfo) {
-        try {
-            taskInfo.status = Status.valueOf(args.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            taskInfo = null;
-        }
-        return taskInfo;
-    }*/
-
     private TaskInfo parseStatusParams(String args) {
         return parseEditParams(ARGUMENT_STATUS + " " + args);
     }
@@ -153,6 +148,7 @@ public class EditCommand extends TargetedCommand {
     private TaskInfo parseEditParams(String args) {
         Scanner sc = new Scanner(args);
         if (!sc.hasNext()) {
+            tryChangeToStartEditModeCommand();
             sc.close();
             return null;
         }
@@ -212,6 +208,13 @@ public class EditCommand extends TargetedCommand {
         return editTask;
     }
 
+
+    protected void tryChangeToStartEditModeCommand() {
+        if (parseType == ParseType.NORMAL && taskToEdit == null) {
+            specialOperation = Operation.EDIT_MODE;
+        }
+    }
+
     private void parseDateTimes(String editParam, TaskInfo editTask) {
         DateTimePair dtPair = CommandParser.parseDateTimes(editParam);
         if (dtPair.isEmpty()) {
@@ -253,16 +256,20 @@ public class EditCommand extends TargetedCommand {
 
         // ensure it still has a tag to add / delete
         if (sc.hasNext()) {
-            if (changeType.toLowerCase().equals("add")) {
-                tagOperation = TAG_ADD;
+            String changeTypeLower = changeType.toLowerCase();
+            
+            if (changeTypeLower.equals("add")) {
+                specialOperation = Operation.TAG_ADD;
             }
-            if (changeType.toLowerCase().equals("del")){
-                tagOperation = TAG_DEL;
+            if (changeTypeLower.equals("del") ||
+                    changeTypeLower.equals("delete")){
+                specialOperation = Operation.TAG_DELETE;
             }
         }
 
         // ensure it is adding / deleting tags
-        if (tagOperation == TAG_ADD || tagOperation == TAG_DEL) {
+        if (specialOperation == Operation.TAG_ADD ||
+                specialOperation == Operation.TAG_DELETE) {
             StringBuilder tags = new StringBuilder();
             while (sc.hasNext()) {
                 String tag = sc.next();
@@ -280,7 +287,7 @@ public class EditCommand extends TargetedCommand {
 
     @Override
     protected boolean isValidArguments() {
-        if (taskToEdit == null && parseType != ParseType.NORMAL) {
+        if (taskToEdit == null && specialOperation != Operation.EDIT_MODE) {
             return false;
         }
         return targetTaskIdSet != null;
@@ -297,9 +304,9 @@ public class EditCommand extends TargetedCommand {
         if (taskToEdit == null) {
             result = editManager.startEditMode(targetTaskIdSet);
         } else {
-            if (tagOperation == TAG_ADD) {
+            if (specialOperation == Operation.TAG_ADD) {
                 result = editManager.addTaskTags(taskToEdit.tags, targetTaskIdSet);
-            } else if (tagOperation == TAG_DEL) {
+            } else if (specialOperation == Operation.TAG_DELETE) {
                 result = editManager.deleteTaskTags(taskToEdit.tags, targetTaskIdSet);
             } else {
                 result = editManager.editTask(taskToEdit, targetTaskIdSet);
