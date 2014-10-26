@@ -4,16 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DateTimePair {
-    private LocalDate firstDate;
-    private LocalTime firstTime;
-    private LocalDate secondDate;
-    private LocalTime secondTime;
-    private int count;
-    private int max;
+    protected DatePair dates;
+    protected TimePair times;
 
     DateTimePair() {
-        count = 0;
-        max = 4;
+        dates = new DatePair();
+        times = new TimePair();
+    }
+
+    DateTimePair(DatePair dates, TimePair times) {
+        this.dates = dates;
+        this.times = times;
     }
 
     void add(LocalDate d) {
@@ -21,18 +22,7 @@ public class DateTimePair {
             return;
         }
 
-        // two dates in a row
-        if (hasFirstDate() && !hasFirstTime()) {
-            max = 3;
-        }
-
-        if (!hasFirstDate() && !hasSecondTime()) {
-            firstDate = d;
-        } else {
-            secondDate = d;
-        }
-
-        count++;
+        dates.add(d);
     }
 
     void add(LocalTime t) {
@@ -40,87 +30,58 @@ public class DateTimePair {
             return;
         }
 
-        // two times in a row
-        if (hasFirstTime() && !hasFirstDate()) {
-            max = 3;
-        }
-
-        if (!hasFirstTime() && !hasSecondDate()) {
-            firstTime = t;
-        } else {
-            secondTime = t;
-        }
-
-        count++;
-
-        // avoid duplicate start / end datetimes
-        if (isFull() && arePairsSame()) {
-            secondDate = null;
-            secondTime = null;
-        }
+        times.add(t);
     }
 
     boolean isFull() {
-        return count == max;
-    }
-
-    private boolean arePairsSame() {
-        if (!(hasFirstDate() && hasFirstTime() &&
-                hasSecondDate() && hasSecondTime())) {
-            return false;
-        }
-
-        boolean areDatesSame = firstDate.equals(secondDate);
-        boolean areTimesSame = firstTime.equals(secondTime);
-
-        return areDatesSame && areTimesSame;
+        return dates.isFull() && times.isFull();
     }
 
     public LocalDate getFirstDate() {
-        return firstDate;
-    }
-
-    public LocalTime getFirstTime() {
-        return firstTime;
+        return dates.getFirstDate();
     }
 
     public LocalDate getSecondDate() {
-        return secondDate;
+        return dates.getSecondDate();
+    }
+
+    public LocalTime getFirstTime() {
+        return times.getFirstTime();
     }
 
     public LocalTime getSecondTime() {
-        return secondTime;
+        return times.getSecondTime();
     }
 
     public int getNumOfDates() {
-        int first = firstDate == null ? 0 : 1;
-        int second = secondDate == null ? 0 : 1;
+        int first = hasFirstDate() ? 1 : 0;
+        int second = hasSecondDate() ? 1 : 0;
         return first + second;
     }
 
     public int getNumOfTimes() {
-        int first = firstTime == null ? 0 : 1;
-        int second = secondTime == null ? 0 : 1;
+        int first = hasFirstTime() ? 1 : 0;
+        int second = hasSecondTime() ? 1 : 0;
         return first + second;
     }
 
     public boolean hasFirstDate() {
-        return firstDate != null;
-    }
-
-    public boolean hasFirstTime() {
-        return firstTime != null;
+        return dates.hasFirstDate();
     }
 
     public boolean hasSecondDate() {
-        return secondDate != null;
+        return dates.hasSecondDate();
+    }
+
+    public boolean hasFirstTime() {
+        return times.hasFirstTime();
     }
 
     public boolean hasSecondTime() {
-        return secondTime != null;
+        return times.hasSecondTime();
     }
 
     public boolean isEmpty() {
-        return firstDate == null && firstTime == null;
+        return !hasFirstDate() && !hasFirstTime();
     }
 }

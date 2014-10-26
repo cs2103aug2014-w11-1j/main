@@ -1,147 +1,40 @@
 package main.command.parser;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import data.taskinfo.TaskInfo;
-
-public class DateParser {
+public class DateTimeParser {
     private static final String SYMBOL_DELIM = " ";
 
     private static Map<DateTimeFormatter, String> datePartialFormatPatterns;
     private static Map<DateTimeFormatter, String> dateFullFormatPatterns;
     private static LocalDate datePatternsLastUpdate;
     private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
+    private static Set<String> prepositions;
 
-
-    public static void parseDateTime(String dateTimeString, TaskInfo task) {
-        while (dateTimeString.contains(SYMBOL_DELIM + SYMBOL_DELIM)) {
-            dateTimeString = dateTimeString.replace(SYMBOL_DELIM + SYMBOL_DELIM, SYMBOL_DELIM);
-        }
-        // list for indices of the delimiter
-        List<Integer> delimIndices = new ArrayList<Integer>();
-        delimIndices.add(0);
-        for (int i = dateTimeString.indexOf(SYMBOL_DELIM, 1);
-                i > 0; i = dateTimeString.indexOf(SYMBOL_DELIM, i + 1)) {
-            delimIndices.add(i + 1);
-        }
-        delimIndices.add(dateTimeString.length());
-
-        List<LocalTime> times = new ArrayList<LocalTime>();
-        List<LocalDate> dates = new ArrayList<LocalDate>();
-
-        // try to parse times and dates from every possible sequence of words
-        for (int offset = delimIndices.size() - 1; offset > 0; offset--) {
-            for (int i = 0; !delimIndices.isEmpty() && i + offset < delimIndices.size(); i++) {
-                // if more than two times and dates, take the first two of each
-                if (times.size() > 1 && dates.size() > 1) {
-                    break;
-                }
-
-                int frontIdx = delimIndices.get(i);
-                int backIdx = delimIndices.get(i + offset);
-                String wordSeq = dateTimeString.substring(frontIdx, backIdx)
-                                                   .trim();
-
-                LocalTime t = parseTime(wordSeq);
-                LocalDate d = parseDate(wordSeq);
-
-                // remove sequence from String if it's parsed into a date or time
-                if (t != null || d != null) {
-                    dateTimeString = dateTimeString.substring(0, frontIdx) +
-                            dateTimeString.substring(backIdx, dateTimeString.length());
-
-                    // amend the delimIndices list for the new String
-                    int delimSize = delimIndices.size();
-                    int delimOffset = backIdx - frontIdx;
-                    for (int j = i; j + offset < delimSize; j++) {
-                        delimIndices.set(j, delimIndices.get(j + offset) - delimOffset);
-                    }
-                    for (int j = 0; j < offset; j++) {
-                        delimIndices.remove(delimIndices.size() - 1);
-                    }
-                    // don't move the iterator as we're deleting the current one
-                    --i;
-                }
-                // and store it into the list
-                if (t != null) {
-                    times.add(t);
-                }
-                if (d != null) {
-                    dates.add(d);
-                }
-            }
-        }
-
-        // at least one time for each date, stop if otherwise
-        if (times.size() < dates.size()) {
-            return;
-        }
-
-        LocalDateTime dateTimeStart = null;
-        Duration dateTimeDiff = Duration.ZERO;
-
-        LocalTime timeA = null;
-        LocalTime timeB = null;
-
-        if (times.size() > 0) {
-            timeA = times.get(0);
-
-            // case: no specified dates
-            if (dates.isEmpty()) {
-                if (LocalTime.now().isAfter(timeA)) {
-                    dateTimeStart = timeA.atDate(LocalDate.now().plusDays(1));
-                } else {
-                    dateTimeStart = timeA.atDate(LocalDate.now());
-                }
-            } else {
-                dateTimeStart = LocalDateTime.of(dates.get(0), timeA);
-            }
-        }
-
-        if (times.size() > 1) {
-            timeB = times.get(1);
-            dateTimeDiff = Duration.between(timeA, timeB);
-
-            // case: no specified dates
-            if (dates.size() <= 1) {
-                if (timeA.isAfter(timeB)) {
-                    dateTimeDiff = dateTimeDiff.plusDays(1);
-                }
-            } else {
-                dateTimeDiff = dateTimeDiff
-                        .plusDays(dates.get(0).until(dates.get(1), ChronoUnit.DAYS));
-            }
-        }
-
-        // check if there are any datetimes
-        if (dateTimeStart != null) {
-            task.endDate = dateTimeStart.plus(dateTimeDiff).toLocalDate();
-            task.endTime = dateTimeStart.plus(dateTimeDiff).toLocalTime();
-
-            if (!dateTimeDiff.isZero()) {
-                task.startDate = dateTimeStart.toLocalDate();
-                task.startTime = dateTimeStart.toLocalTime();
-            }
-        }
+    public static DateTimePair parseDateTimesInSequence(String dateTimeString) {
+        return parseDateTimes(dateTimeString, true);
     }
 
-
     public static DateTimePair parseDateTimes(String dateTimeString) {
+        return parseDateTimes(dateTimeString, false);
+    }
+
+    private static DateTimePair parseDateTimes(
+            String dateTimeString, boolean isInSequence) {
         String[] tokens = dateTimeString.split(SYMBOL_DELIM);
-        DateTimePair dtPair = new DateTimePair();
+        DateTimePair dtPair = isInSequence ?
+                new DateTimeSequence() : new DateTimePair();
 
         for (int i = 0; i < tokens.length; i++) {
             for (int j = tokens.length; j > i; j--) {
@@ -199,9 +92,6 @@ public class DateParser {
     }
 
     private static LocalDate parseAbsoluteDate(String dateString) {
-        // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
-        dateString = capitaliseFirstLetter(dateString);
-
         // match full before partial in order to prevent matching more than one.
         LocalDate date = matchDatePatterns(dateFullFormatPatterns, dateString);
         if (date == null) {
@@ -213,6 +103,9 @@ public class DateParser {
 
     private static LocalDate matchDatePatterns(
             Map<DateTimeFormatter, String> dateMap, String dateString) {
+        dateString = removePrepositions(dateString);
+        // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
+        dateString = capitaliseFirstLetter(dateString);
 
         Iterator<Entry<DateTimeFormatter, String>> i =
             dateMap.entrySet().iterator();
@@ -300,14 +193,15 @@ public class DateParser {
     }
 
     private static LocalTime parseAbsoluteTime(String timeString) {
-        // 3 pm -> 3 PM
-        timeString = timeString.toUpperCase();
         LocalTime time = matchTimePatterns(timeFullFormatPatterns, timeString);
         return time;
     }
 
     private static LocalTime matchTimePatterns(
             Map<DateTimeFormatter, String> timeMap, String timeString) {
+        timeString = removePrepositions(timeString);
+        // 3 pm -> 3 PM
+        timeString = timeString.toUpperCase();
 
         Iterator<Entry<DateTimeFormatter, String>> i =
                 timeMap.entrySet().iterator();
@@ -325,6 +219,37 @@ public class DateParser {
             }
 
         return null;
+    }
+
+    private static String removePrepositions(String string) {
+        buildPrepositionsSet();
+
+        int lastFoundPreposition = 0;
+        String[] tokens = string.toLowerCase().split(SYMBOL_DELIM);
+
+        while (tokens.length > lastFoundPreposition &&
+                prepositions.contains(tokens[lastFoundPreposition])) {
+            ++lastFoundPreposition;
+        }
+
+        if (lastFoundPreposition == 0) {
+            return string;
+        } else {
+            String[] curTokens = Arrays.copyOfRange(
+                    tokens, lastFoundPreposition, tokens.length);
+            return String.join(SYMBOL_DELIM, curTokens).trim();
+        }
+    }
+
+    private static void buildPrepositionsSet() {
+        if (prepositions != null) {
+            return;
+        }
+
+        String[] preArr = {"about", "after", "around", "at", "before",
+                "between", "by", "for", "from", "in", "near", "on", "past",
+                "round", "since", "till", "to", "until", "within"};
+        prepositions = new HashSet<String>(Arrays.asList(preArr));
     }
 
     private static void buildTimePatternHashMap() {

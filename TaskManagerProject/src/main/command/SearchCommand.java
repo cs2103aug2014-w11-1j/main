@@ -62,7 +62,7 @@ public class SearchCommand extends Command {
     }
 
     private List<LocalDateTime> parseDateTimes(String args) {
-        DateTimePair range = CommandParser.parseDateTimes(args);
+        DateTimePair range = CommandParser.parseDateTimesInSequence(args);
         if (range.isEmpty()) {
             return null;
         }

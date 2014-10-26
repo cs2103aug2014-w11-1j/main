@@ -8,7 +8,6 @@ import java.util.List;
 import data.taskinfo.Priority;
 import data.taskinfo.Status;
 import data.taskinfo.Tag;
-import data.taskinfo.TaskInfo;
 
 public class CommandParser {
     private final static String SYMBOL_DELIM = " ";
@@ -48,8 +47,8 @@ public class CommandParser {
                     String curSubstring = String.join(SYMBOL_DELIM, curTokens);
 
                     if (isPriority(curSubstring) || isTag(curSubstring) ||
-                            DateParser.isDate(curSubstring) ||
-                            DateParser.isTime(curSubstring)) {
+                            DateTimeParser.isDate(curSubstring) ||
+                            DateTimeParser.isTime(curSubstring)) {
                         toRemove.set(i, j);
                         break;
                     }
@@ -91,14 +90,14 @@ public class CommandParser {
         return getIgnoredSegment(args) != null;
     }
 
-    public static void parseDateTime(String args, TaskInfo task) {
+    public static DateTimePair parseDateTimesInSequence(String args) {
         args = stripIgnoredSegments(args);
-        DateParser.parseDateTime(args, task);
+        return DateTimeParser.parseDateTimesInSequence(args);
     }
 
     public static DateTimePair parseDateTimes(String args) {
         args = stripIgnoredSegments(args);
-        return DateParser.parseDateTimes(args);
+        return DateTimeParser.parseDateTimes(args);
     }
 
     public static Tag[] parseTags(String args) {
