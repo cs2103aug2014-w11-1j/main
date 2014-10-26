@@ -253,17 +253,18 @@ public class EditCommandTest {
         assertEquals(editTaskInfo, editManager.lastTaskInfo);
         editTaskInfo = TaskInfo.createEmpty();
 
-        // Expected: Store command: reschedule command "orange" to 2pm tuesday.
+        // Expected: Store command: reschedule command "orange" to 2pm 14 oct 12.
         executeEdit("orange 2pm 14 Oct 12", managerHolder, EditCommand.ParseType.RESCHEDULE);
         assertStoreCommand(stateManager);
 
-        // Expected: [Stored Command] reschedule 1 to 2pm tuesday.
+        // Expected: [Stored Command] reschedule 1 to 2pm 14 oct 12.
         executeStoredCommand(stateManager, managerHolder, 1);
         assertNormalExecution(stateManager);
         assertEquals(StubEditManager.Method.EDIT_TASK, editManager.lastMethodCall);
         assertTaskNumbers(editManager, 1);
         editTaskInfo.endTime = LocalTime.of(14, 0);
         editTaskInfo.endDate = LocalDate.of(2012, 10, 14);
+        //System.out.println(editManager.lastTaskInfo.endDate); //<-- trying to locate a mysterious heisenbug here.
         assertEquals(editTaskInfo, editManager.lastTaskInfo);
         editTaskInfo = TaskInfo.createEmpty();
 

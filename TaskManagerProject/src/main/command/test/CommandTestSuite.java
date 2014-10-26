@@ -7,7 +7,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     TargetedCommandTest.class,
     AddCommandTest.class,
-    SearchCommandTest.class
+    SearchCommandTest.class,
+    EditCommandTest.class
 })
 public class CommandTestSuite {
 }
