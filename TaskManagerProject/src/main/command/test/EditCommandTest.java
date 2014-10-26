@@ -253,11 +253,11 @@ public class EditCommandTest {
         assertEquals(editTaskInfo, editManager.lastTaskInfo);
         editTaskInfo = TaskInfo.createEmpty();
 
-        // Expected: Store command: reschedule command "orange" to 2pm 14 oct 12.
-        executeEdit("orange 2pm 14 Oct 12", managerHolder, EditCommand.ParseType.RESCHEDULE);
+        // Expected: Store command: reschedule command "orange" to 2pm 14 oct 2012.
+        executeEdit("orange 2pm 14 Oct 2012", managerHolder, EditCommand.ParseType.RESCHEDULE);
         assertStoreCommand(stateManager);
 
-        // Expected: [Stored Command] reschedule 1 to 2pm 14 oct 12.
+        // Expected: [Stored Command] reschedule 1 to 2pm 14 oct 2012.
         executeStoredCommand(stateManager, managerHolder, 1);
         assertNormalExecution(stateManager);
         assertEquals(StubEditManager.Method.EDIT_TASK, editManager.lastMethodCall);
