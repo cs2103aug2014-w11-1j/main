@@ -1,13 +1,7 @@
 package main.formatting;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-
+import main.formatting.utility.SummaryUtility;
 import main.modeinfo.SearchModeInfo;
-import data.TaskId;
-import data.taskinfo.TaskInfo;
 
 /**
  * Formatter for SearchModeInfo.
@@ -23,109 +17,14 @@ import data.taskinfo.TaskInfo;
  * @author nathanajah
  */
 public class SearchModeFormatter {
-    private final static int WIDTH_LINE = 79;
-    private final static int WIDTH_TIME = 14;
-    private final static int WIDTH_ABSOLUTE = 7;
-    private final static String LINE_FLOATING = "Floating Tasks ---";
-    private final static String LINE_NO_TASK = "No tasks found.";
     private final static String LINE_SUGGESTION = "Did you mean: ";
+    
+    private SummaryUtility summaryUtility;
+    
+    public SearchModeFormatter() {
+        summaryUtility = new SummaryUtility();
+    }
 
-    
-    private String getDateLine(TaskInfo task) {
-    	LocalDate date;
-    	date = task.endDate;
-    	if (task.startDate != null && task.endTime == LocalTime.MIDNIGHT){
-    		date = task.endDate.plusDays(-1);
-    	}
-        DateTimeFormatter formatter = 
-                DateTimeFormatter.ofPattern("E, d MMM u");
-        String dateString = formatter.format(date);
-        return dateString + " ---";
-    }
-    
-    private String getTimeString(LocalTime startTime, LocalTime endTime) {
-        if(startTime == null && endTime == null) {
-            return "              ";
-        } else if (startTime == null) {
-            DateTimeFormatter formatter = 
-                    DateTimeFormatter.ofPattern("HH:mm");
-            String addedFormat = "[   %1$s   ] ";
-            return String.format(addedFormat, formatter.format(endTime));
-        } else {
-            DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("HH:mm");
-            String addedFormat = "[%1$s-%2$s] ";
-            String startTimeString = formatter.format(startTime);
-            String endTimeString = formatter.format(endTime);
-            if (endTimeString.equals("00:00")) {
-            	endTimeString = "24:00";
-            }
-            return String.format(addedFormat, startTimeString, endTimeString);
-        }
-    }
-    
-    int numberLength(int number) {
-        String numberString = Integer.toString(number);
-        return numberString.length();
-    }
-    
-    private String cutToWidth(String s, int width) {
-        String cutString = s.substring(0, width - 3);
-        return cutString + "...";
-    }
-    
-    private String padRightToWidth(String s, int width) {
-        StringBuilder builder = new StringBuilder(s);
-        for (int i = s.length(); i < width; i++) {
-            builder.append(" ");
-        }
-        return builder.toString();
-    }
-    
-    
-    private String padLeftToWidth(String s, int width) {
-        StringBuilder builder = new StringBuilder("");
-        for (int i = s.length(); i < width; i++) {
-            builder.append(" ");
-        }
-        builder.append(s);
-        return builder.toString();
-    }
-    
-    private String getTaskNameString(String taskName, int width) {
-        if (taskName.length() > width) {
-            return cutToWidth(taskName, width);
-        } else {
-            return padRightToWidth(taskName, width);
-        }
-    }
-    
-    private String getTaskNumberString(int taskNumber, int width) {
-        String line = Integer.toString(taskNumber) + ") ";
-        return padLeftToWidth(line, width);
-    }
-    
-    private String getAbsoluteTaskIdString(TaskId taskId) {
-        return String.format("- [%1$s]", taskId.toString());
-    }
-    
-    private String getTaskInfoLine(TaskInfo task, TaskId taskId, 
-            int taskNumber, 
-            int numberWidth) {
-        StringBuilder line = new StringBuilder();
-        int taskNameWidth = WIDTH_LINE - WIDTH_ABSOLUTE - WIDTH_TIME - 
-                numberWidth;
-        line.append(getTaskNumberString(taskNumber, numberWidth));
-        line.append(getTimeString(task.startTime, task.endTime));
-        line.append(getTaskNameString(task.name, taskNameWidth));
-        line.append(getAbsoluteTaskIdString(taskId));
-        return line.toString();
-    }
-    
-    private String getFloatingTaskLine() {
-        return LINE_FLOATING;
-    }
-    
     private String getSuggestionLine(String[] suggestions) {
         assert suggestions != null;
         StringBuilder builder = new StringBuilder(LINE_SUGGESTION);
@@ -134,87 +33,15 @@ public class SearchModeFormatter {
         return builder.toString();
     }
     
-    private boolean isEndingAtMidnight(TaskInfo task) {
-    	LocalTime midnight = LocalTime.parse("00:00");
-    	return task.startTime != null && task.endTime.equals(midnight);
-    }
-    
-    private boolean isOneDayAfter(TaskInfo taskBefore, TaskInfo taskAfter) {
-    	return taskBefore.endDate.plusDays(1).equals(taskAfter.endDate);
-    }
-    
-    private boolean isDifferentDate(TaskInfo task1, TaskInfo task2) {
-    	if (task1.endTime == null && task2.endTime != null) {
-    		return true;
-    	} else if (task1.endTime != null && task2.endTime == null) {
-    		return true;
-    	} else if (task1.endTime == null && task2.endTime == null) {
-    		return false;
-    	} else {
-    		if (task1.endDate.equals(task2.endDate)) {
-    			if (isEndingAtMidnight(task1) && !isEndingAtMidnight(task2)) {
-    				return true;
-    			} else if (!isEndingAtMidnight(task1) && isEndingAtMidnight(task2)) {
-    				return true;
-    			} else {
-    				return false;
-    			}
-    		} else if (isOneDayAfter(task1, task2)){
-    			return isEndingAtMidnight(task1) || !isEndingAtMidnight(task2);
-    		} else if (isOneDayAfter(task2, task1)) {
-    			return !isEndingAtMidnight(task1) || isEndingAtMidnight(task1);
-    		} else {
-    			return false;
-    		}
-    	}
-    }
-    
-    private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
-            TaskId[] taskIds, String[] suggestions) {
-        ArrayList<String> result = new ArrayList<String>();
-        if (tasks.length == 0)
-            result.add(LINE_NO_TASK);
-        else {
-            if (suggestions != null) {
-                result.add(getSuggestionLine(suggestions));
-            }
-            int numberWidth = numberLength(tasks.length) + 2;
-            for (int i = 0; i < tasks.length; i++) {
-                if (tasks[i].endDate == null) {
-                    if (i == 0 || tasks[i-1].endDate != null) {
-                        result.add(getFloatingTaskLine());
-                    }
-                }
-                else {
-                    if (i == 0 || isDifferentDate(tasks[i], tasks[i-1])) {
-                        result.add(getDateLine(tasks[i]));
-                    }
-                }
-                result.add(getTaskInfoLine(tasks[i], taskIds[i], 
-                        i + 1, numberWidth));
-            }
-        }
-        return result;
-        
-    }
-    
-    private String arrayListToStringLines(ArrayList<String> lines) {
+    public String format(SearchModeInfo modeInfo) {
         StringBuilder result = new StringBuilder();
-        for (String line : lines) {
-            result.append(line);
+        if (modeInfo.getTasks().length != 0 && modeInfo.getSuggestions() != null) {
+            result.append(getSuggestionLine(modeInfo.getSuggestions()));
             result.append(System.lineSeparator());
         }
+        result.append(summaryUtility.format(modeInfo.getTasks(), 
+                modeInfo.getTaskIds()));
+        
         return result.toString();
     }
-    
-    public String format(SearchModeInfo searchInfo) {
-        TaskInfo[] tasks = searchInfo.getTasks();
-        TaskId[] taskIds = searchInfo.getTaskIds();
-        String[] suggestions = searchInfo.getSuggestions();
-        ArrayList<String> formattedTaskArray = 
-                formatToArrayList(tasks, taskIds, suggestions);
-        return arrayListToStringLines(formattedTaskArray);
-    }
-    
-    
 }

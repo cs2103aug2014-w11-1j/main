@@ -2,6 +2,7 @@ package main.formatting;
 
 import java.util.ArrayList;
 
+import main.formatting.utility.DetailsUtility;
 import main.message.DetailsMessage;
 import data.TaskId;
 import data.taskinfo.TaskInfo;

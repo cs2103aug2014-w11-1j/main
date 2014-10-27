@@ -1,4 +1,4 @@
-package main.formatting;
+package main.formatting.utility;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
