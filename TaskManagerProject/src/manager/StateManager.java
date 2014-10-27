@@ -84,6 +84,10 @@ public class StateManager {
         //return currentState == State.AVAILABLE;
 	}
 
+    public boolean canGetReport() {
+        return true;
+    }
+
 	public boolean canEdit() {
         return true;
         //return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;

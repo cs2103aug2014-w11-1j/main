@@ -66,7 +66,7 @@ public class ReportManager extends AbstractManager{
 	}
 	
 	public Result report(){
-		updateTask();
+		taskList = updateTask();
 		ArrayList<TaskInfo> todayTask = getTaskByDate(LocalDate.now());
 		ArrayList<TaskInfo> tmrTask = getTaskByDate(LocalDate.now().minusDays(-1));
 		ArrayList<TaskInfo> urgentTask = getUrgentTask();
