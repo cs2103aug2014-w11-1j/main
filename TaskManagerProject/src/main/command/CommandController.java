@@ -66,6 +66,8 @@ public class CommandController {
                 return new ExitCommand(managerHolder);
             case "freeday" :
                 return new FreeDaySearchCommand(cmdArgs, managerHolder);
+            case "report" :
+                return new ReportCommand(managerHolder);
             default :
                 return new ArgumentCommand(cmdType + " " + cmdArgs, managerHolder);
         }
