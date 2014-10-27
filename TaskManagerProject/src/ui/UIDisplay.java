@@ -14,8 +14,6 @@ public class UIDisplay {
     
     private final MainController mainController;
     
-    private final static String MESSAGE_WELCOME = "Welcome to Taskline." + 
-            System.lineSeparator();
     
     public UIDisplay(MainController mainController) {
         this.mainController = mainController;
@@ -33,11 +31,6 @@ public class UIDisplay {
      * Called from main
      */
     public void commandLoopIteration() {
-        try {
-            userOutputWriter.printOutput(MESSAGE_WELCOME);
-        } catch(IOException e) {
-            System.out.println(MESSAGE_WELCOME);
-        }
         while (!isReadyToExit()) {
             try {
                 Input input = userInputReader.getInput();
@@ -55,9 +48,8 @@ public class UIDisplay {
             case INPUT_STRING :
                 InputString inputString = (InputString)input;
                 String output = mainController.runCommand(inputString.getString());
-                output = ">" + inputString.getString() + System.lineSeparator() +
-                        output;
-                userOutputWriter.printOutput(output);
+                String header = ">" + inputString.getString();
+                userOutputWriter.printOutput(header, output);
                 break;
             case INPUT_OPERATION :
                 InputOperation inputOperation = (InputOperation)input;

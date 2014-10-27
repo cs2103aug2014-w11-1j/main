@@ -3,27 +3,44 @@ package ui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import jline.ConsoleReader;
 
 public class UserOutputWriter {
-    ArrayList<String> lines;
+    List<String> lines;
+    List<Integer> headers;
     ConsoleReader reader;
     int currentLine;
     
     private final static String EXEC_CLEARSCREEN = 
             "mode.com con cols=%1$d lines=%2$d";
     
+    private final static String MESSAGE_WELCOME = "Welcome to Taskline.";
+    
     public UserOutputWriter(ConsoleReader reader) throws IOException {
         this.reader = reader;
         clearScreen();
         lines = new ArrayList<String>();
+        headers = new ArrayList<Integer>();
+        
+        lines.add(MESSAGE_WELCOME);
+        headers.add(0);
+        show(0);
     }
     
-    public void printOutput(String output) throws IOException {
-        String[] array = output.split(System.lineSeparator());
-        
+    public void addHeader(String header) {
+        if (header != null) {
+            headers.add(lines.size());
+            lines.add(header);
+        }
+    }
+    
+    public void printOutput(String header, String output) throws IOException {
         int prevSize = lines.size();
+        
+        addHeader(header);
+        String[] array = output.split(System.lineSeparator());
         
         lines.addAll(Arrays.asList(array));
         
@@ -31,7 +48,17 @@ public class UserOutputWriter {
         show(start);
     }
     
-    public void show(int startLine) throws IOException {
+    private String getHeader(int lineNumber) {
+        int headerLineNumber = -1;
+        for (int i = 0; i < headers.size(); i++) {
+            if (headers.get(i) <= lineNumber) {
+                headerLineNumber = headers.get(i);
+            }
+        }
+        return lines.get(headerLineNumber);
+    }
+    
+    private void show(int startLine) throws IOException {
         clearScreen();
         int numberOfLines = reader.getTermheight();
         int numberOfOutputLines = numberOfLines - 1;
@@ -45,7 +72,9 @@ public class UserOutputWriter {
         int numberOfPaddingLines = numberOfOutputLines - numberOfAvailableLines;
         
         StringBuilder builder = new StringBuilder();
-        for (int i = startLine; i < endLine; i++) {
+        builder.append(getHeader(startLine));
+        builder.append(System.lineSeparator());
+        for (int i = startLine + 1; i < endLine; i++) {
             builder.append(lines.get(i));
             builder.append(System.lineSeparator());
         }

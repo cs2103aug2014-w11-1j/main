@@ -18,7 +18,7 @@ public class ReportFormatterTest {
 
     @Test
     public void test() {
-        ArrayList<TaskInfo> tasks = new ArrayList();
+        ArrayList<TaskInfo> tasks = new ArrayList<TaskInfo>();
         TaskInfo task1 = TaskInfo.create();
         task1.endDate = LocalDate.parse("2011-12-03");
         task1.endTime = LocalTime.parse("10:50");
@@ -45,8 +45,7 @@ public class ReportFormatterTest {
         String expected = "You have 5 tasks today, and 3 tasks tomorrow." + System.lineSeparator() +
                 "Below are the high-priority tasks." + System.lineSeparator() +
                 "Sat, 3 Dec 2011 ---" + System.lineSeparator() +
-                "1) [   10:50   ] abcd"
-                + "                                                          " + System.lineSeparator() +
+                "1) [   10:50   ] abcd                                                          " + System.lineSeparator() +
                 "2) [   13:00   ] efgh                                                          " + System.lineSeparator() +
                 "Sun, 4 Dec 2011 ---" + System.lineSeparator() +
                 "3) [   12:00   ] ijkl                                                          " + System.lineSeparator();
