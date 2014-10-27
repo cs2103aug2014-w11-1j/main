@@ -6,6 +6,7 @@ import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
 import main.message.Message;
+import main.message.ReportMessage;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.modeinfo.ModeInfo;
@@ -22,6 +23,7 @@ public class Formatter {
     private EditSuccessfulFormatter editSuccessfulFormatter;
     private EnumFormatter enumFormatter;
     private DetailsFormatter detailsFormatter;
+    private ReportFormatter reportFormatter;
     
     private EditModeFormatter editModeFormatter;
     private SearchModeFormatter searchModeFormatter;
@@ -67,6 +69,7 @@ public class Formatter {
         editSuccessfulFormatter = new EditSuccessfulFormatter();
         enumFormatter = new EnumFormatter();
         detailsFormatter = new DetailsFormatter();
+        reportFormatter = new ReportFormatter();
         
         editModeFormatter = new EditModeFormatter();
         searchModeFormatter = new SearchModeFormatter();
@@ -102,6 +105,9 @@ public class Formatter {
             case DETAILS :
                 DetailsMessage detailsMessage = (DetailsMessage)message;
                 formattedMessage = detailsFormatter.format(detailsMessage);
+            case REPORT :
+                ReportMessage reportMessage = (ReportMessage)message;
+                formattedMessage = reportFormatter.format(reportMessage);
         }
         return formattedMessage;
     }
