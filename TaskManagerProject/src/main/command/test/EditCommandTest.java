@@ -8,12 +8,16 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import main.command.EditCommand;
 import main.command.TargetedCommand;
 import main.command.TaskIdSet;
 import main.response.Response;
 import manager.ManagerHolder;
+import manager.datamanager.searchfilter.Filter;
+import manager.datamanager.searchfilter.KeywordFilter;
 
 import org.junit.Test;
 
@@ -269,6 +273,51 @@ public class EditCommandTest {
         editTaskInfo = TaskInfo.createEmpty();
 
     }
+    
+    
+    @Test
+    public void invertedCommaTest() {
+        ManagerHolder managerHolder = new StubManagerHolder();
+        StubEditManager editManager = (StubEditManager)managerHolder.getEditManager();
+        StubStateManager stateManager = (StubStateManager)managerHolder.getStateManager();
+        StubSearchManager searchManager = (StubSearchManager)managerHolder.getSearchManager();
+
+        stateManager.canEdit = true;
+        stateManager.inEditMode = false;
+        
+        TaskInfo editTaskInfo = TaskInfo.createEmpty();
+        
+
+        // Expected: Store command: search for 1
+        executeEdit("\"1\" name 2", managerHolder, EditCommand.ParseType.RESCHEDULE);
+        assertStoreCommand(stateManager);
+        assertLastSearch(searchManager, "1");
+
+        // Expected: [Stored Command] rename 3, 4 to "2".
+        executeStoredCommand(stateManager, managerHolder, 3, 4);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.EDIT_TASK, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 3, 4);
+        editTaskInfo.name = "2";
+        assertEquals(editTaskInfo, editManager.lastTaskInfo);
+        editTaskInfo = TaskInfo.createEmpty();
+        
+        
+    }
+    
+    private void assertLastSearch(StubSearchManager searchManager,
+            String...keywords) {
+        Filter[] filters = searchManager.filters;
+        assertEquals(1, filters.length);
+        KeywordFilter keywordFilter = (KeywordFilter)filters[0];
+        List<String> searchKeywords = Arrays.asList(keywordFilter.getKeywords());
+        
+        for (String keyword : keywords) {
+            assertTrue(searchKeywords.contains(keyword));
+        }
+        assertEquals(keywords.length, searchKeywords.size());
+    }
+    
     
     private void assertInvalidArguments(StubStateManager stateManager) {
         assertEquals(StubStateManager.Update.INVALID_ARGUMENTS,

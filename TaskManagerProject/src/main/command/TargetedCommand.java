@@ -210,7 +210,7 @@ public abstract class TargetedCommand extends Command {
             throw new IllegalArgumentException("Invalid string");
         }
     }
-
+    
     private void addToSet(String arg) {
         TaskId taskId = parseTaskId(arg.trim());
         if (taskId == null) {
