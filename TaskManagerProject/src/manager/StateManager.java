@@ -125,7 +125,7 @@ public class StateManager {
 	    return (currentState == state);
 	}
     
-	private boolean enterEditMode(TaskIdSet idSet) {
+	private boolean tryEnterEditMode(TaskIdSet idSet) {
 	    if (inState(State.EDIT_MODE)) {
 	        return false;
 	    }
@@ -135,7 +135,7 @@ public class StateManager {
 		return true;
 	}
 	
-	private boolean exitEditMode() {
+	private boolean tryExitEditMode() {
 		if (inState(State.EDIT_MODE)){
 			setState(State.AVAILABLE);
 			editingTaskIdSet = null;
@@ -145,13 +145,15 @@ public class StateManager {
 		}
 	}
 
-	private boolean enterSearchMode(SearchResult searchResult) {
+	private boolean tryEnterSearchMode(SearchResult searchResult) {
 	    if (inState(State.WAITING_MODE)) {
 	        if (searchResult.noTasksFound()) {
 	            exitWaitingMode();
 	            setState(State.SEARCH_MODE);
+	            return true;
+	        } else {
+	            return false;
 	        }
-	        return false;
 	    }
         if (inState(State.SEARCH_MODE)) {
             return false;
@@ -161,7 +163,7 @@ public class StateManager {
 		return true;
 	}
 	
-	private boolean exitSearchMode() {
+	private boolean tryExitSearchMode() {
 		if (inState(State.SEARCH_MODE)){
 			setState(State.AVAILABLE);
 			return true;
@@ -320,24 +322,23 @@ public class StateManager {
 	private Message applyResult(Result result) {
 		switch (result.getType()){
             case EXIT :
-                if (inState(State.EDIT_MODE)) {
-                    exitEditMode();
-                } else if (inState(State.SEARCH_MODE)) {
-                    exitSearchMode();
-                }
+                tryExitEditMode();
+                tryExitSearchMode();
                 return new EnumMessage(EnumMessage.MessageType.EXIT);
                 
             case ADD_SUCCESS :
-            	 AddResult addResult = (AddResult)result;
-                 AddSuccessfulMessage addSuccessMessage = 
-                         new AddSuccessfulMessage(addResult.getTaskInfo(),
-                                 addResult.getTaskId());
-                 return addSuccessMessage;
+                tryExitEditMode();
+                AddResult addResult = (AddResult)result;
+                AddSuccessfulMessage addSuccessMessage = 
+                        new AddSuccessfulMessage(addResult.getTaskInfo(),
+                        addResult.getTaskId());
+                return addSuccessMessage;
 
             case ADD_FAILURE : 
                 return new EnumMessage(EnumMessage.MessageType.ADD_FAILED);
                 
             case DELETE_SUCCESS :
+                tryExitEditMode();
             	DeleteResult deleteResult = (DeleteResult)result;
                 DeleteSuccessfulMessage deleteSuccessMessage = 
                 		new DeleteSuccessfulMessage(deleteResult.getTaskInfo(), 
@@ -349,24 +350,24 @@ public class StateManager {
                 
             case EDIT_MODE_START : {
                 StartEditModeResult editResult = (StartEditModeResult)result;
-                enterEditMode(editResult.getTaskIdSet());
+                tryEnterEditMode(editResult.getTaskIdSet());
                 return new EnumMessage(MessageType.EDIT_STARTED);
             }
 
             case EDIT_MODE_END :
-                exitEditMode();
+                tryExitEditMode();
                 return new EnumMessage(EnumMessage.MessageType.EDIT_ENDED);
 
             case SEARCH_MODE_END : 
-                exitSearchMode();
+                tryExitSearchMode();
                 return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
                 
             case GO_BACK :
                 if (inState(State.EDIT_MODE)) {
-                    exitEditMode();
+                    tryExitEditMode();
                     return new EnumMessage(EnumMessage.MessageType.EDIT_ENDED);
                 } else if (inState(State.SEARCH_MODE)) {
-                    exitSearchMode();
+                    tryExitSearchMode();
                     return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
                 } else {
                     return new EnumMessage(EnumMessage.MessageType.SEARCH_ENDED);
@@ -402,7 +403,7 @@ public class StateManager {
             	return new EnumMessage(MessageType.ADD_TAG_FAILED);
 
             case SEARCH_SUCCESS : 
-                enterSearchMode((SearchResult)result);
+                tryEnterSearchMode((SearchResult)result);
             	return new EnumMessage(MessageType.SEARCH_SUCCESS);
                 
             case SEARCH_FAILURE : 
