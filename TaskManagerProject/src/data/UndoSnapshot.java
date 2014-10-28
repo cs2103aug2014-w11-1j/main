@@ -21,6 +21,9 @@ public class UndoSnapshot {
     }
     
     public void addTaskSnapshot(TaskInfo taskInfo, TaskId taskId) {
+        assert taskId != null;
+        assert taskSnapshotList != null;
+        
         UndoTaskSnapshot taskSnapshot = new UndoTaskSnapshot(taskInfo, taskId);
         if (!taskSnapshotList.contains(taskSnapshot)) {
             taskSnapshotList.add(taskSnapshot);

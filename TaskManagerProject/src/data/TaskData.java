@@ -44,11 +44,6 @@ public class TaskData {
         initializeTaskData();
     }
 
-    public ArrayList<Task> getTaskList(){
-        assert false : "YOU CAN'T USE THIS METHOD!!! It's illegal!";
-        throw new UnsupportedOperationException("I will not support this");
-    }
-    
     public TaskId getFirst() {
         return new TaskId(firstTask);
     }
@@ -94,8 +89,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setName(name);
-            return true;
+            return task.setName(name);
         }
     }
     
@@ -117,8 +111,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setStartTime(time);
-            return true;
+            return task.setStartTime(time);
         }
     }
     
@@ -140,8 +133,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setStartDate(date);
-            return true;
+            return task.setStartDate(date);
         }
     }
     
@@ -163,8 +155,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setEndTime(time);
-            return true;
+            return task.setEndTime(time);
         }
     }
     
@@ -186,8 +177,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setEndDate(date);
-            return true;
+            return task.setEndDate(date);
         }
     }
     
@@ -209,8 +199,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setDetails(details);
-            return true;
+            return task.setDetails(details);
         }
     }
     
@@ -233,8 +222,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setPriority(priority);
-            return true;
+            return task.setPriority(priority);
         }
     }
     
@@ -256,8 +244,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setStatus(status);
-            return true;
+            return task.setStatus(status);
         }
     }
 
@@ -328,8 +315,7 @@ public class TaskData {
         if (task == EMPTY_SLOT) {
             return false;
         } else {
-            task.setAllInfo(taskInfo);
-            return true;
+            return task.setAllInfo(taskInfo);
         }
     }
 
@@ -342,8 +328,10 @@ public class TaskData {
         
         initializeTaskData();
         for (TaskInfo taskInfo : tasks) {
-            add(taskInfo);
-            discardUndoSnapshot();
+            if (taskInfo.isValid()) {
+                add(taskInfo);
+                discardUndoSnapshot(); // calling this here actually reduces lag.
+            }
         }
         discardUndoSnapshot();
     }
@@ -427,7 +415,8 @@ public class TaskData {
      * Use to reverse all the changes in the last undo snapshot.
      */
     public void reverseLastChange() {
-        undoSnapshot.applySnapshotChange();
+        UndoSnapshot lastSnapshot = retrieveUndoSnapshot();
+        lastSnapshot.applySnapshotChange();
         discardUndoSnapshot();
     }
     

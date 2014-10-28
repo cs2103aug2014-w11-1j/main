@@ -39,7 +39,6 @@ public class MainController {
         }
         Formatter formatter = new Formatter();
         return formatter.format(curResponse);
-        //throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public boolean isReadyToExit() {
