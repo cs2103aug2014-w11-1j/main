@@ -35,11 +35,20 @@ public class ReportManager extends AbstractManager{
 	}
 	
 	private boolean isTaskOnDate(TaskInfo task, LocalDate date){
-		if ((task.getStartDate() == null) && (task.getEndDate().equals(date))){
-			return true;
-		}
-		if ((!task.getStartDate().isAfter(date)) && (!task.getEndDate().isBefore(date))){
-			return true;
+	    if (task.getEndDate() == null) {
+	        return true;
+	    }
+	    
+		if (task.getStartDate() == null) {
+		    if (task.getEndDate().equals(date)) {
+		        return true;
+		    }
+		    
+		} else {
+    		if ((!task.getStartDate().isAfter(date)) &&
+    		        (!task.getEndDate().isBefore(date))){
+    			return true;
+    		}
 		}
 		return false;
 	}

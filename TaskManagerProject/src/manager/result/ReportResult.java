@@ -5,18 +5,19 @@ import java.util.ArrayList;
 import data.taskinfo.TaskInfo;
 
 public class ReportResult implements Result{
+    
+	private final ArrayList<TaskInfo> todayTask;
+	private final ArrayList<TaskInfo> tmrTask;
+	private final ArrayList<TaskInfo> urgentTask;
 	
-	
-	private ArrayList<TaskInfo> todayTask;
-	private ArrayList<TaskInfo> tmrTask;
-	private ArrayList<TaskInfo> urgentTask;
-	
-public ReportResult(ArrayList<TaskInfo> todayTask, ArrayList<TaskInfo> tmrTask
-		, ArrayList<TaskInfo> urgentTask){
-		
-	}
-	
-	public Type getType(){
+	public ReportResult(ArrayList<TaskInfo> todayTask,
+            ArrayList<TaskInfo> tmrTask, ArrayList<TaskInfo> urgentTask) {
+        this.todayTask = todayTask;
+        this.tmrTask = tmrTask;
+        this.urgentTask = urgentTask;
+    }
+
+    public Type getType(){
 		return Type.REPORT;
 	}
 	
