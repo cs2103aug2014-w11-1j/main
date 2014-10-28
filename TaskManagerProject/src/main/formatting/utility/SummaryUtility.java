@@ -145,7 +145,7 @@ public class SummaryUtility {
             } else if (isOneDayAfter(task2, task1)) {
                 return !isEndingAtMidnight(task1) || isEndingAtMidnight(task1);
             } else {
-                return false;
+                return true;
             }
         }
     }
