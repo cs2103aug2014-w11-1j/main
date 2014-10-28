@@ -24,7 +24,7 @@ class StubManagerHolder extends ManagerHolder {
     private StubEditManager stubEditManager;
 
     public StubManagerHolder() {
-        super(null, null);
+        super(null, null, null);
         stubAddManager = new StubAddManager();
         stubSearchManager = new StubSearchManager();
         stubStateManager = new StubStateManager();
@@ -102,18 +102,18 @@ class StubEditManager extends EditManager {
         DELETE_TASK_TAGS,
         EDIT_TASK
     }
-    
+
     public StubEditManager() {
         super(null);
     }
-    
+
     public void clearMemory() {
         lastTaskIdSet = null;
         lastTags = null;
         lastTaskInfo = null;
         lastMethodCall = null;
     }
-    
+
     @Override
     public Result startEditMode(TaskIdSet taskIdSet) {
         clearMemory();
@@ -148,7 +148,7 @@ class StubEditManager extends EditManager {
         lastTaskInfo = taskInfo;
         return null;
     }
-    
+
 }
 
 class StubFreeDaySearchManager extends FreeDaySearchManager {
@@ -172,7 +172,7 @@ class StubSearchManager extends SearchManager {
     @Override
     public Result searchTasks(Filter[] filters) {
         this.filters = filters;
-        
+
         TaskInfo[] tasks = new TaskInfo[0];
         TaskId[] taskIds = new TaskId[0];
         return new SearchResult(tasks, taskIds, filters);
@@ -187,16 +187,16 @@ class StubSearchManager extends SearchManager {
 class StubStateManager extends StateManager {
     public boolean canEdit = true;
     public boolean inEditMode = false;
-    
+
     private TargetedCommand storedCommand;
     private Update lastUpdate;
-    
+
     public enum Update {
         NORMAL_EXECUTION,
         INVALID_ARGUMENTS,
         STORE_COMMAND
     }
-    
+
     public StubStateManager() {
         super(null, null, null);
     }
@@ -212,7 +212,7 @@ class StubStateManager extends StateManager {
         clearLastUpdate();
         storedCommand = command;
         lastUpdate = Update.STORE_COMMAND;
-    
+
         return null;
     }
 
@@ -231,21 +231,21 @@ class StubStateManager extends StateManager {
     public boolean canQuerySearchManager() {
         return true;
     }
-    
+
     @Override
     public boolean canEdit() {
         return canEdit;
     }
-    
+
     @Override
     public boolean inEditMode() {
         return inEditMode;
     }
-    
+
     public Update getLastUpdate() {
         return lastUpdate;
     }
-    
+
     public TargetedCommand getStoredCommand() {
         return storedCommand;
     }

@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import main.MainController;
+import main.command.alias.AliasData;
 import manager.ManagerHolder;
 import ui.debug.UIDisplay;
 import data.TaskData;
@@ -36,8 +37,9 @@ public class Taskline {
         String fileName = "tasks.txt";
         
         TaskData taskData = new TaskData();
+        AliasData aliasData = new AliasData();
         FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName); 
-        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput);
+        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput, aliasData);
         MainController mainController = new MainController(managerHolder);
         UIDisplay uiDisplay = new UIDisplay(mainController);
         
