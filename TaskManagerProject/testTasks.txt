@@ -1,0 +1,41 @@
+
+{
+    "tasks":[
+        {
+            "name":"orange",
+            "startTime":"null",
+            "startDate":"null",
+            "endTime":"null",
+            "endDate":"null",
+            "details":"",
+            "tags":[
+            ],
+            "priority":"HIGH",
+            "status":"UNDONE"
+        },
+        {
+            "name":"purple",
+            "startTime":"null",
+            "startDate":"null",
+            "endTime":"14:00:00",
+            "endDate":"2014-10-14",
+            "details":"",
+            "tags":[
+            ],
+            "priority":"NONE",
+            "status":"UNDONE"
+        },
+        {
+            "name":"violet",
+            "startTime":"14:00:00",
+            "startDate":"2014-10-14",
+            "endTime":"16:00:00",
+            "endDate":"2014-10-14",
+            "details":"",
+            "tags":[
+            ],
+            "priority":"NONE",
+            "status":"UNDONE"
+        }
+    ]
+}
