@@ -131,58 +131,6 @@ public class FreeDaySearchManager extends AbstractManager {
         LocalTime endTime = END_OF_DAY;
 	    
 	    return searchFreeDay(startTime, startDate, endTime, endDate) ;
-	    
-	    /*updateTaskList();
-
-		LocalDate checkDate = null;
-		LocalDate firstStartDate = null;
-		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>();
-
-		if (taskList.size() == 0){
-			return new FreeDayResult(null, null, null,startDate, endDate);
-		}
-		
-		for (TaskInfo task : taskList) {
-			if (isMatchDay(startDate, endDate, task)) {
-			    LocalDate taskStartDate = getTaskStartDate(task);
-			    
-			    if (firstStartDate == null || 
-			            taskStartDate.isAfter(firstStartDate)) {
-			        firstStartDate = taskStartDate;
-			    }
-			    
-				if (checkDate == null) { // first task initialization
-					checkDate = task.getEndDate();
-				} else { // if new task's start date < checkDate, update
-					// freeDay, else update checkDate
-					if (getTaskStartDate(task).isAfter(checkDate)) {
-						LocalDate tempDate = checkDate.minusDays(-1);
-						while (tempDate.isBefore(getTaskStartDate(task))) {
-							if (tempDate.isAfter(startDate.minusDays(1))
-									&& (tempDate.isBefore(endDate.minusDays(-1)))){
-								freeDays.add(tempDate);
-							}
-							tempDate = tempDate.minusDays(-1);
-						}
-
-						checkDate = task.getEndDate().isBefore(checkDate) ? checkDate
-								: task.getEndDate();
-					} else if (getTaskStartDate(task).equals(checkDate)) {
-						if (task.getEndDate().isAfter(checkDate)) {
-							checkDate = task.getEndDate();
-						}
-
-					}
-
-				}
-			}
-		}
-
-		assert (firstStartDate == null) == (checkDate == null);
-
-		clearMemory();
-		return new FreeDayResult(freeDays, firstStartDate, checkDate, startDate, endDate);
-		*/
 	}
 
 	private boolean isMatchDay(LocalDate startDate, LocalDate endDate,
