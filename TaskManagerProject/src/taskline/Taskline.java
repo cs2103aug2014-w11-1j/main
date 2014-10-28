@@ -5,8 +5,7 @@ import io.FileInputOutput;
 import java.io.IOException;
 
 import main.MainController;
-import main.command.alias.AliasData;
-import main.command.alias.AliasInputOutput;
+import main.command.alias.AliasStorage;
 import manager.ManagerHolder;
 import ui.UIDisplay;
 import data.TaskData;
@@ -21,14 +20,14 @@ public class Taskline {
     public static void main(String[] args) throws IOException {
         //setupLogger();
         String fileName = "tasks.txt";
+
         String aliasFileName = "alias.txt";
+        AliasStorage aliasStorage = new AliasStorage(aliasFileName);
 
         TaskData taskData = new TaskData();
         FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
-        AliasData aliasData = new AliasData();
-        AliasInputOutput aliasInputOutput = new AliasInputOutput(aliasData, aliasFileName);
         ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput);
-        MainController mainController = new MainController(managerHolder);
+        MainController mainController = new MainController(managerHolder, aliasStorage);
         UIDisplay uiDisplay = new UIDisplay(mainController);
 
         startCommandLoop(uiDisplay);

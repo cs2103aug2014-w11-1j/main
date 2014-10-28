@@ -2,6 +2,7 @@ package main.command;
 
 import main.command.EditCommand.ParseType;
 import main.command.alias.AliasController;
+import main.command.alias.AliasStorage;
 import main.command.alias.CommandString;
 import manager.ManagerHolder;
 
@@ -15,9 +16,9 @@ public class CommandController {
     private ManagerHolder managerHolder;
     private AliasController aliasController;
 
-    public CommandController(ManagerHolder managerHolder) {
+    public CommandController(ManagerHolder managerHolder, AliasStorage aliasStorage) {
         this.managerHolder = managerHolder;
-        aliasController = new AliasController(managerHolder);
+        aliasController = new AliasController(aliasStorage);
     }
 
     public Command getCommand(String cmdTxt) {
