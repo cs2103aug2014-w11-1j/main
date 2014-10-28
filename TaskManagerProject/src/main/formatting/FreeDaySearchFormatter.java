@@ -43,10 +43,12 @@ public class FreeDaySearchFormatter {
         if (message.getFirstBusyDate() == null) {
             return getAllFree(message.getSearchStartDate(), message.getSearchEndDate());
         } else {
+            assert message.getLastBusyDate() != null;
             ArrayList<LocalDate> freeDates = message.getFreeDateList();
 
             result.append(LINE_HEADER);
             LocalDate current = message.getSearchStartDate();
+            
             do {
                 if (current.compareTo(message.getFirstBusyDate()) < 0) {
                     result.append(String.format(LINE_DATE, formatDate(current)));
@@ -55,7 +57,8 @@ public class FreeDaySearchFormatter {
                 } else if (freeDates.contains(current)) {
                     result.append(String.format(LINE_DATE, formatDate(current)));
                 }
-            } while (!current.equals(message.getSearchEndDate()));
+                current = current.plusDays(1);
+            } while (!current.equals(message.getSearchEndDate().plusDays(1)));
             
             return result.toString();
         }

@@ -1,5 +1,8 @@
 package manager.result;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+
 import manager.datamanager.searchfilter.Filter;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
@@ -50,7 +53,19 @@ public class SearchResult implements Result {
      */
     public boolean onlyOneSearchResult() {
         assert tasks.length == taskIds.length;
-        return taskIds.length == 1;
+        
+        // TODO: This is a temporary fix for the minor bug.
+        // Does not cover all cases. Use removeDuplicates in searchManager instead.
+        if (taskIds.length == 1) {
+            return true;
+        }
+
+        for (int i = 1; i < taskIds.length; i++) {
+            if (!taskIds[0].equals(taskIds[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

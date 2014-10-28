@@ -57,6 +57,7 @@ public class FreeTimeSlotManagerTest {
 		
 		TaskData taskData = new TaskData();
 
+        // Tasks on 20, 16, 17, 3 november, (8-10) november
 		taskData.add(task3);
 		taskData.add(task1);
 		taskData.add(task2);
@@ -102,7 +103,8 @@ public class FreeTimeSlotManagerTest {
     public void testTime1() {
     	
     	TaskData taskData = new TaskData();
-    	
+
+        // Tasks on 20, 16, 17, 3 november, (8-10) november
 		taskData.add(task3);
 		taskData.add(task1);
 		taskData.add(task2);
@@ -112,13 +114,21 @@ public class FreeTimeSlotManagerTest {
 		
 		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
 		Result result;
-		
-		
+
+        // Time matches:
+        // Tasks on X20, y16, y17, y3 november, (8-10)->(9-10) november
+        // range: 9 oct to 28 nov
 		result = manager.searchFreeDay(getTime(6, 0), getDate(10, 9), getTime(8, 0), getDate(11, 28));
 		FreeDayResult finResult = (FreeDayResult) result;
 		
 		ArrayList<LocalDate> freeDates = new ArrayList<>();
-		
+
+        freeDates.add(getDate(11, 4));
+        freeDates.add(getDate(11, 5));
+        freeDates.add(getDate(11, 6));
+        freeDates.add(getDate(11, 7));
+        freeDates.add(getDate(11, 8));
+        
 		freeDates.add(getDate(11, 11));
 		freeDates.add(getDate(11, 12));
 		freeDates.add(getDate(11, 13));
@@ -126,7 +136,7 @@ public class FreeTimeSlotManagerTest {
 		freeDates.add(getDate(11, 15));
 		
 		
-		LocalDate startDate = getDate(11, 9);
+		LocalDate startDate = getDate(11, 3);
         LocalDate lastTaskEndDate = getDate(11, 17);
         FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
 		
@@ -148,7 +158,6 @@ public class FreeTimeSlotManagerTest {
 		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
 		Result result;
 		
-		
 		result = manager.searchFreeDay(getTime(6, 0), getDate(11,14), getTime(8, 0), getDate(11, 28));
 		FreeDayResult finResult = (FreeDayResult) result;
 		
@@ -156,20 +165,21 @@ public class FreeTimeSlotManagerTest {
 		
 	//	freeDates.add(getDate(11, 14));
 	//	freeDates.add(getDate(11, 15));
-		
+
 		// PROBLEM....
-		LocalDate startDate = getDate(11, 9);
+		LocalDate startDate = getDate(11, 16);
         LocalDate lastTaskEndDate = getDate(11, 17);
         FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
 		
 		assertResultEquals(templateResult, finResult);
 
     }
+    
     private void assertResultEquals(FreeDayResult actual, FreeDayResult output) {
-        assertEquals(actual.getFreeDateList().size(), output.getFreeDateList().size());
-        assertEquals(actual.getFreeDateList(), output.getFreeDateList());
         assertEquals(actual.getFirstBusyDate(), output.getFirstBusyDate());
         assertEquals(actual.getLastBusyDate(), output.getLastBusyDate());
+        assertEquals(actual.getFreeDateList().size(), output.getFreeDateList().size());
+        assertEquals(actual.getFreeDateList(), output.getFreeDateList());
     }
 	
 	
