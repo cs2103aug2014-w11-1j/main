@@ -1,8 +1,8 @@
 package main.command;
 
-import java.util.Scanner;
-
 import main.command.EditCommand.ParseType;
+import main.command.alias.AliasController;
+import main.command.alias.CommandString;
 import manager.ManagerHolder;
 
 /**
@@ -13,12 +13,15 @@ import manager.ManagerHolder;
  */
 public class CommandController {
     private ManagerHolder managerHolder;
+    private AliasController aliasController;
 
     public CommandController(ManagerHolder managerHolder) {
         this.managerHolder = managerHolder;
+        aliasController = new AliasController(managerHolder);
     }
 
     public Command getCommand(String cmdTxt) {
+        /*
         Scanner sc = new Scanner(cmdTxt);
 
         String cmdType = sc.next();
@@ -28,11 +31,58 @@ public class CommandController {
         }
 
         sc.close();
+        */
 
-        return getCommand(cmdType, cmdArgs);
+        CommandString cmdString = aliasController.replaceAlias(cmdTxt);
+
+        return getCommand(cmdString);
     }
 
-    private Command getCommand(String cmdType, String cmdArgs) {
+    private Command getCommand(CommandString cmdString) {
+        String cmdArgs = cmdString.getAlias();
+
+        if (cmdString.getType() == null) {
+            return new ArgumentCommand(cmdArgs, managerHolder);
+        }
+
+        switch (cmdString.getType()) {
+            case ADD :
+                return new AddCommand(cmdArgs, managerHolder);
+            case SHOW :
+                return new SearchCommand(cmdArgs, managerHolder);
+            case EDIT :
+                return new EditCommand(cmdArgs, managerHolder);
+            case MARK :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.MARK);
+            case UNMARK :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.UNMARK);
+            case STATUS :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.STATUS);
+            case RESCHEDULE :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.RESCHEDULE);
+            case RENAME :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.RENAME);
+            case DELETE :
+                return new DeleteCommand(cmdArgs, managerHolder);
+            case DETAILS :
+                return new DetailsCommand(cmdArgs, managerHolder);
+            case UNDO :
+                return new UndoCommand(managerHolder);
+            case REDO :
+                return new RedoCommand(managerHolder);
+            case BACK :
+                return new BackCommand(managerHolder);
+            case EXIT :
+                return new ExitCommand(managerHolder);
+            case FREEDAY :
+                return new FreeDaySearchCommand(cmdArgs, managerHolder);
+            case REPORT :
+                return new ReportCommand(managerHolder);
+            default :
+                return new ArgumentCommand(cmdArgs, managerHolder);
+        }
+
+        /*
         switch (cmdType) {
             case "add" :
             case "create" :
@@ -81,5 +131,6 @@ public class CommandController {
             default :
                 return new ArgumentCommand(cmdType + " " + cmdArgs, managerHolder);
         }
+        */
     }
 }
