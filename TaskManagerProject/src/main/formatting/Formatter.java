@@ -5,6 +5,7 @@ import main.message.DeleteSuccessfulMessage;
 import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
+import main.message.FreeDaySearchMessage;
 import main.message.Message;
 import main.message.ReportMessage;
 import main.modeinfo.EditModeInfo;
@@ -24,6 +25,7 @@ public class Formatter {
     private EnumFormatter enumFormatter;
     private DetailsFormatter detailsFormatter;
     private ReportFormatter reportFormatter;
+    private FreeDaySearchFormatter freeDaySearchFormatter;
     
     private EditModeFormatter editModeFormatter;
     private SearchModeFormatter searchModeFormatter;
@@ -70,6 +72,7 @@ public class Formatter {
         enumFormatter = new EnumFormatter();
         detailsFormatter = new DetailsFormatter();
         reportFormatter = new ReportFormatter();
+        freeDaySearchFormatter = new FreeDaySearchFormatter();
         
         editModeFormatter = new EditModeFormatter();
         searchModeFormatter = new SearchModeFormatter();
@@ -110,6 +113,12 @@ public class Formatter {
                 ReportMessage reportMessage = (ReportMessage)message;
                 formattedMessage = reportFormatter.format(reportMessage);
                 break;
+            case FREE_DAY_SEARCH_SUCCESSFUL :
+                FreeDaySearchMessage freeDaySearchMessage = 
+                        (FreeDaySearchMessage)message;
+                formattedMessage = 
+                        freeDaySearchFormatter.format(freeDaySearchMessage);
+
         }
         return formattedMessage;
     }
