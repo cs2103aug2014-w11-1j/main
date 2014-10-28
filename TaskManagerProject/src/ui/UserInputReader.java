@@ -22,6 +22,8 @@ public class UserInputReader {
     private final static int KEY_RIGHT = 6;
     private final static int KEY_BACKSPACE = 8;
     private final static int KEY_DELETE = 127;
+    private final static int KEY_PGUP = 11;
+    private final static int KEY_PGDN = 12;
     
     private final static int ASCII_SPACE = 32;
     
@@ -66,6 +68,10 @@ public class UserInputReader {
             case KEY_ESC :
                 switchMode(Mode.INPUT_MODE);
                 return null;
+            case KEY_PGDN :
+                return new InputOperation(InputOperation.Operation.NEXT_COMMAND);
+            case KEY_PGUP :
+                return new InputOperation(InputOperation.Operation.PREV_COMMAND);
             default :
                 return null;
         }

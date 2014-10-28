@@ -48,14 +48,14 @@ public class UserOutputWriter {
         show(start);
     }
     
-    private String getHeader(int lineNumber) {
+    private int getHeader(int lineNumber) {
         int headerLineNumber = -1;
         for (int i = 0; i < headers.size(); i++) {
             if (headers.get(i) <= lineNumber) {
                 headerLineNumber = headers.get(i);
             }
         }
-        return lines.get(headerLineNumber);
+        return headerLineNumber;
     }
     
     private void show(int startLine) throws IOException {
@@ -72,7 +72,7 @@ public class UserOutputWriter {
         int numberOfPaddingLines = numberOfOutputLines - numberOfAvailableLines;
         
         StringBuilder builder = new StringBuilder();
-        builder.append(getHeader(startLine));
+        builder.append(lines.get(getHeader(startLine)));
         builder.append(System.lineSeparator());
         for (int i = startLine + 1; i < endLine; i++) {
             builder.append(lines.get(i));
@@ -107,8 +107,50 @@ public class UserOutputWriter {
     }
     
     public void scrollDown() throws IOException {
-        if (currentLine + reader.getTermheight() < lines.size() + 1) {
+        if (currentLine < lines.size() - 2) {
             show(currentLine + 1);
         }
+    }
+    
+    private int findPreviousHeader(int currentHeader) {
+        int previousHeader = -1;
+        for (int i = 0; i < headers.size(); i++) {
+            if (headers.get(i) < currentHeader) {
+                previousHeader = headers.get(i);
+            }
+        }
+        return previousHeader;
+    }
+    
+    private int findNextHeader(int currentHeader) {
+        for (int i = 0; i < headers.size(); i++) {
+            if (headers.get(i) > currentHeader) {
+                return headers.get(i);
+            }
+        }
+        return -1;
+    }
+    
+    public void prevCommand() throws IOException {
+        int currentHeader = getHeader(currentLine);
+        int nextLine;
+        if (currentHeader == currentLine) {
+            nextLine = findPreviousHeader(currentHeader);
+            if (nextLine == -1) {
+                nextLine = 0;
+            }
+        } else {
+            nextLine = currentHeader;
+        }
+        show(nextLine);
+    }
+    
+    public void nextCommand() throws IOException {
+        int currentHeader = getHeader(currentLine);
+        int nextLine = findNextHeader(currentHeader);
+        if (nextLine == -1) {
+            nextLine = lines.size() - 2;
+        }
+        show(nextLine);
     }
 }

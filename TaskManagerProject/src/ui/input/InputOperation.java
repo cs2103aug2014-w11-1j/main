@@ -6,6 +6,8 @@ public class InputOperation implements Input {
     public enum Operation {
         SCROLL_UP,
         SCROLL_DOWN,
+        PREV_COMMAND,
+        NEXT_COMMAND
     }
     
     Operation operation;

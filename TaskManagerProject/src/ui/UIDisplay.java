@@ -60,6 +60,12 @@ public class UIDisplay {
                     case SCROLL_DOWN :
                         userOutputWriter.scrollDown();
                         break;
+                    case PREV_COMMAND :
+                        userOutputWriter.prevCommand();
+                        break;
+                    case NEXT_COMMAND :
+                        userOutputWriter.nextCommand();
+                        break;
                 }
         }
     }
