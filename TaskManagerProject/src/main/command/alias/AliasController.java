@@ -2,27 +2,25 @@ package main.command.alias;
 
 import java.util.Scanner;
 
-import manager.ManagerHolder;
-
 public class AliasController {
     private static final String SYMBOL_DELIM = " ";
 
-    AliasManager aliasManager;
+    private AliasStorage aliasStorage;
 
-    public AliasController(ManagerHolder managerHolder) {
-        aliasManager = managerHolder.getAliasManager();
+    public AliasController(AliasStorage aliasStorage) {
+        this.aliasStorage = aliasStorage;
     }
 
     public CommandString replaceAlias(String cmd) {
         cmd = cleanCmdString(cmd);
-        aliasManager.beforeAliasCheck();
+        beforeAliasCheck();
 
         StringBuilder sB = new StringBuilder();
 
         Scanner sc = new Scanner(cmd);
         while (sc.hasNext()) {
             String original = sc.next();
-            String replacement = aliasManager.getCustomAlias(original);
+            String replacement = getCustomAlias(original);
             if (replacement != null) {
                 sB.append(replacement);
             } else {
@@ -32,9 +30,21 @@ public class AliasController {
         }
         sc.close();
 
-        return new CommandString(aliasManager, sB.toString().trim());
+        return new CommandString(this, sB.toString().trim());
     }
 
+
+    private void beforeAliasCheck() {
+        aliasStorage.read();
+    }
+
+    public CommandType getReservedCommand(String cmdString) {
+        return aliasStorage.getReservedCommand(cmdString.toLowerCase());
+    }
+
+    public String getCustomAlias(String possibleAlias) {
+        return aliasStorage.getCustomCommand(possibleAlias.toLowerCase());
+    }
 
     private static String cleanCmdString(String cmdString) {
         return stripExtraDelims(cmdString).trim();

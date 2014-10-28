@@ -1,20 +1,20 @@
 package main.command.alias;
 
 public class CommandString {
-    private AliasData.CommandType type;
+    private CommandType type;
     private String alias;
 
-    public CommandString(AliasManager aliasManager, String cmdString) {
+    public CommandString(AliasController aliasController, String cmdString) {
         int delimIdx = cmdString.indexOf(' ');
         if (delimIdx == -1) {
-            type = aliasManager.getReservedCommand(cmdString);
+            type = aliasController.getReservedCommand(cmdString);
             if (type == null) {
                 alias = cmdString;
             } else {
                 alias = "";
             }
         } else {
-            type = aliasManager.getReservedCommand(cmdString.substring(0, delimIdx));
+            type = aliasController.getReservedCommand(cmdString.substring(0, delimIdx));
             if (type == null) {
                 alias = cmdString;
             } else {
@@ -23,7 +23,7 @@ public class CommandString {
         }
     }
 
-    public AliasData.CommandType getType() {
+    public CommandType getType() {
         return type;
     }
 

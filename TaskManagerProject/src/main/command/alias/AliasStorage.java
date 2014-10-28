@@ -2,16 +2,14 @@ package main.command.alias;
 
 import java.util.HashMap;
 
-public class AliasInputOutput {
-
+public class AliasStorage {
+    private HashMap<String, CommandType> reservedMap;
+    private HashMap<String, String> customMap;
     private final String fileName;
     private String fileHash = "";
 
-    private final AliasData aliasData;
-
-    public AliasInputOutput(AliasData aliasData, String fileName) {
+    public AliasStorage(String fileName) {
         this.fileName = fileName;
-        this.aliasData = aliasData;
     }
 
     /**
@@ -25,8 +23,8 @@ public class AliasInputOutput {
         HashMap<String, String> reservedAliases = readReservedAliasesFromFile();
         HashMap<String, String> customAliases = readCustomAliasesFromFile();
 
-        aliasData.updateReservedMap(reservedAliases);
-        aliasData.updateCustomMap(customAliases);
+        updateReservedMap(reservedAliases);
+        updateCustomMap(customAliases);
 
         fileHash = "tempLock";
 
@@ -59,5 +57,30 @@ public class AliasInputOutput {
     private boolean fileUnchanged() {
         String currentHash = "tempLock";
         return fileHash.equals(currentHash);
+    }
+
+    public void updateCustomMap(HashMap<String, String> customCommands) {
+        customMap = customCommands;
+    }
+
+    public void updateReservedMap(HashMap<String, String> reservedCommands) {
+        assert reservedCommands != null;
+        assert CommandType.values().length == reservedCommands.size();
+
+        reservedMap = new HashMap<String, CommandType>();
+
+        for (CommandType type : CommandType.values()) {
+            String alias = reservedCommands.get(type.toString().toLowerCase());
+            assert alias != null;
+            reservedMap.put(alias, type);
+        }
+    }
+
+    public CommandType getReservedCommand(String cmdString) {
+        return reservedMap.get(cmdString);
+    }
+
+    public String getCustomCommand(String cmdString) {
+        return customMap.get(cmdString);
     }
 }
