@@ -7,6 +7,7 @@ public interface Message {
         EDIT_SUCCESSFUL,
         DELETE_SUCCESSFUL,
         FREE_DAY_SEARCH_SUCCESSFUL,
+        FREE_TIME_SEARCH_SUCCESSFUL,
         DETAILS,
         REPORT
     }

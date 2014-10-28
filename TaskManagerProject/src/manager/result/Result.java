@@ -26,6 +26,7 @@ public interface Result {
         INVALID_COMMAND,
         INVALID_ARGUMENT,
         FREE_DAY,
+        FREE_TIME,
         REPORT,
         EXIT
     }

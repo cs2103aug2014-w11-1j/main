@@ -14,6 +14,7 @@ import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
 import main.message.EnumMessage.MessageType;
 import main.message.FreeDaySearchMessage;
+import main.message.FreeTimeSearchMessage;
 import main.message.Message;
 import main.message.ReportMessage;
 import main.modeinfo.EditModeInfo;
@@ -29,6 +30,7 @@ import manager.result.DeleteResult;
 import manager.result.DetailsResult;
 import manager.result.EditResult;
 import manager.result.FreeDayResult;
+import manager.result.FreeTimeResult;
 import manager.result.ReportResult;
 import manager.result.Result;
 import manager.result.Result.Type;
@@ -438,6 +440,12 @@ public class StateManager {
             					freeDayResult.getSearchStartDate(),freeDayResult.getSearchEndDate());
             	return freeDayMessage;
                 
+            case FREE_TIME :
+            	FreeTimeResult freeTimeResult = (FreeTimeResult) result;
+            	FreeTimeSearchMessage freeTimeMessage = 
+            			new FreeTimeSearchMessage(freeTimeResult.getDate(),
+            					freeTimeResult.getFreeTimeList());
+            	return freeTimeMessage;
             case DETAILS :
                 DetailsResult detailsResult = (DetailsResult)result;
                 return new DetailsMessage(detailsResult.getTask(),
