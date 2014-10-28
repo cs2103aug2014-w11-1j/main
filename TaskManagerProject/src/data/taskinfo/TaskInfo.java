@@ -2,6 +2,7 @@ package data.taskinfo;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -117,6 +118,32 @@ public class TaskInfo {
     	return endTime;
     }
     
+    public boolean isValid() {
+        if (!validDateTime()) {
+            return false;
+        }
+        
+        if (name == null || name.trim().isEmpty()) {
+            return false;
+        }
+        
+        if (bothStartAndEndExist()) {
+            LocalDateTime start = LocalDateTime.of(startDate, startTime);
+            LocalDateTime end = LocalDateTime.of(endDate, endTime);
+    
+            return (start.isBefore(end));
+        } else {
+            return true;
+        }
+    }
+    
+    private boolean bothStartAndEndExist() {
+        return (startTime != null &&
+                startDate != null &&
+                endTime != null &&
+                endDate != null);
+    }
+    
     /**
      * Requirements:<br>
      * Keyword: D/T fields = date/time fields.<br>
@@ -127,6 +154,10 @@ public class TaskInfo {
      */
     public void assertValidDateTime() {
         assert validDateTime() : "Invalid Date/Time combination!";
+    }
+
+    public void assertIsValid() {
+        assert isValid() : "Invalid task detected!";
     }
 
     private boolean validDateTime() {

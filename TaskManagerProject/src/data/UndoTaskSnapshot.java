@@ -19,6 +19,8 @@ public class UndoTaskSnapshot {
     private final TaskId taskId;
     
     public UndoTaskSnapshot(TaskInfo taskInfo, TaskId taskId) {
+        assert taskId != null;
+        
         this.taskInfo = taskInfo;
         this.taskId = taskId;
     }

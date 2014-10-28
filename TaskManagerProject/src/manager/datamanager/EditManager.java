@@ -42,9 +42,10 @@ public class EditManager extends AbstractManager {
 
             TaskInfo originTask = taskData.getTaskInfo(taskId);
             if (originTask == null){
-                return new SimpleResult(Result.Type.EDIT_FAILURE);
+                allSuccessful = false;
+                break;
             }
-            // PLACEHOLDER : Change later to a proper batch response.
+            // TODO : Change later to a proper batch response.
             editedTask = mergeTasks(originTask, taskInfo);
             returnTaskId = taskId;
             boolean isSuccessful = taskData.setTaskInfo(taskId, editedTask);

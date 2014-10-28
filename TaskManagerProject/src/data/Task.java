@@ -16,10 +16,12 @@ public class Task {
     
     public Task (TaskInfo taskInfo) {
         this.taskInfo = new TaskInfo(taskInfo);
+        assert taskInfo.isValid() : "Invalid taskInfo detected in TaskData!";
         initialiseFields();
     }
 
     public TaskInfo getTaskInfo() {
+        assert taskInfo.isValid() : "Invalid taskInfo detected in TaskData!";
         return new TaskInfo(taskInfo);
     }
     
@@ -35,52 +37,96 @@ public class Task {
         return taskInfo.name;
     }
     
-    public void setName(String name) {
+    public boolean setName(String name) {
+        String original = taskInfo.name;
+        
         taskInfo.name = name;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.name = original;
+            return false;
+        }
     }
     
     public LocalTime getStartTime() {
-        throw new UnsupportedOperationException("Not implemented yet");
-        //return taskInfo.endTime;
+        return taskInfo.endTime;
     }
     
-    public void setStartTime(LocalTime startTime) {
-        throw new UnsupportedOperationException("Not implemented yet");
-        //taskInfo.endTime = startTime;
+    public boolean setStartTime(LocalTime startTime) {
+        LocalTime original = taskInfo.startTime;
+        
+        taskInfo.startTime = startTime;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.startTime = original;
+            return false;
+        }
     }
     
     public LocalDate getStartDate() {
-        throw new UnsupportedOperationException("Not implemented yet");
-        //return taskInfo.endDate;
+        return taskInfo.endDate;
     }
     
-    public void setStartDate(LocalDate startDate) {
-        throw new UnsupportedOperationException("Not implemented yet");
-        //taskInfo.endDate = startDate;
+    public boolean setStartDate(LocalDate startDate) {
+        LocalDate original = taskInfo.startDate;
+        
+        taskInfo.startDate = startDate;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.startDate = original;
+            return false;
+        }
     }
     
     public LocalTime getEndTime() {
         return taskInfo.endTime;
     }
     
-    public void setEndTime(LocalTime endTime) {
+    public boolean setEndTime(LocalTime endTime) {
+        LocalTime original = taskInfo.endTime;
+        
         taskInfo.endTime = endTime;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.endTime = original;
+            return false;
+        }
     }
     
     public LocalDate getEndDate() {
         return taskInfo.endDate;
     }
     
-    public void setEndDate(LocalDate endDate) {
+    public boolean setEndDate(LocalDate endDate) {
+        LocalDate original = taskInfo.endDate;
+        
         taskInfo.endDate = endDate;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.endDate = original;
+            return false;
+        }
     }
     
     public String getDetails() {
         return taskInfo.details;
     }
     
-    public void setDetails(String details) {
+    public boolean setDetails(String details) {
+        String original = taskInfo.details;
+        
         taskInfo.details = details;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.details = original;
+            return false;
+        }
     }
     
     public Tag[] getTags() {
@@ -120,36 +166,73 @@ public class Task {
         return taskInfo.priority;
     }
     
-    public void setPriority(Priority priority) {
+    public boolean setPriority(Priority priority) {
+        Priority original = taskInfo.priority;
+        
         taskInfo.priority = priority;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.priority = original;
+            return false;
+        }
     }
     
     public Status getStatus() {
         return taskInfo.status;
     }
     
-    public void setStatus(Status status) {
+    public boolean setStatus(Status status) {
+        Status original = taskInfo.status;
+        
         taskInfo.status = status;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.status = original;
+            return false;
+        }
     }
     
     public int getNumberOfTimes() {
         return taskInfo.numberOfTimes;
     }
     
-    public void setNumberOfTimes(int numberOfTimes) {
+    public boolean setNumberOfTimes(int numberOfTimes) {
+        int original = taskInfo.numberOfTimes;
+        
         taskInfo.numberOfTimes = numberOfTimes;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.numberOfTimes = original;
+            return false;
+        }
     }
     
     public Duration getRepeatIntervalDays() {
         return taskInfo.repeatInterval;
     }
     
-    public void setRepeatIntervalDays(Duration repeatInterval) {
+    public boolean setRepeatIntervalDays(Duration repeatInterval) {
+        Duration original = taskInfo.repeatInterval;
+        
         taskInfo.repeatInterval = repeatInterval;
+        if (taskInfo.isValid()) {
+            return true;
+        } else {
+            taskInfo.repeatInterval = original;
+            return false;
+        }
     }
     
-    public void setAllInfo(TaskInfo taskInfo) {
-        this.taskInfo = new TaskInfo(taskInfo);
+    public boolean setAllInfo(TaskInfo taskInfo) {
+        if (taskInfo.isValid()) {
+            this.taskInfo = new TaskInfo(taskInfo);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void initialiseFields() {

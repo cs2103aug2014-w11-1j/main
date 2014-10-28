@@ -89,7 +89,7 @@ public class AddCommand extends Command {
 
     @Override
     protected boolean isValidArguments() {
-        return true;
+        return (taskToAdd != null && taskToAdd.isValid());
     }
 
     @Override

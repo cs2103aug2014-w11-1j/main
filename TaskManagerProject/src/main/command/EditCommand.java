@@ -242,7 +242,7 @@ public class EditCommand extends TargetedCommand {
             editTask.startDate = dtPair.getFirstDate();
             editTask.startTime = dtPair.getFirstTime();
             editTask.endDate = dtPair.getSecondDate();
-            editTask.endTime = dtPair.getFirstTime();
+            editTask.endTime = dtPair.getSecondTime();
 
             // handle the case where one value has to be filled in
             if (!dtPair.hasSecondDate()) {
