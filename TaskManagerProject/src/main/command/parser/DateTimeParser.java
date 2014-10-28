@@ -1,10 +1,13 @@
 package main.command.parser;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,9 +18,11 @@ import java.util.Set;
 
 public class DateTimeParser {
     private static final String SYMBOL_DELIM = " ";
+    private static final int MIN_YEAR = 1000;
 
     private static Map<DateTimeFormatter, String> datePartialFormatPatterns;
     private static Map<DateTimeFormatter, String> dateFullFormatPatterns;
+    private static Map<String, String> dateWeekOfDayShortForms;
     private static LocalDate datePatternsLastUpdate;
     private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
     private static Set<String> prepositions;
@@ -79,6 +84,21 @@ public class DateTimeParser {
     private static LocalDate parseRelativeDate(String dateString) {
         // TODO weekdays (absolute?), +7d, -7d
         switch (dateString.toLowerCase()) {
+            case "mon" :
+            case "monday" :
+            case "tue" :
+            case "tuesday" :
+            case "wed" :
+            case "wednesday" :
+            case "thu" :
+            case "thursday" :
+            case "fri" :
+            case "friday" :
+            case "sat" :
+            case "saturday" :
+            case "sun" :
+            case "sunday" :
+                return getNextDayOfWeek(dateString);
             case "yesterday" :
                 return LocalDate.now().minusDays(1);
             case "today" :
@@ -89,6 +109,19 @@ public class DateTimeParser {
             default :
                 return null;
         }
+    }
+
+    private static LocalDate getNextDayOfWeek(String dateString) {
+        buildWeekOfDayMap();
+
+        dateString = dateString.toLowerCase();
+        if (dateWeekOfDayShortForms.containsKey(dateString)) {
+            dateString = dateWeekOfDayShortForms.get(dateString);
+        }
+        DayOfWeek dayOfWeek = DayOfWeek.valueOf(dateString.toUpperCase());
+        Temporal adjustedDay = TemporalAdjusters.next(dayOfWeek)
+                .adjustInto(LocalDate.now());
+        return LocalDate.from(adjustedDay);
     }
 
     private static LocalDate parseAbsoluteDate(String dateString) {
@@ -118,13 +151,30 @@ public class DateTimeParser {
             try {
                 String test = dateString + missingField;
                 LocalDate d = LocalDate.parse(test, format);
-                return d;
+                if (d.getYear() > MIN_YEAR) {
+                    return d;
+                }
             } catch (DateTimeParseException e) {
                 // do nothing
             }
         }
 
         return null;
+    }
+
+    private static void buildWeekOfDayMap() {
+        if (dateWeekOfDayShortForms != null) {
+            return;
+        }
+
+        dateWeekOfDayShortForms = new HashMap<String, String>();
+        dateWeekOfDayShortForms.put("mon", "monday");
+        dateWeekOfDayShortForms.put("tue", "tuesday");
+        dateWeekOfDayShortForms.put("wed", "wednesday");
+        dateWeekOfDayShortForms.put("thu", "thursday");
+        dateWeekOfDayShortForms.put("fri", "friday");
+        dateWeekOfDayShortForms.put("sat", "saturday");
+        dateWeekOfDayShortForms.put("sun", "sunday");
     }
 
     private static void buildDatePatternHashMap() {
