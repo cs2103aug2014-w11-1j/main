@@ -83,6 +83,7 @@ public class DateTimeParser {
 
     private static LocalDate parseRelativeDate(String dateString) {
         // TODO weekdays (absolute?), +7d, -7d
+        LocalDate parsedDate = null;
         switch (dateString.toLowerCase()) {
             case "mon" :
             case "monday" :
@@ -98,16 +99,31 @@ public class DateTimeParser {
             case "saturday" :
             case "sun" :
             case "sunday" :
-                return getNextDayOfWeek(dateString);
+                parsedDate = getNextDayOfWeek(dateString);
             case "yesterday" :
-                return LocalDate.now().minusDays(1);
+                parsedDate = LocalDate.now().minusDays(1);
             case "today" :
             case "now" :
-                return LocalDate.now();
+                parsedDate = LocalDate.now();
             case "tomorrow" :
-                return LocalDate.now().plusDays(1);
-            default :
-                return null;
+                parsedDate = LocalDate.now().plusDays(1);
+        }
+        parsedDate = parseRelativeDateAsPlusMinus(dateString);
+
+        return parsedDate;
+    }
+
+    private static LocalDate parseRelativeDateAsPlusMinus(String dateString) {
+        String modifier = null;
+        if ((dateString.startsWith("+") || dateString.startsWith("-")) &&
+                dateString.endsWith("d")) {
+            modifier = dateString.substring(0, dateString.length() - 1);
+        }
+        try {
+            int modifierInt = Integer.parseInt(modifier);
+            return LocalDate.now().plusDays(modifierInt);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 
@@ -239,7 +255,40 @@ public class DateTimeParser {
 
     private static LocalTime parseRelativeTime(String timeString) {
         // TODO Support for relative times (+3h, -3h, now, etc)
-        return null;
+        LocalTime parsedTime = null;
+        parsedTime = parseRelativeTimeAsPlusMinus(timeString);
+        return parsedTime;
+    }
+
+    private static LocalTime parseRelativeTimeAsPlusMinus(String timeString) {
+        // TODO refactor into enum map to support "second", "sec", "min", etc.
+        timeString = timeString.toLowerCase();
+        String number = null;
+        String unit = null;
+        if ((timeString.startsWith("+") || timeString.startsWith("-")) &&
+                (timeString.endsWith("s") || timeString.endsWith("m") ||
+                        timeString.endsWith("h"))) {
+            number = timeString.substring(0, timeString.length() - 1);
+            unit = timeString.substring(timeString.length() - 1);
+        }
+        try {
+            int modifierInt = Integer.parseInt(number);
+            LocalTime now = LocalTime.now();
+            switch (unit) {
+                case "s" :
+                    return now.plusSeconds(modifierInt);
+                case "m" :
+                    return now.plusMinutes(modifierInt);
+                case "h" :
+                    return now.plusHours(modifierInt);
+                default :
+                    return null;
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     private static LocalTime parseAbsoluteTime(String timeString) {
