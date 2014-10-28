@@ -34,10 +34,18 @@ public class AliasStorage {
     private HashMap<String, String> readCustomAliasesFromFile() {
         HashMap<String, String> customAliases = new HashMap<String, String>();
 
+        // .put(to-be-replaced, replacement)
         customAliases.put("search", "show");
+        customAliases.put("ls", "show");
+        customAliases.put("set", "edit");
+        customAliases.put("change", "edit");
+        customAliases.put("modify", "edit");
+        customAliases.put("del", "delete");
+        customAliases.put("remove", "delete");
+        customAliases.put("rm", "delete");
         customAliases.put("detail", "details");
+        customAliases.put("return", "back");
         customAliases.put("quit", "exit");
-        customAliases.put("d", "delete 1");
 
         return customAliases;
     }
