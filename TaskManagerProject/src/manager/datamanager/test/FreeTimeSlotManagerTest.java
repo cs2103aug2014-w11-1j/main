@@ -30,6 +30,7 @@ public class FreeTimeSlotManagerTest {
 	public void testDate1() {
 		TaskData taskData = new TaskData();
 		
+		// Tasks on 16, 17, 20 november
 		taskData.add(task1);
 		taskData.add(task2);
 		taskData.add(task3);
@@ -55,7 +56,7 @@ public class FreeTimeSlotManagerTest {
     public void testDate2 () {
 		
 		TaskData taskData = new TaskData();
-	
+
 		taskData.add(task3);
 		taskData.add(task1);
 		taskData.add(task2);

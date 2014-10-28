@@ -105,9 +105,11 @@ public class Formatter {
             case DETAILS :
                 DetailsMessage detailsMessage = (DetailsMessage)message;
                 formattedMessage = detailsFormatter.format(detailsMessage);
+                break;
             case REPORT :
                 ReportMessage reportMessage = (ReportMessage)message;
                 formattedMessage = reportFormatter.format(reportMessage);
+                break;
         }
         return formattedMessage;
     }
