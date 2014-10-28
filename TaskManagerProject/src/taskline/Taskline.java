@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import main.MainController;
 import main.command.alias.AliasData;
+import main.command.alias.AliasInputOutput;
 import manager.ManagerHolder;
 import ui.UIDisplay;
 import data.TaskData;
@@ -20,11 +21,13 @@ public class Taskline {
     public static void main(String[] args) throws IOException {
         //setupLogger();
         String fileName = "tasks.txt";
+        String aliasFileName = "alias.txt";
 
         TaskData taskData = new TaskData();
-        AliasData aliasData = new AliasData();
         FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
-        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput, aliasData);
+        AliasData aliasData = new AliasData();
+        AliasInputOutput aliasInputOutput = new AliasInputOutput(aliasData, aliasFileName);
+        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput);
         MainController mainController = new MainController(managerHolder);
         UIDisplay uiDisplay = new UIDisplay(mainController);
 

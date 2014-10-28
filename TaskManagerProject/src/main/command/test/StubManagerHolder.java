@@ -24,7 +24,7 @@ class StubManagerHolder extends ManagerHolder {
     private StubEditManager stubEditManager;
 
     public StubManagerHolder() {
-        super(null, null, null);
+        super(null, null);
         stubAddManager = new StubAddManager();
         stubSearchManager = new StubSearchManager();
         stubStateManager = new StubStateManager();

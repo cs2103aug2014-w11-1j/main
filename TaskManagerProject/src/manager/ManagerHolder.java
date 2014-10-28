@@ -1,8 +1,6 @@
 package manager;
 
 import io.FileInputOutput;
-import main.command.alias.AliasData;
-import main.command.alias.AliasManager;
 import manager.datamanager.AddManager;
 import manager.datamanager.DeleteManager;
 import manager.datamanager.EditManager;
@@ -21,10 +19,9 @@ public class ManagerHolder {
     private UndoManager undoManager;
     private FreeDaySearchManager freeDaySearchManager;
     private ReportManager reportManager;
-    private AliasManager aliasManager;
 
 
-    public ManagerHolder(TaskData taskData, FileInputOutput fileInputOutput, AliasData aliasData) {
+    public ManagerHolder(TaskData taskData, FileInputOutput fileInputOutput) {
         addManager = new AddManager(taskData);
         searchManager = new SearchManager(taskData);
         editManager = new EditManager(taskData);
@@ -32,7 +29,6 @@ public class ManagerHolder {
         undoManager = new UndoManager(taskData);
         freeDaySearchManager = new FreeDaySearchManager(taskData);
         reportManager = new ReportManager(taskData);
-        aliasManager = new AliasManager(aliasData);
         stateManager = new StateManager(fileInputOutput, undoManager, searchManager);
     }
 
@@ -66,9 +62,5 @@ public class ManagerHolder {
 
     public ReportManager getReportManager() {
         return reportManager;
-    }
-
-    public AliasManager getAliasManager() {
-        return aliasManager;
     }
 }
