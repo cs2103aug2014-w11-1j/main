@@ -249,6 +249,7 @@ public class SearchManager extends AbstractManager {
     public SearchResult getLastSearchResult() {
         SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks),
                 getIdArray(lastSearchedTasks), null);
+        result.setSuggestion(lastSearchedSuggestions);
 
         return result;
     }
