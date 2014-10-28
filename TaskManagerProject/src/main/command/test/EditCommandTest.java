@@ -268,7 +268,20 @@ public class EditCommandTest {
         assertTaskNumbers(editManager, 1);
         editTaskInfo.endTime = LocalTime.of(14, 0);
         editTaskInfo.endDate = LocalDate.of(2012, 10, 14);
-        //System.out.println(editManager.lastTaskInfo.endDate); //<-- trying to locate a mysterious heisenbug here.
+        assertEquals(editTaskInfo, editManager.lastTaskInfo);
+        editTaskInfo = TaskInfo.createEmpty();
+
+
+        // Expected: Store command: rename task "rename" to rename.
+        executeEdit("rename rename", managerHolder, EditCommand.ParseType.RENAME);
+        assertStoreCommand(stateManager);
+
+        // Expected: [Stored Command] rename task "rename" to rename.
+        executeStoredCommand(stateManager, managerHolder, 1);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.EDIT_TASK, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 1);
+        editTaskInfo.name = "rename";
         assertEquals(editTaskInfo, editManager.lastTaskInfo);
         editTaskInfo = TaskInfo.createEmpty();
 

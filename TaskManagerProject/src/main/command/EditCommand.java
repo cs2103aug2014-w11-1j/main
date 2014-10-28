@@ -14,6 +14,7 @@ import data.taskinfo.Status;
 import data.taskinfo.TaskInfo;
 
 public class EditCommand extends TargetedCommand {
+    private static final String ARGUMENT_NAME = "name";
     private static final String ARGUMENT_DATETIME = "datetime";
     private static final String ARGUMENT_STATUS = "status";
     
@@ -35,7 +36,8 @@ public class EditCommand extends TargetedCommand {
         MARK,
         UNMARK,
         STATUS,
-        RESCHEDULE
+        RESCHEDULE,
+        RENAME
     }
 
     public EditCommand(String args, ManagerHolder managerHolder)
@@ -108,6 +110,8 @@ public class EditCommand extends TargetedCommand {
                 return parseStatusParams(args);
             case RESCHEDULE :
                 return parseRescheduleParams(args);
+            case RENAME :
+                return parseRenameParams(args);
             default :
                 throw new UnsupportedOperationException("Unknown Parse Type: " +
                         parseType.name());
@@ -145,6 +149,10 @@ public class EditCommand extends TargetedCommand {
         return parseEditParams(ARGUMENT_DATETIME + " " + args);
     }
 
+    private TaskInfo parseRenameParams(String args) {
+        return parseEditParams(ARGUMENT_NAME + " " + args);
+    }
+
     private TaskInfo parseEditParams(String args) {
         Scanner sc = new Scanner(args);
         if (!sc.hasNext()) {
@@ -162,7 +170,7 @@ public class EditCommand extends TargetedCommand {
         TaskInfo editTask = TaskInfo.createEmpty();
 
         switch (editType.toLowerCase()) {
-            case "name" :
+            case ARGUMENT_NAME :
                 editParam = sc.nextLine().trim();
                 editTask.name = editParam;
                 break;

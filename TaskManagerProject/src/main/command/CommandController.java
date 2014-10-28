@@ -35,11 +35,16 @@ public class CommandController {
     private Command getCommand(String cmdType, String cmdArgs) {
         switch (cmdType) {
             case "add" :
+            case "create" :
                 return new AddCommand(cmdArgs, managerHolder);
             case "show" :
             case "search" :
+            case "ls" :
                 return new SearchCommand(cmdArgs, managerHolder);
             case "edit" :
+            case "set" :
+            case "change" :
+            case "modify" :
                 return new EditCommand(cmdArgs, managerHolder);
             case "mark" :
                 return new EditCommand(cmdArgs, managerHolder, ParseType.MARK);
@@ -49,8 +54,12 @@ public class CommandController {
                 return new EditCommand(cmdArgs, managerHolder, ParseType.STATUS);
             case "reschedule" :
                 return new EditCommand(cmdArgs, managerHolder, ParseType.RESCHEDULE);
+            case "rename" :
+                return new EditCommand(cmdArgs, managerHolder, ParseType.RENAME);
             case "del" :
             case "delete" :
+            case "remove" :
+            case "rm" :
                 return new DeleteCommand(cmdArgs, managerHolder);
             case "detail" :
             case "details" :
@@ -60,6 +69,7 @@ public class CommandController {
             case "redo" :
                 return new RedoCommand(managerHolder);
             case "back" :
+            case "return" :
                 return new BackCommand(managerHolder);
             case "exit" :
             case "quit" :
