@@ -145,7 +145,12 @@ public abstract class TargetedCommand extends Command {
             return retrieveAbsoluteTaskId(relativeTaskId);
         } catch (NumberFormatException e) {
             String absoluteTaskId = args;
-            return TaskId.makeTaskId(absoluteTaskId);
+            TaskId taskId = TaskId.makeTaskId(absoluteTaskId);
+            if (taskId != null && searchManager.getTaskInfo(taskId) != null) {
+                return taskId;
+            } else {
+                return null;
+            }
         }
     }
 
