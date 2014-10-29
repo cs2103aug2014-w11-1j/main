@@ -56,10 +56,10 @@ public class SearchResult implements Result {
         
         // TODO: This is a temporary fix for the minor bug.
         // Does not cover all cases. Use removeDuplicates in searchManager instead.
-        if (taskIds.length == 1) {
-            return true;
+        if (taskIds.length == 0) {
+            return false;
         }
-
+        
         for (int i = 1; i < taskIds.length; i++) {
             if (!taskIds[0].equals(taskIds[i])) {
                 return false;
