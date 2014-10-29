@@ -80,7 +80,7 @@ public class AddCommandTest {
 
         // boundary case; partition: empty string
         String none = "";
-        task = getTaskInfo(none);
+        task = getTaskInfoWithoutName(none);
 
         assertEquals(null, task.startDate);
         assertEquals(null, task.endDate);
@@ -89,7 +89,7 @@ public class AddCommandTest {
 
         // boundary case; partition: more dates than times
         String d = DATE_STR_EARLY;
-        task = getTaskInfo(d);
+        task = getTaskInfoWithoutName(d);
 
         assertEquals(null, task.startDate);
         assertEquals(null, task.endDate);
@@ -98,7 +98,7 @@ public class AddCommandTest {
 
         // boundary case; partition: no date, one time
         String t = TIME_STR_EARLY;
-        task = getTaskInfo(t);
+        task = getTaskInfoWithoutName(t);
 
         assertEquals(null, task.startDate);
         if (tNow.isBefore(TIME_EARLY)) {
@@ -112,7 +112,7 @@ public class AddCommandTest {
         // boundary case; partition: no date, two times, EARLY -> LATE
         String ttA = mergeStrings(new String[]{
                 TIME_STR_EARLY, TIME_STR_LATE});
-        task = getTaskInfo(ttA);
+        task = getTaskInfoWithoutName(ttA);
 
         if (tNow.isBefore(TIME_EARLY)) {
             assertEquals(dNow, task.startDate);
@@ -127,7 +127,7 @@ public class AddCommandTest {
         // boundary case; partition: no date, two times, LATE -> EARLY
         String ttB = mergeStrings(new String[]{
                 TIME_STR_LATE, TIME_STR_EARLY});
-        task = getTaskInfo(ttB);
+        task = getTaskInfoWithoutName(ttB);
 
         if (tNow.isBefore(TIME_LATE)) {
             assertEquals(dNow, task.startDate);
@@ -143,7 +143,7 @@ public class AddCommandTest {
         String dt = mergeStrings(new String[]{
                 DATE_STR_EARLY, TIME_STR_EARLY});
 
-        task = getTaskInfo(dt);
+        task = getTaskInfoWithoutName(dt);
 
         assertEquals(null, task.startDate);
         assertEquals(DATE_EARLY, task.endDate);
@@ -154,7 +154,7 @@ public class AddCommandTest {
         String dtt = mergeStrings(new String[]{
                 DATE_STR_EARLY, TIME_STR_EARLY, TIME_STR_LATE});
 
-        task = getTaskInfo(dtt);
+        task = getTaskInfoWithoutName(dtt);
 
         assertEquals(DATE_EARLY, task.startDate);
         assertEquals(DATE_EARLY, task.endDate);
@@ -166,7 +166,7 @@ public class AddCommandTest {
                 DATE_STR_EARLY, TIME_STR_EARLY,
                 DATE_STR_LATE, TIME_STR_LATE});
 
-        task = getTaskInfo(dtdt);
+        task = getTaskInfoWithoutName(dtdt);
 
         assertEquals(DATE_EARLY, task.startDate);
         assertEquals(DATE_LATE, task.endDate);
@@ -186,19 +186,26 @@ public class AddCommandTest {
 
         // boundary case; partition: has priority
         String yesP = PRIORITY + PRI_HIGH;
-        task = getTaskInfo(yesP);
+        task = getTaskInfoWithoutName(yesP);
 
-        assertEquals(task.priority, Priority.HIGH);
+        assertEquals(Priority.HIGH, task.priority);
 
         //// boundary case; partition: has no priority
         String noP = "";
-        task = getTaskInfo(noP);
+        task = getTaskInfoWithoutName(noP);
         assertEquals(task.priority, Priority.NONE);
     }
 
     private TaskInfo getTaskInfo(String test) {
         StubManagerHolder mHolder = new StubManagerHolder();
         AddCommand cmd = new AddCommand(test, mHolder);
+        cmd.execute();
+        return mHolder.getAddManager().taskInfo;
+    }
+
+    private TaskInfo getTaskInfoWithoutName(String test) {
+        StubManagerHolder mHolder = new StubManagerHolder();
+        AddCommand cmd = new AddCommand(". " + test, mHolder);
         cmd.execute();
         return mHolder.getAddManager().taskInfo;
     }

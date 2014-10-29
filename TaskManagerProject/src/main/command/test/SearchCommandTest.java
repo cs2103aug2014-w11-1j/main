@@ -20,7 +20,7 @@ import org.junit.Test;
 import data.taskinfo.TaskInfo;
 
 public class SearchCommandTest {
-    
+
     @Test
     public void testKeywordParsing() {
         KeywordFilter f;
@@ -32,21 +32,23 @@ public class SearchCommandTest {
         assertNull(f);
 
         // normal name
-        String[] testStringArr = {"ab", "CDF"};
+        String[] testStringArr = new String[]{"ab", "CDF"};
         String testString = mergeStrings(testStringArr);
         f = getKeywordFilter(testString);
         assertNotNull(f);
         assertTrue(areArraysEqual(testStringArr, f.getKeywords()));
-        
+
 
         // inverted commas
+        testStringArr = new String[]{"orange"};
         testString = "\"orange\"";
         f = getKeywordFilter(testString);
         assertNotNull(f);
         assertTrue(areArraysEqual(testStringArr, f.getKeywords()));
-        
+
 
         // inverted commas with space in between
+        testStringArr = new String[]{"orange", "purple"};
         testString = "\"orange purple\"";
         f = getKeywordFilter(testString);
         assertNotNull(f);
@@ -54,6 +56,7 @@ public class SearchCommandTest {
 
 
         // inverted commas surrounding date
+        testStringArr = new String[]{"3", "PM"};
         testString = "\"3 PM \"";
         f = getKeywordFilter(testString);
         assertNotNull(f);

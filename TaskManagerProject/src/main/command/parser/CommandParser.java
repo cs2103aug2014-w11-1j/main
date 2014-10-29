@@ -25,12 +25,14 @@ public class CommandParser {
     private static String parseNameRecurse(String args) {
         if (hasIgnoredSegment(args)) {
             String ignoredSegment = getIgnoredSegment(args);
-            int startIgnoreIdx = args.indexOf(ignoredSegment) - 1;
-            int endIgnoreIdx = startIgnoreIdx + ignoredSegment.length() + 1;
+            int startIgnoreIdx = args.indexOf(ignoredSegment);
+            int endIgnoreIdx = startIgnoreIdx + ignoredSegment.length();
 
             // recursively parse non-ignored segments
-            String front = parseNameRecurse(args.substring(0, startIgnoreIdx));
-            String back = parseNameRecurse(args.substring(endIgnoreIdx));
+            String front = args.substring(0, startIgnoreIdx).trim();
+            front = parseNameRecurse(front);
+            String back = args.substring(endIgnoreIdx).trim();
+            back = parseNameRecurse(back);
 
             // remove SYMBOL_IGNORE from both sides
             String cleanedIgnoredSegment =

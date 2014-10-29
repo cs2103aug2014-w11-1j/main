@@ -124,29 +124,27 @@ public class SummaryUtility {
         return taskBefore.endDate.plusDays(1).equals(taskAfter.endDate);
     }
     
-    private boolean isDifferentDate(TaskInfo task1, TaskInfo task2) {
-        if (task1.endTime == null && task2.endTime != null) {
-            return true;
-        } else if (task1.endTime != null && task2.endTime == null) {
-            return true;
-        } else if (task1.endTime == null && task2.endTime == null) {
-            return false;
+    private LocalDate getActualDate(TaskInfo task) {
+        if (task.endTime == null) {
+            return task.endDate;
+        } else if (task.startTime == null) {
+            return task.endDate;
         } else {
-            if (task1.endDate.equals(task2.endDate)) {
-                if (isEndingAtMidnight(task1) && !isEndingAtMidnight(task2)) {
-                    return true;
-                } else if (!isEndingAtMidnight(task1) && isEndingAtMidnight(task2)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else if (isOneDayAfter(task1, task2)){
-                return isEndingAtMidnight(task1) || !isEndingAtMidnight(task2);
-            } else if (isOneDayAfter(task2, task1)) {
-                return !isEndingAtMidnight(task1) || isEndingAtMidnight(task1);
+            if (task.endTime == LocalTime.MIDNIGHT) {
+                return task.endDate.plusDays(-1);
             } else {
-                return true;
+                return task.endDate;
             }
+        }
+    }
+    
+    private boolean isDifferentDate(TaskInfo task1, TaskInfo task2) {
+        LocalDate date1 = getActualDate(task1);
+        LocalDate date2 = getActualDate(task2);
+        if (date1 == null) {
+            return date2 != null;
+        } else {
+            return !date1.equals(date2);
         }
     }
     
