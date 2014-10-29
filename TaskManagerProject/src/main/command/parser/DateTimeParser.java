@@ -69,6 +69,8 @@ public class DateTimeParser {
     public static LocalDate parseDate(String dateString) {
         buildDatePatternHashMap();
 
+        dateString = removePrepositions(dateString);
+
         LocalDate d = parseRelativeDate(dateString);
         if (d == null) {
             d = parseAbsoluteDate(dateString);
@@ -152,7 +154,6 @@ public class DateTimeParser {
 
     private static LocalDate matchDatePatterns(
             Map<DateTimeFormatter, String> dateMap, String dateString) {
-        dateString = removePrepositions(dateString);
         // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
         dateString = capitaliseFirstLetter(dateString);
 
@@ -241,6 +242,8 @@ public class DateTimeParser {
     public static LocalTime parseTime(String timeString) {
         buildTimePatternHashMap();
 
+        timeString = removePrepositions(timeString);
+
         LocalTime t = parseRelativeTime(timeString);
         if (t == null) {
             t = parseAbsoluteTime(timeString);
@@ -298,7 +301,6 @@ public class DateTimeParser {
 
     private static LocalTime matchTimePatterns(
             Map<DateTimeFormatter, String> timeMap, String timeString) {
-        timeString = removePrepositions(timeString);
         // 3 pm -> 3 PM
         timeString = timeString.toUpperCase();
 
