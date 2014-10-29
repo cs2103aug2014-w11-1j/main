@@ -86,6 +86,9 @@ public class DateTimeParser {
     private static LocalDate parseRelativeDate(String dateString) {
         // TODO weekdays (absolute?), +7d, -7d
         LocalDate parsedDate = null;
+
+        parsedDate = parseRelativeDateAsPlusMinus(dateString);
+
         switch (dateString.toLowerCase()) {
             case "mon" :
             case "monday" :
@@ -110,7 +113,6 @@ public class DateTimeParser {
             case "tomorrow" :
                 parsedDate = LocalDate.now().plusDays(1);
         }
-        parsedDate = parseRelativeDateAsPlusMinus(dateString);
 
         return parsedDate;
     }
