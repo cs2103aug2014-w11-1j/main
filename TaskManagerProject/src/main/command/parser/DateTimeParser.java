@@ -105,13 +105,17 @@ public class DateTimeParser {
             case "sun" :
             case "sunday" :
                 parsedDate = getNextDayOfWeek(dateString);
+                break;
             case "yesterday" :
                 parsedDate = LocalDate.now().minusDays(1);
+                break;
             case "today" :
             case "now" :
                 parsedDate = LocalDate.now();
+                break;
             case "tomorrow" :
                 parsedDate = LocalDate.now().plusDays(1);
+                break;
         }
 
         return parsedDate;
