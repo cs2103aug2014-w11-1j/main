@@ -109,7 +109,6 @@ public class CrashTester {
         testRandom(30, ListType.DELETE, ListType.RANDOM);
         testRandom(30, ListType.DELETE, ListType.TASKID);
         
-        System.out.println(mainController.runCommand("show"));
         
         testRandom(100, ListType.ALL, ListType.ALL);
         
@@ -236,6 +235,7 @@ public class CrashTester {
     
     private void terminateAndPrintLog() {
         printLog();
+        deleteTestFile();
         System.exit(0);
     }
     
