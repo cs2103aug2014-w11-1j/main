@@ -25,10 +25,9 @@ import data.TaskData;
  * @author Oh
  */
 public class CrashTester {
-    private static final int SIZE_LOGQUEUE = 80;
+    private static final int SIZE_LOGQUEUE = 200;
     private static final int SIZE_INITIAL_HASHSET = 1000;
     
-    private static final String NEWL = "\r\n";
     private static final String TEST_FILENAME = "testTasks.txt";
     private static final int RANDOM_SEED = 1;
 
@@ -61,9 +60,9 @@ public class CrashTester {
         testedStrings = new HashSet<>(SIZE_INITIAL_HASHSET);
         totalStrings = 0;
         logQueue = new ArrayBlockingQueue<String>(SIZE_LOGQUEUE);
-        
-        fuzzyTest();
+
         knownCrashTest();
+        fuzzyTest();
         
         System.out.println("Crash Test successful - Unique strings: " +
                         testedStrings.size() + " out of " + totalStrings);
@@ -96,17 +95,21 @@ public class CrashTester {
         testRandom(30, add, randomItems, randomItems, randomItems,
                 randomItems, randomItems, randomItems);
 
-
         
         testRandom(30, ListType.DELETE, ListType.ALL);
         testRandom(30, ListType.DELETE, ListType.RANDOM);
         testRandom(30, ListType.DELETE, ListType.TASKID);
+        
         for (int i = 0 ; i < 200; i++) {
             testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(delete, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(delete, validTargets, comma, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(delete, validTargets, validTargets, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(edit, validTargets, editKeywords, dateTime);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(edit, validTargets, validTargets, editKeywords, dateTime);
         }
         
@@ -156,6 +159,10 @@ public class CrashTester {
         test("add \"task\"");
         test("edit task");
         test("edit \"task\"");
+
+        test("add meep 2pm tomorrow");
+        test("add meepietwo");
+        test("edit meepietwo date tomorrow");
         test("search     ");
     }
     
@@ -218,15 +225,21 @@ public class CrashTester {
         }
         
         try {
+            log("Input: " + input);
             String result = mainController.runCommand(input);
             log(result);
         } catch (Exception e) {
-            System.out.println("Exception Thrown! Attempted Input:");
-            System.out.println(input);
+            System.out.println("Exception Thrown!");
+            System.out.println(" Attempted Input: [" + input + "]");
             printLog();
             e.printStackTrace();
             throw e;
         }
+    }
+    
+    private void terminateAndPrintLog() {
+        printLog();
+        System.exit(0);
     }
     
     private void log(String result) {

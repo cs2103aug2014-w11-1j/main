@@ -64,7 +64,13 @@ public class SearchManager extends AbstractManager {
                 } else if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) > 0) {
                     return 1;
                 } else {
-                    return task1.taskInfo.endTime.compareTo(task2.taskInfo.endTime);
+                    if (task1.taskInfo.endTime == null) {
+                        return 1;
+                    } else if (task2.taskInfo.endTime == null) {
+                        return -1;
+                    } else {
+                        return task1.taskInfo.endTime.compareTo(task2.taskInfo.endTime);
+                    }
                 }
             }
         });
