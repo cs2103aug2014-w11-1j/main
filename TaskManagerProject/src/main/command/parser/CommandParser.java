@@ -160,39 +160,40 @@ public class CommandParser {
         if (possiblePriority.startsWith(SYMBOL_PRIORITY) &&
                 !possiblePriority.contains(SYMBOL_DELIM)) {
             String type = removeFirstChar(possiblePriority);
-            switch (type.toLowerCase()) {
-                case "high" :
-                    p = Priority.HIGH;
-                    break;
-                case "med" :
-                    p = Priority.MEDIUM;
-                    break;
-                case "low" :
-                    p = Priority.LOW;
-                    break;
-                case "none" :
-                    p = Priority.NONE;
-                    break;
+            try {
+                p = Priority.valueOf(type.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // do nothing
             }
         }
 
         return p;
     }
 
-    public static Status parseStatus(String args) {
-        Status s = null;
-        switch (args) {
-            case "undone" :
-                s = Status.UNDONE;
-                break;
-            case "done" :
-                s = Status.DONE;
-                break;
-            default:
-                break;
+    public static Status[] parseStatuses(String args) {
+        args = stripIgnoredSegments(args);
+        args = cleanCmdString(args);
+        String[] words = args.split(SYMBOL_DELIM);
+
+        List<Status> sList = new ArrayList<Status>();
+        for (String word : words) {
+            Status s = parseStatus(word);
+
+            if (s != null) {
+                sList.add(s);
+            }
         }
 
-        return s;
+        return sList.isEmpty() ? null :
+            sList.toArray(new Status[sList.size()]);
+    }
+
+    public static Status parseStatus(String args) {
+        try {
+            return Status.valueOf(args.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     private static String removeFirstChar(String s) {

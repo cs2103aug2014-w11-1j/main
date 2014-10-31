@@ -8,10 +8,11 @@ public interface Filter {
         FILTER_DATETIME,
         FILTER_DATE,
         FILTER_PRIORITY,
+        FILTER_STATUS,
         FILTER_KEYWORD,
         FILTER_SUGGESTION
     }
-    
+
     public Type getType();
     public boolean filter(TaskInfo task);
 }
