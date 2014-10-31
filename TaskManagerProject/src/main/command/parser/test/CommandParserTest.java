@@ -22,7 +22,7 @@ public class CommandParserTest {
     private static final String PRIORITY = "+";
 
     private static final String PRI_LOW = "low";
-    private static final String PRI_MED = "mEd";
+    private static final String PRI_MED = "mEdium";
     private static final String PRI_HIGH = "HIGH";
 
     private enum TimeTest {

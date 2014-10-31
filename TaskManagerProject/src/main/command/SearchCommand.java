@@ -14,9 +14,11 @@ import manager.datamanager.searchfilter.DateTimeFilter;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.KeywordFilter;
 import manager.datamanager.searchfilter.PriorityFilter;
+import manager.datamanager.searchfilter.StatusFilter;
 import manager.datamanager.searchfilter.TagFilter;
 import manager.result.Result;
 import data.taskinfo.Priority;
+import data.taskinfo.Status;
 import data.taskinfo.Tag;
 
 public class SearchCommand extends Command {
@@ -58,6 +60,13 @@ public class SearchCommand extends Command {
         Priority[] priorities = CommandParser.parsePriorities(args);
         if (priorities != null) {
             filterList.add(new PriorityFilter(priorities));
+        }
+
+        Status[] statuses = CommandParser.parseStatuses(args);
+        if (statuses != null) {
+            filterList.add(new StatusFilter(statuses));
+        } else {
+            filterList.add(StatusFilter.makeDefault());
         }
     }
 
