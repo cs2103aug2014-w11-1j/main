@@ -2,6 +2,7 @@ package main.command;
 
 import java.util.LinkedList;
 
+import main.command.parser.CommandParser;
 import main.response.Response;
 import manager.ManagerHolder;
 import manager.datamanager.SearchManager;
@@ -121,8 +122,8 @@ public abstract class TargetedCommand extends Command {
      */
     protected void parseAsSearchString(String searchString) {
         assert targetTaskIdSet == null : "targetTaskIdSet needs to be null";
-        
-        searchString = searchString.trim();
+
+        searchString = CommandParser.parseName(searchString);
         if (!searchString.isEmpty()) {
             String[] keywords = searchString.split(" ");
             keywordFilter = new KeywordFilter(keywords);

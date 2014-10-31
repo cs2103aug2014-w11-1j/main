@@ -287,8 +287,7 @@ public class EditCommandTest {
 
     }
     
-    // TODO: Fix this.
-    //@Test
+    @Test
     public void invertedCommaTest() {
         ManagerHolder managerHolder = new StubManagerHolder();
         StubEditManager editManager = (StubEditManager)managerHolder.getEditManager();
@@ -302,7 +301,7 @@ public class EditCommandTest {
         
 
         // Expected: Store command: search for 1
-        executeEdit("\"1\" name 2", managerHolder, EditCommand.ParseType.RESCHEDULE);
+        executeEdit("\"1\" name 2", managerHolder);
         assertStoreCommand(stateManager);
         assertLastSearch(searchManager, "1");
 
@@ -314,7 +313,45 @@ public class EditCommandTest {
         editTaskInfo.name = "2";
         assertEquals(editTaskInfo, editManager.lastTaskInfo);
         editTaskInfo = TaskInfo.createEmpty();
-        
+
+
+        // Expected: Store command: start edit mode on "1 name"
+        executeEdit("\"1 name\"", managerHolder);
+        assertStoreCommand(stateManager);
+        assertLastSearch(searchManager, "1", "name");
+
+        // Expected: [Stored Command] start edit mode on "1 name" for 1,3.
+        executeStoredCommand(stateManager, managerHolder, 1, 3);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.START_EDIT_MODE, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 1, 3);
+        assertNull(editManager.lastTaskInfo);
+        assertNull(editManager.lastTags);
+
+
+        // Expected: Invalid command
+        executeEdit("1 \"name\"", managerHolder);
+        assertInvalidArguments(stateManager);
+
+
+        // Expected: Invalid command
+        executeEdit("1, 2 \"name\"", managerHolder);
+        assertInvalidArguments(stateManager);
+
+
+        // Expected: Rename 1, 2 to orange juice
+        executeEdit("1, 2 name \"orange juice\"", managerHolder);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.EDIT_TASK, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 1, 2);
+        editTaskInfo.name = "orange juice";
+        assertEquals(editTaskInfo, editManager.lastTaskInfo);
+        editTaskInfo = TaskInfo.createEmpty();
+
+
+        // Expected: Invalid arguments
+        executeEdit("1, 2 time \"tuesday\"", managerHolder);
+        assertInvalidArguments(stateManager);
         
     }
     

@@ -9,7 +9,6 @@ import java.util.List;
 
 public class TaskInfo {
 
-
     public String name;
     public LocalTime startTime;
     public LocalDate startDate;
@@ -118,6 +117,11 @@ public class TaskInfo {
     	return endTime;
     }
     
+    public boolean isEmpty() {
+        TaskInfo emptyTemplate = TaskInfo.createEmpty();
+        return (this.equals(emptyTemplate));
+    }
+    
     public boolean isValid() {
         if (!validDateTime()) {
             return false;
@@ -137,12 +141,6 @@ public class TaskInfo {
         }
     }
     
-    private boolean bothStartAndEndExist() {
-        return (startTime != null &&
-                startDate != null &&
-                endTime != null &&
-                endDate != null);
-    }
     
     /**
      * Requirements:<br>
@@ -160,36 +158,6 @@ public class TaskInfo {
         assert isValid() : "Invalid task detected!";
     }
 
-    private boolean validDateTime() {
-        if (startTime == null) {
-            if (startDate != null) {
-                return false;
-            }
-        } else {
-            if (startDate == null) {
-                return false;
-            } else {
-                if (endTime == null) {
-                    return false;
-                }
-            }
-        }
-        
-        if (endTime != null) {
-            if (endDate == null) {
-                return false;
-            }
-        }
-        
-        if (startTime != null) {
-            if (startTime.equals(endTime) && startDate.equals(endDate)) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
     @Override
     public boolean equals(Object obj) {
         
@@ -235,6 +203,44 @@ public class TaskInfo {
         }
         return true;
     }
+
+    private boolean bothStartAndEndExist() {
+        return (startTime != null &&
+                startDate != null &&
+                endTime != null &&
+                endDate != null);
+    }
+    
+    private boolean validDateTime() {
+        if (startTime == null) {
+            if (startDate != null) {
+                return false;
+            }
+        } else {
+            if (startDate == null) {
+                return false;
+            } else {
+                if (endTime == null) {
+                    return false;
+                }
+            }
+        }
+        
+        if (endTime != null) {
+            if (endDate == null) {
+                return false;
+            }
+        }
+        
+        if (startTime != null) {
+            if (startTime.equals(endTime) && startDate.equals(endDate)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
 
     private boolean statusesEqual(TaskInfo other) {
         if (status != other.status) {

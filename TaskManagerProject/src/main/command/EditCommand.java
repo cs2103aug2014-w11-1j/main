@@ -171,7 +171,7 @@ public class EditCommand extends TargetedCommand {
 
         switch (editType.toLowerCase()) {
             case ARGUMENT_NAME :
-                editParam = sc.nextLine().trim();
+                editParam = CommandParser.parseName(sc.nextLine());
                 editTask.name = editParam;
                 break;
             case "details" :
@@ -295,8 +295,10 @@ public class EditCommand extends TargetedCommand {
 
     @Override
     protected boolean isValidArguments() {
-        if (taskToEdit == null && specialOperation != Operation.EDIT_MODE) {
-            return false;
+        if (specialOperation != Operation.EDIT_MODE) {
+            if (taskToEdit == null || taskToEdit.isEmpty()) {
+                return false;
+            }
         }
         return targetTaskIdSet != null;
     }
