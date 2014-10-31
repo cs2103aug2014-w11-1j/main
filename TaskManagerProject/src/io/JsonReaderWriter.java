@@ -285,10 +285,18 @@ public class JsonReaderWriter {
                 taskInfo.details = jsonStringToString(value);
                 break;
             case JSON_PRIORITY :
-                taskInfo.priority = stringToPriority(value);
+                try {
+                    taskInfo.priority = stringToPriority(value);
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidFileFormatException("Unable to read priority");
+                }
                 break;
             case JSON_STATUS :
-                taskInfo.status = stringToStatus(value);
+                try {
+                    taskInfo.status = stringToStatus(value);
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidFileFormatException("Unable to read status");
+                }
                 break;
             default :
                 throw new InvalidFileFormatException(ERROR_UNKNOWN_ELEMENT + key);

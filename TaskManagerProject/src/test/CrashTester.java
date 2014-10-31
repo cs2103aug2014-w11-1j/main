@@ -25,8 +25,8 @@ import data.TaskData;
  * @author Oh
  */
 public class CrashTester {
-    private static final int SIZE_LOGQUEUE = 200;
-    private static final int SIZE_INITIAL_HASHSET = 1000;
+    private static final int SIZE_LOGQUEUE = 40;
+    private static final int SIZE_INITIAL_HASHSET = 3000;
     
     private static final String TEST_FILENAME = "testTasks.txt";
     private static final int RANDOM_SEED = 1;
@@ -93,25 +93,21 @@ public class CrashTester {
         testRandom(60, ListType.ADD, ListType.DATETIME, ListType.DATETIME,
                 ListType.DATETIME, ListType.DATETIME);
         testRandom(30, add, randomItems, randomItems, randomItems,
-                randomItems, randomItems, randomItems);
+                validItems, validItems, validItems);
 
+        
+        for (int i = 0 ; i < 100; i++) {
+            testRandom(ListType.SEARCH, ListType.RANDOM);
+            testRandom(delete, validTargets);
+            testRandom(delete, validTargets, comma, validTargets);
+            testRandom(delete, validTargets, comma, validTargets, comma, validTargets);
+            testRandom(edit, validTargets, editKeywords, dateTime);
+            testRandom(edit, validTargets, validTargets, editKeywords, dateTime);
+        }
         
         testRandom(30, ListType.DELETE, ListType.ALL);
         testRandom(30, ListType.DELETE, ListType.RANDOM);
         testRandom(30, ListType.DELETE, ListType.TASKID);
-        
-        for (int i = 0 ; i < 200; i++) {
-            testRandom(ListType.SEARCH, ListType.RANDOM);
-            testRandom(delete, validTargets);
-            testRandom(ListType.SEARCH, ListType.RANDOM);
-            testRandom(delete, validTargets, comma, validTargets);
-            testRandom(ListType.SEARCH, ListType.RANDOM);
-            testRandom(delete, validTargets, validTargets, validTargets);
-            testRandom(ListType.SEARCH, ListType.RANDOM);
-            testRandom(edit, validTargets, editKeywords, dateTime);
-            testRandom(ListType.SEARCH, ListType.RANDOM);
-            testRandom(edit, validTargets, validTargets, editKeywords, dateTime);
-        }
         
         System.out.println(mainController.runCommand("show"));
         
@@ -144,6 +140,7 @@ public class CrashTester {
         testRandom(200, new ListType[]{ListType.EDIT}, randomTargets,
                 randomTargets, randomTargets, randomTargets,
                 editKeywords, randomItems, randomItems);
+
 
     }
     
