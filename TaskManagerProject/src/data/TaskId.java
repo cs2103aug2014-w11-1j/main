@@ -1,5 +1,7 @@
 package data;
 
+import java.util.Random;
+
 /**
  * Immutable.
  * @author Oh
@@ -24,7 +26,7 @@ public final class TaskId implements Comparable<TaskId> {
      * TRANSLATE_REVERSE_PRIME should be computed using the Euclidean Algorithm.
      */
     private static final int TRANSLATE_REVERSE_PRIME = 16823;
-    private static final int TRANSLATE_SHIFT = 4789;
+    private static final int TRANSLATE_SHIFT = new Random().nextInt();
     public static final int MAX_ID = 20280;
     
     private static final int INVALID_ID = -1;

@@ -109,6 +109,7 @@ public class FreeDaySearchManager extends AbstractManager {
 
 	private boolean isMatchTimeSlot(LocalTime startTime, LocalDate startDate,
 			LocalTime endTime, LocalDate endDate, TaskInfo task) {
+	    
         LocalDateTime myStart = LocalDateTime.of(startDate, startTime);
         LocalDateTime myEnd = LocalDateTime.of(endDate, endTime);
         

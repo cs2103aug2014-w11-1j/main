@@ -6,13 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import main.message.Message.Type;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.SuggestionFilter;
 import manager.datamanager.suggestion.SuggestionFinder;
@@ -31,7 +29,6 @@ public class SearchManager extends AbstractManager {
     SuggestionFinder suggestionFinder;
     TaskInfoId[] lastSearchedTasks;
     String[] lastSearchedSuggestions;
-    //Filter[] lastSearchFilters;
 
     class TaskInfoId {
         public TaskInfo taskInfo;

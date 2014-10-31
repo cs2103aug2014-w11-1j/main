@@ -12,18 +12,25 @@ import main.MainController;
 import main.command.alias.AliasStorage;
 import manager.ManagerHolder;
 
+import org.junit.After;
 import org.junit.Test;
 
 import data.TaskData;
 
 public class IntegrationTest {
     private static final String NEWL = "\r\n";
+    private static final String TEST_FILENAME = "testTasks.txt";
 
+    @After
+    public void after() {
+        deleteTestFile();
+    }
+    
     @Test
     public void initialiseTest() {
 
-        String fileName = "testTasks.txt";
-        deleteFile("testTasks.txt");
+        String fileName = TEST_FILENAME;
+        deleteTestFile();
 
         String aliasFileName = "testAlias.txt";
         AliasStorage aliasStorage = new AliasStorage(aliasFileName);
@@ -36,9 +43,9 @@ public class IntegrationTest {
         test(mainController);
     }
 
-    protected void deleteFile(String fileName) {
+    private void deleteTestFile() {
         try {
-            Path path = Paths.get(fileName);
+            Path path = Paths.get(TEST_FILENAME);
             Files.deleteIfExists(path);
         } catch (IOException e) {
             e.printStackTrace();
