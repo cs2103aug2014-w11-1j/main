@@ -3,10 +3,18 @@ package test.fuzzytest;
 import java.util.ArrayList;
 import java.util.Random;
 
+import test.fuzzytest.KeywordLibrary.ListType;
 import static test.fuzzytest.KeywordLibrary.ListType.*;
 
 public class KeywordLibrary {
+    
+    private static final int RECURSE_PROBABILITY = 4;
+    private static final boolean AGAIN = true;
+    
     private Random rand;
+
+    private ListType[] allListTypes;
+    private ArrayList<ArrayList<KeywordToken>> libraryLists;
     
     public enum ListType {
         NONE,
@@ -32,9 +40,6 @@ public class KeywordLibrary {
         QUIT,
         ALL
     }
-
-    private ListType[] allListTypes;
-    private ArrayList<ArrayList<String>> libraryLists;
     
     public KeywordLibrary(int seed) {
         rand = new Random(seed);
@@ -43,13 +48,36 @@ public class KeywordLibrary {
     }
     
     public String getRandom(ListType listType) {
-        ArrayList<String> list = getList(listType);
-        return getRandomElement(list);
+        ArrayList<KeywordToken> list = getList(listType);
+        return getRandomKeywordAndProcessRecursively(list, listType);
     }
     
     public String getRandom(ListType...listTypes) {
-        ArrayList<String> list = getRandomList(listTypes);
-        return getRandomElement(list);
+        if (listTypes.length == 1) {
+            return getRandom(listTypes[0]);
+        } else {
+            ArrayList<KeywordToken> list = getRandomList(listTypes);
+            return getRandomKeywordAndProcessRecursively(list, listTypes);
+        }
+    }
+
+    protected String getRandomKeywordAndProcessRecursively(
+            ArrayList<KeywordToken> list, ListType...listTypes) {
+        
+        KeywordToken keyword = getRandomElement(list);
+        
+        int next = rand.nextInt(RECURSE_PROBABILITY);
+        if (next == 0) {
+            if (keyword.again) {
+                return keyword.token + " " + getRandom(listTypes);
+            } else if (keyword.successor != null) {
+                return keyword.token + " " + getRandom(keyword.successor);
+            } else {
+                return keyword.token;
+            }
+        } else {
+            return keyword.token;
+        }
     }
     
     private void addContent() {
@@ -65,34 +93,40 @@ public class KeywordLibrary {
         addToList("after", CONNECTOR);
         addToList("before", CONNECTOR);
         
-        addToList("2014", DATETIME, RANDOM);
+        addToList(AGAIN, "2014", DATETIME, RANDOM);
         addToList("29 oct 2014", DATETIME, RANDOM);
-        addToList("2pm", DATETIME, TASKID, VALIDTASKID, RANDOM);
-        addToList("3am", DATETIME, TASKID, VALIDTASKID);
-        addToList("0pm", DATETIME, TASKID, VALIDTASKID);
-        addToList("12am", DATETIME, TASKID);
-        addToList("4 pm", DATETIME, NUMBER, RANDOM);
-        addToList("12 am", DATETIME);
-        addToList("13 am", DATETIME);
-        addToList("13 pm", DATETIME);
-        addToList("1300", DATETIME, NUMBER);
-        addToList("1300h", DATETIME. NUMBER);
-        addToList("12-am", DATETIME);
-        addToList("12-14pm", DATETIME);
-        addToList("tuesday", DATETIME);
-        addToList("oct", DATETIME, TASKID, RANDOM);
-        addToList("may", DATETIME, TASKID, CONNECTOR);
-        addToList("mon", DATETIME, TASKID, RANDOM);
-        addToList("sun", DATETIME, TASKID);
-        addToList("sat", DATETIME, TASKID);
-        addToList("today", DATETIME);
-        addToList("tomorrow", DATETIME);
-        addToList("yesterday", DATETIME);
-        addToList("next week", DATETIME);
-        addToList("last month", DATETIME);
-        addToList("tonight", DATETIME);
-        addToList("day", DATETIME, TASKID);
-        addToList("lunchtime", DATETIME);
+        addToList(AGAIN, "2pm", DATETIME, TASKID, VALIDTASKID, RANDOM);
+        addToList(AGAIN, "3am", DATETIME, TASKID, VALIDTASKID);
+        addToList(AGAIN, "0pm", DATETIME, TASKID, VALIDTASKID);
+        addToList(AGAIN, "12am", DATETIME, TASKID);
+        addToList(AGAIN, "4 pm", DATETIME, NUMBER, RANDOM);
+        addToList(AGAIN, "12 am", DATETIME);
+        addToList(AGAIN, "13 am", DATETIME);
+        addToList(AGAIN, "13 pm", DATETIME);
+        addToList(AGAIN, "1300", DATETIME, NUMBER);
+        addToList(AGAIN, "1300h", DATETIME. NUMBER);
+        addToList(AGAIN, "12-am", DATETIME);
+        addToList(AGAIN, "12-14pm", DATETIME);
+        addToList(AGAIN, "tuesday", DATETIME);
+        addToList(AGAIN, "oct", DATETIME, RANDOM);
+        addToList(AGAIN, "may", DATETIME, TASKID, CONNECTOR);
+        addToList(AGAIN, "mon", DATETIME, TASKID, RANDOM);
+        addToList(AGAIN, "sun", DATETIME, TASKID);
+        addToList(AGAIN, "sat", DATETIME, TASKID);
+        addToList(AGAIN, "today", DATETIME);
+        addToList(AGAIN, "tomorrow", DATETIME);
+        addToList(AGAIN, "yesterday", DATETIME);
+        addToList(AGAIN, "next week", DATETIME);
+        addToList(AGAIN, "last month", DATETIME);
+        addToList(AGAIN, "tonight", DATETIME);
+        addToList(AGAIN, "day", DATETIME, TASKID);
+        addToList(AGAIN, "lunchtime", DATETIME);
+        addToList(AGAIN, "noon", DATETIME);
+        addToList(AGAIN, "midnight", DATETIME);
+        addToList(AGAIN, "evening", DATETIME);
+        addToList(AGAIN, "morning", DATETIME);
+        addToList(AGAIN, "this week", DATETIME);
+        addToList(AGAIN, "next tuesday", DATETIME);
 
         addToList("+high", ITEM);
         addToList("+low", ITEM);
@@ -122,11 +156,12 @@ public class KeywordLibrary {
         addToList("quit", COMMAND, QUIT);
         addToList("exit", COMMAND, QUIT);
 
-        addToList("tag", COMMAND, EDIT, EDITKEYWORD, TASKID);
+        addToList(AGAIN, "tag", COMMAND, EDIT, EDITKEYWORD, TASKID);
         addToList("add", COMMAND, ADD, EDITKEYWORD, TASKID, RANDOM);
         addToList("delete", COMMAND, DELETE, EDITKEYWORD, RANDOM);
         addToList("del", COMMAND, DELETE, EDITKEYWORD, TASKID);
 
+        addToList(AGAIN, "clear", EDITKEYWORD);
         addToList("time", EDITKEYWORD);
         addToList("name", EDITKEYWORD, RANDOM);
         addToList("date", EDITKEYWORD, RANDOM);
@@ -137,64 +172,64 @@ public class KeywordLibrary {
         addToList("tag add", EDITKEYWORD);
         addToList("tag del", EDITKEYWORD);
         
-        addToList("1", NUMBER, VALIDNUMBER);
-        addToList("2", NUMBER, VALIDNUMBER);
-        addToList("-1", NUMBER);
-        addToList("-34", NUMBER);
-        addToList("431", NUMBER);
-        addToList("4,31", NUMBER);
-        addToList("67", NUMBER);
-        addToList("5-1", NUMBER);
-        addToList("5--6", NUMBER);
-        addToList("2-4,3", NUMBER, VALIDNUMBER);
-        addToList("5", NUMBER, VALIDNUMBER);
-        addToList("1,3", NUMBER, VALIDNUMBER);
-        addToList("2-5", NUMBER, VALIDNUMBER, RANDOM);
-        addToList("8, 3, 1", NUMBER, VALIDNUMBER);
-        addToList("1-5, 6", NUMBER, VALIDNUMBER, RANDOM);
-        addToList("3.534", NUMBER);
-        addToList("123(", NUMBER);
-        addToList("^", NUMBER, SYMBOL);
-        addToList("#", NUMBER, SYMBOL);
-        addToList("@2", NUMBER, RANDOM);
-        addToList("+341", NUMBER, RANDOM);
-        addToList("%123", NUMBER, TASKID);
-        addToList("-84", NUMBER);
-        addToList("-pi", NUMBER, TASKID);
-        addToList("sqrt(2)", NUMBER);
-        addToList("255", NUMBER);
-        addToList("2147483647", NUMBER);
-        addToList("2147483648", NUMBER);
-        addToList("-2147483648", NUMBER);
-        addToList("999999999999999", NUMBER);
-        addToList("0", NUMBER);
-        addToList("$4", NUMBER);
-        addToList("i", NUMBER);
-        addToList("", NUMBER);
-        addToList("000", NUMBER, RANDOM);
+        addToList(COMMA, "1", NUMBER, VALIDNUMBER);
+        addToList(COMMA, "2", NUMBER, VALIDNUMBER);
+        addToList(COMMA, "-1", NUMBER);
+        addToList(COMMA, "-34", NUMBER);
+        addToList(COMMA, "431", NUMBER);
+        addToList(COMMA, "4,31", NUMBER);
+        addToList(COMMA, "67", NUMBER);
+        addToList(COMMA, "5-1", NUMBER);
+        addToList(COMMA, "5--6", NUMBER);
+        addToList(COMMA, "2-4,3", NUMBER, VALIDNUMBER);
+        addToList(COMMA, "5", NUMBER, VALIDNUMBER);
+        addToList(COMMA, "1,3", NUMBER, VALIDNUMBER);
+        addToList(COMMA, "2-5", NUMBER, VALIDNUMBER, RANDOM);
+        addToList(COMMA, "8, 3, 1", NUMBER, VALIDNUMBER);
+        addToList(COMMA, "1-5, 6", NUMBER, VALIDNUMBER, RANDOM);
+        addToList(COMMA, "3.534", NUMBER);
+        addToList(COMMA, "123(", NUMBER);
+        addToList(COMMA, "^", NUMBER, SYMBOL);
+        addToList(COMMA, "#", NUMBER, SYMBOL);
+        addToList(COMMA, "@2", NUMBER, RANDOM);
+        addToList(COMMA, "+341", NUMBER, RANDOM);
+        addToList(COMMA, "%123", NUMBER, TASKID);
+        addToList(COMMA, "-84", NUMBER);
+        addToList(COMMA, "-pi", NUMBER, TASKID);
+        addToList(COMMA, "sqrt(2)", NUMBER);
+        addToList(COMMA, "255", NUMBER);
+        addToList(COMMA, "2147483647", NUMBER);
+        addToList(COMMA, "2147483648", NUMBER);
+        addToList(COMMA, "-2147483648", NUMBER);
+        addToList(COMMA, "999999999999999", NUMBER);
+        addToList(COMMA, "0", NUMBER);
+        addToList(COMMA, "$4", NUMBER);
+        addToList(COMMA, "i", NUMBER);
+        addToList(COMMA, "", NUMBER);
+        addToList(COMMA, "000", NUMBER, RANDOM);
         
         for (int i = 5; i < 30; i++) {
-            addToList(i + "", VALIDNUMBER);
-            addToList(i + "-" + (i+5), VALIDNUMBER);
+            addToList(COMMA, i + "", VALIDNUMBER);
+            addToList(COMMA, i + "-" + (i+5), VALIDNUMBER);
         }
 
-        addToList("ab9", TASKID, VALIDTASKID);
-        addToList("9ab", TASKID, VALIDTASKID);
-        addToList("1aa", TASKID, VALIDTASKID);
-        addToList("aa0", TASKID, VALIDTASKID);
-        addToList("po9", TASKID, VALIDTASKID);
-        addToList("c93", TASKID);
-        addToList("999", TASKID, RANDOM);
-        addToList("aca", TASKID);
-        addToList("12", NUMBER, TASKID);
-        addToList("oct", DATETIME, TASKID, RANDOM);
-        addToList("op2", TASKID, VALIDTASKID, RANDOM);
-        addToList("9sds", TASKID);
-        addToList("s9asd", TASKID);
-        addToList("4rea", TASKID);
-        addToList("%53", TASKID);
-        addToList("%%%", TASKID, RANDOM);
-        addToList("#ta3", TASKID);
+        addToList(COMMA, "ab9", TASKID, VALIDTASKID);
+        addToList(COMMA, "9ab", TASKID, VALIDTASKID);
+        addToList(COMMA, "1aa", TASKID, VALIDTASKID);
+        addToList(COMMA, "aa0", TASKID, VALIDTASKID);
+        addToList(COMMA, "po9", TASKID, VALIDTASKID);
+        addToList(COMMA, "c93", TASKID);
+        addToList(COMMA, "999", TASKID, RANDOM);
+        addToList(COMMA, "aca", TASKID);
+        addToList(COMMA, "12", NUMBER, TASKID);
+        addToList(COMMA, "oct", DATETIME);
+        addToList(COMMA, "op2", TASKID, VALIDTASKID, RANDOM);
+        addToList(COMMA, "9sds", TASKID);
+        addToList(COMMA, "s9asd", TASKID);
+        addToList(COMMA, "4rea", TASKID);
+        addToList(COMMA, "%53", TASKID);
+        addToList(COMMA, "%%%", TASKID, RANDOM);
+        addToList(COMMA, "#ta3", TASKID);
 
         addToList("a", RANDOM);
         addToList("%", RANDOM, SYMBOL);
@@ -204,7 +239,7 @@ public class KeywordLibrary {
         addToList("\"", RANDOM, SYMBOL);
         addToList("\n", RANDOM);
         addToList("five", RANDOM);
-        addToList("    ", RANDOM);
+        addToList(AGAIN, "    ", RANDOM);
         addToList("___", RANDOM);
         addToList("orange", RANDOM, ITEM);
         addToList("apple", RANDOM, ITEM);
@@ -216,17 +251,17 @@ public class KeywordLibrary {
         addToList("\\", RANDOM, SYMBOL);
     }
 
-    private String getRandomElement(ArrayList<String> list) {
+    private KeywordToken getRandomElement(ArrayList<KeywordToken> list) {
         int next = rand.nextInt(list.size());
         return list.get(next);
     }
 
-    private ArrayList<String> getRandomList(ListType...listTypes) {
+    private ArrayList<KeywordToken> getRandomList(ListType...listTypes) {
         int next = rand.nextInt(listTypes.length);
         return getList(listTypes[next]);
     }
 
-    private ArrayList<String> getList(ListType listType) {
+    private ArrayList<KeywordToken> getList(ListType listType) {
         if (listType == ListType.ALL) {
             return getRandomList(allListTypes);
         } else {
@@ -245,16 +280,59 @@ public class KeywordLibrary {
             ListType currentListType = ListType.values()[i];
             
             if (currentListType != ListType.ALL) {
-                libraryLists.add(new ArrayList<String>());
+                libraryLists.add(new ArrayList<KeywordToken>());
                 allListTypes[i] = currentListType;
             }
         }
     }
     
+    private void addToList(ListType successor, String token, ListType...listTypes) {
+        for (ListType listType : listTypes) {
+            ArrayList<KeywordToken> list = getList(listType);
+            list.add(new KeywordToken(token, successor));
+        }
+    }
+    
+    private void addToList(boolean again, String token, ListType...listTypes) {
+        for (ListType listType : listTypes) {
+            ArrayList<KeywordToken> list = getList(listType);
+            list.add(new KeywordToken(token, again));
+        }
+    }
+    
     private void addToList(String token, ListType...listTypes) {
         for (ListType listType : listTypes) {
-            ArrayList<String> list = getList(listType);
-            list.add(token);
+            ArrayList<KeywordToken> list = getList(listType);
+            list.add(new KeywordToken(token));
         }
+    }
+}
+
+class KeywordToken {
+    public final String token;
+    
+    /**
+     * If again is true, there is a chance that another token of the same
+     * keyword type will be added again after this keyword.
+     */
+    public final boolean again;
+    public final ListType successor;
+
+    public KeywordToken(String token) {
+        this.token = token;
+        this.again = false;
+        this.successor = null;
+    }
+    
+    public KeywordToken(String token, boolean repeat) {
+        this.token = token;
+        this.again = repeat;
+        this.successor = null;
+    }
+    
+    public KeywordToken(String token, ListType successor) {
+        this.token = token;
+        this.again = false;
+        this.successor = successor;
     }
 }

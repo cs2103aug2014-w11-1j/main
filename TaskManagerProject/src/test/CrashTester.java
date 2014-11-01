@@ -36,9 +36,13 @@ public class CrashTester {
     private HashSet<String> testedStrings;
     private ArrayBlockingQueue<String> logQueue;
     private int totalStrings;
+    private boolean success = false;
 
     @After
     public void after() {
+        if (!success) {
+            printLog();
+        }
         deleteTestFile();
     }
     
@@ -66,6 +70,7 @@ public class CrashTester {
         
         System.out.println("Crash Test successful - Unique strings: " +
                         testedStrings.size() + " out of " + totalStrings);
+        success = true;
     }
     
     /**
@@ -95,13 +100,16 @@ public class CrashTester {
         testRandom(30, add, randomItems, randomItems, randomItems,
                 validItems, validItems, validItems);
 
-        
         for (int i = 0 ; i < 100; i++) {
             testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(delete, validTargets);
-            testRandom(delete, validTargets, comma, validTargets);
-            testRandom(delete, validTargets, comma, validTargets, comma, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
+            testRandom(delete, validTargets, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
+            testRandom(delete, validTargets, validTargets, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(edit, validTargets, editKeywords, dateTime);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(edit, validTargets, validTargets, editKeywords, dateTime);
         }
         
@@ -128,6 +136,7 @@ public class CrashTester {
         testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.CONNECTOR, ListType.DATETIME);
         testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.SYMBOL, ListType.DATETIME);
 
+        testRandom(20, ListType.EDIT, ListType.EDITKEYWORD);
         testRandom(20, ListType.EDIT, ListType.EDITKEYWORD, ListType.RANDOM);
         testRandom(20, ListType.EDIT, ListType.RANDOM, ListType.RANDOM);
         testRandom(200, new ListType[]{ListType.EDIT}, validTargets,
@@ -214,11 +223,7 @@ public class CrashTester {
     
     private void test(String input) {
         totalStrings++;
-        if (testedStrings.contains(input)) {
-            return;
-        } else {
-            testedStrings.add(input);
-        }
+        testedStrings.add(input);
         
         try {
             log("Input: " + input);

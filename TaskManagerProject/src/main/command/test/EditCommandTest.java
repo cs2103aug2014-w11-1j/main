@@ -355,6 +355,113 @@ public class EditCommandTest {
         
     }
     
+
+    @Test
+    public void clearTest() {
+        ManagerHolder managerHolder = new StubManagerHolder();
+        StubEditManager editManager = (StubEditManager)managerHolder.getEditManager();
+        StubStateManager stateManager = (StubStateManager)managerHolder.getStateManager();
+        StubSearchManager searchManager = (StubSearchManager)managerHolder.getSearchManager();
+
+        stateManager.canEdit = true;
+        stateManager.inEditMode = false;
+        
+
+        // Expected: Clear tags
+        executeEdit("1, 2 clear tags", managerHolder);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.CLEAR_INFO, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 1, 2);
+        assertNull(editManager.lastTaskInfo);
+        assertNull(editManager.lastTags);
+        assertEquals(EditCommand.Info.TAGS, editManager.lastInfoToClear);
+
+
+        // Expected: Invalid command
+        executeEdit("1, 2 clear name", managerHolder);
+        assertInvalidArguments(stateManager);
+
+        
+        // Expected: Clear description
+        executeEdit("2-4 clear details", managerHolder);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.CLEAR_INFO, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 2, 3, 4);
+        assertNull(editManager.lastTaskInfo);
+        assertNull(editManager.lastTags);
+        assertEquals(EditCommand.Info.DESCRIPTION, editManager.lastInfoToClear);
+
+        
+        // Expected: Clear datetime
+        executeEdit("1 clear datetime", managerHolder);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.CLEAR_INFO, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 1);
+        assertNull(editManager.lastTaskInfo);
+        assertNull(editManager.lastTags);
+        assertEquals(EditCommand.Info.DATETIME, editManager.lastInfoToClear);
+
+        
+        // Expected: Store command - Clear Status
+        executeEdit("orange clear status", managerHolder);
+        assertStoreCommand(stateManager);
+        assertLastSearch(searchManager, "orange");
+
+        // Expected: [Stored Command] clear status for 2, 5, 7
+        executeStoredCommand(stateManager, managerHolder, 2, 5, 7);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.CLEAR_INFO, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 2, 5, 7);
+        assertNull(editManager.lastTaskInfo);
+        assertNull(editManager.lastTags);
+        assertEquals(EditCommand.Info.STATUS, editManager.lastInfoToClear);
+
+
+        // Expected: Store command - Clear time
+        executeEdit("clear clear time", managerHolder);
+        assertStoreCommand(stateManager);
+        assertLastSearch(searchManager, "clear");
+
+        // Expected: [Stored Command] clear time for 1, 3
+        executeStoredCommand(stateManager, managerHolder, 1, 3);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.CLEAR_INFO, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 1, 3);
+        assertNull(editManager.lastTaskInfo);
+        assertNull(editManager.lastTags);
+        assertEquals(EditCommand.Info.TIME, editManager.lastInfoToClear);
+
+
+        // Expected: Store command - Clear date
+        executeEdit("date clear date", managerHolder);
+        assertStoreCommand(stateManager);
+        assertLastSearch(searchManager, "date");
+
+        // Expected: [Stored Command] clear date for 2, 7
+        executeStoredCommand(stateManager, managerHolder, 2, 7);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.CLEAR_INFO, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 2, 7);
+        assertNull(editManager.lastTaskInfo);
+        assertNull(editManager.lastTags);
+        assertEquals(EditCommand.Info.DATE, editManager.lastInfoToClear);
+
+
+        // Expected: Store command - clear priority
+        executeEdit("clear status clear priority", managerHolder);
+        assertStoreCommand(stateManager);
+        assertLastSearch(searchManager, "clear", "status");
+
+        // Expected: [Stored Command] clear priority for 2
+        executeStoredCommand(stateManager, managerHolder, 2);
+        assertNormalExecution(stateManager);
+        assertEquals(StubEditManager.Method.CLEAR_INFO, editManager.lastMethodCall);
+        assertTaskNumbers(editManager, 2);
+        assertNull(editManager.lastTaskInfo);
+        assertNull(editManager.lastTags);
+        assertEquals(EditCommand.Info.PRIORITY, editManager.lastInfoToClear);
+    }
+    
     private void assertLastSearch(StubSearchManager searchManager,
             String...keywords) {
         Filter[] filters = searchManager.filters;

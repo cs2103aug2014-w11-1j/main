@@ -1,5 +1,6 @@
 package main.command.test;
 
+import main.command.EditCommand.Info;
 import main.command.TargetedCommand;
 import main.command.TaskIdSet;
 import main.response.Response;
@@ -95,12 +96,14 @@ class StubEditManager extends EditManager {
     public Tag[] lastTags;
     public TaskInfo lastTaskInfo;
     public Method lastMethodCall;
+    public Info lastInfoToClear;
 
     public enum Method {
         START_EDIT_MODE,
         ADD_TASK_TAGS,
         DELETE_TASK_TAGS,
-        EDIT_TASK
+        EDIT_TASK,
+        CLEAR_INFO
     }
 
     public StubEditManager() {
@@ -146,6 +149,15 @@ class StubEditManager extends EditManager {
         lastMethodCall = Method.EDIT_TASK;
         lastTaskIdSet = taskIdSet;
         lastTaskInfo = taskInfo;
+        return null;
+    }
+
+    @Override
+    public Result clearInfo(TaskIdSet taskIdSet, Info infoToClear) {
+        clearMemory();
+        lastMethodCall = Method.CLEAR_INFO;
+        lastTaskIdSet = taskIdSet;
+        lastInfoToClear = infoToClear;
         return null;
     }
 

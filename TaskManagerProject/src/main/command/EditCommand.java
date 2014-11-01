@@ -14,6 +14,14 @@ import data.taskinfo.Status;
 import data.taskinfo.TaskInfo;
 
 public class EditCommand extends TargetedCommand {
+    private static final String ARGUMENT_CLEAR = "clear";
+    private static final String ARGUMENT_DESCRIPTION = "details";
+    private static final String ARGUMENT_DESCRIPTION_2 = "description";
+    private static final String ARGUMENT_DATE = "date";
+    private static final String ARGUMENT_TIME = "time";
+    private static final String ARGUMENT_TAG = "tag";
+    private static final String ARGUMENT_TAG_2 = "tags";
+    private static final String ARGUMENT_PRIORITY = "priority";
     private static final String ARGUMENT_NAME = "name";
     private static final String ARGUMENT_DATETIME = "datetime";
     private static final String ARGUMENT_STATUS = "status";
@@ -21,15 +29,26 @@ public class EditCommand extends TargetedCommand {
     private final EditManager editManager;
     private TaskInfo taskToEdit;
     private Operation specialOperation = Operation.NONE;
+    private Info infoToClear = null;
+    private final ParseType parseType;
     
     private enum Operation {
         NONE,
         EDIT_MODE,
         TAG_ADD,
-        TAG_DELETE
+        TAG_DELETE,
+        CLEAR_INFO
     }
     
-    private final ParseType parseType;
+    public enum Info {
+        DATE,
+        TIME,
+        DATETIME,
+        PRIORITY,
+        STATUS,
+        DESCRIPTION,
+        TAGS
+    }
     
     public enum ParseType {
         NORMAL,
@@ -174,22 +193,23 @@ public class EditCommand extends TargetedCommand {
                 editParam = CommandParser.parseName(sc.nextLine());
                 editTask.name = editParam;
                 break;
-            case "details" :
-            case "description" :
+            case ARGUMENT_DESCRIPTION :
+            case ARGUMENT_DESCRIPTION_2 :
                 editParam = sc.nextLine().trim();
                 editTask.details = CommandParser.parseName(editParam);
                 break;
-            case "date" :
-            case "time" :
+            case ARGUMENT_DATE :
+            case ARGUMENT_TIME :
             case ARGUMENT_DATETIME :
                 editParam = sc.nextLine().trim();
                 parseDateTimes(editParam, editTask);
                 break;
-            case "tag" :
+            case ARGUMENT_TAG :
+            case ARGUMENT_TAG_2 :
                 editParam = sc.nextLine().trim();
                 parseTags(editParam, editTask);
                 break;
-            case "priority" :
+            case ARGUMENT_PRIORITY :
                 editParam = sc.nextLine().trim();
                 Priority p = CommandParser.parsePriority("+" + editParam);
                 if (p != null) {
@@ -207,6 +227,15 @@ public class EditCommand extends TargetedCommand {
                     editTask = null;
                 }
                 break;
+            case ARGUMENT_CLEAR :
+                editParam = sc.nextLine().trim();
+                if (clearInfo(editParam)) {
+                    setSpecialOperation(Operation.CLEAR_INFO);
+                    editTask = TaskInfo.createEmpty();
+                } else {
+                    editTask = null;
+                }
+                break;
             default :
                 editTask = null;
         }
@@ -219,7 +248,7 @@ public class EditCommand extends TargetedCommand {
 
     protected void tryChangeToStartEditModeCommand() {
         if (parseType == ParseType.NORMAL && taskToEdit == null) {
-            specialOperation = Operation.EDIT_MODE;
+            setSpecialOperation(Operation.EDIT_MODE);
         }
     }
 
@@ -267,11 +296,11 @@ public class EditCommand extends TargetedCommand {
             String changeTypeLower = changeType.toLowerCase();
             
             if (changeTypeLower.equals("add")) {
-                specialOperation = Operation.TAG_ADD;
+                setSpecialOperation(Operation.TAG_ADD);
             }
             if (changeTypeLower.equals("del") ||
                     changeTypeLower.equals("delete")){
-                specialOperation = Operation.TAG_DELETE;
+                setSpecialOperation(Operation.TAG_DELETE);
             }
         }
 
@@ -288,6 +317,41 @@ public class EditCommand extends TargetedCommand {
 
         sc.close();
     }
+    
+    private boolean clearInfo(String info) {
+        info = info.trim();
+        switch(info) {
+            case ARGUMENT_DESCRIPTION :
+            case ARGUMENT_DESCRIPTION_2 :
+                infoToClear = Info.DESCRIPTION;
+                break;
+            case ARGUMENT_DATE :
+                infoToClear = Info.DATE;
+                break;
+            case ARGUMENT_TIME :
+                infoToClear = Info.TIME;
+                break;
+            case ARGUMENT_DATETIME :
+                infoToClear = Info.DATETIME;
+                break;
+            case ARGUMENT_TAG :
+            case ARGUMENT_TAG_2 :
+                infoToClear = Info.TAGS;
+                break;
+            case ARGUMENT_PRIORITY :
+                infoToClear = Info.PRIORITY;
+                break;
+            case ARGUMENT_STATUS :
+                infoToClear = Info.STATUS;
+                break;
+        }
+        
+        return (infoToClear != null);
+    }
+    
+    private void setSpecialOperation(Operation operation) {
+        specialOperation = operation;
+    }
 
     public TaskId convertStringtoTaskId(String stringId){
     	return TaskId.makeTaskId(stringId);
@@ -295,7 +359,9 @@ public class EditCommand extends TargetedCommand {
 
     @Override
     protected boolean isValidArguments() {
-        if (specialOperation != Operation.EDIT_MODE) {
+        if (specialOperation != Operation.EDIT_MODE &&
+                specialOperation != Operation.CLEAR_INFO) {
+            
             if (taskToEdit == null || taskToEdit.isEmpty()) {
                 return false;
             }
@@ -311,17 +377,34 @@ public class EditCommand extends TargetedCommand {
     @Override
     protected Result executeAction() {
         Result result;
-        if (taskToEdit == null) {
-            result = editManager.startEditMode(targetTaskIdSet);
-        } else {
-            if (specialOperation == Operation.TAG_ADD) {
-                result = editManager.addTaskTags(taskToEdit.tags, targetTaskIdSet);
-            } else if (specialOperation == Operation.TAG_DELETE) {
-                result = editManager.deleteTaskTags(taskToEdit.tags, targetTaskIdSet);
-            } else {
+        
+        switch (specialOperation) {
+            case EDIT_MODE :
+                assert taskToEdit == null;
+                result = editManager.startEditMode(targetTaskIdSet);
+                break;
+            case CLEAR_INFO :
+                assert taskToEdit.isEmpty();
+                assert infoToClear != null;
+                result = editManager.clearInfo(targetTaskIdSet, infoToClear);
+                break;
+            case NONE :
+                assert taskToEdit != null;
                 result = editManager.editTask(taskToEdit, targetTaskIdSet);
-            }
+                break;
+            case TAG_ADD :
+                assert taskToEdit != null;
+                result = editManager.addTaskTags(taskToEdit.tags, targetTaskIdSet);
+                break;
+            case TAG_DELETE :
+                assert taskToEdit != null;
+                result = editManager.deleteTaskTags(taskToEdit.tags, targetTaskIdSet);
+                break;
+            default :
+                throw new UnsupportedOperationException("Invalid operation: " +
+                        specialOperation.name());
         }
+        
         return result;
     }
 

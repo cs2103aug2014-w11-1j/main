@@ -2,14 +2,18 @@ package manager.datamanager;
 
 import java.util.ArrayList;
 
+import main.command.EditCommand;
 import main.command.TaskIdSet;
 import main.message.EditSuccessfulMessage;
+import main.message.EditSuccessfulMessage.Field;
 import manager.result.EditResult;
 import manager.result.Result;
 import manager.result.SimpleResult;
 import manager.result.StartEditModeResult;
 import data.TaskData;
 import data.TaskId;
+import data.taskinfo.Priority;
+import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
@@ -67,6 +71,106 @@ public class EditManager extends AbstractManager {
 
     public TaskIdSet getEditingTasks() {
         return editingTasks;
+    }
+    
+    public Result clearInfo(TaskIdSet taskIdSet, EditCommand.Info infoToClear) {
+        boolean allSuccessful = true;
+        TaskInfo returnTaskInfo = null;
+        TaskId returnTaskId = null;
+        Field field = null;
+        
+        for (TaskId taskId : taskIdSet) {
+            switch (infoToClear) {
+                case TIME :
+                    if (!tryClearTime(taskId)) {
+                        allSuccessful = false;   
+                    }
+                    field = Field.TIME;
+                    break;
+                case DATE :
+                case DATETIME :
+                    if (!tryClearDate(taskId)) {
+                        allSuccessful = false;
+                    }
+                    field = Field.TIME;
+                    break;
+                case DESCRIPTION :
+                    if (!taskData.setTaskDetails(taskId, null)) {
+                        allSuccessful = false;
+                    }
+                    field = Field.DETAILS;
+                    break;
+                case PRIORITY :
+                    if (!taskData.setTaskPriority(taskId,
+                            Priority.defaultPriority())) {
+                        allSuccessful = false;
+                    }
+                    field = Field.PRIORITY;
+                    break;
+                case STATUS :
+                    if (!taskData.setTaskStatus(taskId,
+                            Status.defaultStatus())) {
+                        allSuccessful = false;
+                    }
+                    field = Field.STATUS;
+                    break;
+                case TAGS :
+                    if (!taskData.clearTags(taskId)) {
+                        allSuccessful = false;
+                    }
+                    field = Field.TAGS_DELETE;
+                    break;
+                default :
+                    allSuccessful = false;
+                    break;
+            }
+            
+            returnTaskId = taskId;
+            returnTaskInfo = taskData.getTaskInfo(taskId);
+            if (!allSuccessful) {
+                break;
+            }
+        }
+        
+
+        if (allSuccessful) {
+            return new EditResult(Result.Type.EDIT_SUCCESS, returnTaskInfo,
+                    returnTaskId, new Field[]{field});
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.EDIT_FAILURE);
+        }
+    }
+
+    private boolean tryClearTime(TaskId taskId) {
+        if (!taskData.setTaskStartDate(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskStartTime(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskEndTime(taskId, null)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    private boolean tryClearDate(TaskId taskId) {
+        if (!taskData.setTaskStartDate(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskStartTime(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskEndTime(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskDate(taskId, null)) {
+            return false;
+        }
+        
+        return true;
     }
 
     public Result startEditMode(TaskIdSet taskIdSet) {
