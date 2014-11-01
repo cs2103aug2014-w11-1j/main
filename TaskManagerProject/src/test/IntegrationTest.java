@@ -33,7 +33,7 @@ public class IntegrationTest {
         deleteTestFile();
 
         String aliasFileName = "testAlias.txt";
-        AliasStorage aliasStorage = new AliasStorage(aliasFileName);
+        AliasStorage aliasStorage = new AliasStorage();
 
         TaskData taskData = new TaskData();
         FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);

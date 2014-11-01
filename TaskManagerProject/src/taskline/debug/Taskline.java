@@ -37,7 +37,7 @@ public class Taskline {
         String fileName = "tasks.txt";
 
         String aliasFileName = "alias.txt";
-        AliasStorage aliasStorage = new AliasStorage(aliasFileName);
+        AliasStorage aliasStorage = new AliasStorage();
 
         TaskData taskData = new TaskData();
         FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
