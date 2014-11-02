@@ -19,8 +19,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="io.JsonReaderWriter" project="TaskManagerProject" 
-    file="/TaskManagerProject/src/io/JsonReaderWriter.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="3" language="java" name="io.json.JsonReaderWriter" project="TaskManagerProject" 
+    file="/TaskManagerProject/src/io/json/JsonReaderWriter.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="506" y="572"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -46,22 +46,22 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <association id="6">    
+  <dependency id="6">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <association id="7">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="7" name="taskInfo">        
+      <attribute id="8" name="taskInfo">        
         <position height="18" width="46" x="718" y="269"/>      
       </attribute>      
-      <multiplicity id="8" minimum="0" maximum="1">        
+      <multiplicity id="9" minimum="0" maximum="1">        
         <position height="16" width="23" x="1019" y="323"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="9">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
   <association id="10">    
     <bendpoint x="367" y="109"/>    
     <bendpoint x="367" y="399"/>    

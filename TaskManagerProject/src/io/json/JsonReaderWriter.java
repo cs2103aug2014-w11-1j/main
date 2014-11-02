@@ -1,13 +1,12 @@
-package io;
+package io.json;
+
+import io.IReaderWriter;
+import io.InvalidFileFormatException;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -27,19 +26,13 @@ import javax.json.stream.JsonParser.Event;
 import javax.json.stream.JsonParsingException;
 
 import main.command.alias.AliasValuePair;
-import data.taskinfo.Priority;
-import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 public class JsonReaderWriter implements IReaderWriter {
 
-    private static final String FORMAT_TIME = "%02d:%02d:%02d";
-    private static final String FORMAT_DATE = "%d-%02d-%02d";
     private static final String ERROR_WRONG_EVENT = "Wrong event: ";
     private static final String ERROR_UNKNOWN_ELEMENT = "Unknown element: ";
-    private static final String STRING_EMPTY = "";
-    private static final String STRING_NULL = "null";
     
     private static final String JSON_TASKS = "tasks";
     private static final String JSON_NAME = "name";
@@ -129,121 +122,6 @@ public class JsonReaderWriter implements IReaderWriter {
     
     
     
-    
-    public static String localTimeToString(LocalTime time) {
-        if (time == null)
-            return STRING_NULL;
-        
-        return String.format(FORMAT_TIME, time.getHour(),
-                time.getMinute(), time.getSecond());
-    }
-    
-    public static LocalTime stringToLocalTime(String timeString) {
-        if (isNullString(timeString))
-            return null;
-        
-        String[] split = timeString.split(":");
-        LocalTime time;
-        try {
-            int hour = Integer.parseInt(split[0]);
-            int minute = Integer.parseInt(split[1]);
-            int second = Integer.parseInt(split[2]);
-            time = LocalTime.of(hour, minute, second);
-            
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        return time;
-    }
-
-    public static String localDateToString(LocalDate date) {
-        if (date == null)
-            return STRING_NULL;
-        
-        return String.format(FORMAT_DATE, date.getYear(),
-                date.getMonthValue(), date.getDayOfMonth());
-    }
-    
-    public static LocalDate stringToLocalDate(String dateString) {
-        if (isNullString(dateString))
-            return null;
-        
-        String[] split = dateString.split("\\-");
-        LocalDate date;
-        try {
-            int year = Integer.parseInt(split[0]);
-            int month = Integer.parseInt(split[1]);
-            int dayOfMonth = Integer.parseInt(split[2]);
-            date = LocalDate.of(year, month, dayOfMonth);
-            
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        return date;
-        
-    }
-
-    public static String durationToString(Duration duration) {
-        if (duration == null)
-            return STRING_NULL;
-        
-        return duration.toString();
-    }
-    
-    public static Duration stringToDuration(String durationString) {
-        if (isNullString(durationString))
-            return null;
-        
-        Duration duration;
-        try {
-            duration = Duration.parse(durationString);
-            
-        } catch (DateTimeParseException e) {
-            return null;
-        }
-        return duration;
-    }
-    
-    public static String statusToString(Status status) {
-        if (status == null)
-            return Status.defaultStatus().name();
-        
-        return status.name();
-    }
-
-    public static String priorityToString(Priority priority) {
-        if (priority == null)
-            return Priority.defaultPriority().name();
-        
-        return priority.name();
-    }
-
-    public static Status stringToStatus(String statusString) {
-        if (isNullString(statusString))
-            return Status.defaultStatus();
-        
-        return Status.valueOf(statusString);
-    }
-
-    public static Priority stringToPriority(String priorityString) {
-        if (isNullString(priorityString))
-            return Priority.defaultPriority();
-        
-        return Priority.valueOf(priorityString);
-    }
-
-    public static String stringToJsonString(String string) {
-        if (string == null)
-            return STRING_EMPTY;
-        return string;
-    }
-    
-    public static String jsonStringToString(String jsonString) {
-        return jsonString;
-    }
-    
-    
-    
     private static TaskInfo parseTaskInfo(JsonParser parser)
             throws InvalidFileFormatException{
         
@@ -280,39 +158,39 @@ public class JsonReaderWriter implements IReaderWriter {
         
         switch(key) {
             case JSON_NAME :
-                taskInfo.name = jsonStringToString(value);
+                taskInfo.name = JsonItemParser.jsonStringToString(value);
                 break;
             case JSON_START_TIME :
-                taskInfo.startTime = stringToLocalTime(value);
+                taskInfo.startTime = JsonItemParser.stringToLocalTime(value);
                 break;
             case JSON_START_DATE :
-                taskInfo.startDate = stringToLocalDate(value);
+                taskInfo.startDate = JsonItemParser.stringToLocalDate(value);
                 break;
             case JSON_END_TIME :
-                taskInfo.endTime = stringToLocalTime(value);
+                taskInfo.endTime = JsonItemParser.stringToLocalTime(value);
                 break;
             case JSON_END_DATE :
-                taskInfo.endDate = stringToLocalDate(value);
+                taskInfo.endDate = JsonItemParser.stringToLocalDate(value);
                 break;
             case JSON_TAGS :
-                if (isNullString(value))
+                if (JsonItemParser.isNullString(value))
                     taskInfo.tags = null;
                 else
                     throw new InvalidFileFormatException("Unable to read tags");
                 break;
             case JSON_DETAILS :
-                taskInfo.details = jsonStringToString(value);
+                taskInfo.details = JsonItemParser.jsonStringToString(value);
                 break;
             case JSON_PRIORITY :
                 try {
-                    taskInfo.priority = stringToPriority(value);
+                    taskInfo.priority = JsonItemParser.stringToPriority(value);
                 } catch (IllegalArgumentException e) {
                     throw new InvalidFileFormatException("Unable to read priority");
                 }
                 break;
             case JSON_STATUS :
                 try {
-                    taskInfo.status = stringToStatus(value);
+                    taskInfo.status = JsonItemParser.stringToStatus(value);
                 } catch (IllegalArgumentException e) {
                     throw new InvalidFileFormatException("Unable to read status");
                 }
@@ -348,15 +226,15 @@ public class JsonReaderWriter implements IReaderWriter {
 
     private static JsonObjectBuilder createJsonObjectBuilder(TaskInfo taskInfo) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        builder.add(JSON_NAME, stringToJsonString(taskInfo.name));
-        builder.add(JSON_START_TIME, localTimeToString(taskInfo.startTime));
-        builder.add(JSON_START_DATE, localDateToString(taskInfo.startDate));
-        builder.add(JSON_END_TIME, localTimeToString(taskInfo.endTime));
-        builder.add(JSON_END_DATE, localDateToString(taskInfo.endDate));
-        builder.add(JSON_DETAILS, stringToJsonString(taskInfo.details));
+        builder.add(JSON_NAME, JsonItemParser.stringToJsonString(taskInfo.name));
+        builder.add(JSON_START_TIME, JsonItemParser.localTimeToString(taskInfo.startTime));
+        builder.add(JSON_START_DATE, JsonItemParser.localDateToString(taskInfo.startDate));
+        builder.add(JSON_END_TIME, JsonItemParser.localTimeToString(taskInfo.endTime));
+        builder.add(JSON_END_DATE, JsonItemParser.localDateToString(taskInfo.endDate));
+        builder.add(JSON_DETAILS, JsonItemParser.stringToJsonString(taskInfo.details));
         builderAddTags(taskInfo.tags, builder);
-        builder.add(JSON_PRIORITY, priorityToString(taskInfo.priority));
-        builder.add(JSON_STATUS, statusToString(taskInfo.status));
+        builder.add(JSON_PRIORITY, JsonItemParser.priorityToString(taskInfo.priority));
+        builder.add(JSON_STATUS, JsonItemParser.statusToString(taskInfo.status));
         
         // PENDING IMPLEMENTATION
         //builder.add(JSON_NUMBER_OF_TIMES, taskInfo.numberOfTimes);
@@ -365,13 +243,10 @@ public class JsonReaderWriter implements IReaderWriter {
         return builder;
     }
 
-    private static boolean isNullString(String value) {
-        return STRING_NULL.equals(value);
-    }
 
     private static void builderAddTags(Tag[] tags, JsonObjectBuilder builder) {
         if (tags == null) {
-            builder.add(JSON_TAGS, STRING_NULL);
+            builder.add(JSON_TAGS, JsonItemParser.STRING_NULL);
             
         } else {
             JsonArrayBuilder tagArrayJson = Json.createArrayBuilder();

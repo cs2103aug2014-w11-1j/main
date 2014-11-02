@@ -19,8 +19,8 @@
       <operations public="true" package="true" protected="true" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="io.JsonReaderWriter" project="TaskManagerProject" 
-    file="/TaskManagerProject/src/io/JsonReaderWriter.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="3" language="java" name="io.json.JsonReaderWriter" project="TaskManagerProject" 
+    file="/TaskManagerProject/src/io/json/JsonReaderWriter.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="163" width="252" x="118" y="286"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
@@ -56,57 +56,57 @@
     </display>  
   </class>  
   <association id="7">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="8" name="EMPTY_SLOT"/>      
-      <multiplicity id="9" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="10">    
     <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="11" name="taskData"/>      
-      <multiplicity id="12" minimum="0" maximum="1"/>    
+      <attribute id="8" name="taskData"/>      
+      <multiplicity id="9" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="13">    
+  <association id="10">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="14" name="EMPTY_SLOT"/>      
-      <multiplicity id="15" minimum="0" maximum="1"/>    
+      <attribute id="11" name="EMPTY_SLOT"/>      
+      <multiplicity id="12" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="16">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="17" name="taskInfo"/>      
-      <multiplicity id="18" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="19">    
+  <association id="13">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="20" name="tags"/>      
-      <multiplicity id="21" minimum="0" maximum="2147483647"/>    
+      <attribute id="14" name="tags"/>      
+      <multiplicity id="15" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="22">    
+  <association id="16">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="23" name="EMPTY_SLOT"/>      
-      <multiplicity id="24" minimum="0" maximum="1"/>    
+      <attribute id="17" name="taskList"/>      
+      <multiplicity id="18" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <association id="19">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="20" name="EMPTY_SLOT"/>      
+      <multiplicity id="21" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="22">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="23" name="taskInfo"/>      
+      <multiplicity id="24" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <association id="25">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="26" name="taskList"/>      
-      <multiplicity id="27" minimum="0" maximum="2147483647"/>    
+      <attribute id="26" name="EMPTY_SLOT"/>      
+      <multiplicity id="27" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  

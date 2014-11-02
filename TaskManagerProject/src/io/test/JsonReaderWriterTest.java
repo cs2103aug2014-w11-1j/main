@@ -3,7 +3,8 @@ package io.test;
 import static org.junit.Assert.assertEquals;
 import io.IReaderWriter;
 import io.InvalidFileFormatException;
-import io.JsonReaderWriter;
+import io.json.JsonItemParser;
+import io.json.JsonReaderWriter;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -125,93 +126,93 @@ public class JsonReaderWriterTest {
         String durationString;
 
         duration = Duration.ofHours(15);
-        durationString = JsonReaderWriter.durationToString(duration);
-        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
         
         duration = Duration.ofDays(10000);
-        durationString = JsonReaderWriter.durationToString(duration);
-        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
         
         duration = Duration.ofSeconds(3);
-        durationString = JsonReaderWriter.durationToString(duration);
-        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
         
         duration = Duration.ofSeconds(1200);
-        durationString = JsonReaderWriter.durationToString(duration);
-        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
         
         duration = Duration.ofHours(0);
-        durationString = JsonReaderWriter.durationToString(duration);
-        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
         
         duration = Duration.ofHours(24);
-        durationString = JsonReaderWriter.durationToString(duration);
-        assertEquals(duration, JsonReaderWriter.stringToDuration(durationString));
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
 
         durationString = "test";
-        assertEquals(null, JsonReaderWriter.stringToDuration(durationString));
+        assertEquals(null, JsonItemParser.stringToDuration(durationString));
 
         LocalTime time;
         String timeString;
         
         time = LocalTime.of(5, 4, 3);
-        timeString = JsonReaderWriter.localTimeToString(time);
-        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
         
         time = LocalTime.of(0, 1, 1);
-        timeString = JsonReaderWriter.localTimeToString(time);
-        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
         
         time = LocalTime.of(1, 0, 1);
-        timeString = JsonReaderWriter.localTimeToString(time);
-        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
         
         time = LocalTime.of(1, 1, 0);
-        timeString = JsonReaderWriter.localTimeToString(time);
-        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
         
         time = LocalTime.of(0, 0, 0);
-        timeString = JsonReaderWriter.localTimeToString(time);
-        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
         
         time = LocalTime.of(23, 59, 59);
-        timeString = JsonReaderWriter.localTimeToString(time);
-        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
         
         time = LocalTime.of(11, 10, 3);
-        timeString = JsonReaderWriter.localTimeToString(time);
-        assertEquals(time, JsonReaderWriter.stringToLocalTime(timeString));
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
 
         LocalDate date;
         String dateString;
         
         date = LocalDate.of(2013, 12, 31);
-        dateString = JsonReaderWriter.localDateToString(date);
-        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
         
         date = LocalDate.of(1990, 2, 2);
-        dateString = JsonReaderWriter.localDateToString(date);
-        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
         
         date = LocalDate.of(2012, 2, 29);
-        dateString = JsonReaderWriter.localDateToString(date);
-        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
         
         date = LocalDate.of(1, 1, 1);
-        dateString = JsonReaderWriter.localDateToString(date);
-        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
 
         date = LocalDate.of(3012, 7, 4);
-        dateString = JsonReaderWriter.localDateToString(date);
-        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
 
         date = LocalDate.of(1000, 7, 7);
-        dateString = JsonReaderWriter.localDateToString(date);
-        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
 
         date = LocalDate.now();
-        dateString = JsonReaderWriter.localDateToString(date);
-        assertEquals(date, JsonReaderWriter.stringToLocalDate(dateString));
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
     }
     
     private TaskInfo[] createExpectedResult(TaskInfo[] taskInfos) {
