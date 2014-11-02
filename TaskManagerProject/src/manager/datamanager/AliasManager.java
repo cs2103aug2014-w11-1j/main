@@ -19,10 +19,10 @@ public class AliasManager extends AbstractManager {
         boolean canOverride = aliasStorage.canOverride(alias);
         if (canOverride) {
             String value;
-            boolean alreadyHasAlias = aliasStorage.isAlreadyBinded(alias);
+            boolean isAlreadyBinded = aliasStorage.isAlreadyBinded(alias);
             value = aliasStorage.createCustomCommand(alias, target);
             
-            return new AliasSetResult(alias, value, alreadyHasAlias);
+            return new AliasSetResult(alias, value, isAlreadyBinded);
             
         } else {
             return new SimpleResult(Result.Type.ALIAS_FAILURE);

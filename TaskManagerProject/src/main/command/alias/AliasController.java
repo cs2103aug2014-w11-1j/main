@@ -1,7 +1,6 @@
 package main.command.alias;
 
 import java.util.function.BiFunction;
-import java.util.regex.Matcher;
 
 import main.command.Command;
 import manager.ManagerHolder;
@@ -20,39 +19,38 @@ public class AliasController {
         commandString = cleanCmdString(commandString);
         beforeAliasCheck();
 
-        if (commandString.length() == 0) {
+        if (commandString.isEmpty()) {
             return commandString;
         }
-        
+
         commandString = tryReplaceWithCustom(commandString);
         return commandString;
     }
 
-
     private void beforeAliasCheck() {
         //aliasFileInputOutput.read();
     }
-    
+
     private String tryReplaceWithCustom(String command) {
         String[] split = command.split(" ", 2);
         assert split.length >= 1;
-        
+
         String replacement = getCustomAlias(split[0]);
         if (replacement == null) {
             return command;
         }
-        
+
         String argument;
-        
+
         if (split.length <= 1) {
             argument = "";
         } else {
             assert split.length == 2;
             argument = split[1];
         }
-        
-        replacement = replacement.replaceAll(AliasStorage.VARIABLE_STRING_REGEX,
-                Matcher.quoteReplacement(argument));
+
+        replacement = replacement.replace(AliasStorage.VARIABLE_STRING,
+                argument);
         return replacement;
     }
 

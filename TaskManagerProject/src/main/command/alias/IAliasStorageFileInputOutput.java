@@ -8,6 +8,8 @@ public interface IAliasStorageFileInputOutput {
     public abstract AliasValuePair[] getAllCustomAliases();
 
     /**
+     * Registers a custom command, alias is assumed to be overridable.
+     *
      * @param aliases Overwrites the original set of custom aliases with these.
      * @return true if successful. If unsuccessful, no change will be made to
      * AliasStorage.

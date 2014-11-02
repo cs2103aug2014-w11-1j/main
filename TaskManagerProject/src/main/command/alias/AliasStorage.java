@@ -26,19 +26,18 @@ import manager.ManagerHolder;
 
 
 public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput {
-    // Variable string: \$
-    public static final String VARIABLE_STRING_REGEX = "\\\\\\$";
+    // Variable string: \$ (String replaced with user's argument when aliased)
     public static final String VARIABLE_STRING = "\\$";
 
     private HashSet<String> unoverridableStringSet;
     private HashMap<String, BiFunction<String, ManagerHolder, Command>> defaultMap;
     private HashMap<String, String> customMap;
-    
+
     public AliasStorage() {
         defaultMap = new HashMap<>();
         customMap = new HashMap<>();
         unoverridableStringSet = new HashSet<>();
-        
+
         initialiseUnoverriableStrings();
         initialiseDefaultCommands();
     }
@@ -49,9 +48,9 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
     @Override
     public BiFunction<String, ManagerHolder, Command> getDefaultCommand(
             String commandString) {
-        
+
         BiFunction<String, ManagerHolder, Command> makeCommandFunction;
-        
+
         makeCommandFunction = defaultMap.get(commandString);
         if (makeCommandFunction == null) {
             return defaultMakeCommand(commandString);
@@ -67,14 +66,14 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
     public String getCustomCommand(String cmdString) {
         return customMap.get(cmdString);
     }
-    
+
     /* (non-Javadoc)
      * @see main.command.alias.IAliasStorage#createCustomCommand(java.lang.String, java.lang.String)
      */
     @Override
     public String createCustomCommand(String alias, String replacement) {
         assert canOverride(alias);
-        
+
         String[] keywords = replacement.split(" ", 2);
         String value;
         if (keywords.length == 1) {
@@ -103,14 +102,15 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         return customMap.remove(alias);
     }
 
+    
     /* (non-Javadoc)
      * @see main.command.alias.IAliasStorage#isAlreadyBinded(java.lang.String)
      */
     @Override
     public boolean isAlreadyBinded(String alias) {
-        boolean alreadyHas = customMap.containsKey(alias) ||
+        boolean alreadyBinded = customMap.containsKey(alias) ||
                 defaultMap.containsKey(alias);        
-        return alreadyHas;
+        return alreadyBinded;
     }
     
     /* (non-Javadoc)
@@ -163,20 +163,20 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         }
         return true;
     }
-    
+
     private BiFunction<String, ManagerHolder, Command> defaultMakeCommand(
             String input) {
-        
+
         return (args, managerHolder) ->
                 new ArgumentCommand(input + " " + args, managerHolder);
     }
-    
+
     private void initialiseDefaultCommands() {
 
         defineDefaultCommands(
                 (args, managerHolder) -> new AddCommand(args, managerHolder),
                 "add", "create");
-        
+
         defineDefaultCommands(
                 (args, managerHolder) -> new SearchCommand(args, managerHolder),
                 "show", "search", "ls");
@@ -194,7 +194,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 (args, managerHolder) ->
                 new EditCommand(args, managerHolder, ParseType.UNMARK),
                 "unmark");
-        
+
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new EditCommand(args, managerHolder, ParseType.STATUS),
@@ -213,7 +213,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         defineDefaultCommands(
                 (args, managerHolder) -> new UndoCommand(managerHolder),
                 "undo");
-        
+
         defineDefaultCommands(
                 (args, managerHolder) -> new RedoCommand(managerHolder),
                 "redo");
@@ -250,20 +250,19 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         defineDefaultCommands(
                 (args, managerHolder) -> new AliasDeleteCommand(args, managerHolder),
                 "unalias");
-        
+
     }
-    
+
     private void initialiseUnoverriableStrings() {
         unoverridableStringSet.add("custom");
         unoverridableStringSet.add("alias");
         unoverridableStringSet.add("unalias");
     }
-    
-    
+
     private void defineDefaultCommands(
             BiFunction<String, ManagerHolder, Command> commandFunction,
-            String...commandStrings) {
-        
+            String... commandStrings) {
+
         for (String commandString : commandStrings) {
             defaultMap.put(commandString, commandFunction);
         }
