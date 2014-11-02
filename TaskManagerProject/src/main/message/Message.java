@@ -8,6 +8,7 @@ public interface Message {
         DELETE_SUCCESSFUL,
         FREE_DAY_SEARCH_SUCCESSFUL,
         FREE_TIME_SEARCH_SUCCESSFUL,
+        ALIAS_MESSAGE,
         DETAILS,
         REPORT
     }

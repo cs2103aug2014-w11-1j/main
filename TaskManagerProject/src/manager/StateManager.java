@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import main.command.TargetedCommand;
 import main.command.TaskIdSet;
 import main.message.AddSuccessfulMessage;
+import main.message.AliasMessage;
 import main.message.DeleteSuccessfulMessage;
 import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
@@ -26,6 +27,8 @@ import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
 import manager.datamanager.searchfilter.Filter;
 import manager.result.AddResult;
+import manager.result.AliasDeleteResult;
+import manager.result.AliasSetResult;
 import manager.result.DeleteResult;
 import manager.result.DetailsResult;
 import manager.result.EditResult;
@@ -446,10 +449,32 @@ public class StateManager {
             			new FreeTimeSearchMessage(freeTimeResult.getDate(),
             					freeTimeResult.getFreeTimeList());
             	return freeTimeMessage;
+                
             case DETAILS :
                 DetailsResult detailsResult = (DetailsResult)result;
                 return new DetailsMessage(detailsResult.getTask(),
                         detailsResult.getTaskId());
+                
+            case ALIAS_SUCCESS : {
+                AliasSetResult aliasResult = (AliasSetResult)result;
+                return new AliasMessage(aliasResult.getAlias(),
+                        aliasResult.getValue(),
+                        AliasMessage.AliasType.ALIAS_SET_SUCCESS);
+            }
+                
+            case ALIAS_FAILURE :
+                return new AliasMessage(null, null,
+                        AliasMessage.AliasType.ALIAS_SET_FAILURE);
+                
+            case ALIAS_DELETE_SUCCESS : {
+                AliasDeleteResult aliasResult = (AliasDeleteResult)result;
+                return new AliasMessage(aliasResult.getAlias(), null,
+                        AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
+            }
+                
+            case ALIAS_DELETE_FAILURE :
+                return new AliasMessage(null, null,
+                        AliasMessage.AliasType.ALIAS_DELETE_FAILURE);
 
             default:
                 throw new UnsupportedOperationException("Unknown state: " +

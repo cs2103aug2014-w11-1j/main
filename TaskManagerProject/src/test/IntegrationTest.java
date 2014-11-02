@@ -37,7 +37,7 @@ public class IntegrationTest {
 
         TaskData taskData = new TaskData();
         FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
-        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput);
+        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput, aliasStorage);
         MainController mainController = new MainController(managerHolder, aliasStorage);
         
         test(mainController);

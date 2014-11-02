@@ -28,7 +28,11 @@ public interface Result {
         FREE_DAY,
         FREE_TIME,
         REPORT,
-        EXIT
+        EXIT,
+        ALIAS_SUCCESS,
+        ALIAS_FAILURE,
+        ALIAS_DELETE_SUCCESS,
+        ALIAS_DELETE_FAILURE
     }
 
     public Type getType();    // implement this with the correct type.

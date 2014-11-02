@@ -24,24 +24,33 @@ public class CommandController {
     public Command getCommand(String commandString) {
 
         commandString = aliasController.replaceAlias(commandString);
-
-        BiFunction<String, ManagerHolder, Command> makeCommand;
         
         String[] split = commandString.split(" ", 2);
-        
-        String commandType = "";
-        if (split.length >= 1) {
-            commandType = split[0];
-        }
+        String commandType = extractFirstToken(split);
+        String arguments = extractSecondToken(split);
+
+        BiFunction<String, ManagerHolder, Command> makeCommand;
         makeCommand = aliasController.getReservedCommand(commandType);
         
+        Command command = makeCommand.apply(arguments, managerHolder);
+        
+        return command;
+    }
+
+    protected String extractSecondToken(String[] split) {
         String arguments = "";
         if (split.length >= 2) {
             assert split.length == 2;
             arguments = split[1];
         }
+        return arguments;
+    }
 
-        Command command = makeCommand.apply(arguments, managerHolder);
-        return command;
+    protected String extractFirstToken(String[] split) {
+        String commandType = "";
+        if (split.length >= 1) {
+            commandType = split[0];
+        }
+        return commandType;
     }
 }

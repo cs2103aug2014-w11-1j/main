@@ -57,7 +57,7 @@ public class CrashTester {
 
         TaskData taskData = new TaskData();
         FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
-        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput);
+        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput, aliasStorage);
         mainController = new MainController(managerHolder, aliasStorage);
         keywordLibrary = new KeywordLibrary(RANDOM_SEED);
         
