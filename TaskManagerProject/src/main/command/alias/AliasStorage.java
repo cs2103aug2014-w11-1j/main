@@ -24,48 +24,50 @@ import manager.ManagerHolder;
 
 
 public class AliasStorage {
-    // Variable string: \$
-    public static final String VARIABLE_STRING_REGEX = "\\\\\\$";
+    // Variable string: \$ (String replaced with user's argument when aliased)
     public static final String VARIABLE_STRING = "\\$";
 
     private HashSet<String> unoverridableStringSet;
     private HashMap<String, BiFunction<String, ManagerHolder, Command>> defaultMap;
     private HashMap<String, String> customMap;
-    
+
     public AliasStorage() {
         defaultMap = new HashMap<>();
         customMap = new HashMap<>();
         unoverridableStringSet = new HashSet<>();
-        
+
         initialiseUnoverriableStrings();
         initialiseDefaultCommands();
     }
 
     public BiFunction<String, ManagerHolder, Command> getDefaultCommand(
             String commandString) {
-        
+
         BiFunction<String, ManagerHolder, Command> makeCommandFunction;
-        
+
         makeCommandFunction = defaultMap.get(commandString);
         if (makeCommandFunction == null) {
             return defaultMakeCommand(commandString);
         } else {
-            return defaultMap.get(commandString);
+            return makeCommandFunction;
         }
     }
 
     public String getCustomCommand(String cmdString) {
         return customMap.get(cmdString);
     }
-    
+
     /**
+     * Registers a custom command, alias is assumed to be overridable.
+     * Program will crash otherwise.
+     *
      * @param alias from this keyword (must be one word)
      * @param replacement to this string
      * @return the string the alias is binded to.
      */
     public String createCustomCommand(String alias, String replacement) {
         assert canOverride(alias);
-        
+
         String[] keywords = replacement.split(" ", 2);
         String value;
         if (keywords.length == 1) {
@@ -73,14 +75,14 @@ public class AliasStorage {
         } else {
             value = replacement;
         }
-        
+
         if (put(alias, value)) {
             return value;
         } else {
             return null;
         }
     }
-    
+
     /**
      * @param alias alias string to test.
      * @return true iff this alias is overridable. (e.g. custom is not
@@ -89,7 +91,7 @@ public class AliasStorage {
     public boolean canOverride(String alias) {
         return !unoverridableStringSet.contains(alias);
     }
-    
+
     /**
      * @param alias delete the custom command that uses this alias
      * @return the value the alias is binded to. Returns null iff alias did
@@ -98,20 +100,20 @@ public class AliasStorage {
     public String deleteCustomCommand(String alias) {
         return customMap.remove(alias);
     }
-    
+
     private BiFunction<String, ManagerHolder, Command> defaultMakeCommand(
             String input) {
-        
+
         return (args, managerHolder) ->
                 new ArgumentCommand(input + " " + args, managerHolder);
     }
-    
+
     private void initialiseDefaultCommands() {
 
         defineDefaultCommands(
                 (args, managerHolder) -> new AddCommand(args, managerHolder),
                 "add", "create");
-        
+
         defineDefaultCommands(
                 (args, managerHolder) -> new SearchCommand(args, managerHolder),
                 "show", "search", "ls");
@@ -129,7 +131,7 @@ public class AliasStorage {
                 (args, managerHolder) ->
                 new EditCommand(args, managerHolder, ParseType.UNMARK),
                 "unmark");
-        
+
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new EditCommand(args, managerHolder, ParseType.STATUS),
@@ -148,7 +150,7 @@ public class AliasStorage {
         defineDefaultCommands(
                 (args, managerHolder) -> new UndoCommand(managerHolder),
                 "undo");
-        
+
         defineDefaultCommands(
                 (args, managerHolder) -> new RedoCommand(managerHolder),
                 "redo");
@@ -185,29 +187,28 @@ public class AliasStorage {
         defineDefaultCommands(
                 (args, managerHolder) -> new AliasDeleteCommand(args, managerHolder),
                 "unalias");
-        
+
     }
-    
+
     private void initialiseUnoverriableStrings() {
         unoverridableStringSet.add("custom");
         unoverridableStringSet.add("alias");
         unoverridableStringSet.add("unalias");
     }
-    
-    
+
     private void defineDefaultCommands(
             BiFunction<String, ManagerHolder, Command> commandFunction,
-            String...commandStrings) {
-        
+            String... commandStrings) {
+
         for (String commandString : commandStrings) {
             defaultMap.put(commandString, commandFunction);
         }
     }
-    
+
     private boolean put(String alias, String value) {
         boolean alreadyHas = customMap.containsKey(alias);
         customMap.put(alias, value);
-        
+
         return alreadyHas;
     }
 }
