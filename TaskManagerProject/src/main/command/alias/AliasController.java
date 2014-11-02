@@ -50,7 +50,7 @@ public class AliasController {
             argument = split[1];
         }
         
-        replacement = replacement.replaceAll(AliasStorage.VARIABLE_STRING,
+        replacement = replacement.replaceAll(AliasStorage.VARIABLE_STRING_REGEX,
                 argument);
         return replacement;
     }

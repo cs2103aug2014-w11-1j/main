@@ -25,7 +25,8 @@ import manager.ManagerHolder;
 
 public class AliasStorage {
     // Variable string: \$
-    public static final String VARIABLE_STRING = "\\\\\\$";
+    public static final String VARIABLE_STRING_REGEX = "\\\\\\$";
+    public static final String VARIABLE_STRING = "\\$";
 
     private HashSet<String> unoverridableStringSet;
     private HashMap<String, BiFunction<String, ManagerHolder, Command>> defaultMap;
