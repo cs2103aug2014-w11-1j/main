@@ -7,6 +7,7 @@ import manager.result.Result;
 
 import org.junit.Test;
 
+import data.ITaskData;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
@@ -239,11 +240,11 @@ public class UndoManagerTest {
         return taskInfo;
     }
     
-    private void assertSize(TaskData taskData, int size) {
+    private void assertSize(ITaskData taskData, int size) {
         assertEquals(size, taskData.getSize());
     }
     
-    private void assertElements(TaskData taskData, String... taskNames) {
+    private void assertElements(ITaskData taskData, String... taskNames) {
         TaskId current = taskData.getFirst();
         
         for (String taskName : taskNames) {

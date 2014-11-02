@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import data.ITaskData;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
@@ -191,7 +192,7 @@ public class TaskDataTest {
      * @param taskData taskData to test
      * @param size expected size of taskData.
      */
-    private void testSizeAndIteration(TaskData taskData, int size) {
+    private void testSizeAndIteration(ITaskData taskData, int size) {
         assertEquals(size, taskData.getSize());
         
         if (size == 0) {

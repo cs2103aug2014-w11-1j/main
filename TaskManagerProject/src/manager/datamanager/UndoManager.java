@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import manager.result.Result;
 import manager.result.SimpleResult;
 import manager.result.UndoResult;
+import data.ITaskDataUndo;
 import data.TaskData;
 import data.TaskId;
 import data.UndoSnapshot;
@@ -13,9 +14,11 @@ public class UndoManager extends AbstractManager {
     private static int UNDO_LIMIT = 100;
     private LinkedList<UndoSnapshot> undoHistory;
     private LinkedList<UndoSnapshot> redoHistory;
+    private final ITaskDataUndo taskDataUndo;
 
     public UndoManager(TaskData taskData) {
         super(taskData);
+        taskDataUndo = taskData;
         undoHistory = new LinkedList<>();
         redoHistory = new LinkedList<>();
     }
@@ -26,7 +29,7 @@ public class UndoManager extends AbstractManager {
     }
     
     public void updateUndoHistory() {
-        UndoSnapshot undoSnapshot = taskData.retrieveUndoSnapshot();
+        UndoSnapshot undoSnapshot = taskDataUndo.retrieveUndoSnapshot();
         if (undoSnapshot.hasChanges()) {
             clearRedoHistory();
             
@@ -76,12 +79,12 @@ public class UndoManager extends AbstractManager {
 
 
     private void retrieveUndoSnapshot() {
-        UndoSnapshot undoSnapshot = taskData.retrieveUndoSnapshot();
+        UndoSnapshot undoSnapshot = taskDataUndo.retrieveUndoSnapshot();
         undoHistory.push(undoSnapshot);
     }
     
     private void retrieveRedoSnapshot() {
-        UndoSnapshot redoSnapshot = taskData.retrieveUndoSnapshot();
+        UndoSnapshot redoSnapshot = taskDataUndo.retrieveUndoSnapshot();
         redoHistory.push(redoSnapshot);
     }
     

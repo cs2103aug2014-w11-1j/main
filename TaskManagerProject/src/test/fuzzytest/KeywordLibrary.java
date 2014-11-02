@@ -38,6 +38,8 @@ public class KeywordLibrary {
         ADD,
         RETURN,
         QUIT,
+        ALIAS,
+        UNALIAS,
         ALL
     }
     
@@ -155,6 +157,9 @@ public class KeywordLibrary {
         addToList("back", COMMAND, RETURN);
         addToList("quit", COMMAND, QUIT);
         addToList("exit", COMMAND, QUIT);
+        addToList("alias", COMMAND, ALIAS);
+        addToList("custom", COMMAND, ALIAS);
+        addToList("unalias", COMMAND, UNALIAS);
 
         addToList(AGAIN, "tag", COMMAND, EDIT, EDITKEYWORD, TASKID);
         addToList("add", COMMAND, ADD, EDITKEYWORD, TASKID, RANDOM);

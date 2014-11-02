@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import taskline.debug.Taskline;
+import data.ITaskDataFileInputOutput;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
@@ -22,7 +23,7 @@ public class FileInputOutput {
     private final String fileName;
     private String fileHash = "";
     
-    private final TaskData taskData;
+    private final ITaskDataFileInputOutput taskData;
     
     public FileInputOutput(TaskData taskData, String fileName) {
         this.fileName = fileName;

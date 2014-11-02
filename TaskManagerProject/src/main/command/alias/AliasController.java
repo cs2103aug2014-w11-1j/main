@@ -1,6 +1,7 @@
 package main.command.alias;
 
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
 
 import main.command.Command;
 import manager.ManagerHolder;
@@ -51,7 +52,7 @@ public class AliasController {
         }
         
         replacement = replacement.replaceAll(AliasStorage.VARIABLE_STRING_REGEX,
-                argument);
+                Matcher.quoteReplacement(argument));
         return replacement;
     }
 

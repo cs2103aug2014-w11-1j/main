@@ -1,6 +1,5 @@
 package data;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import data.taskinfo.TaskInfo;
  * 
  * @author Oh
  */
-public class TaskData {
+public class TaskData implements ITaskData, ITaskDataFileInputOutput, ITaskDataUndo {
     private static final String ERROR_NULL_TASKID = "Tried to query/edit TaskData with null task Id.";
     private static final String ERROR_NULL_TASKINFO = "Tried to edit TaskData with null taskInfo.";
     private static final String ERROR_NULL_TASK_ARRAY = "Tried to update TaskData with null task array.";

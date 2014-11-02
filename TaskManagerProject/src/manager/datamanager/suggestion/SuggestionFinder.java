@@ -13,7 +13,7 @@ import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.Filter.Type;
 import manager.datamanager.searchfilter.KeywordFilter;
 import manager.datamanager.searchfilter.SuggestionFilter;
-import data.TaskData;
+import data.ITaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
@@ -27,9 +27,9 @@ public class SuggestionFinder {
                     return b.getNumberOfMatches() - a.getNumberOfMatches();
                 }
             };
-    TaskData taskData;
+    ITaskData taskData;
     
-    public SuggestionFinder(TaskData taskData) {
+    public SuggestionFinder(ITaskData taskData) {
         this.taskData = taskData;
     }
     

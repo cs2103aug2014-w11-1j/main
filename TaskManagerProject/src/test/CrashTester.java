@@ -100,6 +100,8 @@ public class CrashTester {
         testRandom(30, add, randomItems, randomItems, randomItems,
                 validItems, validItems, validItems);
 
+        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
+        
         for (int i = 0 ; i < 100; i++) {
             testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(delete, validTargets);
@@ -119,12 +121,14 @@ public class CrashTester {
         
         
         testRandom(100, ListType.ALL, ListType.ALL);
+        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
         
         testRandom(ListType.SEARCH);
 
         testRandom(100, ListType.COMMAND, ListType.ALL);
         testRandom(100, ListType.COMMAND, ListType.ALL, ListType.ALL);
         testRandom(100, ListType.COMMAND, ListType.ALL, ListType.ALL, ListType.ALL);
+        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
 
         testRandom(100, ListType.SEARCH, ListType.ALL);
         testRandom(50, ListType.SEARCH, ListType.RANDOM);
@@ -149,6 +153,18 @@ public class CrashTester {
                 randomTargets, randomTargets, randomTargets,
                 editKeywords, randomItems, randomItems);
 
+        // Random aliasing
+        for (int i = 0; i < 3; i++) {
+            testRandom(20, ListType.ALIAS, ListType.ALL, ListType.COMMAND,
+                    ListType.ALL);
+            testRandom(20, ListType.ALIAS, ListType.ALL, ListType.ALL,
+                    ListType.ALL);
+    
+            testRandom(20, ListType.ALL, ListType.ALL);
+            testRandom(20, ListType.ALL, ListType.ALL, ListType.ALL);
+            testRandom(20, ListType.ALL, ListType.ALL, ListType.ALL,
+                    ListType.ALL);
+        }
 
     }
     
@@ -169,6 +185,10 @@ public class CrashTester {
         test("add meepietwo");
         test("edit meepietwo date tomorrow");
         test("search     ");
+        
+        test("alias show orange");
+        test("show $4");
+        test("unalias show");
     }
     
     /**

@@ -191,6 +191,7 @@ public class AliasStorage {
     private void initialiseUnoverriableStrings() {
         unoverridableStringSet.add("custom");
         unoverridableStringSet.add("alias");
+        unoverridableStringSet.add("unalias");
     }
     
     

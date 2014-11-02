@@ -92,7 +92,7 @@ public final class TaskId implements Comparable<TaskId> {
     }
     
     public boolean isValid() {
-        return (id != TaskData.NO_TASK);
+        return (id != ITaskData.NO_TASK);
     }
     
     /**
