@@ -2,14 +2,18 @@ package io.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import io.FileInputOutput;
+import io.IFileInputOutput;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import taskline.TasklineLogger;
+
 public class FileInputOutputTest {
+    private static final Logger log = TasklineLogger.getLogger();
 
     @Test
     public void test() {
@@ -41,8 +45,8 @@ public class FileInputOutputTest {
 
         String correctHash = "6bd6955dce300739cdea07fa4fc574aa";
         
-        String hash1 = FileInputOutput.computeHash("testFile.txt");
-        String hash2 = FileInputOutput.computeHash("fileTest.txt");
+        String hash1 = IFileInputOutput.computeHash("testFile.txt");
+        String hash2 = IFileInputOutput.computeHash("fileTest.txt");
         
         assertEquals(correctHash, hash1);
         assertEquals(correctHash.length(), hash2.length());

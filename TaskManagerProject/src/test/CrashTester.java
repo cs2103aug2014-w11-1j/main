@@ -1,6 +1,7 @@
 package test;
 
 import io.FileInputOutput;
+import io.IFileInputOutput;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +12,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import main.MainController;
 import main.command.alias.AliasStorage;
+import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
 
 import org.junit.After;
@@ -53,10 +55,10 @@ public class CrashTester {
         deleteTestFile();
 
         String aliasFileName = "testAlias.txt";
-        AliasStorage aliasStorage = new AliasStorage();
+        IAliasStorage aliasStorage = new AliasStorage();
 
         TaskData taskData = new TaskData();
-        FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
+        IFileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
         ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput, aliasStorage);
         mainController = new MainController(managerHolder, aliasStorage);
         keywordLibrary = new KeywordLibrary(RANDOM_SEED);

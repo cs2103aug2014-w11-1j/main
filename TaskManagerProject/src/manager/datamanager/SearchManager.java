@@ -17,13 +17,13 @@ import manager.datamanager.suggestion.SuggestionFinder;
 import manager.result.DetailsResult;
 import manager.result.Result;
 import manager.result.SearchResult;
-import taskline.debug.Taskline;
+import taskline.TasklineLogger;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 public class SearchManager extends AbstractManager {
-    private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
+    private static final Logger log = TasklineLogger.getLogger();
 
     
     SuggestionFinder suggestionFinder;

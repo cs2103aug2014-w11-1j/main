@@ -1,6 +1,6 @@
 package manager;
 
-import io.FileInputOutput;
+import io.IFileInputOutput;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +39,7 @@ import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
 import manager.result.StartEditModeResult;
+import taskline.TasklineLogger;
 import taskline.debug.Taskline;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
@@ -53,7 +54,7 @@ import data.taskinfo.TaskInfo;
  *
  */
 public class StateManager {
-    private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
+    private static final Logger log = TasklineLogger.getLogger();
 
 	private State currentState;
 	private TaskIdSet editingTaskIdSet;
@@ -69,7 +70,7 @@ public class StateManager {
         LOCKED_MODE     // In locked mode, no modifying data is allowed
 	}
 
-	public StateManager(FileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager) {
+	public StateManager(IFileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager) {
 		this.currentState = State.AVAILABLE;	
 		this.updateManager = new UpdateManager(fileInputOutput, undoManager, searchManager);
 	}

@@ -1,6 +1,6 @@
 package manager;
 
-import io.FileInputOutput;
+import io.IFileInputOutput;
 import main.modeinfo.SearchModeInfo;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
@@ -12,11 +12,11 @@ import data.taskinfo.TaskInfo;
 public class UpdateManager {
 
 
-    private final FileInputOutput fileInputOutput;
+    private final IFileInputOutput fileInputOutput;
 	private final UndoManager undoManager;
 	private final SearchManager searchManager;
 	
-	public UpdateManager(FileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager){
+	public UpdateManager(IFileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager){
 		this.fileInputOutput = fileInputOutput;
 		this.undoManager = undoManager;
 		this.searchManager = searchManager;	

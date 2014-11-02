@@ -2,6 +2,8 @@ package main.command.alias;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import main.command.AddCommand;
@@ -23,7 +25,7 @@ import main.command.UndoCommand;
 import manager.ManagerHolder;
 
 
-public class AliasStorage {
+public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput {
     // Variable string: \$
     public static final String VARIABLE_STRING_REGEX = "\\\\\\$";
     public static final String VARIABLE_STRING = "\\$";
@@ -41,6 +43,10 @@ public class AliasStorage {
         initialiseDefaultCommands();
     }
 
+    /* (non-Javadoc)
+     * @see main.command.alias.IAliasStorage#getDefaultCommand(java.lang.String)
+     */
+    @Override
     public BiFunction<String, ManagerHolder, Command> getDefaultCommand(
             String commandString) {
         
@@ -50,19 +56,22 @@ public class AliasStorage {
         if (makeCommandFunction == null) {
             return defaultMakeCommand(commandString);
         } else {
-            return defaultMap.get(commandString);
+            return makeCommandFunction;
         }
     }
 
+    /* (non-Javadoc)
+     * @see main.command.alias.IAliasStorage#getCustomCommand(java.lang.String)
+     */
+    @Override
     public String getCustomCommand(String cmdString) {
         return customMap.get(cmdString);
     }
     
-    /**
-     * @param alias from this keyword (must be one word)
-     * @param replacement to this string
-     * @return the string the alias is binded to.
+    /* (non-Javadoc)
+     * @see main.command.alias.IAliasStorage#createCustomCommand(java.lang.String, java.lang.String)
      */
+    @Override
     public String createCustomCommand(String alias, String replacement) {
         assert canOverride(alias);
         
@@ -73,30 +82,86 @@ public class AliasStorage {
         } else {
             value = replacement;
         }
-        
-        if (put(alias, value)) {
-            return value;
-        } else {
-            return null;
-        }
+
+        put(alias, value);
+        return value;
     }
     
-    /**
-     * @param alias alias string to test.
-     * @return true iff this alias is overridable. (e.g. custom is not
-     * overridable)
+    /* (non-Javadoc)
+     * @see main.command.alias.IAliasStorage#canOverride(java.lang.String)
      */
+    @Override
     public boolean canOverride(String alias) {
         return !unoverridableStringSet.contains(alias);
     }
     
-    /**
-     * @param alias delete the custom command that uses this alias
-     * @return the value the alias is binded to. Returns null iff alias did
-     * not originally exist
+    /* (non-Javadoc)
+     * @see main.command.alias.IAliasStorage#deleteCustomCommand(java.lang.String)
      */
+    @Override
     public String deleteCustomCommand(String alias) {
         return customMap.remove(alias);
+    }
+
+    /* (non-Javadoc)
+     * @see main.command.alias.IAliasStorage#isAlreadyBinded(java.lang.String)
+     */
+    @Override
+    public boolean isAlreadyBinded(String alias) {
+        boolean alreadyHas = customMap.containsKey(alias) ||
+                defaultMap.containsKey(alias);        
+        return alreadyHas;
+    }
+    
+    /* (non-Javadoc)
+     * @see main.command.alias.IAliasStorageFileInputOutput#getAllCustomAliases()
+     */
+    @Override
+    public AliasValuePair[] getAllCustomAliases() {
+        AliasValuePair[] aliases = new AliasValuePair[customMap.size()];
+        Set<Map.Entry<String, String>> entrySet = customMap.entrySet();
+
+        int index = 0;
+        for (Map.Entry<String, String> entry : entrySet) {
+            String alias = entry.getKey();
+            String value = entry.getValue();
+            aliases[index] = new AliasValuePair(alias, value);
+            index++;
+        }
+        
+        return aliases;
+    }
+    
+    /* (non-Javadoc)
+     * @see main.command.alias.IAliasStorageFileInputOutput#setAllCustomAliases(main.command.alias.AliasValuePair[])
+     */
+    @Override
+    public boolean setAllCustomAliases(AliasValuePair[] aliases) {
+        HashMap<String, String> backupCustomMap = customMap;
+        customMap = new HashMap<>();
+
+        boolean successful = tryPutAllCustomAliases(aliases);
+        
+        if (successful) {
+            return true;
+        } else {
+            customMap = backupCustomMap;
+            return false;
+        }
+    }
+
+    private boolean tryPutAllCustomAliases(AliasValuePair[] aliases) {
+        for (AliasValuePair aliasValuePair : aliases) {
+            String alias = aliasValuePair.alias;
+            String value = aliasValuePair.value;
+            
+            if (canOverride(alias)) {
+                put(alias, value);
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
     
     private BiFunction<String, ManagerHolder, Command> defaultMakeCommand(
@@ -204,10 +269,7 @@ public class AliasStorage {
         }
     }
     
-    private boolean put(String alias, String value) {
-        boolean alreadyHas = customMap.containsKey(alias);
+    private void put(String alias, String value) {
         customMap.put(alias, value);
-        
-        return alreadyHas;
     }
 }

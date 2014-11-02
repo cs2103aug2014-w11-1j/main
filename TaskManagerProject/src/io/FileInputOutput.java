@@ -11,14 +11,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import taskline.debug.Taskline;
+import taskline.TasklineLogger;
 import data.ITaskDataFileInputOutput;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
-public class FileInputOutput {
-    private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
+public class FileInputOutput implements IFileInputOutput {
+    private static final Logger log = TasklineLogger.getLogger();
     
     private final String fileName;
     private String fileHash = "";
@@ -30,9 +30,10 @@ public class FileInputOutput {
         this.taskData = taskData;
     }
     
-    /**
-     * @return true iff there is a change in the file.
+    /* (non-Javadoc)
+     * @see io.IFileInputOutput#read()
      */
+    @Override
     public boolean read() {
         
         if (fileUnchanged()) {
@@ -53,9 +54,10 @@ public class FileInputOutput {
         }
     }
 
-    /**
-     * @return true for success.
+    /* (non-Javadoc)
+     * @see io.IFileInputOutput#write()
      */
+    @Override
     public boolean write() {
         if (taskData.hasUnsavedChanges()) {
             log.log(Level.FINER, "Write to file: TaskData has unsaved changes. Writing...");
@@ -63,7 +65,7 @@ public class FileInputOutput {
             
             if (result == true) {
                 log.log(Level.FINER, "Writing to file successful. Recomputing hash.");
-                fileHash = computeHash(fileName);
+                fileHash = IFileInputOutput.computeHash(fileName);
                 taskData.saveSuccessful();
             } 
             
@@ -75,66 +77,7 @@ public class FileInputOutput {
         }
     }
     
-    
-    public static String computeHash(String nameOfFile) {
-        try {
-            MessageDigest md5er = generateMessageDigest(nameOfFile);
 
-            if (md5er == null) {
-                return null;
-            }
-            
-            byte[] digest = md5er.digest();
-            
-            if (digest == null) {
-                return null;
-            }
-            
-            StringBuilder result = new StringBuilder();
-            
-            for (int i = 0; i < digest.length; i++) {
-                result.append(byteToHex(digest[i]));
-            }
-            
-            return result.toString();
-            
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static String byteToHex(byte b) {
-        return Integer.toString((b & 0xff) + 0x100, 16).substring(1);
-    }
-
-    private static MessageDigest generateMessageDigest(String nameOfFile) {
-        MessageDigest md5er;
-        
-        try {
-            InputStream fin = new FileInputStream(nameOfFile);
-            md5er = MessageDigest.getInstance("MD5");
-            
-            byte[] buffer = new byte[1024];
-            
-            int read = 0;
-            while (read != -1) {
-                read = fin.read(buffer);
-                if (read > 0) {
-                    md5er.update(buffer, 0, read);
-                }
-            }
-            
-            fin.close();
-            
-        } catch (IOException e) {
-            return null;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return md5er;
-    }
 
     /**
      * @return tasks as read from file, in a TaskInfo[] array.
@@ -200,7 +143,7 @@ public class FileInputOutput {
      * @return true iff the file has not changed since the last save.
      */
     private boolean fileUnchanged() {
-        String currentHash = computeHash(fileName);
+        String currentHash = IFileInputOutput.computeHash(fileName);
         return fileHash.equals(currentHash);
     }
 }

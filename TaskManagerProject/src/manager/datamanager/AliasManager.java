@@ -1,6 +1,6 @@
 package manager.datamanager;
 
-import main.command.alias.AliasStorage;
+import main.command.alias.IAliasStorage;
 import manager.result.AliasDeleteResult;
 import manager.result.AliasSetResult;
 import manager.result.Result;
@@ -8,9 +8,9 @@ import manager.result.SimpleResult;
 import data.TaskData;
 
 public class AliasManager extends AbstractManager {
-    private final AliasStorage aliasStorage;
+    private final IAliasStorage aliasStorage;
 
-    public AliasManager(AliasStorage aliasStorage, TaskData taskData) {
+    public AliasManager(IAliasStorage aliasStorage, TaskData taskData) {
         super(taskData);
         this.aliasStorage = aliasStorage;
     }
@@ -19,10 +19,10 @@ public class AliasManager extends AbstractManager {
         boolean canOverride = aliasStorage.canOverride(alias);
         if (canOverride) {
             String value;
+            boolean alreadyHasAlias = aliasStorage.isAlreadyBinded(alias);
             value = aliasStorage.createCustomCommand(alias, target);
-            boolean success = (value != null);
             
-            return new AliasSetResult(alias, value, success);
+            return new AliasSetResult(alias, value, alreadyHasAlias);
             
         } else {
             return new SimpleResult(Result.Type.ALIAS_FAILURE);

@@ -1,7 +1,7 @@
 package manager;
 
-import io.FileInputOutput;
-import main.command.alias.AliasStorage;
+import io.IFileInputOutput;
+import main.command.alias.IAliasStorage;
 import manager.datamanager.AddManager;
 import manager.datamanager.AliasManager;
 import manager.datamanager.DeleteManager;
@@ -24,7 +24,7 @@ public class ManagerHolder {
     private ReportManager reportManager;
 
 
-    public ManagerHolder(TaskData taskData, FileInputOutput fileInputOutput, AliasStorage aliasStorage) {
+    public ManagerHolder(TaskData taskData, IFileInputOutput fileInputOutput, IAliasStorage aliasStorage) {
         addManager = new AddManager(taskData);
         searchManager = new SearchManager(taskData);
         editManager = new EditManager(taskData);

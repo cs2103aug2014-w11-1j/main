@@ -3,7 +3,7 @@ package main.command;
 import java.util.function.BiFunction;
 
 import main.command.alias.AliasController;
-import main.command.alias.AliasStorage;
+import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
 
 /**
@@ -16,7 +16,7 @@ public class CommandController {
     private ManagerHolder managerHolder;
     private AliasController aliasController;
 
-    public CommandController(ManagerHolder managerHolder, AliasStorage aliasStorage) {
+    public CommandController(ManagerHolder managerHolder, IAliasStorage aliasStorage) {
         this.managerHolder = managerHolder;
         aliasController = new AliasController(aliasStorage);
     }

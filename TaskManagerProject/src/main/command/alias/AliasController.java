@@ -10,9 +10,9 @@ import manager.ManagerHolder;
 public class AliasController {
     private static final String SYMBOL_DELIM = " ";
 
-    private AliasStorage aliasStorage;
+    private IAliasStorage aliasStorage;
 
-    public AliasController(AliasStorage aliasStorage) {
+    public AliasController(IAliasStorage aliasStorage) {
         this.aliasStorage = aliasStorage;
     }
 

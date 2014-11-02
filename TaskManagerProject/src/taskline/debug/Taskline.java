@@ -1,19 +1,12 @@
 package taskline.debug;
 
 import io.FileInputOutput;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
+import io.IFileInputOutput;
 import main.MainController;
 import main.command.alias.AliasStorage;
+import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
+import taskline.TasklineLogger;
 import ui.debug.UIDisplay;
 import data.TaskData;
 
@@ -26,62 +19,28 @@ import data.TaskData;
  * @author Oh
  */
 public class Taskline {
-    private static final String LOGGER_FILENAME = "taskline.log";
-    public static String LOGGER_NAME = "Taskline";
-
-    private static FileHandler loggerFileHandler;
 
     public static void main(String[] args) {
-        setupLogger();
+        TasklineLogger.setupLogger();
 
         String fileName = "tasks.txt";
 
         String aliasFileName = "alias.txt";
-        AliasStorage aliasStorage = new AliasStorage();
+        IAliasStorage aliasStorage = new AliasStorage();
 
         TaskData taskData = new TaskData();
-        FileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
+        IFileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
         ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput, aliasStorage);
         MainController mainController = new MainController(managerHolder, aliasStorage);
         UIDisplay uiDisplay = new UIDisplay(mainController);
 
         startCommandLoop(uiDisplay);
-        closeLoggerFileHandler();
+        TasklineLogger.closeLoggerFileHandler();
     }
 
     private static void startCommandLoop(UIDisplay uiDisplay) {
         while (!uiDisplay.isReadyToExit()) {
             uiDisplay.commandLoopIteration();
-        }
-    }
-
-    public static void setupLogger() {
-        Logger log = Logger.getLogger(LOGGER_NAME);
-        log.setUseParentHandlers(false);
-
-        try {
-            Path path = Paths.get(LOGGER_FILENAME + ".lck");
-            Files.deleteIfExists(path);
-
-            loggerFileHandler = new FileHandler(LOGGER_FILENAME, true);
-            SimpleFormatter formatter = new SimpleFormatter();
-            loggerFileHandler.setFormatter(formatter);
-
-            log.addHandler(loggerFileHandler);
-            log.setLevel(Level.FINEST);
-
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        log.log(Level.INFO, "Taskline initialised.");
-    }
-
-    private static void closeLoggerFileHandler() {
-        if (loggerFileHandler != null) {
-            loggerFileHandler.close();
         }
     }
 }

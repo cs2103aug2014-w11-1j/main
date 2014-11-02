@@ -42,7 +42,6 @@ public class JsonReaderWriter {
     
     private static final String JSON_TASKS = "tasks";
     private static final String JSON_NAME = "name";
-    private static final String JSON_DURATION = "duration";
     private static final String JSON_START_TIME = "startTime";
     private static final String JSON_START_DATE = "startDate";
     private static final String JSON_END_TIME = "endTime";
