@@ -70,9 +70,13 @@ public class StateManager {
         LOCKED_MODE     // In locked mode, no modifying data is allowed
 	}
 
-	public StateManager(IFileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager) {
-		this.currentState = State.AVAILABLE;	
-		this.updateManager = new UpdateManager(fileInputOutput, undoManager, searchManager);
+	public StateManager(IFileInputOutput fileInputOutput,
+	        IFileInputOutput aliasFileInputOutput, UndoManager undoManager,
+	        SearchManager searchManager) {
+	    
+		this.currentState = State.AVAILABLE;
+		this.updateManager = new UpdateManager(fileInputOutput,
+		        aliasFileInputOutput, undoManager, searchManager);
 	}
 
     public boolean canExit() {

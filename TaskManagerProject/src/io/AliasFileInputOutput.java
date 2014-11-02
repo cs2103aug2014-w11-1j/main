@@ -15,12 +15,13 @@ import taskline.TasklineLogger;
 public class AliasFileInputOutput implements IFileInputOutput {
     private static final Logger log = TasklineLogger.getLogger();
     
-    private IAliasStorageFileInputOutput aliasStorage;
+    private final IAliasStorageFileInputOutput aliasStorage;
     private final String fileName;
     private String fileHash = "";
 
     public AliasFileInputOutput(IAliasStorageFileInputOutput aliasStorage,
             String fileName) {
+        this.aliasStorage = aliasStorage;
         this.fileName = fileName;
     }
 

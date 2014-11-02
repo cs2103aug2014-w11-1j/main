@@ -1,7 +1,7 @@
 package manager.test;
 
 import static org.junit.Assert.assertEquals;
-import io.FileInputOutput;
+import io.IFileInputOutput;
 import manager.StateManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
@@ -24,18 +24,24 @@ public class StateManagerTest {
         
         StubUndoManager undoManager = new StubUndoManager(testOutput);
         StubSearchManager searchManager = new StubSearchManager(testOutput);
-        StubFileInputOutput fileInputOutput = new StubFileInputOutput(testOutput);
+        StubFileInputOutput fileInputOutput =
+                new StubFileInputOutput(testOutput, "taskData");
+        StubFileInputOutput aliasFileInputOutput =
+                new StubFileInputOutput(testOutput, "alias");
         
-        StateManager stateManager = new StateManager(fileInputOutput, undoManager,
-                    searchManager);
+        StateManager stateManager = new StateManager(fileInputOutput,
+                aliasFileInputOutput, undoManager, searchManager);
 
         Result result;
         
         result = new SimpleResult(Type.ADD_FAILURE);
         stateManager.beforeCommandExecutionUpdate();
-        assertEquals("read\n", testOutput.getOutputAndClear());
+        assertEquals("taskData read\n", testOutput.getOutputAndClear());
         stateManager.update(result);
-        assertEquals("update undo\nwrite\n", testOutput.getOutputAndClear());
+        assertEquals("update undo\n"
+                + "alias write\n"
+                + "taskData write\n",
+                testOutput.getOutputAndClear());
     }
 }
 
@@ -98,23 +104,24 @@ class StubSearchManager extends SearchManager {
 }
 
 
-class StubFileInputOutput extends FileInputOutput {
+class StubFileInputOutput implements IFileInputOutput {
     private final TestOutput testOutput;
+    private final String prefix;
 
-    public StubFileInputOutput(TestOutput testOutput) {
-        super(null, "testFile.txt");
+    public StubFileInputOutput(TestOutput testOutput, String prefix) {
         this.testOutput = testOutput;
+        this.prefix = prefix;
     }
 
     @Override
     public boolean read() {
-        testOutput.writeOutput("read");
+        testOutput.writeOutput(prefix + " read");
         return true;
     }
 
     @Override
     public boolean write() {
-        testOutput.writeOutput("write");
+        testOutput.writeOutput(prefix + " write");
         return true;
     }
     

@@ -25,7 +25,7 @@ class StubManagerHolder extends ManagerHolder {
     private StubEditManager stubEditManager;
 
     public StubManagerHolder() {
-        super(null, null, null);
+        super(null, null, null, null);
         stubAddManager = new StubAddManager();
         stubSearchManager = new StubSearchManager();
         stubStateManager = new StubStateManager();
@@ -210,7 +210,7 @@ class StubStateManager extends StateManager {
     }
 
     public StubStateManager() {
-        super(null, null, null);
+        super(null, null, null, null);
     }
 
     @Override

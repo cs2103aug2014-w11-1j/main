@@ -1,5 +1,6 @@
 package test;
 
+import io.AliasFileInputOutput;
 import io.FileInputOutput;
 import io.IFileInputOutput;
 
@@ -12,7 +13,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import main.MainController;
 import main.command.alias.AliasStorage;
-import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
 
 import org.junit.After;
@@ -27,10 +27,12 @@ import data.TaskData;
  * @author Oh
  */
 public class CrashTester {
+    private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
+    private static final String TEST_FILENAME = "testTasks.txt";
+    
     private static final int SIZE_LOGQUEUE = 40;
     private static final int SIZE_INITIAL_HASHSET = 3000;
-    
-    private static final String TEST_FILENAME = "testTasks.txt";
+
     private static final int RANDOM_SEED = 1;
 
     private MainController mainController;
@@ -45,22 +47,30 @@ public class CrashTester {
         if (!success) {
             printLog();
         }
-        deleteTestFile();
+        deleteTestFiles();
     }
     
     @Test
     public void initialiseTest() {
 
         String fileName = TEST_FILENAME;
-        deleteTestFile();
+        String aliasFileName = TEST_ALIAS_FILENAME;
+        deleteTestFiles();
 
-        String aliasFileName = "testAlias.txt";
-        IAliasStorage aliasStorage = new AliasStorage();
+
+        AliasStorage aliasStorage = new AliasStorage();
+        IFileInputOutput aliasFileInputOutput =
+                new AliasFileInputOutput(aliasStorage, aliasFileName);
 
         TaskData taskData = new TaskData();
-        IFileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
-        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput, aliasStorage);
-        mainController = new MainController(managerHolder, aliasStorage);
+        IFileInputOutput fileInputOutput =
+                new FileInputOutput(taskData, fileName);
+        
+        ManagerHolder managerHolder =
+                new ManagerHolder(taskData, fileInputOutput, aliasStorage, aliasFileInputOutput);
+        mainController = new MainController(managerHolder,
+                aliasStorage, aliasFileInputOutput);
+        
         keywordLibrary = new KeywordLibrary(RANDOM_SEED);
         
         testedStrings = new HashSet<>(SIZE_INITIAL_HASHSET);
@@ -262,7 +272,7 @@ public class CrashTester {
     
     private void terminateAndPrintLog() {
         printLog();
-        deleteTestFile();
+        deleteTestFiles();
         System.exit(0);
     }
     
@@ -279,9 +289,12 @@ public class CrashTester {
             System.out.println(logQueue.poll());
         }
     }
-    private void deleteTestFile() {
+
+    private void deleteTestFiles() {
         try {
             Path path = Paths.get(TEST_FILENAME);
+            Files.deleteIfExists(path);
+            path = Paths.get(TEST_ALIAS_FILENAME);
             Files.deleteIfExists(path);
         } catch (IOException e) {
             e.printStackTrace();

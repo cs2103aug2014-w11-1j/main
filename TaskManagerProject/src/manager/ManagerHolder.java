@@ -24,7 +24,9 @@ public class ManagerHolder {
     private ReportManager reportManager;
 
 
-    public ManagerHolder(TaskData taskData, IFileInputOutput fileInputOutput, IAliasStorage aliasStorage) {
+    public ManagerHolder(TaskData taskData, IFileInputOutput fileInputOutput, 
+            IAliasStorage aliasStorage, IFileInputOutput aliasFileInputOutput) {
+        
         addManager = new AddManager(taskData);
         searchManager = new SearchManager(taskData);
         editManager = new EditManager(taskData);
@@ -34,7 +36,8 @@ public class ManagerHolder {
         reportManager = new ReportManager(taskData);
         aliasManager = new AliasManager(aliasStorage, taskData);
         
-        stateManager = new StateManager(fileInputOutput, undoManager, searchManager);
+        stateManager = new StateManager(fileInputOutput, aliasFileInputOutput,
+                undoManager, searchManager);
     }
 
     public StateManager getStateManager() {

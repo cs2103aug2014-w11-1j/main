@@ -30,6 +30,7 @@ local.properties
 .texlipse
 
 TaskManagerProject/tasks.txt
+TaskManagerProject/alias.txt
 TaskManagerProject/doc
 
 taskline.log
