@@ -1,6 +1,7 @@
 package io.test;
 
 import static org.junit.Assert.assertEquals;
+import io.IReaderWriter;
 import io.InvalidFileFormatException;
 import io.JsonReaderWriter;
 
@@ -96,13 +97,15 @@ public class JsonReaderWriterTest {
     }
 
     private void testJsonParsing(TaskInfo[] taskInfos) {
-        String json = JsonReaderWriter.tasksToJsonString(taskInfos);
+        IReaderWriter readerWriter = new JsonReaderWriter();
+        
+        String json = readerWriter.tasksToJsonString(taskInfos);
 
         TaskInfo[] expectedResult = createExpectedResult(taskInfos);
         TaskInfo[] loadTaskInfos = null;
         
         try {
-            loadTaskInfos = JsonReaderWriter.jsonStringToTasks(json);
+            loadTaskInfos = readerWriter.jsonStringToTasks(json);
         } catch (InvalidFileFormatException e) {
             e.printStackTrace();
         }
@@ -113,7 +116,7 @@ public class JsonReaderWriterTest {
             assertEquals(expectedResult[i], loadTaskInfos[i]);
         }
         
-        String json2 = JsonReaderWriter.tasksToJsonString(loadTaskInfos);
+        String json2 = readerWriter.tasksToJsonString(loadTaskInfos);
         assertEquals(json, json2);
     }
 

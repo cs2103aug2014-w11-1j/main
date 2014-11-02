@@ -26,12 +26,13 @@ import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 import javax.json.stream.JsonParsingException;
 
+import main.command.alias.AliasValuePair;
 import data.taskinfo.Priority;
 import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
-public class JsonReaderWriter {
+public class JsonReaderWriter implements IReaderWriter {
 
     private static final String FORMAT_TIME = "%02d:%02d:%02d";
     private static final String FORMAT_DATE = "%d-%02d-%02d";
@@ -52,49 +53,68 @@ public class JsonReaderWriter {
     private static final String JSON_STATUS = "status";
     private static final String JSON_NUMBER_OF_TIMES = "numberOfTimes";
     private static final String JSON_REPEAT_INTERVAL = "repeatInterval";
-    
-    
-    /**
-     * @param taskInfos an Array of TaskInfo to be converted into a string.
-     * @return a String containing all the data from the taskInfos array,
-     * in JSON format, pretty printed.
+
+    /* (non-Javadoc)
+     * @see io.IReaderWriter#writeAliasesToJson(java.io.Writer, main.command.alias.AliasValuePair[])
      */
-    public static String tasksToJsonString(TaskInfo[] taskInfos) {
+    @Override
+    public boolean writeAliasesToJson(Writer writer, AliasValuePair[] taskInfos) {
+        //tasksToJson(writer, taskInfos);
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see io.IReaderWriter#readAliasesFromJson(java.io.Reader)
+     */
+    @Override
+    public AliasValuePair[] readAliasesFromJson(Reader reader) {
+        return null;
+        /*TaskInfo[] taskInfos = null;
+        try {
+            taskInfos = jsonToTasks(reader);
+            
+        } catch (InvalidFileFormatException e) {
+            return null;
+        }
+        return taskInfos;*/
+    }
+    
+    /* (non-Javadoc)
+     * @see io.IReaderWriter#tasksToJsonString(data.taskinfo.TaskInfo[])
+     */
+    @Override
+    public String tasksToJsonString(TaskInfo[] taskInfos) {
         StringWriter stringWriter = new StringWriter();
         tasksToJson(stringWriter, taskInfos);
         
         return stringWriter.toString();
     }
 
-    /**
-     * @param jsonString A string formatted in Json storing the TaskInfos
-     * @return an array of TaskInfos extracted from jsonString
-     * @throws InvalidFileFormatException
-     * thrown when an error occurred during the parsing of the string.
+    /* (non-Javadoc)
+     * @see io.IReaderWriter#jsonStringToTasks(java.lang.String)
      */
-    public static TaskInfo[] jsonStringToTasks(String jsonString)
+    @Override
+    public TaskInfo[] jsonStringToTasks(String jsonString)
             throws InvalidFileFormatException {
         
         StringReader stringReader = new StringReader(jsonString);
         return jsonToTasks(stringReader);
     }
 
-    /**
-     * @param writer Outputs the JSON string to this writer.
-     * @param taskInfos an Array of TaskInfo to be converted into JSON format
-     * @return true iff successful.
+    /* (non-Javadoc)
+     * @see io.IReaderWriter#writeTasksToJson(java.io.Writer, data.taskinfo.TaskInfo[])
      */
-    public static boolean writeTasksToJson(Writer writer, TaskInfo[] taskInfos) {
+    @Override
+    public boolean writeTasksToJson(Writer writer, TaskInfo[] taskInfos) {
         tasksToJson(writer, taskInfos);
         return true;
     }
 
-    /**
-     * @param reader A Reader to read a JSON string from.
-     * @return an array of TaskInfos extracted from parsing the JSON data in
-     * the reader.
+    /* (non-Javadoc)
+     * @see io.IReaderWriter#readTasksFromJson(java.io.Reader)
      */
-    public static TaskInfo[] readTasksFromJson(Reader reader) {
+    @Override
+    public TaskInfo[] readTasksFromJson(Reader reader) {
         TaskInfo[] taskInfos = null;
         try {
             taskInfos = jsonToTasks(reader);

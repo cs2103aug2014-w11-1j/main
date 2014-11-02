@@ -9,7 +9,8 @@ import java.security.NoSuchAlgorithmException;
 public interface IFileInputOutput {
 
     /**
-     * @return true iff there is a change in the file.
+     * @return true iff there is a change in the file and we successfully
+     * write that change to program memory.
      */
     public abstract boolean read();
 

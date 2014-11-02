@@ -90,7 +90,8 @@ public class FileInputOutput implements IFileInputOutput {
         File file = new File(fileName);
         try {
             FileReader fileReader = new FileReader(file);
-            taskInfos = JsonReaderWriter.readTasksFromJson(fileReader);
+            IReaderWriter readerWriter = new JsonReaderWriter();
+            taskInfos = readerWriter.readTasksFromJson(fileReader);
             
             fileReader.close();
             
@@ -113,7 +114,8 @@ public class FileInputOutput implements IFileInputOutput {
         
         try {
             FileWriter fileWriter = new FileWriter(file);
-            result = JsonReaderWriter.writeTasksToJson(fileWriter, taskInfos);
+            IReaderWriter readerWriter = new JsonReaderWriter();
+            result = readerWriter.writeTasksToJson(fileWriter, taskInfos);
             
         } catch (IOException e) {
             e.printStackTrace();
