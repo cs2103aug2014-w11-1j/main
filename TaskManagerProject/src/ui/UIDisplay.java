@@ -22,6 +22,10 @@ public class UIDisplay {
             reader.clearScreen();
             userInputReader = new UserInputReader(reader);
             userOutputWriter = new UserOutputWriter(reader);
+            
+            String header = "Welcome to Taskline.";
+            String lines = mainController.runCommand("report");
+            userOutputWriter.printOutput(header, lines);
         } catch(IOException e) {
             System.out.println("IOException : " + e.getMessage());
         }

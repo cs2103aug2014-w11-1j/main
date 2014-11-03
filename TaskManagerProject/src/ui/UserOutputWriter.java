@@ -17,17 +17,12 @@ public class UserOutputWriter {
     private final static String EXEC_CLEARSCREEN = 
             "mode.com con cols=%1$d lines=%2$d";
     
-    private final static String MESSAGE_WELCOME = "Welcome to Taskline.";
     
     public UserOutputWriter(ConsoleReader reader) throws IOException {
         this.reader = reader;
         clearScreen();
         lines = new ArrayList<String>();
         headers = new ArrayList<Integer>();
-        
-        lines.add(MESSAGE_WELCOME);
-        headers.add(0);
-        show(0);
     }
     
     public void addHeader(String header) {
