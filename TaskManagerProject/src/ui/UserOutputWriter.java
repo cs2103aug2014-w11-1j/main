@@ -1,5 +1,6 @@
 package ui;
 
+import static org.fusesource.jansi.Ansi.ansi;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,7 +73,8 @@ public class UserOutputWriter {
         int numberOfPaddingLines = numberOfOutputLines - numberOfAvailableLines;
         
         StringBuilder builder = new StringBuilder();
-        builder.append(lines.get(getHeader(startLine)));
+        builder.append("\033[36m" + lines.get(getHeader(startLine)));
+        builder.append(ansi().reset());
         builder.append(System.lineSeparator());
         for (int i = startLine + 1; i < endLine; i++) {
             builder.append(lines.get(i));
@@ -84,6 +86,7 @@ public class UserOutputWriter {
         }
         reader.printString(builder.toString());
         reader.flushConsole();
+        
         
         currentLine = startLine;
     }

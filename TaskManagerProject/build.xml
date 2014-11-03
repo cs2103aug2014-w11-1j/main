@@ -12,6 +12,7 @@
             <zipfileset excludes="META-INF/*.SF" src="lib/jline-1.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="lib/javax.json-api-1.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="lib/javax.json-1.0.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/jansi-1.11.jar"/>
         </jar>
     </target>
 </project>
