@@ -1,5 +1,7 @@
 package main;
 
+import io.IFileInputOutput;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,11 +22,14 @@ public class MainController {
 
     private final ManagerHolder managerHolder;
     private final IAliasStorage aliasStorage;
+    private final IFileInputOutput aliasFileInputOutput;
     private boolean readyToExit;
 
-    public MainController(ManagerHolder managerHolder, IAliasStorage aliasStorage) {
+    public MainController(ManagerHolder managerHolder,
+            IAliasStorage aliasStorage, IFileInputOutput aliasFileInputOutput) {
         this.managerHolder = managerHolder;
         this.aliasStorage = aliasStorage;
+        this.aliasFileInputOutput = aliasFileInputOutput;
     }
 
     public String runCommand(String commandString) {
@@ -32,7 +37,8 @@ public class MainController {
             return "";
         }
 
-        CommandController commandController = new CommandController(managerHolder, aliasStorage);
+        CommandController commandController = new CommandController(
+                managerHolder, aliasStorage, aliasFileInputOutput);
         Command curCommand = commandController.getCommand(commandString);
         log.log(Level.FINE, "Execute Command: " + curCommand.getClass().getName());
         Response curResponse = curCommand.execute();

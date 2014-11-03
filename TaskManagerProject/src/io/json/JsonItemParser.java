@@ -1,9 +1,18 @@
 package io.json;
 
+import java.io.Writer;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
+import javax.json.stream.JsonGenerator;
 
 import data.taskinfo.Priority;
 import data.taskinfo.Status;
@@ -131,5 +140,16 @@ public class JsonItemParser {
     
     public static boolean isNullString(String value) {
         return STRING_NULL.equals(value);
+    }
+
+    
+    static void writePrettyPrint(Writer writer, JsonObject jsonObject) {
+        Map<String, Object> properties = new HashMap<>(1);
+        properties.put(JsonGenerator.PRETTY_PRINTING, true);
+        
+        JsonWriterFactory writerFactory = Json.createWriterFactory(properties);
+        JsonWriter jsonWriter = writerFactory.createWriter(writer);
+        jsonWriter.writeObject(jsonObject);
+        jsonWriter.close();
     }
 }

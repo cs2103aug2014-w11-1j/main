@@ -1,5 +1,7 @@
 package main.command.alias;
 
+import io.IFileInputOutput;
+
 import java.util.function.BiFunction;
 
 import main.command.Command;
@@ -9,10 +11,13 @@ import manager.ManagerHolder;
 public class AliasController {
     private static final String SYMBOL_DELIM = " ";
 
-    private IAliasStorage aliasStorage;
+    private final IAliasStorage aliasStorage;
+    private final IFileInputOutput aliasFileInputOutput;
 
-    public AliasController(IAliasStorage aliasStorage) {
+    public AliasController(IAliasStorage aliasStorage,
+            IFileInputOutput aliasFileInputOutput) {
         this.aliasStorage = aliasStorage;
+        this.aliasFileInputOutput = aliasFileInputOutput;
     }
 
     public String replaceAlias(String commandString) {
@@ -28,7 +33,7 @@ public class AliasController {
     }
 
     private void beforeAliasCheck() {
-        //aliasFileInputOutput.read();
+        aliasFileInputOutput.read();
     }
 
     private String tryReplaceWithCustom(String command) {

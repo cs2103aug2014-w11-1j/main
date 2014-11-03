@@ -11,13 +11,17 @@ import data.taskinfo.TaskInfo;
 
 public class UpdateManager {
 
-
+    private final IFileInputOutput aliasFileInputOutput;
     private final IFileInputOutput fileInputOutput;
 	private final UndoManager undoManager;
 	private final SearchManager searchManager;
 	
-	public UpdateManager(IFileInputOutput fileInputOutput, UndoManager undoManager, SearchManager searchManager){
-		this.fileInputOutput = fileInputOutput;
+	public UpdateManager(IFileInputOutput fileInputOutput,
+	        IFileInputOutput aliasFileInputOutput, UndoManager undoManager,
+	        SearchManager searchManager){
+	    
+        this.fileInputOutput = fileInputOutput;
+        this.aliasFileInputOutput = aliasFileInputOutput;
 		this.undoManager = undoManager;
 		this.searchManager = searchManager;	
 	}
@@ -58,7 +62,10 @@ public class UpdateManager {
     }
 
 	public boolean writeToFile() {
-        return fileInputOutput.write();
+	    boolean result1 = aliasFileInputOutput.write();
+	    boolean result2 = fileInputOutput.write();
+	    
+        return result1 && result2;
     }  
 	
 	

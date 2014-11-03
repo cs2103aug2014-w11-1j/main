@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import io.AliasFileInputOutput;
 import io.FileInputOutput;
 import io.IFileInputOutput;
 
@@ -21,33 +22,44 @@ import data.TaskData;
 
 public class IntegrationTest {
     private static final String NEWL = "\r\n";
+
+    private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
     private static final String TEST_FILENAME = "testTasks.txt";
 
     @After
     public void after() {
-        deleteTestFile();
+        deleteTestFiles();
     }
     
     @Test
     public void initialiseTest() {
 
         String fileName = TEST_FILENAME;
-        deleteTestFile();
+        String aliasFileName = TEST_ALIAS_FILENAME;
+        deleteTestFiles();
 
-        String aliasFileName = "testAlias.txt";
-        IAliasStorage aliasStorage = new AliasStorage();
+
+        AliasStorage aliasStorage = new AliasStorage();
+        IFileInputOutput aliasFileInputOutput =
+                new AliasFileInputOutput(aliasStorage, aliasFileName);
 
         TaskData taskData = new TaskData();
-        IFileInputOutput fileInputOutput = new FileInputOutput(taskData, fileName);
-        ManagerHolder managerHolder = new ManagerHolder(taskData, fileInputOutput, aliasStorage);
-        MainController mainController = new MainController(managerHolder, aliasStorage);
+        IFileInputOutput fileInputOutput =
+                new FileInputOutput(taskData, fileName);
+        
+        ManagerHolder managerHolder = new ManagerHolder(taskData,
+                fileInputOutput, aliasStorage, aliasFileInputOutput);
+        MainController mainController = new MainController(managerHolder,
+                aliasStorage, aliasFileInputOutput);
         
         test(mainController);
     }
 
-    private void deleteTestFile() {
+    private void deleteTestFiles() {
         try {
             Path path = Paths.get(TEST_FILENAME);
+            Files.deleteIfExists(path);
+            path = Paths.get(TEST_ALIAS_FILENAME);
             Files.deleteIfExists(path);
         } catch (IOException e) {
             e.printStackTrace();

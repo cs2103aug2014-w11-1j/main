@@ -1,5 +1,7 @@
 package main.command;
 
+import io.IFileInputOutput;
+
 import java.util.function.BiFunction;
 
 import main.command.alias.AliasController;
@@ -16,9 +18,10 @@ public class CommandController {
     private ManagerHolder managerHolder;
     private AliasController aliasController;
 
-    public CommandController(ManagerHolder managerHolder, IAliasStorage aliasStorage) {
+    public CommandController(ManagerHolder managerHolder,
+            IAliasStorage aliasStorage, IFileInputOutput aliasFileInputOutput) {
         this.managerHolder = managerHolder;
-        aliasController = new AliasController(aliasStorage);
+        aliasController = new AliasController(aliasStorage, aliasFileInputOutput);
     }
 
     public Command getCommand(String commandString) {
