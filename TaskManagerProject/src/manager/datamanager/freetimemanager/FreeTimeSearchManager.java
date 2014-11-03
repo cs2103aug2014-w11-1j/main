@@ -59,7 +59,7 @@ public class FreeTimeSearchManager extends AbstractManager {
 		
 	private ArrayList<Interval> generateTimeList(){
 		ArrayList<Interval> list = new ArrayList<>();
-		for (int i = 0; i < 11; i++){
+		for (int i = 0; i < 24; i++){
 			list.add(new Interval(LocalTime.of(i, 0), LocalTime.of(i, 59),false));
 		}
 		return list;
@@ -78,6 +78,9 @@ public class FreeTimeSearchManager extends AbstractManager {
 	}
 	
 	public void processInterval(Interval interval){
+		if (interval == null){
+			return;
+		}
 		int startHour = interval.getStartTime().getHour();
 		int endHour = interval.getEndTime().getHour();
 		
