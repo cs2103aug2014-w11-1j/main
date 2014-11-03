@@ -40,10 +40,7 @@ public class FreeTimeManagerTest {
 		result = manager.searchFreeTimeSlot(getDate(11, 16));
 		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
 		
-		System.out.println("TEST");
-		for (Interval itvl : freeTimeResult.getFreeTimeList())
-			if (!itvl.isOccupied())
-				System.out.println(itvl.getStartTime() + " --- " + itvl.getEndTime());
+		
 		
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
 		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
@@ -64,8 +61,7 @@ public class FreeTimeManagerTest {
 		freeTimeList.add(new Interval(getTime(22, 0), getTime(22, 59),false));
 		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
 		
-		System.out.println("size1 = " + freeTimeResult.getFreeTimeList().size());
-		System.out.println("size2 = " + freeTimeList.size());
+		
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
 	}
 	
@@ -83,10 +79,6 @@ public class FreeTimeManagerTest {
 		result = manager.searchFreeTimeSlot(getDate(11, 16));
 		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
 		
-		System.out.println("TEST");
-		for (Interval itvl : freeTimeResult.getFreeTimeList())
-			if (!itvl.isOccupied())
-				System.out.println(itvl.getStartTime() + " --- " + itvl.getEndTime());
 		
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
 		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
@@ -94,8 +86,7 @@ public class FreeTimeManagerTest {
 		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
 		
 		
-		System.out.println("size1 = " + freeTimeResult.getFreeTimeList().size());
-		System.out.println("size2 = " + freeTimeList.size());
+		
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
 	}
 	
@@ -115,11 +106,7 @@ public class FreeTimeManagerTest {
 		result = manager.searchFreeTimeSlot(getDate(11, 16));
 		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
 		
-		System.out.println("TEST");
-		for (Interval itvl : freeTimeResult.getFreeTimeList())
-			if (!itvl.isOccupied())
-				System.out.println(itvl.getStartTime() + " --- " + itvl.getEndTime());
-		
+				
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
 		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
 		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
@@ -138,8 +125,6 @@ public class FreeTimeManagerTest {
 		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
 		
 		
-		System.out.println("size1 = " + freeTimeResult.getFreeTimeList().size());
-		System.out.println("size2 = " + freeTimeList.size());
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
 	}
 	
@@ -160,16 +145,11 @@ public class FreeTimeManagerTest {
 		result = manager.searchFreeTimeSlot(getDate(11, 16));
 		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
 		
-		System.out.println("TEST");
-		for (Interval itvl : freeTimeResult.getFreeTimeList())
-			if (!itvl.isOccupied())
-				System.out.println(itvl.getStartTime() + " --- " + itvl.getEndTime());
 		
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
 		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
 		
-		System.out.println("size1 = " + freeTimeResult.getFreeTimeList().size());
-		System.out.println("size2 = " + freeTimeList.size());
+		
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
 	}
 	
@@ -191,10 +171,6 @@ public class FreeTimeManagerTest {
 		result = manager.searchFreeTimeSlot(getDate(11, 20));
 		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
 		
-		System.out.println("TEST");
-		for (Interval itvl : freeTimeResult.getFreeTimeList())
-			if (!itvl.isOccupied())
-				System.out.println(itvl.getStartTime() + " --- " + itvl.getEndTime());
 		
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
 		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
@@ -222,15 +198,14 @@ public class FreeTimeManagerTest {
 		freeTimeList.add(new Interval(getTime(22, 0), getTime(22, 59),false));
 		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
 		
-		System.out.println("size1 = " + freeTimeResult.getFreeTimeList().size());
-		System.out.println("size2 = " + freeTimeList.size());
+		
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
 	}
 	private boolean assertResultEquals(ArrayList<Interval> list1, ArrayList<Interval> list2){
 		boolean result = true;
 		int size1 = list1.size();
 		int size2 = list2.size();
-		System.out.println(size1 + "   " + size2);
+		
 		assertEquals(size1, size2);
 		for (int i = 0; i < size1; i++){
 			assertEquals(list1.get(i).getStartTime(), list2.get(i).getStartTime());
