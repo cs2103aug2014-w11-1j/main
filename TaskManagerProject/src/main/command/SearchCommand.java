@@ -36,6 +36,7 @@ public class SearchCommand extends Command {
     private void parse(String args) {
         assert args != null : "There should not be a null passed in.";
         if (args.isEmpty()) {
+            filterList.add(StatusFilter.makeDefault());
             return;
         }
 
