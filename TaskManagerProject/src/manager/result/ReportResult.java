@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 public class ReportResult implements Result{
     
 	private final ArrayList<TaskInfo> todayTask;

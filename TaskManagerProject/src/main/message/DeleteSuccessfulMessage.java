@@ -3,6 +3,7 @@ package main.message;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 public class DeleteSuccessfulMessage implements Message {
 
     private TaskInfo[] tasks;

@@ -15,6 +15,7 @@ import org.junit.Test;
 import data.TaskData;
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 public class FreeDayManagerTest {
 
 	TaskInfo task1 = createTask("apple", getTime(3,0), getDate(11,16),getTime(9, 0), getDate(11, 16));

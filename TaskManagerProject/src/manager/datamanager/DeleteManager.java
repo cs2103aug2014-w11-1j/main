@@ -18,6 +18,8 @@ import data.taskinfo.TaskInfo;
  * @author BRUCE
  *
  */
+
+//@author A0119432L
 public class DeleteManager extends AbstractManager {
 
     public DeleteManager(TaskData taskData) {

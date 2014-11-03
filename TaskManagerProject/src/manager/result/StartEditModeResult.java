@@ -2,6 +2,7 @@ package manager.result;
 
 import main.command.TaskIdSet;
 
+//@author A0119432L
 public class StartEditModeResult implements Result {
 
     private final TaskIdSet taskIdSet;

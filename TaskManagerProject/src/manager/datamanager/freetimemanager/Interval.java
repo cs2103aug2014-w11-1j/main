@@ -2,6 +2,7 @@ package manager.datamanager.freetimemanager;
 
 import java.time.LocalTime;
 
+//@author A0119432L
 public class Interval {
 	
 	private final LocalTime startTime;

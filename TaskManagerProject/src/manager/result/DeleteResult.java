@@ -3,6 +3,7 @@ package manager.result;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 public class DeleteResult implements Result{
 	
 	private TaskId[] taskIds;

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import manager.datamanager.freetimemanager.Interval;
 
+//@author A0119432L
 public class FreeTimeSearchMessage implements Message{
 	
 	private ArrayList<Interval> freeTimeList;

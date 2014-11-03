@@ -3,6 +3,1986 @@
 
 
 	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\AddSuccessfulMessage.java
+	 */
+
+public class AddSuccessfulMessage implements Message {
+
+    private TaskInfo task;
+    
+    public AddSuccessfulMessage(TaskInfo task, TaskId taskId) {
+        this.task = task;
+    }
+    
+    public Type getType() {
+        return Type.ADD_SUCCESSFUL;
+    }
+    
+    public TaskInfo getTask() {
+        return task;
+    }
+
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\AddSuccessfulMessage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\DeleteSuccessfulMessage.java
+	 */
+
+public class DeleteSuccessfulMessage implements Message {
+
+    private TaskInfo[] tasks;
+    
+    public DeleteSuccessfulMessage(TaskInfo[] tasks, TaskId[] taskIds) {
+        this.tasks = tasks;
+    }
+    
+    public Type getType() {
+        return Type.DELETE_SUCCESSFUL;
+    }
+    
+    public TaskInfo[] getTask() {
+        return tasks;
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\DeleteSuccessfulMessage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\EditSuccessfulMessage.java
+	 */
+
+public class EditSuccessfulMessage implements Message{
+    
+    public enum Field {
+        NAME,
+        TIME,
+        STATUS,
+        DETAILS,
+        PRIORITY,
+        TAGS_ADD,
+        TAGS_DELETE,
+    }
+    
+    Field[] changedField;
+    private TaskInfo[] tasks;
+    private TaskId[] taskIds;
+    
+    public EditSuccessfulMessage(TaskInfo[] tasks, TaskId[] taskIds, Field[] changedField) {
+        this.taskIds = taskIds;
+        this.tasks = tasks;
+        this.changedField = changedField;
+    }
+    
+    public Type getType() {
+        return Type.EDIT_SUCCESSFUL;
+    }
+    
+    public Field[] getChangedField() {
+        return changedField;
+    }
+    
+    public TaskInfo[] getTask() {
+        return tasks;
+    }
+    
+    public TaskId[] getTaskId() {
+        return taskIds;
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\EditSuccessfulMessage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\FreeDaySearchMessage.java
+	 */
+
+public class FreeDaySearchMessage implements Message {
+
+
+    private ArrayList<LocalDate> freeDates;
+    private LocalDate lastBusyDate;
+    private LocalDate firstBusyDate;
+    private LocalDate searchStartDate;
+    private LocalDate searchEndDate;
+    
+    public FreeDaySearchMessage(ArrayList<LocalDate> freeDates,
+            LocalDate startDate, LocalDate lastTaskEndDate,
+            LocalDate searchStartDate, LocalDate searchEndDate) {
+        this.freeDates = freeDates;
+        this.firstBusyDate = startDate;
+        this.lastBusyDate = lastTaskEndDate;
+        this.searchStartDate = searchStartDate;
+        this.searchEndDate = searchEndDate;
+    }
+    
+    @Override
+    public Type getType() {
+        return Type.FREE_DAY_SEARCH_SUCCESSFUL;
+    }
+    
+    public ArrayList<LocalDate> getFreeDateList(){
+        return freeDates;
+    }
+    
+    public LocalDate getLastBusyDate(){
+        return lastBusyDate;
+    }
+    
+    public LocalDate getFirstBusyDate(){
+        return firstBusyDate;
+    }
+    
+    public LocalDate getSearchStartDate(){
+    	return searchStartDate;
+    }
+    
+    public LocalDate getSearchEndDate(){
+    	return searchEndDate;
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\FreeDaySearchMessage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\FreeTimeSearchMessage.java
+	 */
+
+public class FreeTimeSearchMessage implements Message{
+	
+	private ArrayList<Interval> freeTimeList;
+	private LocalDate date;
+
+	public FreeTimeSearchMessage(LocalDate date, ArrayList<Interval> list){
+		this.date = date;
+		this.freeTimeList = list;
+	}
+	
+	public Type getType() {
+		return Type.FREE_TIME_SEARCH_SUCCESSFUL;
+	}
+	
+	public LocalDate getDate(){
+		return date;
+	}
+	
+	public ArrayList<Interval> getFreeTimelist(){
+		return freeTimeList;
+	}
+
+	
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\FreeTimeSearchMessage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\ReportMessage.java
+	 */
+
+public class ReportMessage implements Message{
+	
+	private int countTodayTask;
+	private int countTmrTask;
+	private ArrayList<TaskInfo> urgentTask;
+	
+	public ReportMessage(int countTodayTask, int countTmrTask, ArrayList<TaskInfo> urgentTask){
+		this.countTodayTask = countTodayTask;
+		this.countTmrTask = countTmrTask;
+		this.urgentTask = urgentTask;
+	}
+	
+	public int getCountTodayTask(){
+		return countTodayTask;
+	}
+	
+	public int getCountTmrTask(){
+		return countTmrTask;
+	}
+	
+	public ArrayList<TaskInfo> getUrgentTask(){
+		return urgentTask;
+	}
+
+	public Type getType() {
+		return Type.REPORT;
+	}
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\ReportMessage.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\AddManager.java
+	 */
+
+public class AddManager extends AbstractManager {
+	
+	private TaskId id = null;
+    
+    public AddManager(TaskData taskData) {
+        super(taskData);
+    }
+
+    public Result addTask(TaskInfo taskInfo) {
+    	if (taskInfo == null){
+    		return new SimpleResult(Result.Type.ADD_FAILURE);
+    	}
+    	taskInfo.assertValidDateTime();
+    	
+    	id = taskData.add(taskInfo);
+    	
+    	if (id == null){
+    		return new SimpleResult(Result.Type.ADD_FAILURE);
+    	}
+    	
+    	return new AddResult(taskInfo, id);
+    	
+    }
+    
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\AddManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\DeleteManager.java
+	 */
+
+public class DeleteManager extends AbstractManager {
+
+    public DeleteManager(TaskData taskData) {
+        super(taskData);
+    }
+
+    public Result deleteTask(TaskIdSet taskIdSet) {
+    	
+        boolean allSuccessful = true;
+        
+        List<TaskId> idList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
+        
+        for (TaskId taskId : taskIdSet) {
+        	if (taskId == null) {
+        	    allSuccessful = false;
+        	    break;
+        	}
+
+            idList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
+        	boolean isSuccessful = taskData.remove(taskId);
+        	
+        	if (!isSuccessful){
+                allSuccessful = false;
+                break;
+        	}
+        }
+        
+        if (allSuccessful) {
+            TaskId[] taskIds = new TaskId[idList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            idList.toArray(taskIds);
+            taskList.toArray(tasks);
+            return new DeleteResult(taskIds, tasks);
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.DELETE_FAILURE);
+        }
+    }
+       
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\DeleteManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\EditManager.java
+	 */
+
+public class EditManager extends AbstractManager {
+
+    private TaskIdSet editingTasks;
+
+    public EditManager(TaskData taskData) {
+        super(taskData);
+    }
+
+    public Result editTask(TaskInfo taskInfo, TaskIdSet taskIdSet) {
+
+        boolean allSuccessful = true;
+        List<TaskId> taskIdList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
+        
+        TaskInfo editedTask = null;
+        EditSuccessfulMessage.Field[] fields = setChangedFields(taskInfo);
+
+        for (TaskId taskId : taskIdSet) {
+            if (taskId == null){
+                allSuccessful = false;
+                break;
+            }
+
+            TaskInfo originTask = taskData.getTaskInfo(taskId);
+            if (originTask == null){
+                allSuccessful = false;
+                break;
+            }
+            // TODO : Change later to a proper batch response.
+            editedTask = mergeTasks(originTask, taskInfo);
+            boolean isSuccessful = taskData.setTaskInfo(taskId, editedTask);
+
+            taskIdList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
+            
+            if (!isSuccessful){
+                allSuccessful = false;
+                break;
+            }
+        }
+
+        if (allSuccessful) {
+            TaskId[] taskIds = new TaskId[taskIdList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            taskIdList.toArray(taskIds);
+            taskList.toArray(tasks);
+            
+            return new EditResult(Result.Type.EDIT_SUCCESS, tasks, taskIds,
+                    fields);
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.EDIT_FAILURE);
+        }
+    }
+
+    public TaskIdSet getEditingTasks() {
+        return editingTasks;
+    }
+    
+    public Result clearInfo(TaskIdSet taskIdSet, EditCommand.Info infoToClear) {
+        boolean allSuccessful = true;
+        List<TaskId> taskIdList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
+        Field field = null;
+        
+        for (TaskId taskId : taskIdSet) {
+            switch (infoToClear) {
+                case TIME :
+                    if (!tryClearTime(taskId)) {
+                        allSuccessful = false;   
+                    }
+                    field = Field.TIME;
+                    break;
+                case DATE :
+                case DATETIME :
+                    if (!tryClearDate(taskId)) {
+                        allSuccessful = false;
+                    }
+                    field = Field.TIME;
+                    break;
+                case DESCRIPTION :
+                    if (!taskData.setTaskDetails(taskId, null)) {
+                        allSuccessful = false;
+                    }
+                    field = Field.DETAILS;
+                    break;
+                case PRIORITY :
+                    if (!taskData.setTaskPriority(taskId,
+                            Priority.defaultPriority())) {
+                        allSuccessful = false;
+                    }
+                    field = Field.PRIORITY;
+                    break;
+                case STATUS :
+                    if (!taskData.setTaskStatus(taskId,
+                            Status.defaultStatus())) {
+                        allSuccessful = false;
+                    }
+                    field = Field.STATUS;
+                    break;
+                case TAGS :
+                    if (!taskData.clearTags(taskId)) {
+                        allSuccessful = false;
+                    }
+                    field = Field.TAGS_DELETE;
+                    break;
+                default :
+                    allSuccessful = false;
+                    break;
+            }
+
+            taskIdList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
+            if (!allSuccessful) {
+                break;
+            }
+        }
+        
+
+        if (allSuccessful) {
+            TaskId[] taskIds = new TaskId[taskIdList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            taskIdList.toArray(taskIds);
+            taskList.toArray(tasks);
+            
+            return new EditResult(Result.Type.EDIT_SUCCESS, tasks,
+                    taskIds, new Field[]{field});
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.EDIT_FAILURE);
+        }
+    }
+
+    private boolean tryClearTime(TaskId taskId) {
+        if (!taskData.setTaskStartDate(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskStartTime(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskEndTime(taskId, null)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    private boolean tryClearDate(TaskId taskId) {
+        if (!taskData.setTaskStartDate(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskStartTime(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskEndTime(taskId, null)) {
+            return false;
+        }
+        if (!taskData.setTaskDate(taskId, null)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    public Result startEditMode(TaskIdSet taskIdSet) {
+        editingTasks = taskIdSet;
+        return new StartEditModeResult(taskIdSet);
+    }
+
+    public Result endEditMode() {
+        editingTasks = null;
+        return new SimpleResult(Result.Type.EDIT_MODE_END);
+    }
+
+    public Result addTaskTags(Tag[] tags, TaskIdSet taskIdSet){
+        boolean allSuccessful = true;
+        
+        List<TaskId> taskIdList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
+
+        for (TaskId taskId : taskIdSet) {
+            if (taskId == null){
+                allSuccessful = false;
+                break;
+            }
+
+            boolean isSuccessful = taskData.taskExists(taskId);
+            for (Tag tag : tags) {
+                boolean isTagSuccess = taskData.addTag(taskId, tag);
+            }
+
+            taskIdList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
+            
+            if (!isSuccessful) {
+                allSuccessful = false;
+                break;
+            }
+        }
+
+        if (allSuccessful) {
+            TaskId[] taskIds = new TaskId[taskIdList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            taskIdList.toArray(taskIds);
+            taskList.toArray(tasks);
+            
+            return new EditResult(Result.Type.TAG_ADD_SUCCESS, tasks, taskIds,
+                     EditSuccessfulMessage.Field.TAGS_ADD);
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
+        }
+    }
+
+    public Result deleteTaskTags(Tag[] tags, TaskIdSet taskIdSet){
+
+        boolean allSuccessful = true;
+        List<TaskId> taskIdList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
+
+        for (TaskId taskId : taskIdSet) {
+            if (taskId == null) {
+                allSuccessful = false;
+                break;
+            }
+
+            boolean isSuccessful = taskData.taskExists(taskId);
+            for (Tag tag : tags) {
+                boolean isTagSuccess = taskData.removeTag(taskId, tag);
+            }
+
+            taskIdList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
+            
+            if (!isSuccessful) {
+                allSuccessful = false;
+                break;
+            }
+        }
+
+        if (allSuccessful) {
+            TaskId[] taskIds = new TaskId[taskIdList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            taskIdList.toArray(taskIds);
+            taskList.toArray(tasks);
+            
+            return new EditResult(Result.Type.TAG_DELETE_SUCCESS, tasks, taskIds, 
+                    EditSuccessfulMessage.Field.TAGS_DELETE);
+        } else {
+            taskData.reverseLastChange();
+            return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
+        }
+    }
+
+
+    /**
+     * This method is to modify origin task with some changes specified
+     * in modifTask, and return the modified task
+     * @param originTask task to modify
+     * @param modifTask changes to be modified
+     * @return modified TaskInfo
+     */
+    private TaskInfo mergeTasks(TaskInfo originTask, TaskInfo modifTask ){
+    	TaskInfo mergedTask = new TaskInfo(originTask);
+    	if (modifTask.name != null){
+    		mergedTask.name = modifTask.name;
+    	}
+        if (modifTask.startTime != null){
+            mergedTask.startTime = modifTask.startTime;
+        }
+        if (modifTask.startDate != null){
+            mergedTask.startDate = modifTask.startDate;
+        }
+    	if (modifTask.endTime != null){
+    		mergedTask.endTime = modifTask.endTime;
+    	}
+    	if (modifTask.endDate != null){
+    		mergedTask.endDate = modifTask.endDate;
+    	}
+    	if (modifTask.details != null){
+    		mergedTask.details = modifTask.details;
+    	}
+    	if ((modifTask.priority != null)){
+    		mergedTask.priority = modifTask.priority;
+    	}
+    	if ((modifTask.status != null)){
+    		mergedTask.status = modifTask.status;
+    	}
+    	if (modifTask.numberOfTimes != 0){
+    		mergedTask.numberOfTimes = modifTask.numberOfTimes;
+    	}
+    	if (modifTask.repeatInterval != null){
+    		mergedTask.repeatInterval = modifTask.repeatInterval;
+    	}
+       	return mergedTask;
+    }
+
+
+    private EditSuccessfulMessage.Field[] setChangedFields(TaskInfo taskInfo){
+
+        ArrayList<EditSuccessfulMessage.Field> fields =
+                new ArrayList<EditSuccessfulMessage.Field>();
+    	if (taskInfo.name != null){
+    	    fields.add(EditSuccessfulMessage.Field.NAME);
+    	}
+    	if (taskInfo.priority != null){
+    		fields.add(EditSuccessfulMessage.Field.PRIORITY);
+    	}
+    	if (taskInfo.status != null){
+    		fields.add(EditSuccessfulMessage.Field.STATUS);
+    	}
+    	if (taskInfo.details != null){
+    		fields.add(EditSuccessfulMessage.Field.DETAILS);
+    	}
+    	if ((taskInfo.startTime != null) || (taskInfo.startDate != null) ||
+    	        (taskInfo.endTime != null) || (taskInfo.endDate != null)) {
+    		fields.add(EditSuccessfulMessage.Field.TIME);
+    	}
+
+    	EditSuccessfulMessage.Field[] fieldsArray =
+    	        new EditSuccessfulMessage.Field[fields.size()];
+    	for (int i = 0; i < fields.size(); i++) {
+    	    fieldsArray[i] = fields.get(i);
+    	}
+
+    	return fieldsArray;
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\EditManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\FreeDaySearchManager.java
+	 */
+
+public class FreeDaySearchManager extends AbstractManager {
+
+	private static final LocalTime END_OF_DAY = LocalTime.of(23, 59, 59);
+    private static final LocalTime START_OF_DAY = LocalTime.of(0, 0);
+    
+    private ArrayList<TaskInfo> taskList;
+	private int size;
+
+	public FreeDaySearchManager(TaskData taskData) {
+		super(taskData);
+	}
+
+	private ArrayList<TaskInfo> TaskListWithDate() {
+		ArrayList<TaskInfo> taskListWithDate = new ArrayList<TaskInfo>();
+		TaskId taskId = taskData.getFirst();
+		TaskInfo task;
+		while (taskId.isValid()) {
+			task = taskData.getTaskInfo(taskId);
+			if (task.getEndDate() != null) {
+				taskListWithDate.add(task);
+			}
+			taskId = taskData.getNext(taskId);
+		}
+		return taskListWithDate;
+	}
+
+	private void updateTaskList() {
+		taskList = TaskListWithDate();
+		sortTask();
+		size = taskList.size();
+	}
+
+	private void clearMemory() {
+		taskList.clear();
+		taskList = null;   
+	}
+	public Result searchFreeDay(LocalTime startTime, LocalDate startDate,
+			LocalTime endTime, LocalDate endDate) {
+		updateTaskList();
+
+		LocalDate checkDate = null;
+		ArrayList<LocalDate> freeDays = new ArrayList<LocalDate>();
+		ArrayList<TaskInfo> taskListContainingTimeSlot = findTaskContainingTimeSlot(
+				startTime, endTime);
+		LocalDate firstStartDate = null;
+
+		if (taskListContainingTimeSlot.size() == 0){
+			return new FreeDayResult(null,null,null,startDate, endDate);
+		}
+		
+		for (TaskInfo task : taskListContainingTimeSlot) {
+			if (isMatchTimeSlot(startTime, startDate, endTime, endDate, task)) {
+                LocalDate taskStartDate = getTaskStartDate(task);
+                
+                if (firstStartDate == null || 
+                        taskStartDate.isBefore(firstStartDate)) {
+                    firstStartDate = taskStartDate;
+                }
+                
+				if (checkDate == null) {
+					checkDate = lastContainingDate(task, startTime, endTime);
+				} else {
+					uodateFreeDay(startTime, startDate, endTime, endDate,
+							checkDate, freeDays, task);
+					checkDate = lastContainingDate(task, startTime, endTime)
+							.isBefore(checkDate) ? checkDate : lastContainingDate(task, startTime, endTime);
+
+				}
+			}
+		}
+        assert (firstStartDate == null) == (checkDate == null);
+
+		clearMemory();
+		return new FreeDayResult(freeDays, firstStartDate, checkDate, startDate, endDate);
+	}
+
+	private void uodateFreeDay(LocalTime startTime, LocalDate startDate,
+			LocalTime endTime, LocalDate endDate, LocalDate checkDate,
+			ArrayList<LocalDate> freeDays, TaskInfo task) {
+		if (firstContainingDate(task, startTime, endTime).isAfter(
+				checkDate)) {
+			LocalDate tempDate = checkDate.minusDays(-1);
+			while (tempDate.isBefore(firstContainingDate(task,
+					startTime, endTime))) {
+				
+				if (tempDate.isAfter(startDate.minusDays(1))
+						&& (tempDate.isBefore(endDate.minusDays(-1)))){
+					freeDays.add(tempDate);
+				}
+				tempDate = tempDate.minusDays(-1);
+			}
+		}
+	}
+
+	private boolean isMatchTimeSlot(LocalTime startTime, LocalDate startDate,
+			LocalTime endTime, LocalDate endDate, TaskInfo task) {
+	    
+        LocalDateTime myStart = LocalDateTime.of(startDate, startTime);
+        LocalDateTime myEnd = LocalDateTime.of(endDate, endTime);
+        
+        LocalDateTime taskStart = LocalDateTime.of(getTaskStartDate(task),
+                getTaskStartTime(task));
+        LocalDateTime taskEnd = LocalDateTime.of(task.getEndDate(),
+                task.getEndTime());
+
+        return (beforeOrEqual(myStart, taskEnd) &&
+                beforeOrEqual(taskStart, myEnd));
+	}
+    
+    private boolean beforeOrEqual(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+        return (!dateTime1.isAfter(dateTime2));
+    }
+
+	
+	public Result searchFreeDay(LocalDate startDate, LocalDate endDate) {
+        LocalTime startTime = START_OF_DAY;
+        LocalTime endTime = END_OF_DAY;
+	    
+	    return searchFreeDay(startTime, startDate, endTime, endDate) ;
+	}
+
+	private boolean isMatchDay(LocalDate startDate, LocalDate endDate,
+			TaskInfo task) {
+		return task.getEndDate().isAfter(LocalDate.now()) 
+				&& (task.getEndDate().isAfter(startDate))
+				&& (getTaskStartDate(task).isBefore(endDate));
+	}
+
+	private void sortTask() {
+		Collections.sort(taskList, new Comparator<TaskInfo>() {
+			@Override
+			public int compare(TaskInfo task1, TaskInfo task2) {
+
+				if (getTaskStartDate(task1).isBefore(getTaskStartDate(task2))) {
+					return -1;
+				} else if (getTaskStartDate(task1).isAfter(
+						getTaskStartDate(task2))) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		});
+	}
+
+	private boolean isContainTimeSlot(TaskInfo task, LocalTime startTime,
+			LocalTime endTime) {
+
+		if (task.endTime == null){	  // no time task, not count
+			return false;
+		}
+
+		if (getTaskStartDate(task).equals(task.getEndDate())) { // One day task
+			if ((getTaskStartTime(task).isAfter(endTime))
+					|| (task.getEndTime().isBefore(startTime))) {
+				return false;
+			}
+		} else if (getTaskStartDate(task) != task.getEndDate()) { // Task that
+			// last more
+			// than 1
+			// day
+			if ((getTaskStartDate(task).minusDays(-1)
+					.isEqual(task.getEndDate()))
+					&& (getTaskStartTime(task).isAfter(endTime))
+					&& (task.getEndTime().isBefore(startTime))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private ArrayList<TaskInfo> findTaskContainingTimeSlot(LocalTime startTime,
+			LocalTime endTime) {
+		ArrayList<TaskInfo> matchingTask = new ArrayList<TaskInfo>();
+		for (TaskInfo task : taskList) {
+		    TaskInfo currentTaskInfo = new TaskInfo(task);
+		    if (dateWithoutTime(currentTaskInfo)) {
+		        makeIntoWholeDayTask(currentTaskInfo);
+		    }
+		    
+			if (isContainTimeSlot(currentTaskInfo, startTime, endTime)) {
+				matchingTask.add(currentTaskInfo);
+
+			}
+		}
+		return matchingTask;
+	}
+	
+	private boolean dateWithoutTime(TaskInfo taskInfo) {
+	    return (taskInfo.endTime == null && taskInfo.endDate != null);
+	}
+	
+	private void makeIntoWholeDayTask(TaskInfo taskInfo) {
+	    if (taskInfo.startDate == null) {
+	        taskInfo.startDate = taskInfo.endDate;
+	    }
+        taskInfo.startTime = START_OF_DAY;
+        taskInfo.endTime = END_OF_DAY;
+	}
+	
+
+	private LocalDate lastContainingDate(TaskInfo task, LocalTime startTime,
+			LocalTime endTime) {
+		if (task.getEndTime().isBefore(startTime)) {
+			return task.getEndDate().minusDays(1);
+		} else {
+			return task.getEndDate();
+		}
+	}
+
+	private LocalDate firstContainingDate(TaskInfo task, LocalTime startTime,
+			LocalTime endTime) {
+		if (getTaskStartTime(task).isAfter(endTime)) {
+			return getTaskStartDate(task).minusDays(-1);
+		} else {
+			return getTaskStartDate(task);
+		}
+	}
+
+	private LocalTime getTaskStartTime(TaskInfo task) {
+		if (task.getEndTime() == null) {
+			return null;
+		} else if (task.getStartTime() == null) {
+			return task.getEndTime();
+		} else {
+			return task.getStartTime();
+		}
+	}
+
+	private LocalDate getTaskStartDate(TaskInfo task) {
+		if (task.getEndDate() == null) {
+			return null;
+		} else if (task.getStartDate() == null) {
+			return task.getEndDate();
+		} else {
+			return task.getStartDate();
+		}
+	}
+}
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\FreeDaySearchManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\FreeTimeSearchManager.java
+	 */
+
+public class FreeTimeSearchManager extends AbstractManager {
+	
+	
+	private ArrayList<TaskInfo> taskList;
+	private ArrayList<Interval> freeTimeList;
+	private final LocalTime DAY_START_TIME = LocalTime.of(0, 0);
+	private final LocalTime DAY_END_TIME = LocalTime.of(23, 59);
+	public FreeTimeSearchManager(TaskData taskData) {
+		super(taskData);
+	}
+	
+	private Interval getTaskTimeOnDate(TaskInfo taskInfo, LocalDate date){
+		
+		
+		if (taskInfo.getEndDate() == null){ // floating task
+			return null;
+		} else if (taskInfo.getEndTime() == null){ // no time task
+			return null;
+		} else if (taskInfo.getEndDate().isBefore(date)){ // past task
+			return null;
+		}
+		 
+		if (taskInfo.getEndDate().isEqual(date)){ // end that day
+			if (taskInfo.getStartDate() == null){
+				// if deadline task, set it to be the time interval before the deadline
+				return new Interval(taskInfo.getEndTime().minusMinutes(1), taskInfo.getEndTime());
+			} else if (taskInfo.getStartDate().equals(date)){
+				return new Interval(taskInfo.getStartTime(), taskInfo.getEndTime());
+			} else if (taskInfo.getStartDate().isBefore(date)){
+				return new Interval(DAY_START_TIME, taskInfo.getEndTime());
+			}
+		}
+		if (taskInfo.getEndDate().isAfter(date)){
+			if (taskInfo.getStartDate() == null){
+				return null;
+			} else if (taskInfo.getStartDate().isAfter(date)){
+				return null;
+			} else if (taskInfo.getStartDate().equals(date)){
+				return new Interval(taskInfo.getStartTime(),DAY_END_TIME);
+			} else if (taskInfo.getStartDate().isBefore(date)){
+				return new Interval(DAY_START_TIME, DAY_END_TIME);
+			}
+		}
+		return null;
+	}
+		
+	private ArrayList<Interval> generateTimeList(){
+		ArrayList<Interval> list = new ArrayList<>();
+		for (int i = 0; i < 24; i++){
+			list.add(new Interval(LocalTime.of(i, 0), LocalTime.of(i, 59),false));
+		}
+		return list;
+	}
+
+	private ArrayList<TaskInfo> getTaskList(){
+		ArrayList<TaskInfo> list = new ArrayList<>();
+		TaskId taskId = taskData.getFirst();
+		TaskInfo task;
+		while (taskId.isValid()){
+			task = taskData.getTaskInfo(taskId);
+			list.add(task);
+			taskId = taskData.getNext(taskId);
+		}
+		return list;
+	}
+	
+	public void processInterval(Interval interval){
+		if (interval == null){
+			return;
+		}
+		int startHour = interval.getStartTime().getHour();
+		int endHour = interval.getEndTime().getHour();
+		
+		for (int i = startHour; i <= endHour; i++){
+			freeTimeList.get(i).setOccupied(true);
+		}
+	}
+	
+	private void processTaskList(LocalDate date){
+		
+		for (TaskInfo taskInfo : taskList){
+			Interval itvl = getTaskTimeOnDate(taskInfo, date);
+			processInterval(itvl);
+		}
+	}
+	
+	public Result searchFreeTimeSlot(LocalDate date){
+		taskList = getTaskList();
+		freeTimeList = generateTimeList();
+		processTaskList(date);
+		return new FreeTimeResult(date, freeTimeList);
+	}
+		
+
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\FreeTimeSearchManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\Interval.java
+	 */
+
+public class Interval {
+	
+	private final LocalTime startTime;
+	private final LocalTime endTime;
+	private boolean isOccupied;
+	
+	public Interval(LocalTime startTime, LocalTime endTime){
+		this.startTime = startTime;
+		this.endTime = endTime;
+	}
+	
+	public Interval(LocalTime startTime, LocalTime endTime, Boolean status){
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.isOccupied = status;
+	}
+
+	public LocalTime getStartTime(){
+		return startTime;
+	}
+	
+	public LocalTime getEndTime(){
+		return endTime;
+	}
+	
+	public Boolean isOccupied(){
+		return isOccupied;
+	}
+	
+	public void setOccupied(Boolean status){
+		isOccupied = status;
+	}
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\Interval.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\ReportManager.java
+	 */
+
+public class ReportManager extends AbstractManager{
+	
+	private ArrayList<TaskInfo> taskList;
+	
+	public ReportManager(TaskData taskData) {
+		super(taskData);
+	}
+
+	private ArrayList<TaskInfo> updateTask(){
+		ArrayList<TaskInfo> list = new ArrayList<>();
+		TaskId taskId = taskData.getFirst();
+		TaskInfo task;
+		while (taskId.isValid()){
+			task = taskData.getTaskInfo(taskId);
+			if (task.status == Status.UNDONE){
+			list.add(task);
+			}
+			taskId = taskData.getNext(taskId);
+		}
+		
+		return list;
+	}
+	
+	private boolean isTaskOnDate(TaskInfo task, LocalDate date){
+	    if (task.getEndDate() == null) {
+	        return true;
+	    }
+	    
+		if (task.getStartDate() == null) {
+		    if (task.getEndDate().equals(date)) {
+		        return true;
+		    }
+		    
+		} else {
+    		if ((!task.getStartDate().isAfter(date)) &&
+    		        (!task.getEndDate().isBefore(date))){
+    			return true;
+    		}
+		}
+		return false;
+	}
+	
+	private ArrayList<TaskInfo> getTaskByDate(LocalDate date){
+		ArrayList<TaskInfo> list = new ArrayList<>();
+		for (TaskInfo task : taskList){
+			if (isTaskOnDate(task, date)){
+				list.add(task);
+			}
+		}
+		return list;
+	}
+	
+	private ArrayList<TaskInfo> getUrgentTask(){
+		ArrayList<TaskInfo> list = new ArrayList<>();
+		for (TaskInfo task : taskList){
+			if ((task.priority == Priority.HIGH) && 
+			((isTaskOnDate(task, LocalDate.now())) || (isTaskOnDate(task, LocalDate.now().minusDays(-1))))){
+				list.add(task);
+			}
+		}
+		return list;
+	}
+	
+	public Result report(){
+		taskList = updateTask();
+		ArrayList<TaskInfo> todayTask = getTaskByDate(LocalDate.now());
+		ArrayList<TaskInfo> tmrTask = getTaskByDate(LocalDate.now().minusDays(-1));
+		ArrayList<TaskInfo> urgentTask = getUrgentTask();
+		
+		return new ReportResult(todayTask, tmrTask, urgentTask);
+	}
+}
+
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\ReportManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeDayManagerTest.java
+	 */
+
+public class FreeDayManagerTest {
+
+	TaskInfo task1 = createTask("apple", getTime(3,0), getDate(11,16),getTime(9, 0), getDate(11, 16));
+	TaskInfo task2 = createTask("banana", getTime(5, 0), getDate(11, 16), getTime(12, 0), getDate(11, 17));
+	TaskInfo task3 = createTask("cheese", getTime(13, 0), getDate(11,20), getTime(19, 0), getDate(11, 20));
+	TaskInfo task4 = createTask("dip", null, null , getTime(10, 0), getDate(11, 19));
+	TaskInfo task5 = createTask("egg", getTime(19, 0), getDate(10, 30), getTime(20, 0), getDate(10, 30));
+	TaskInfo task6 = createTask("fish", null, null, null, null);
+	TaskInfo task7 = createTask("gum", getTime(10, 0), getDate(11, 8), getTime(16, 0), getDate(11, 10));
+	TaskInfo task8 = createTask("ham", null, null, null, getDate(11, 3));
+	
+	@Test
+	public void testDate1() {
+		TaskData taskData = new TaskData();
+		
+		// Tasks on 16, 17, 20 november
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task3);
+		
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
+		Result result;
+		
+		result = manager.searchFreeDay(getDate(10,9), getDate(11, 28));
+		FreeDayResult finResult = (FreeDayResult) result;
+		
+		ArrayList<LocalDate> freeDates = new ArrayList<>();
+		freeDates.add(getDate(11, 18));
+		freeDates.add(getDate(11, 19));
+		LocalDate startDate = getDate(11, 16);
+        LocalDate lastTaskEndDate = getDate(11, 20);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
+		
+		assertResultEquals(templateResult, finResult);
+	}
+	
+	
+    @Test
+    public void testDate2 () {
+		
+		TaskData taskData = new TaskData();
+
+        // Tasks on 20, 16, 17, 3 november, (8-10) november
+		taskData.add(task3);
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task7);
+		taskData.add(task8);
+
+		
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
+		Result result;
+		
+		result = manager.searchFreeDay(getDate(10,9), getDate(11, 18));
+		FreeDayResult finResult = (FreeDayResult) result;
+		
+		
+		ArrayList<LocalDate> freeDates = new ArrayList<>();
+		
+		freeDates.add(getDate(11, 4));
+		freeDates.add(getDate(11, 5));
+		freeDates.add(getDate(11, 6));
+		freeDates.add(getDate(11, 7));
+		freeDates.add(getDate(11, 11));
+		freeDates.add(getDate(11, 12));
+		freeDates.add(getDate(11, 13));
+		freeDates.add(getDate(11, 14));
+		freeDates.add(getDate(11, 15));
+		
+		LocalDate startDate = getDate(11, 3);
+		LocalDate lastTaskEndDate = getDate(11, 17);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
+		
+		assertResultEquals(templateResult, finResult);
+		
+//		result = manager.searchFreeTimeSlot(getTime(6, 0), getDate(10, 9), getTime(8, 0), getDate(10, 28));
+//		FreeDayResult finResult = (FreeDayResult) result;
+//		System.out.println(finResult.getFreeDate().size());
+//		System.out.println(finResult.getFreeDate());
+//		System.out.println(finResult.getStartDate());
+//		System.out.println(finResult.getLastTaskEndDate());
+		
+	}
+
+    @Test
+    public void testDate3 () {
+		
+		TaskData taskData = new TaskData();
+
+		taskData.add(task3);
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task7);
+		taskData.add(task5);
+
+		
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
+		Result result;
+		
+		result = manager.searchFreeDay(getDate(10,9), getDate(11, 18));
+		FreeDayResult finResult = (FreeDayResult) result;
+		
+		
+		ArrayList<LocalDate> freeDates = new ArrayList<>();
+		
+		freeDates.add(getDate(10, 31));
+		freeDates.add(getDate(11, 1));
+		freeDates.add(getDate(11, 2));
+		freeDates.add(getDate(11, 3));
+		freeDates.add(getDate(11, 4));
+		freeDates.add(getDate(11, 5));
+		freeDates.add(getDate(11, 6));
+		freeDates.add(getDate(11, 7));
+		freeDates.add(getDate(11, 11));
+		freeDates.add(getDate(11, 12));
+		freeDates.add(getDate(11, 13));
+		freeDates.add(getDate(11, 14));
+		freeDates.add(getDate(11, 15));
+		
+		LocalDate startDate = getDate(10, 30);
+		LocalDate lastTaskEndDate = getDate(11, 17);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
+		
+		assertResultEquals(templateResult, finResult);
+    }
+    
+    @Test
+    public void testDate4() {
+		
+		TaskData taskData = new TaskData();
+
+		taskData.add(task3);
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task7);
+		taskData.add(task5);
+		taskData.add(task6);
+		taskData.add(task8);
+
+		
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
+		Result result;
+		
+		result = manager.searchFreeDay(getDate(10,9), getDate(11, 18));
+		FreeDayResult finResult = (FreeDayResult) result;
+		
+		
+		ArrayList<LocalDate> freeDates = new ArrayList<>();
+		
+		freeDates.add(getDate(10, 31));
+		freeDates.add(getDate(11, 1));
+		freeDates.add(getDate(11, 2));
+		freeDates.add(getDate(11, 4));
+		freeDates.add(getDate(11, 5));
+		freeDates.add(getDate(11, 6));
+		freeDates.add(getDate(11, 7));
+		freeDates.add(getDate(11, 11));
+		freeDates.add(getDate(11, 12));
+		freeDates.add(getDate(11, 13));
+		freeDates.add(getDate(11, 14));
+		freeDates.add(getDate(11, 15));
+		
+		LocalDate startDate = getDate(10, 30);
+		LocalDate lastTaskEndDate = getDate(11, 17);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
+		
+		assertResultEquals(templateResult, finResult);
+    }    
+    
+    @Test
+    public void testTime1() {
+    	
+    	TaskData taskData = new TaskData();
+
+        // Tasks on 20, 16, 17, 3 november, (8-10) november
+		taskData.add(task3);
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task7);
+		taskData.add(task8);
+
+		
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
+		Result result;
+
+        // Time matches:
+        // Tasks on X20, y16, y17, y3 november, (8-10)->(9-10) november
+        // range: 9 oct to 28 nov
+		result = manager.searchFreeDay(getTime(6, 0), getDate(10, 9), getTime(8, 0), getDate(11, 28));
+		FreeDayResult finResult = (FreeDayResult) result;
+		
+		ArrayList<LocalDate> freeDates = new ArrayList<>();
+
+        freeDates.add(getDate(11, 4));
+        freeDates.add(getDate(11, 5));
+        freeDates.add(getDate(11, 6));
+        freeDates.add(getDate(11, 7));
+        freeDates.add(getDate(11, 8));
+        
+		freeDates.add(getDate(11, 11));
+		freeDates.add(getDate(11, 12));
+		freeDates.add(getDate(11, 13));
+		freeDates.add(getDate(11, 14));
+		freeDates.add(getDate(11, 15));
+		
+		
+		LocalDate startDate = getDate(11, 3);
+        LocalDate lastTaskEndDate = getDate(11, 17);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
+		
+		assertResultEquals(templateResult, finResult);
+    }
+    
+    @Test
+    public void testTime2() {
+    	
+    	TaskData taskData = new TaskData();
+    	
+		taskData.add(task3);
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task7);
+		taskData.add(task8);
+
+		
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
+		Result result;
+		
+		result = manager.searchFreeDay(getTime(6, 0), getDate(11,14), getTime(8, 0), getDate(11, 28));
+		FreeDayResult finResult = (FreeDayResult) result;
+		
+		ArrayList<LocalDate> freeDates = new ArrayList<>();
+		
+		LocalDate startDate = getDate(11, 16);
+        LocalDate lastTaskEndDate = getDate(11, 17);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
+		
+		assertResultEquals(templateResult, finResult);
+
+    }
+    
+    @Test
+    public void testTime3 () {
+		
+		TaskData taskData = new TaskData();
+
+		taskData.add(task3);
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task7);
+		taskData.add(task5);
+
+		
+		FreeDaySearchManager manager = new FreeDaySearchManager(taskData);
+		Result result;
+		
+		result = manager.searchFreeDay(getTime(10, 0), getDate(10,9), getTime(11, 0), getDate(11, 18));
+		FreeDayResult finResult = (FreeDayResult) result;
+		
+		
+		ArrayList<LocalDate> freeDates = new ArrayList<>();
+		
+		
+		freeDates.add(getDate(11, 11));
+		freeDates.add(getDate(11, 12));
+		freeDates.add(getDate(11, 13));
+		freeDates.add(getDate(11, 14));
+		freeDates.add(getDate(11, 15));
+		
+		LocalDate startDate = getDate(11, 8);
+		LocalDate lastTaskEndDate = getDate(11, 17);
+        FreeDayResult templateResult = new FreeDayResult(freeDates, startDate, lastTaskEndDate,null,null);
+		
+		assertResultEquals(templateResult, finResult);
+    }
+    
+    private void assertResultEquals(FreeDayResult actual, FreeDayResult output) {
+        assertEquals(actual.getFirstBusyDate(), output.getFirstBusyDate());
+        assertEquals(actual.getLastBusyDate(), output.getLastBusyDate());
+        assertEquals(actual.getFreeDateList().size(), output.getFreeDateList().size());
+        assertEquals(actual.getFreeDateList(), output.getFreeDateList());
+    }
+	
+	
+	private static TaskInfo createTask(String name,LocalTime startTime, LocalDate startDate,
+			LocalTime endTime, LocalDate endDate){
+		TaskInfo taskInfo = TaskInfo.create();
+		taskInfo.name = name;
+		taskInfo.startTime = startTime;
+		taskInfo.startDate = startDate;
+		taskInfo.endTime = endTime;
+		taskInfo.endDate = endDate;
+		return taskInfo;
+	}
+
+	private static LocalTime getTime(int hour, int minute){
+		return LocalTime.of(hour, minute);
+	}
+
+	private static LocalDate getDate(int month, int day){
+		return LocalDate.of(2014, month, day);
+	}
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeDayManagerTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeTimeManagerTest.java
+	 */
+
+public class FreeTimeManagerTest {
+	
+	TaskInfo task1 = createTask("apple", getTime(3,0), getDate(11,16),getTime(9, 0), getDate(11, 16));
+	TaskInfo task2 = createTask("banana", getTime(5, 0), getDate(11, 16), getTime(12, 0), getDate(11, 17));
+	TaskInfo task3 = createTask("cheese", getTime(13, 0), getDate(11,15), getTime(19, 0), getDate(11, 15));
+	TaskInfo task4 = createTask("dip", null, null , getTime(11, 0), getDate(11, 16));
+	TaskInfo task5 = createTask("egg", getTime(19, 0), getDate(10, 30), getTime(1, 20), getDate(11,16));
+	TaskInfo task6 = createTask("fish", null, null, null, null);
+	TaskInfo task7 = createTask("gum", getTime(10, 0), getDate(11, 8), getTime(16, 0), getDate(11, 10));
+	TaskInfo task8 = createTask("ham", null, null, null, getDate(11, 3));
+
+	/**
+	 * Test simple task within a day
+	 */
+	@Test
+	public void test1(){ 
+		TaskData taskData = new TaskData();
+		FreeTimeSearchManager manager = new FreeTimeSearchManager(taskData);
+		Result result;
+		
+		taskData.add(task1);
+		result = manager.searchFreeTimeSlot(getDate(11, 16));
+		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
+		
+		
+		
+		ArrayList<Interval> freeTimeList = new ArrayList<>();
+		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
+		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
+		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
+		freeTimeList.add(new Interval(getTime(10, 0), getTime(10, 59),false));
+		freeTimeList.add(new Interval(getTime(11, 0), getTime(11, 59),false));
+		freeTimeList.add(new Interval(getTime(12, 0), getTime(12, 59),false));
+		freeTimeList.add(new Interval(getTime(13, 0), getTime(13, 59),false));
+		freeTimeList.add(new Interval(getTime(14, 0), getTime(14, 59),false));
+		freeTimeList.add(new Interval(getTime(15, 0), getTime(15, 59),false));
+		freeTimeList.add(new Interval(getTime(16, 0), getTime(16, 59),false));
+		freeTimeList.add(new Interval(getTime(17, 0), getTime(17, 59),false));
+		freeTimeList.add(new Interval(getTime(18, 0), getTime(18, 59),false));
+		freeTimeList.add(new Interval(getTime(19, 0), getTime(19, 59),false));
+		freeTimeList.add(new Interval(getTime(20, 0), getTime(20, 59),false));
+		freeTimeList.add(new Interval(getTime(21, 0), getTime(21, 59),false));
+		freeTimeList.add(new Interval(getTime(22, 0), getTime(22, 59),false));
+		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
+		
+		
+		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
+	}
+	
+	/**
+	 * Test task that last until next day
+	 */
+	@Test
+	public void test2(){
+		TaskData taskData = new TaskData();
+		FreeTimeSearchManager manager = new FreeTimeSearchManager(taskData);
+		Result result;
+		
+		taskData.add(task1);
+		taskData.add(task2);
+		result = manager.searchFreeTimeSlot(getDate(11, 16));
+		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
+		
+		
+		ArrayList<Interval> freeTimeList = new ArrayList<>();
+		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
+		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
+		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
+		
+		
+		
+		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
+	}
+	
+	/**
+	 * Test task with only end date and time
+	 */
+	@Test
+	public void test3(){
+		TaskData taskData = new TaskData();
+		FreeTimeSearchManager manager = new FreeTimeSearchManager(taskData);
+		Result result;
+		
+		taskData.add(task1);
+		taskData.add(task3);
+		taskData.add(task4);
+		
+		result = manager.searchFreeTimeSlot(getDate(11, 16));
+		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
+		
+				
+		ArrayList<Interval> freeTimeList = new ArrayList<>();
+		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
+		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
+		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
+		freeTimeList.add(new Interval(getTime(12, 0), getTime(12, 59),false));
+		freeTimeList.add(new Interval(getTime(13, 0), getTime(13, 59),false));
+		freeTimeList.add(new Interval(getTime(14, 0), getTime(14, 59),false));
+		freeTimeList.add(new Interval(getTime(15, 0), getTime(15, 59),false));
+		freeTimeList.add(new Interval(getTime(16, 0), getTime(16, 59),false));
+		freeTimeList.add(new Interval(getTime(17, 0), getTime(17, 59),false));
+		freeTimeList.add(new Interval(getTime(18, 0), getTime(18, 59),false));
+		freeTimeList.add(new Interval(getTime(19, 0), getTime(19, 59),false));
+		freeTimeList.add(new Interval(getTime(20, 0), getTime(20, 59),false));
+		freeTimeList.add(new Interval(getTime(21, 0), getTime(21, 59),false));
+		freeTimeList.add(new Interval(getTime(22, 0), getTime(22, 59),false));
+		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
+		
+		
+		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
+	}
+	
+	/**
+	 * Test task that start before specified date and last until that date
+	 */
+	@Test
+	public void test4(){
+		TaskData taskData = new TaskData();
+		FreeTimeSearchManager manager = new FreeTimeSearchManager(taskData);
+		Result result;
+		
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task3);
+		taskData.add(task4);
+		taskData.add(task5);
+		result = manager.searchFreeTimeSlot(getDate(11, 16));
+		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
+		
+		
+		ArrayList<Interval> freeTimeList = new ArrayList<>();
+		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
+		
+		
+		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
+	}
+	
+	/**
+	 * Test totally free day with no task
+	 */
+	@Test
+	public void test5(){
+		TaskData taskData = new TaskData();
+		FreeTimeSearchManager manager = new FreeTimeSearchManager(taskData);
+		Result result;
+		
+		taskData.add(task1);
+		taskData.add(task2);
+		taskData.add(task3);
+		taskData.add(task4);
+		taskData.add(task5);
+		
+		result = manager.searchFreeTimeSlot(getDate(11, 20));
+		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
+		
+		
+		ArrayList<Interval> freeTimeList = new ArrayList<>();
+		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
+		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
+		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
+		freeTimeList.add(new Interval(getTime(3, 0), getTime(3, 59),false));
+		freeTimeList.add(new Interval(getTime(4, 0), getTime(4, 59),false));
+		freeTimeList.add(new Interval(getTime(5, 0), getTime(5, 59),false));
+		freeTimeList.add(new Interval(getTime(6, 0), getTime(6, 59),false));
+		freeTimeList.add(new Interval(getTime(7, 0), getTime(7, 59),false));
+		freeTimeList.add(new Interval(getTime(8, 0), getTime(8, 59),false));
+		freeTimeList.add(new Interval(getTime(9, 0), getTime(9, 59),false));
+		freeTimeList.add(new Interval(getTime(10, 0), getTime(10, 59),false));
+		freeTimeList.add(new Interval(getTime(11, 0), getTime(11, 59),false));
+		freeTimeList.add(new Interval(getTime(12, 0), getTime(12, 59),false));
+		freeTimeList.add(new Interval(getTime(13, 0), getTime(13, 59),false));
+		freeTimeList.add(new Interval(getTime(14, 0), getTime(14, 59),false));
+		freeTimeList.add(new Interval(getTime(15, 0), getTime(15, 59),false));
+		freeTimeList.add(new Interval(getTime(16, 0), getTime(16, 59),false));
+		freeTimeList.add(new Interval(getTime(17, 0), getTime(17, 59),false));
+		freeTimeList.add(new Interval(getTime(18, 0), getTime(18, 59),false));
+		freeTimeList.add(new Interval(getTime(19, 0), getTime(19, 59),false));
+		freeTimeList.add(new Interval(getTime(20, 0), getTime(20, 59),false));
+		freeTimeList.add(new Interval(getTime(21, 0), getTime(21, 59),false));
+		freeTimeList.add(new Interval(getTime(22, 0), getTime(22, 59),false));
+		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
+		
+		
+		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
+	}
+	private boolean assertResultEquals(ArrayList<Interval> list1, ArrayList<Interval> list2){
+		boolean result = true;
+		int size1 = list1.size();
+		int size2 = list2.size();
+		
+		assertEquals(size1, size2);
+		for (int i = 0; i < size1; i++){
+			assertEquals(list1.get(i).getStartTime(), list2.get(i).getStartTime());
+			assertEquals(list1.get(i).getEndTime(), list2.get(i).getEndTime());
+		}
+		return result;
+	}
+	
+	private static TaskInfo createTask(String name,LocalTime startTime, LocalDate startDate,
+			LocalTime endTime, LocalDate endDate){
+		TaskInfo taskInfo = TaskInfo.create();
+		taskInfo.name = name;
+		taskInfo.startTime = startTime;
+		taskInfo.startDate = startDate;
+		taskInfo.endTime = endTime;
+		taskInfo.endDate = endDate;
+		return taskInfo;
+	}
+	
+	private static LocalTime getTime(int hour, int minute){
+		return LocalTime.of(hour, minute);
+	}
+
+	private static LocalDate getDate(int month, int day){
+		return LocalDate.of(2014, month, day);
+	}
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeTimeManagerTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\AddResult.java
+	 */
+
+public class AddResult implements Result {
+	
+	private TaskInfo taskInfo;
+	private TaskId taskId;
+
+	public AddResult (TaskInfo taskInfo, TaskId taskId) {
+		this.taskInfo = taskInfo;
+		this.taskId = taskId;
+	}
+	@Override
+	public Type getType() {
+		return Type.ADD_SUCCESS;
+	}
+	
+	public TaskInfo getTaskInfo(){
+		return taskInfo;
+	}
+	
+	public TaskId getTaskId(){
+		return taskId;
+	}
+
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\AddResult.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\DeleteResult.java
+	 */
+
+public class DeleteResult implements Result{
+	
+	private TaskId[] taskIds;
+	private TaskInfo[] tasks;
+	
+	public DeleteResult(TaskId[] taskIds, TaskInfo[] tasks){
+		this.taskIds = taskIds;
+		this.tasks = tasks;
+	}
+
+	@Override
+	public Type getType() {
+		return Type.DELETE_SUCCESS;
+	}
+	
+	public TaskId[] getTaskIds(){
+		return taskIds;
+	}
+
+	public TaskInfo[] getTasks(){
+		return tasks;
+	}
+	
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\DeleteResult.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\EditResult.java
+	 */
+
+public class EditResult implements Result {
+	
+	private Type type;
+	private TaskInfo[] tasks;
+	private TaskId[] taskIds;
+	private EditSuccessfulMessage.Field[] changedFields;
+
+	public EditResult (Type type, TaskInfo[] tasks, TaskId[] taskIds, EditSuccessfulMessage.Field[] fields){
+	    assert type == Type.EDIT_SUCCESS;
+		this.type = type;
+		this.tasks = tasks;
+		this.taskIds = taskIds;
+		this.changedFields = fields;
+	}
+	
+	public EditResult (Type type, TaskInfo[] tasks, TaskId[] taskIds, EditSuccessfulMessage.Field field){
+		this.type = type;
+		this.tasks = tasks;
+		this.taskIds = taskIds;
+		this.changedFields = new EditSuccessfulMessage.Field[1];
+		changedFields[0] = field;
+	}
+
+	@Override
+	public Type getType() {
+		return type;
+	}
+	
+	public TaskInfo[] getTasks(){
+		return tasks;
+	}
+	
+	public TaskId[] getTaskIds(){
+		return taskIds;
+	}
+
+	public EditSuccessfulMessage.Field[] getChangedFields(){
+		return changedFields;
+	}
+
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\EditResult.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\FreeDayResult.java
+	 */
+
+public class FreeDayResult implements Result{
+
+	private ArrayList<LocalDate> freeDates;
+	private LocalDate lastBusyDate;
+	private LocalDate firstBusyDate;
+	private LocalDate searchStartDate;
+	private LocalDate searchEndDate;
+	
+	public FreeDayResult(ArrayList<LocalDate> freeDate, LocalDate startDate, LocalDate lastTaskEndDate,
+			LocalDate searchStartDate, LocalDate searchEndDate) {
+		this.freeDates = freeDate;
+		this.firstBusyDate = startDate;
+		this.lastBusyDate = lastTaskEndDate;
+		this.searchStartDate = searchStartDate;
+		this.searchEndDate = searchEndDate;
+	}
+	
+	@Override
+	public Type getType() {
+		return Type.FREE_DAY;
+		
+	}
+	
+	public ArrayList<LocalDate> getFreeDateList(){
+		return freeDates;
+	}
+	
+	public LocalDate getLastBusyDate(){
+		return lastBusyDate;
+	}
+	
+	public LocalDate getFirstBusyDate(){
+		return firstBusyDate;
+	}
+	
+	public LocalDate getSearchStartDate(){
+		return searchStartDate;
+	}
+	
+	public LocalDate getSearchEndDate(){
+		return searchEndDate;
+	}
+
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\FreeDayResult.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\FreeTimeResult.java
+	 */
+
+public class FreeTimeResult implements Result {
+
+	private ArrayList<Interval> freeTimeList;
+	private LocalDate date;
+	
+	public FreeTimeResult(LocalDate date, ArrayList<Interval> list){
+		this.date = date;
+		this.freeTimeList = processList(list);
+	}
+	
+	public LocalDate getDate(){
+		return date;
+	}
+	
+	public ArrayList<Interval> getFreeTimeList(){
+		return freeTimeList;
+	}
+	
+	private ArrayList<Interval> processList(ArrayList<Interval> list){
+		ArrayList<Interval> tempList = new ArrayList<>();
+		for (Interval itvl : list){
+			if (!itvl.isOccupied()){
+				tempList.add(itvl);
+			}
+		}
+		return tempList;
+	}
+
+	@Override
+	public Type getType() {
+		return Type.FREE_TIME;
+	}
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\FreeTimeResult.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\ReportResult.java
+	 */
+
+public class ReportResult implements Result{
+    
+	private final ArrayList<TaskInfo> todayTask;
+	private final ArrayList<TaskInfo> tmrTask;
+	private final ArrayList<TaskInfo> urgentTask;
+	
+	public ReportResult(ArrayList<TaskInfo> todayTask,
+            ArrayList<TaskInfo> tmrTask, ArrayList<TaskInfo> urgentTask) {
+        this.todayTask = todayTask;
+        this.tmrTask = tmrTask;
+        this.urgentTask = urgentTask;
+    }
+
+    public Type getType(){
+		return Type.REPORT;
+	}
+	
+	public int countTodayTask(){
+		return todayTask.size();
+	}
+	
+	public int countTmrTask(){
+		return tmrTask.size();
+	}
+	
+	public ArrayList<TaskInfo> getUrgentTask(){
+		return urgentTask;
+	}
+
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\ReportResult.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\StartEditModeResult.java
+	 */
+
+public class StartEditModeResult implements Result {
+
+    private final TaskIdSet taskIdSet;
+
+    public StartEditModeResult(TaskIdSet taskIdSet){
+        this.taskIdSet = taskIdSet;
+    }
+    
+    @Override
+    public Type getType() {
+        return Type.EDIT_MODE_START;
+    }
+
+    public TaskIdSet getTaskIdSet(){
+        return taskIdSet;
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\StartEditModeResult.java
+
+
+
+
+
+	/**
 	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\StateManager.java
 	 */
 
@@ -444,6 +2424,78 @@ public class StateManager {
 }
 
 	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\StateManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\UpdateManager.java
+	 */
+
+public class UpdateManager {
+
+    private final IFileInputOutput aliasFileInputOutput;
+    private final IFileInputOutput fileInputOutput;
+	private final UndoManager undoManager;
+	private final SearchManager searchManager;
+	
+	public UpdateManager(IFileInputOutput fileInputOutput,
+	        IFileInputOutput aliasFileInputOutput, UndoManager undoManager,
+	        SearchManager searchManager){
+	    
+        this.fileInputOutput = fileInputOutput;
+        this.aliasFileInputOutput = aliasFileInputOutput;
+		this.undoManager = undoManager;
+		this.searchManager = searchManager;	
+	}
+
+	public void redoSearch(Filter[] filters){
+	    assert filters != null : "Can't search with null filters!";
+		searchManager.searchTasks(filters);
+	}
+	
+	public SearchModeInfo getSearchModeInfo(){
+		SearchResult redoSearchResult = searchManager.getLastSearchResult();
+        TaskInfo[] tasks = redoSearchResult.getTasks();
+        TaskId[] taskIds = redoSearchResult.getTaskIds();
+        String[] suggestions = redoSearchResult.getSuggestions();
+        SearchModeInfo searchModeInfo = new SearchModeInfo(tasks, taskIds, 
+                suggestions);
+        return searchModeInfo;
+	}
+	
+	public TaskInfo getTaskInfo(TaskId taskId){
+		return searchManager.getTaskInfo(taskId);
+	}
+	
+	public void updateUndoHistory(){
+		undoManager.updateUndoHistory();
+	}
+	
+	public void preExecutionCheck(){
+		 boolean fileChanged = readFromFile();
+	        
+        if (fileChanged) {
+            undoManager.clearHistory();
+        }
+    }
+
+	public boolean readFromFile() {
+        return fileInputOutput.read();
+    }
+
+	public boolean writeToFile() {
+	    boolean result1 = aliasFileInputOutput.write();
+	    boolean result2 = fileInputOutput.write();
+	    
+        return result1 && result2;
+    }  
+	
+	
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\UpdateManager.java
 
 
 

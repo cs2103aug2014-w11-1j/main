@@ -9,6 +9,7 @@ import manager.result.SearchResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 public class UpdateManager {
 
     private final IFileInputOutput aliasFileInputOutput;

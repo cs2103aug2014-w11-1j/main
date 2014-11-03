@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import manager.datamanager.freetimemanager.Interval;
 
+//@author A0119432L
 public class FreeTimeResult implements Result {
 
 	private ArrayList<Interval> freeTimeList;

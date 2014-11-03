@@ -14,6 +14,7 @@ import data.taskinfo.TaskInfo;
  * @author BRUCE
  *
  */
+//@author A0119432L
 public class AddManager extends AbstractManager {
 	
 	private TaskId id = null;

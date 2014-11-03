@@ -24,6 +24,8 @@ import data.taskinfo.TaskInfo;
  * @author BRUCE
  *
  */
+
+//@author A0119432L
 public class EditManager extends AbstractManager {
 
     private TaskIdSet editingTasks;
@@ -282,28 +284,6 @@ public class EditManager extends AbstractManager {
         }
     }
 
-//    public Result editTaskwithTag(Tag tag, int operation, TaskId taskId){
-//    	boolean isTagSuccess;
-//    	if (operation == 1) {  //add
-//    		isTagSuccess = taskData.addTag(taskId, tag);
-//    		if (!isTagSuccess){
-//    			return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
-//    		}else{
-//    			return new EditResult(Result.Type.TAG_ADD_SUCCESS,taskData.getTaskInfo(taskId),
-//    					taskId, EditSuccessfulMessage.Field.TAGS_ADD);
-//    		}
-//    	} else  { //delete
-//    		isTagSuccess = taskData.removeTag(taskId, tag);
-//    		if (!isTagSuccess){
-//    			return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);
-//    		}else{
-//    			return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(taskId),
-//    					taskId, EditSuccessfulMessage.Field.TAGS_DELETE);
-//    			}
-//    	}
-//
-//    }
-
 
     /**
      * This method is to modify origin task with some changes specified
@@ -352,7 +332,6 @@ public class EditManager extends AbstractManager {
 
         ArrayList<EditSuccessfulMessage.Field> fields =
                 new ArrayList<EditSuccessfulMessage.Field>();
-    	int index = 0;
     	if (taskInfo.name != null){
     	    fields.add(EditSuccessfulMessage.Field.NAME);
     	}

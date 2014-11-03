@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * @author BRUCE
  *
  */
+//@author A0119432L
 public class FreeDayResult implements Result{
 
 	private ArrayList<LocalDate> freeDates;

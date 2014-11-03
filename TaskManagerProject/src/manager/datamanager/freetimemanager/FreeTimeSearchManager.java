@@ -11,6 +11,7 @@ import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 public class FreeTimeSearchManager extends AbstractManager {
 	
 	
