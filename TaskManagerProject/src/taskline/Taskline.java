@@ -9,6 +9,11 @@ import main.MainController;
 import main.command.alias.AliasStorage;
 import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
+
+import org.fusesource.jansi.AnsiConsole;
+import static org.fusesource.jansi.Ansi.*;
+import static org.fusesource.jansi.Ansi.Color.*;
+
 import ui.UIDisplay;
 import data.TaskData;
 
@@ -20,6 +25,7 @@ import data.TaskData;
 public class Taskline {
 
     public static void main(String[] args) throws IOException {
+        AnsiConsole.systemInstall();
         TasklineLogger.setupLogger();
         String fileName = "tasks.txt";
 

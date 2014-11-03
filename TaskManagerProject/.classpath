@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="lib/jline-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.json-api-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.json-1.0.4.jar"/>
+	<classpathentry kind="lib" path="D:/Programming/taskline/main/TaskManagerProject/lib/jansi-1.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
