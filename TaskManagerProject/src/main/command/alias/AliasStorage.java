@@ -242,7 +242,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 
         defineDefaultCommands(
                 (args, managerHolder) -> new ExitCommand(managerHolder),
-                "back", "exit");
+                "quit", "exit");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new AliasCommand(args, managerHolder),
