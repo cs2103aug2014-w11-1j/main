@@ -386,7 +386,7 @@ public class StateManager {
             case EDIT_SUCCESS : 
                 EditResult editResult = (EditResult)result;
             	EditSuccessfulMessage editSuccessMessage = 
-                        new EditSuccessfulMessage(editResult.getTaskInfo(), editResult.getTaskId(), editResult.getChangedFields());
+                        new EditSuccessfulMessage(editResult.getTasks(), editResult.getTaskIds(), editResult.getChangedFields());
             	return editSuccessMessage;
 
             case EDIT_FAILURE : 
@@ -395,8 +395,8 @@ public class StateManager {
             case TAG_ADD_SUCCESS : 
             	EditResult tagAddResult = (EditResult)result;
             	EditSuccessfulMessage tagAddSuccessfulMessage = 
-            			new EditSuccessfulMessage(tagAddResult.getTaskInfo(),
-            					tagAddResult.getTaskId(), tagAddResult.getChangedFields());
+            			new EditSuccessfulMessage(tagAddResult.getTasks(),
+            					tagAddResult.getTaskIds(), tagAddResult.getChangedFields());
             	return tagAddSuccessfulMessage;
 
             case TAG_ADD_FAILURE:
@@ -405,8 +405,8 @@ public class StateManager {
             case TAG_DELETE_SUCCESS : 
             	EditResult tagDeleteResult = (EditResult)result;
             	EditSuccessfulMessage tagDeleteSuccessfulMessage = 
-            			new EditSuccessfulMessage(tagDeleteResult.getTaskInfo(),
-            					tagDeleteResult.getTaskId(), tagDeleteResult.getChangedFields());
+            			new EditSuccessfulMessage(tagDeleteResult.getTasks(),
+            					tagDeleteResult.getTaskIds(), tagDeleteResult.getChangedFields());
             	return tagDeleteSuccessfulMessage;
             	
             case TAG_DELETE_FAILURE :

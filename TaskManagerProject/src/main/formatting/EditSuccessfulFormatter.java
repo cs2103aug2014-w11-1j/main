@@ -67,15 +67,19 @@ public class EditSuccessfulFormatter {
         for (Field field : message.getChangedField()) {
             result.add(getChangedFieldString(field));
         }
-        result.add("");
         
-        TaskInfo task = message.getTask();
-        TaskId taskId = message.getTaskId();
+        TaskInfo[] tasks = message.getTask();
+        TaskId[] taskIds = message.getTaskId();
         
         DetailsUtility detailsUtility = new DetailsUtility();
-        ArrayList<String> detailsLines =
-                detailsUtility.formatToArray(task, taskId);
-        result.addAll(detailsLines);
+        
+        for (int i = 0; i < tasks.length; i++) {
+            ArrayList<String> detailsLines =
+                    detailsUtility.formatToArray(tasks[i], taskIds[i]);
+            
+            result.add("");
+            result.addAll(detailsLines);
+        }
         
         return result;
     }

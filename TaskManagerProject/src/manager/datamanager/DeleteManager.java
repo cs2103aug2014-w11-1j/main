@@ -27,8 +27,6 @@ public class DeleteManager extends AbstractManager {
     public Result deleteTask(TaskIdSet taskIdSet) {
     	
         boolean allSuccessful = true;
-        TaskId returnTaskId = null;
-        TaskInfo returnTaskInfo = null;
         
         List<TaskId> idList = new ArrayList<TaskId>();
         List<TaskInfo> taskList = new ArrayList<TaskInfo>();
@@ -39,7 +37,6 @@ public class DeleteManager extends AbstractManager {
         	    break;
         	}
 
-            // PLACEHOLDER : Change later to a proper batch response.
             idList.add(taskId);
             taskList.add(taskData.getTaskInfo(taskId));
         	boolean isSuccessful = taskData.remove(taskId);

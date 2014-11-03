@@ -1,6 +1,7 @@
 package manager.datamanager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import main.command.EditCommand;
 import main.command.TaskIdSet;
@@ -34,7 +35,9 @@ public class EditManager extends AbstractManager {
     public Result editTask(TaskInfo taskInfo, TaskIdSet taskIdSet) {
 
         boolean allSuccessful = true;
-        TaskId returnTaskId = null;
+        List<TaskId> taskIdList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
+        
         TaskInfo editedTask = null;
         EditSuccessfulMessage.Field[] fields = setChangedFields(taskInfo);
 
@@ -51,9 +54,11 @@ public class EditManager extends AbstractManager {
             }
             // TODO : Change later to a proper batch response.
             editedTask = mergeTasks(originTask, taskInfo);
-            returnTaskId = taskId;
             boolean isSuccessful = taskData.setTaskInfo(taskId, editedTask);
 
+            taskIdList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
+            
             if (!isSuccessful){
                 allSuccessful = false;
                 break;
@@ -61,8 +66,14 @@ public class EditManager extends AbstractManager {
         }
 
         if (allSuccessful) {
-            return new EditResult(Result.Type.EDIT_SUCCESS,editedTask,
-                    returnTaskId, fields);
+            TaskId[] taskIds = new TaskId[taskIdList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            taskIdList.toArray(taskIds);
+            taskList.toArray(tasks);
+            
+            return new EditResult(Result.Type.EDIT_SUCCESS, tasks, taskIds,
+                    fields);
         } else {
             taskData.reverseLastChange();
             return new SimpleResult(Result.Type.EDIT_FAILURE);
@@ -75,8 +86,8 @@ public class EditManager extends AbstractManager {
     
     public Result clearInfo(TaskIdSet taskIdSet, EditCommand.Info infoToClear) {
         boolean allSuccessful = true;
-        TaskInfo returnTaskInfo = null;
-        TaskId returnTaskId = null;
+        List<TaskId> taskIdList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
         Field field = null;
         
         for (TaskId taskId : taskIdSet) {
@@ -124,9 +135,9 @@ public class EditManager extends AbstractManager {
                     allSuccessful = false;
                     break;
             }
-            
-            returnTaskId = taskId;
-            returnTaskInfo = taskData.getTaskInfo(taskId);
+
+            taskIdList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
             if (!allSuccessful) {
                 break;
             }
@@ -134,8 +145,14 @@ public class EditManager extends AbstractManager {
         
 
         if (allSuccessful) {
-            return new EditResult(Result.Type.EDIT_SUCCESS, returnTaskInfo,
-                    returnTaskId, new Field[]{field});
+            TaskId[] taskIds = new TaskId[taskIdList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            taskIdList.toArray(taskIds);
+            taskList.toArray(tasks);
+            
+            return new EditResult(Result.Type.EDIT_SUCCESS, tasks,
+                    taskIds, new Field[]{field});
         } else {
             taskData.reverseLastChange();
             return new SimpleResult(Result.Type.EDIT_FAILURE);
@@ -185,7 +202,9 @@ public class EditManager extends AbstractManager {
 
     public Result addTaskTags(Tag[] tags, TaskIdSet taskIdSet){
         boolean allSuccessful = true;
-        TaskId returnTaskId = null;
+        
+        List<TaskId> taskIdList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
 
         for (TaskId taskId : taskIdSet) {
             if (taskId == null){
@@ -193,12 +212,14 @@ public class EditManager extends AbstractManager {
                 break;
             }
 
-            returnTaskId = taskId;
             boolean isSuccessful = taskData.taskExists(taskId);
             for (Tag tag : tags) {
                 boolean isTagSuccess = taskData.addTag(taskId, tag);
             }
 
+            taskIdList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
+            
             if (!isSuccessful) {
                 allSuccessful = false;
                 break;
@@ -206,8 +227,14 @@ public class EditManager extends AbstractManager {
         }
 
         if (allSuccessful) {
-            return new EditResult(Result.Type.TAG_ADD_SUCCESS,taskData.getTaskInfo(returnTaskId),
-                    returnTaskId, EditSuccessfulMessage.Field.TAGS_ADD);
+            TaskId[] taskIds = new TaskId[taskIdList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            taskIdList.toArray(taskIds);
+            taskList.toArray(tasks);
+            
+            return new EditResult(Result.Type.TAG_ADD_SUCCESS, tasks, taskIds,
+                     EditSuccessfulMessage.Field.TAGS_ADD);
         } else {
             taskData.reverseLastChange();
             return new SimpleResult(Result.Type.TAG_ADD_FAILURE);
@@ -217,7 +244,8 @@ public class EditManager extends AbstractManager {
     public Result deleteTaskTags(Tag[] tags, TaskIdSet taskIdSet){
 
         boolean allSuccessful = true;
-        TaskId returnTaskId = null;
+        List<TaskId> taskIdList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
 
         for (TaskId taskId : taskIdSet) {
             if (taskId == null) {
@@ -225,12 +253,14 @@ public class EditManager extends AbstractManager {
                 break;
             }
 
-            returnTaskId = taskId;
             boolean isSuccessful = taskData.taskExists(taskId);
             for (Tag tag : tags) {
                 boolean isTagSuccess = taskData.removeTag(taskId, tag);
             }
 
+            taskIdList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
+            
             if (!isSuccessful) {
                 allSuccessful = false;
                 break;
@@ -238,8 +268,14 @@ public class EditManager extends AbstractManager {
         }
 
         if (allSuccessful) {
-            return new EditResult(Result.Type.TAG_DELETE_SUCCESS,taskData.getTaskInfo(returnTaskId),
-                    returnTaskId, EditSuccessfulMessage.Field.TAGS_DELETE);
+            TaskId[] taskIds = new TaskId[taskIdList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            taskIdList.toArray(taskIds);
+            taskList.toArray(tasks);
+            
+            return new EditResult(Result.Type.TAG_DELETE_SUCCESS, tasks, taskIds, 
+                    EditSuccessfulMessage.Field.TAGS_DELETE);
         } else {
             taskData.reverseLastChange();
             return new SimpleResult(Result.Type.TAG_DELETE_FAILURE);

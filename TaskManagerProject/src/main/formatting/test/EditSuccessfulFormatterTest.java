@@ -24,22 +24,25 @@ public class EditSuccessfulFormatterTest {
     public void test() {
         EditSuccessfulFormatter formatter = new EditSuccessfulFormatter();
         
-        TaskId taskId = new TaskId(TaskId.toIntId("4GQ"));
-        TaskInfo taskInfo = TaskInfo.create();
-        taskInfo.endTime = LocalTime.parse("13:13");
-        taskInfo.endDate = LocalDate.parse("2014-10-02");
-        taskInfo.name = "This is a task";
-        taskInfo.details = "HAHAHAHA";
-        taskInfo.priority = Priority.HIGH;
-        taskInfo.tags = new Tag[2];
-        taskInfo.tags[0] = new Tag("abcd");
-        taskInfo.tags[1] = new Tag("efgh");
-        taskInfo.status = Status.DONE;
+        TaskId[] taskIds = new TaskId[1];
+        TaskInfo[] tasks = new TaskInfo[1];
+        
+        taskIds[0] = new TaskId(TaskId.toIntId("4GQ"));
+        tasks[0] = TaskInfo.create();
+        tasks[0].endTime = LocalTime.parse("13:13");
+        tasks[0].endDate = LocalDate.parse("2014-10-02");
+        tasks[0].name = "This is a task";
+        tasks[0].details = "HAHAHAHA";
+        tasks[0].priority = Priority.HIGH;
+        tasks[0].tags = new Tag[2];
+        tasks[0].tags[0] = new Tag("abcd");
+        tasks[0].tags[1] = new Tag("efgh");
+        tasks[0].status = Status.DONE;
         Field[] field = new Field[2];
         field[0] = Field.NAME;
         field[1] = Field.STATUS;
         EditSuccessfulMessage message = 
-                new EditSuccessfulMessage(taskInfo, taskId, field);
+                new EditSuccessfulMessage(tasks, taskIds, field);
         
         String formattedString = formatter.format(message);
         

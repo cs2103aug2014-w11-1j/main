@@ -16,12 +16,12 @@ public class EditSuccessfulMessage implements Message{
     }
     
     Field[] changedField;
-    private TaskInfo task;
-    private TaskId taskId;
+    private TaskInfo[] tasks;
+    private TaskId[] taskIds;
     
-    public EditSuccessfulMessage(TaskInfo task, TaskId taskId, Field[] changedField) {
-        this.taskId = taskId;
-        this.task = task;
+    public EditSuccessfulMessage(TaskInfo[] tasks, TaskId[] taskIds, Field[] changedField) {
+        this.taskIds = taskIds;
+        this.tasks = tasks;
         this.changedField = changedField;
     }
     
@@ -33,11 +33,11 @@ public class EditSuccessfulMessage implements Message{
         return changedField;
     }
     
-    public TaskInfo getTask() {
-        return task;
+    public TaskInfo[] getTask() {
+        return tasks;
     }
     
-    public TaskId getTaskId() {
-        return taskId;
+    public TaskId[] getTaskId() {
+        return taskIds;
     }
 }
