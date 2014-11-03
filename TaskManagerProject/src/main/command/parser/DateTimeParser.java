@@ -241,6 +241,8 @@ public class DateTimeParser {
         mapPattern(dateFullFormatPatterns, "dMMMyy");
         // 24 August 2014
         mapPattern(dateFullFormatPatterns, "d MMMM y");
+        // 24/8/2014, 24/08/2014, 04/08/2014, 04/8/2014
+        mapPattern(dateFullFormatPatterns, "d/M/y");
         // 24/8/14, 24/08/14, 04/08/14, 04/8/14
         mapPattern(dateFullFormatPatterns, "d/M/yy");
     }
