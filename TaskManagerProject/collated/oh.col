@@ -1,0 +1,1682 @@
+//@author: oh
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\ITaskData.java
+	 */
+
+ */
+public interface ITaskData {
+
+    public static final int NO_TASK = -1;
+
+    public abstract TaskId getFirst();
+
+    public abstract TaskId getLast();
+
+    public abstract int getSize();
+
+    public abstract TaskId getNext(TaskId taskId);
+
+    public abstract TaskId getPrevious(TaskId taskId);
+
+    public abstract boolean taskExists(TaskId taskId);
+
+    public abstract String getTaskName(TaskId taskId);
+
+    public abstract boolean setTaskName(TaskId taskId, String name);
+
+    public abstract LocalTime getTaskStartTime(TaskId taskId);
+
+    public abstract boolean setTaskStartTime(TaskId taskId, LocalTime time);
+
+    public abstract LocalDate getTaskStartDate(TaskId taskId);
+
+    public abstract boolean setTaskStartDate(TaskId taskId, LocalDate date);
+
+    public abstract LocalTime getTaskEndTime(TaskId taskId);
+
+    public abstract boolean setTaskEndTime(TaskId taskId, LocalTime time);
+
+    public abstract LocalDate getTaskDate(TaskId taskId);
+
+    public abstract boolean setTaskDate(TaskId taskId, LocalDate date);
+
+    public abstract String getTaskDetails(TaskId taskId);
+
+    public abstract boolean setTaskDetails(TaskId taskId, String details);
+
+    public abstract Priority getTaskPriority(TaskId taskId);
+
+    public abstract boolean setTaskPriority(TaskId taskId, Priority priority);
+
+    public abstract Status getTaskStatus(TaskId taskId);
+
+    public abstract boolean setTaskStatus(TaskId taskId, Status status);
+
+    public abstract Tag[] getTaskTags(TaskId taskId);
+
+    public abstract boolean addTag(TaskId taskId, Tag tag);
+
+    public abstract boolean removeTag(TaskId taskId, Tag tag);
+
+    public abstract boolean clearTags(TaskId taskId);
+
+    public abstract TaskInfo getTaskInfo(TaskId taskId);
+
+    public abstract boolean setTaskInfo(TaskId taskId, TaskInfo taskInfo);
+
+    /**
+     * @param taskInfo information about a task.
+     * @return the generated taskId of the task.
+     * Returns null if unable to add new task.
+     */
+    public abstract TaskId add(TaskInfo taskInfo);
+
+    /**
+     * @param taskId id of the task you wish to remove.
+     * @return true iff the deletion is successful.
+     * Deletion can be unsuccessful if task does not exist.
+     */
+    public abstract boolean remove(TaskId taskId);
+
+    /**
+     * Use to reverse all the changes in the last undo snapshot.
+     */
+    public abstract void reverseLastChange();
+
+}
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\ITaskData.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\ITaskDataFileInputOutput.java
+	 */
+
+ */
+public interface ITaskDataFileInputOutput {
+
+    public abstract TaskId getFirst();
+
+    public abstract TaskId getLast();
+
+    public abstract int getSize();
+
+    public abstract TaskId getNext(TaskId taskId);
+
+    public abstract TaskId getPrevious(TaskId taskId);
+
+    public abstract TaskInfo getTaskInfo(TaskId taskId);
+
+    /**
+     * Resets entire task list with a new list of tasks.
+     * @param tasks List of tasks as retrieved from file.
+     */
+    public abstract void updateTaskList(TaskInfo[] tasks);
+
+    /**
+     * Call this whenever a save is successful so that TaskData knows it no
+     * longer has any unsaved changes.
+     */
+    public abstract void saveSuccessful();
+
+    public abstract boolean hasUnsavedChanges();
+
+}
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\ITaskDataFileInputOutput.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\ITaskDataUndo.java
+	 */
+
+ */
+public interface ITaskDataUndo {
+
+    public static final int NO_TASK = -1;
+
+    /**
+     * Purpose is for the undo function to replace tasks to their original Id.
+     * Throws an exception if this is not possible.
+     * @param taskInfo
+     * @param taskId
+     */
+    public abstract void addTaskWithSpecificId(TaskInfo taskInfo, TaskId taskId);
+
+    /**
+     * @param taskId id of the task you wish to remove.
+     * @return true iff the deletion is successful.
+     * Deletion can be unsuccessful if task does not exist.
+     */
+    public abstract boolean remove(TaskId taskId);
+
+    /**
+     * Retrieves the undo snapshot holding the previous state of all tasks
+     * that were changed in the last action.<br>
+     * The undo snapshot is cleared (deleted) when this method is called.
+     * @return an UndoSnapshot holding the previous state of TaskData.
+     */
+    public abstract UndoSnapshot retrieveUndoSnapshot();
+
+    /**
+     * Used after an undo so that you don't undo an undo. :D
+     */
+    public abstract void discardUndoSnapshot();
+
+
+}
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\ITaskDataUndo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\TaskData.java
+	 */
+
+ */
+public class TaskData implements ITaskData, ITaskDataFileInputOutput, ITaskDataUndo {
+    private static final String ERROR_NULL_TASKID = "Tried to query/edit TaskData with null task Id.";
+    private static final String ERROR_NULL_TASKINFO = "Tried to edit TaskData with null taskInfo.";
+    private static final String ERROR_NULL_TASK_ARRAY = "Tried to update TaskData with null task array.";
+    
+    public static final int NO_TASK = -1;
+    private static final Task EMPTY_SLOT = null;
+    
+    private ArrayList<Task> taskList;
+    private ArrayList<Integer> nextTaskList;
+    private ArrayList<Integer> previousTaskList;
+    private LinkedList<Integer> freeSlotList;
+    
+    private UndoSnapshot undoSnapshot;
+    
+    private int firstTask = NO_TASK;
+    private int lastTask = NO_TASK;
+    
+    private int size = 0;
+    
+    private boolean hasUnsavedChanges;
+    
+    public TaskData() {
+        initializeTaskData();
+    }
+
+    public TaskId getFirst() {
+        return new TaskId(firstTask);
+    }
+    
+    public TaskId getLast() {
+        return new TaskId(lastTask);
+    }
+    
+    public int getSize() {
+        return size;
+    }
+
+    public TaskId getNext(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        return new TaskId(next(taskId.id));
+    }
+    
+    public TaskId getPrevious(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        return new TaskId(previous(taskId.id));
+    }
+    
+    public boolean taskExists(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        return getTask(taskId) != EMPTY_SLOT;
+    }
+
+    public String getTaskName(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getName();
+        }
+    }
+
+    public boolean setTaskName(TaskId taskId, String name) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setName(name);
+        }
+    }
+    
+    public LocalTime getTaskStartTime(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getStartTime();
+        }
+    }
+    
+    public boolean setTaskStartTime(TaskId taskId, LocalTime time) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setStartTime(time);
+        }
+    }
+    
+    public LocalDate getTaskStartDate(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getStartDate();
+        }
+    }
+
+    public boolean setTaskStartDate(TaskId taskId, LocalDate date) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setStartDate(date);
+        }
+    }
+    
+    public LocalTime getTaskEndTime(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getEndTime();
+        }
+    }
+    
+    public boolean setTaskEndTime(TaskId taskId, LocalTime time) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setEndTime(time);
+        }
+    }
+    
+    public LocalDate getTaskDate(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getEndDate();
+        }
+    }
+
+    public boolean setTaskDate(TaskId taskId, LocalDate date) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setEndDate(date);
+        }
+    }
+    
+    public String getTaskDetails(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getDetails();
+        }
+    }
+
+    public boolean setTaskDetails(TaskId taskId, String details) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setDetails(details);
+        }
+    }
+    
+    public Priority getTaskPriority(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getPriority();
+        }
+    }
+
+
+    public boolean setTaskPriority(TaskId taskId, Priority priority) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setPriority(priority);
+        }
+    }
+    
+    public Status getTaskStatus(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getStatus();
+        }
+    }
+
+    public boolean setTaskStatus(TaskId taskId, Status status) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setStatus(status);
+        }
+    }
+
+    public Tag[] getTaskTags(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getTags();
+        }
+    }
+    
+    public boolean addTag(TaskId taskId, Tag tag) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.addTag(tag);
+        }
+    }
+    
+    public boolean removeTag(TaskId taskId, Tag tag) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.removeTag(tag);
+        }
+    }
+    
+    public boolean clearTags(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            task.clearTags();
+            return true;
+        }
+    }
+
+    public TaskInfo getTaskInfo(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return null;
+        } else {
+            return task.getTaskInfo();
+        }
+    }
+    
+    public boolean setTaskInfo(TaskId taskId, TaskInfo taskInfo) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        assert taskInfo != null : ERROR_NULL_TASKINFO;
+        
+        addToSnapshot(taskId);
+        
+        Task task = getTask(taskId);
+        if (task == EMPTY_SLOT) {
+            return false;
+        } else {
+            return task.setAllInfo(taskInfo);
+        }
+    }
+
+    /**
+     * Resets entire task list with a new list of tasks.
+     * @param tasks List of tasks as retrieved from file.
+     */
+    public void updateTaskList(TaskInfo[] tasks) {
+        assert tasks != null : ERROR_NULL_TASK_ARRAY;
+        
+        initializeTaskData();
+        for (TaskInfo taskInfo : tasks) {
+            if (taskInfo.isValid()) {
+                add(taskInfo);
+                discardUndoSnapshot(); // calling this here actually reduces lag.
+            }
+        }
+        discardUndoSnapshot();
+    }
+    
+    /**
+     * Purpose is for the undo function to replace tasks to their original Id.
+     * Throws an exception if this is not possible.
+     * @param taskInfo
+     * @param taskId
+     */
+    public void addTaskWithSpecificId(TaskInfo taskInfo, TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        assert taskInfo != null : ERROR_NULL_TASKINFO;
+        
+        if (getTask(taskId) != EMPTY_SLOT) {
+            throw new IllegalArgumentException("Unable to add task with id = " + taskId);
+        }
+
+        int insertIndex = taskId.id;
+
+        if (!freeSlotList.remove(new Integer(insertIndex))) {
+            throw new IllegalArgumentException("Unable to remove id from free slot list.");
+        }
+
+        Task task = new Task(taskInfo);
+        insertTask(task, insertIndex);
+        task.setId(insertIndex);
+    }
+
+    /**
+     * @param taskInfo information about a task.
+     * @return the generated taskId of the task.
+     * Returns null if unable to add new task.
+     */
+    public TaskId add(TaskInfo taskInfo) {
+        assert taskInfo != null : ERROR_NULL_TASKINFO;
+        
+        Task task = new Task(taskInfo);
+        int id = insertTask(task);
+        
+        if (id != NO_TASK) {
+            task.setId(id);
+            return new TaskId(id);
+        }
+        else {
+            return null;
+        }
+    }
+    
+    /**
+     * @param taskId id of the task you wish to remove.
+     * @return true iff the deletion is successful.
+     * Deletion can be unsuccessful if task does not exist.
+     */
+    public boolean remove(TaskId taskId) {
+        assert taskId != null : ERROR_NULL_TASKID;
+        return deleteTask(taskId.id);
+    }
+
+    
+    /**
+     * Retrieves the undo snapshot holding the previous state of all tasks
+     * that were changed in the last action.<br>
+     * The undo snapshot is cleared (deleted) when this method is called.
+     * @return an UndoSnapshot holding the previous state of TaskData.
+     */
+    public UndoSnapshot retrieveUndoSnapshot() {
+        UndoSnapshot temp = undoSnapshot;
+        discardUndoSnapshot();
+        return temp;
+    }
+    
+    /**
+     * Used after an undo so that you don't undo an undo. :D
+     */
+    public void discardUndoSnapshot() {
+        undoSnapshot = new UndoSnapshot(this);
+    }
+    
+    /**
+     * Use to reverse all the changes in the last undo snapshot.
+     */
+    public void reverseLastChange() {
+        UndoSnapshot lastSnapshot = retrieveUndoSnapshot();
+        lastSnapshot.applySnapshotChange();
+        discardUndoSnapshot();
+    }
+    
+    
+    /**
+     * Call this whenever a save is successful so that TaskData knows it no
+     * longer has any unsaved changes.
+     */
+    public void saveSuccessful() {
+        hasUnsavedChanges = false;
+    }
+    
+    public boolean hasUnsavedChanges() {
+        return hasUnsavedChanges;
+    }
+    
+    private void initializeTaskData() {
+        taskList = new ArrayList<>();
+        freeSlotList = new LinkedList<>();
+        nextTaskList = new ArrayList<>();
+        previousTaskList = new ArrayList<>();
+        
+        undoSnapshot = new UndoSnapshot(this);
+        size = 0;
+        hasUnsavedChanges = false;
+    }
+        
+    private int maxTasks() {
+        return TaskId.MAX_ID;
+    }
+    
+    /**
+     * To save a snapshot of the task before a change is made.<br>
+     * If a snapshot has already been saved, does nothing.<br>
+     * Remember to call this BEFORE a task is modified!
+     * @param taskId the id of the task you want to add to snapshot.
+     */
+    private void addToSnapshot(TaskId taskId) {
+        hasUnsavedChanges = true;
+        
+        Task task = getTask(taskId);
+        TaskInfo taskInfo = UndoTaskSnapshot.NO_TASK;
+        if (task != null) {
+            taskInfo = task.getTaskInfo();
+        }
+        
+        undoSnapshot.addTaskSnapshot(taskInfo, taskId);
+    }
+    
+    /**
+     * how do I reference the javadoc of addToSnapshot(TaskId taskId)?
+     * @param index the id of the task you want to add to snapshot.
+     */
+    private void addToSnapshot(int index) {
+        addToSnapshot(new TaskId(index));
+    }
+
+    private Task getTask(TaskId taskId) {
+        if (taskId.id < taskList.size()) {
+            return taskList.get(taskId.id);
+        }
+        return EMPTY_SLOT;
+    }
+    
+    private int insertTask(Task task) {
+        
+        if (taskList.size() < maxTasks()) {
+            taskList.add(EMPTY_SLOT);
+            nextTaskList.add(NO_TASK);
+            previousTaskList.add(NO_TASK);
+            
+            int newIndex = taskList.size()-1;
+            insertTask(task, newIndex);
+            return newIndex;
+            
+        } else {
+            
+            if (freeSlotList.isEmpty()) {
+                // No more slots to insert tasks. Task list full.
+                return NO_TASK;
+            }
+            
+            int newIndex = freeSlotList.removeFirst();
+            insertTask(task, newIndex);
+            return newIndex;
+        }
+    }
+
+    private void insertTask(Task task, int newIndex) {
+        if (taskList.get(newIndex) != EMPTY_SLOT) {
+            throw new IllegalArgumentException("insertTask can only insert to empty slots!");
+        }
+        
+        addToSnapshot(newIndex);
+        taskList.set(newIndex, task);
+        
+        setNext(newIndex, NO_TASK);
+        setPrevious(newIndex, lastTask);
+        if (lastTask != NO_TASK)
+            setNext(lastTask, newIndex);
+
+        if (firstTask == NO_TASK) {
+            firstTask = newIndex;
+        }
+        
+        lastTask = newIndex;
+        
+        size++;
+    }
+    
+    private boolean deleteTask(int index) {
+        // Note: Uses lazy deletion to maintain index.
+        
+        if (taskList.size() < index)
+            return false;
+        if (taskList.get(index) == EMPTY_SLOT)
+            return false;
+
+        addToSnapshot(index);
+        
+        if (index == firstTask) {
+            firstTask = next(firstTask);
+        }
+        if (index == lastTask) {
+            lastTask = previous(lastTask);
+        }
+        
+        taskList.set(index, null);
+        freeSlotList.addLast(index);
+        if (previous(index) != NO_TASK) {
+            setNext(previous(index), next(index));
+        }
+        if (next(index) != NO_TASK) {
+            setPrevious(next(index), previous(index));
+        }
+        
+        size--;
+        return true;
+    }
+    
+    private void setNext(int index, int next) {
+        nextTaskList.set(index, next);
+    }
+    
+    private void setPrevious(int index, int previous) {
+        previousTaskList.set(index, previous);
+    }
+
+    private int next(int index) {
+        return nextTaskList.get(index);
+    }
+    
+    private int previous(int index) {
+        return previousTaskList.get(index);
+    }
+    
+    
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\TaskData.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\TaskId.java
+	 */
+
+ */
+public final class TaskId implements Comparable<TaskId> {
+    
+    private static final char CHAR_Z = 'Z';
+    private static final char CHAR_NINE = '9';
+    private static final char CHAR_ZERO = '0';
+    private static final char CHAR_A = 'A';
+    
+    private static final int STRINGID_LENGTH = 3;
+    
+    /**
+     * TRANSLATE_PRIME must be coprime to MAX_ID.<br>
+     * We can ensure this by simply meeting the below two conditions:<br>
+     * 1) TRANSLATE_PRIME > MAX_ID,<br>
+     * 2) TRANSLATE_PRIME is prime.<br>
+     */
+    private static final int TRANSLATE_PRIME = 363767;
+    /**
+     * TRANSLATE_REVERSE_PRIME should be computed using the Euclidean Algorithm.
+     */
+    private static final int TRANSLATE_REVERSE_PRIME = 16823;
+    private static final int TRANSLATE_SHIFT = new Random().nextInt();
+    public static final int MAX_ID = 20280;
+    
+    private static final int INVALID_ID = -1;
+    
+    public final int id;
+
+    public TaskId(int id) {
+        this.id = id;
+    }
+    
+    /**
+     * Constructor for a taskId.
+     * @param stringId the string form of the taskId. (e.g. a6d)<br>
+     * Can be in capital letters.
+     * @return a TaskId object corresponding the stringId provided.<br>
+     * returns null if the string is an invalid task Id.
+     */
+    public static TaskId makeTaskId(String stringId) {
+        stringId = stringId.toUpperCase();
+        
+        try {
+            int index = toIntId(stringId);
+            return new TaskId(index);
+            
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TaskId other = (TaskId) obj;
+        if (id != other.id)
+            return false;
+        return true;
+    }
+
+    @Override
+    public int compareTo(TaskId o) {
+        return id - o.id;
+    }
+    
+    @Override
+    public String toString() {
+        if (isValid()) {
+            return toStringId(id);
+        }
+        return "NO_TASK";
+    }
+    
+    public boolean isValid() {
+        return (id != ITaskData.NO_TASK);
+    }
+    
+    /**
+     * Converts a numeric task ID to a string task ID
+     * @param indexId numeric task ID
+     * @return string task ID
+     */
+    public static String toStringId(int indexId) {
+        if (indexId >= MAX_ID)
+            throw new IllegalArgumentException("index ID exceeds range");
+        
+        int translatedIndex = numberTranslateForward(indexId);
+        
+        int numberPosition = translatedIndex % 3;
+        translatedIndex /= 3;
+        int number = translatedIndex % 10;
+        translatedIndex /= 10;
+        char character1 = (char)(translatedIndex % 26 + CHAR_A);
+        translatedIndex /= 26;
+        char character2 = (char)(translatedIndex + CHAR_A);
+        
+        String result = toStringId(numberPosition, number, character1, character2);
+        
+        return result;
+    }
+    
+    /**
+     * Converts a string task ID to a numeric task ID
+     * @param stringId string task ID
+     * @return numeric task ID
+     */
+    public static int toIntId(String stringId) {
+        int numberPosition;
+        int number;
+        char character1;
+        char character2;
+
+        if (stringId.length() != STRINGID_LENGTH) {
+            throw new IllegalArgumentException("Invalid string input: " + stringId);
+        }
+
+        if (isDigit(stringId.charAt(0))) {
+            
+            number = (int)(stringId.charAt(0) - CHAR_ZERO);
+            character1 = stringId.charAt(1);
+            character2 = stringId.charAt(2);
+            numberPosition = 0;
+            
+        } else if (isDigit(stringId.charAt(1))) {
+            
+            number = (int)(stringId.charAt(1) - CHAR_ZERO);
+            character1 = stringId.charAt(0);
+            character2 = stringId.charAt(2);
+            numberPosition = 1;
+            
+        } else if (isDigit(stringId.charAt(2))) {
+            
+            number = (int)(stringId.charAt(2) - CHAR_ZERO);
+            character1 = stringId.charAt(0);
+            character2 = stringId.charAt(1);
+            numberPosition = 2;
+            
+        } else {
+            throw new IllegalArgumentException("Invalid string input: " + stringId);
+        }
+        
+        if (isInvalid(character1, character2)) {
+            throw new IllegalArgumentException("Invalid string input: " + stringId);
+        }
+        
+        int result = toIntId(numberPosition, number, character1, character2);
+        
+        result = numberTranslateInverse(result);
+        
+        return result;
+    }
+
+
+    private static String toStringId(int numberPosition, int number,
+            char character1, char character2) {
+        
+        String result = "";
+        if (numberPosition == 0) {
+            result = "" + number + character1 + character2;
+            
+        } else if (numberPosition == 1) {
+            result = "" + character1 + number + character2;
+            
+        } else if (numberPosition == 2) {
+            result = "" + character1 + character2 + number;
+            
+        }
+        return result;
+    }
+
+
+    private static int toIntId(int numberPosition, int number, char character1,
+            char character2) {
+
+        int result = (int)(character2 - CHAR_A);
+        result *= 26;
+        result += (int)(character1 - CHAR_A);
+        result *= 10;
+        result += number;
+        result *= 3;
+        result += numberPosition;
+        return result;
+    }
+    
+    private static boolean isInvalid(char character1, char character2) {
+        return !(isLowerCaseAlphabet(character1) && isLowerCaseAlphabet(character2));
+    }
+    
+    private static boolean isDigit(char c) {
+        return (c >= CHAR_ZERO && c <= CHAR_NINE);
+    }
+    
+    private static boolean isLowerCaseAlphabet(char c) {
+        return (c >= CHAR_A && c <= CHAR_Z);
+    }
+    
+    private static int numberTranslateForward(int index) {
+        long longIndex = index;
+        longIndex += TRANSLATE_SHIFT;
+        longIndex *= TRANSLATE_PRIME;
+        longIndex += TRANSLATE_SHIFT;
+       
+        longIndex %= MAX_ID;
+        if (longIndex < 0) {
+            longIndex += MAX_ID;
+        }
+        return (int)longIndex;
+    }
+
+    private static int numberTranslateInverse(int index) {
+        long longIndex = index;
+        longIndex -= TRANSLATE_SHIFT;
+        longIndex *= TRANSLATE_REVERSE_PRIME;
+        longIndex -= TRANSLATE_SHIFT;
+        
+        longIndex %= MAX_ID;
+        if (longIndex < 0) {
+            longIndex += MAX_ID;
+        }
+        return (int)longIndex;
+    }
+    
+    
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\TaskId.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\taskinfo\Tag.java
+	 */
+
+ */
+public final class Tag {
+
+    public final String tag;
+    
+    public Tag(String tag) {
+        this.tag = tag;
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((tag == null) ? 0 : tag.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Tag other = (Tag) obj;
+        if (tag == null) {
+            if (other.tag != null)
+                return false;
+        } else if (!tag.equals(other.tag))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return tag;
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\taskinfo\Tag.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\UndoSnapshot.java
+	 */
+
+ */
+public class UndoSnapshot {
+    private ArrayList<UndoTaskSnapshot> taskSnapshotList;
+    private final TaskData taskData;
+    
+    public UndoSnapshot(TaskData taskData) {
+        this.taskData = taskData;
+        taskSnapshotList = new ArrayList<>();
+    }
+    
+    public void addTaskSnapshot(TaskInfo taskInfo, TaskId taskId) {
+        assert taskId != null;
+        assert taskSnapshotList != null;
+        
+        UndoTaskSnapshot taskSnapshot = new UndoTaskSnapshot(taskInfo, taskId);
+        if (!taskSnapshotList.contains(taskSnapshot)) {
+            taskSnapshotList.add(taskSnapshot);
+        }
+    }
+    
+    public boolean hasChanges() {
+        return !taskSnapshotList.isEmpty();
+    }
+    
+    /**
+     * Extracts all the individual task snapshots at once from the UndoSnapshot.<br>
+     * This can only be done once.
+     * Once extracted,this data structure is destroyed.<br>
+     * @return a list of all the individual task snapshots - the previous state
+     * for all the tasks that have been modified in the last action.
+     */
+    private ArrayList<UndoTaskSnapshot> retrieveTaskSnapshots() {
+        ArrayList<UndoTaskSnapshot> tempList = taskSnapshotList;
+        taskSnapshotList = null;
+        return tempList;
+    }
+    
+    public TaskId[] getChangedList() {
+        assert taskSnapshotList != null : "TaskSnapshotList has been already extracted";
+        
+        TaskId[] taskIds = new TaskId[taskSnapshotList.size()];
+        int index = 0;
+        for (UndoTaskSnapshot taskSnapshot : taskSnapshotList) {
+            taskIds[index] = taskSnapshot.getTaskId();
+            index++;
+        }
+        return taskIds;
+    }
+
+    public void applySnapshotChange() {
+        ArrayList<UndoTaskSnapshot> taskSnapshotList = retrieveTaskSnapshots();
+        for (UndoTaskSnapshot undoTaskSnapshot : taskSnapshotList) {
+            undoTaskChange(undoTaskSnapshot);
+        }
+    }
+
+    private void undoTaskChange(UndoTaskSnapshot undoTaskSnapshot) {
+        TaskId taskId = undoTaskSnapshot.getTaskId();
+        TaskInfo taskInfo = undoTaskSnapshot.getTaskInfo();
+        
+        if (taskInfo == UndoTaskSnapshot.NO_TASK) {
+            taskData.remove(taskId);
+            
+        } else {
+            if (taskData.taskExists(taskId)) {
+                taskData.setTaskInfo(taskId, taskInfo);
+            } else {
+                taskData.addTaskWithSpecificId(taskInfo, taskId);
+            }
+        }
+    }
+    
+    
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\UndoSnapshot.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\UndoTaskSnapshot.java
+	 */
+
+ */
+public class UndoTaskSnapshot {
+
+    public static TaskInfo NO_TASK = null;
+    
+    private final TaskInfo taskInfo;
+    private final TaskId taskId;
+    
+    public UndoTaskSnapshot(TaskInfo taskInfo, TaskId taskId) {
+        assert taskId != null;
+        
+        this.taskInfo = taskInfo;
+        this.taskId = taskId;
+    }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((taskId == null) ? 0 : taskId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        UndoTaskSnapshot other = (UndoTaskSnapshot) obj;
+        if (taskId == null) {
+            if (other.taskId != null) {
+                return false;
+            }
+        } else if (!taskId.equals(other.taskId)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return copy of stored TaskInfo for immutability.
+     */
+    public TaskInfo getTaskInfo() {
+        if (taskInfo == NO_TASK) {
+            return NO_TASK;
+        }
+        return new TaskInfo(taskInfo);
+    }
+
+    public TaskId getTaskId() {
+        return taskId;
+    }
+    
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\data\UndoTaskSnapshot.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\command\TaskIdSet.java
+	 */
+
+ */
+public class TaskIdSet implements Iterable<TaskId>{
+    private ArrayList<TaskId> idList;
+    
+    public TaskIdSet() {
+        idList = new ArrayList<>();
+    }
+
+    /**
+     * @return a non-modifiable iterator for the TargetIdSet.
+     */
+    @Override
+    public Iterator<TaskId> iterator() {
+        final Iterator<TaskId> iterator = idList.iterator();
+        return new Iterator<TaskId>() {
+            public boolean hasNext(){
+                return iterator.hasNext();
+            }
+            public TaskId next(){
+                return iterator.next();
+            }
+            public void remove(){
+                throw new UnsupportedOperationException("You can't remove from this iterator!");
+            }
+        };
+    }
+    
+    public boolean contains(TaskId taskId) {
+        return idList.contains(taskId);
+    }
+    
+    /**
+     * Note: will not add repeat values.
+     * @param taskId
+     * @return true iff there was a change.
+     */
+    public boolean add(TaskId taskId) {
+        if (!idList.contains(taskId)) {
+            return idList.add(taskId);
+        } else {
+            return false;
+        }
+    }
+    
+    public int size() {
+        return idList.size();
+    }
+    
+    @Override
+    public String toString() {
+        return idList.toString();
+    }
+    
+    public String numericIdString() {
+        StringBuilder sb = new StringBuilder();
+        
+        String comma = "";
+        for (TaskId id : idList) {
+            sb.append(comma);
+            sb.append(TaskId.toIntId(id.toString()));
+            comma = ",";
+        }
+        return sb.toString();
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\command\TaskIdSet.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\SimpleResult.java
+	 */
+
+ */
+public class SimpleResult implements Result {
+    private final Type type;
+    
+    public SimpleResult(Type type) {
+        this.type = type;
+    }
+
+    @Override
+    public Type getType() {
+        return type;
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\SimpleResult.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\taskline\debug\Taskline.java
+	 */
+
+ */
+public class Taskline {
+
+    public static void main(String[] args) {
+        TasklineLogger.setupLogger();
+
+        String fileName = "tasks.txt";
+        String aliasFileName = "alias.txt";
+
+        AliasStorage aliasStorage = new AliasStorage();
+        IFileInputOutput aliasFileInputOutput =
+                new AliasFileInputOutput(aliasStorage, aliasFileName);
+
+        TaskData taskData = new TaskData();
+        IFileInputOutput fileInputOutput =
+                new FileInputOutput(taskData, fileName);
+        
+        ManagerHolder managerHolder = new ManagerHolder(taskData,
+                fileInputOutput, aliasStorage, aliasFileInputOutput);
+        MainController mainController = new MainController(managerHolder,
+                aliasStorage, aliasFileInputOutput);
+        
+        UIDisplay uiDisplay = new UIDisplay(mainController);
+
+        startCommandLoop(uiDisplay);
+        TasklineLogger.closeLoggerFileHandler();
+    }
+
+    private static void startCommandLoop(UIDisplay uiDisplay) {
+        while (!uiDisplay.isReadyToExit()) {
+            uiDisplay.commandLoopIteration();
+        }
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\taskline\debug\Taskline.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\taskline\Taskline.java
+	 */
+
+ */
+public class Taskline {
+
+    public static void main(String[] args) throws IOException {
+        AnsiConsole.systemInstall();
+        TasklineLogger.setupLogger();
+
+        String fileName = "tasks.txt";
+        String aliasFileName = "alias.txt";
+
+        AliasStorage aliasStorage = new AliasStorage();
+        IFileInputOutput aliasFileInputOutput =
+                new AliasFileInputOutput(aliasStorage, aliasFileName);
+
+        TaskData taskData = new TaskData();
+        IFileInputOutput fileInputOutput =
+                new FileInputOutput(taskData, fileName);
+        
+        ManagerHolder managerHolder = new ManagerHolder(taskData,
+                fileInputOutput, aliasStorage, aliasFileInputOutput);
+        MainController mainController = new MainController(managerHolder,
+                aliasStorage, aliasFileInputOutput);
+        
+        UIDisplay uiDisplay = new UIDisplay(mainController);
+
+        startCommandLoop(uiDisplay);
+        TasklineLogger.closeLoggerFileHandler();
+    }
+
+    private static void startCommandLoop(UIDisplay uiDisplay) {
+        while (!uiDisplay.isReadyToExit()) {
+            uiDisplay.commandLoopIteration();
+        }
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\taskline\Taskline.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\test\CrashTester.java
+	 */
+
+ */
+public class CrashTester {
+    private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
+    private static final String TEST_FILENAME = "testTasks.txt";
+    
+    private static final int SIZE_LOGQUEUE = 40;
+    private static final int SIZE_INITIAL_HASHSET = 3000;
+
+    private static final int RANDOM_SEED = 1;
+
+    private MainController mainController;
+    private KeywordLibrary keywordLibrary;
+    private HashSet<String> testedStrings;
+    private ArrayBlockingQueue<String> logQueue;
+    private int totalStrings;
+    private boolean success = false;
+
+    @After
+    public void after() {
+        if (!success) {
+            printLog();
+        }
+        deleteTestFiles();
+    }
+    
+    @Test
+    public void initialiseTest() {
+
+        String fileName = TEST_FILENAME;
+        String aliasFileName = TEST_ALIAS_FILENAME;
+        deleteTestFiles();
+
+
+        AliasStorage aliasStorage = new AliasStorage();
+        IFileInputOutput aliasFileInputOutput =
+                new AliasFileInputOutput(aliasStorage, aliasFileName);
+
+        TaskData taskData = new TaskData();
+        IFileInputOutput fileInputOutput =
+                new FileInputOutput(taskData, fileName);
+        
+        ManagerHolder managerHolder =
+                new ManagerHolder(taskData, fileInputOutput, aliasStorage, aliasFileInputOutput);
+        mainController = new MainController(managerHolder,
+                aliasStorage, aliasFileInputOutput);
+        
+        keywordLibrary = new KeywordLibrary(RANDOM_SEED);
+        
+        testedStrings = new HashSet<>(SIZE_INITIAL_HASHSET);
+        totalStrings = 0;
+        logQueue = new ArrayBlockingQueue<String>(SIZE_LOGQUEUE);
+
+        knownCrashTest();
+        fuzzyTest();
+        
+        System.out.println("Crash Test successful - Unique strings: " +
+                        testedStrings.size() + " out of " + totalStrings);
+        success = true;
+    }
+    
+    /**
+     * Tests random strings from the KeywordLibrary.
+     */
+    private void fuzzyTest() {
+        ListType[] edit = {ListType.EDIT};
+        ListType[] add = {ListType.ADD};
+        ListType[] delete = {ListType.DELETE};
+
+        ListType[] dateTime = {ListType.DATETIME};
+        ListType[] comma = {ListType.COMMA};
+        
+        ListType[] editKeywords = {ListType.EDITKEYWORD};
+        ListType[] validTargets = {ListType.VALIDNUMBER, ListType.NONE,
+                ListType.VALIDTASKID};
+        ListType[] validItems = {ListType.DATETIME, ListType.ITEM};
+
+        ListType[] randomTargets = {ListType.NUMBER, ListType.NONE, ListType.TASKID};
+        ListType[] randomItems = {ListType.DATETIME, ListType.ITEM, ListType.NONE,
+                ListType.RANDOM, ListType.SYMBOL, ListType.CONNECTOR};
+
+        testRandom(30, ListType.ADD, ListType.ALL);
+        testRandom(30, ListType.ADD, ListType.RANDOM, ListType.ITEM);
+        testRandom(60, ListType.ADD, ListType.DATETIME, ListType.DATETIME,
+                ListType.DATETIME, ListType.DATETIME);
+        testRandom(30, add, randomItems, randomItems, randomItems,
+                validItems, validItems, validItems);
+
+        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
+        
+        for (int i = 0 ; i < 100; i++) {
+            testRandom(ListType.SEARCH, ListType.RANDOM);
+            testRandom(delete, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
+            testRandom(delete, validTargets, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
+            testRandom(delete, validTargets, validTargets, validTargets);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
+            testRandom(edit, validTargets, editKeywords, dateTime);
+            testRandom(ListType.SEARCH, ListType.RANDOM);
+            testRandom(edit, validTargets, validTargets, editKeywords, dateTime);
+        }
+        
+        testRandom(30, ListType.DELETE, ListType.ALL);
+        testRandom(30, ListType.DELETE, ListType.RANDOM);
+        testRandom(30, ListType.DELETE, ListType.TASKID);
+        
+        
+        testRandom(100, ListType.ALL, ListType.ALL);
+        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
+        
+        testRandom(ListType.SEARCH);
+
+        testRandom(100, ListType.COMMAND, ListType.ALL);
+        testRandom(100, ListType.COMMAND, ListType.ALL, ListType.ALL);
+        testRandom(100, ListType.COMMAND, ListType.ALL, ListType.ALL, ListType.ALL);
+        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
+
+        testRandom(100, ListType.SEARCH, ListType.ALL);
+        testRandom(50, ListType.SEARCH, ListType.RANDOM);
+        testRandom(50, ListType.SEARCH, ListType.RANDOM, ListType.RANDOM);
+        testRandom(50, ListType.SEARCH, ListType.RANDOM, ListType.RANDOM, ListType.RANDOM);
+        testRandom(200, ListType.SEARCH, ListType.ALL, ListType.ALL, ListType.ALL);
+        testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.DATETIME);
+        testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.RANDOM, ListType.DATETIME);
+        testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.CONNECTOR, ListType.DATETIME);
+        testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.SYMBOL, ListType.DATETIME);
+
+        testRandom(20, ListType.EDIT, ListType.EDITKEYWORD);
+        testRandom(20, ListType.EDIT, ListType.EDITKEYWORD, ListType.RANDOM);
+        testRandom(20, ListType.EDIT, ListType.RANDOM, ListType.RANDOM);
+        testRandom(200, new ListType[]{ListType.EDIT}, validTargets,
+                validTargets, validTargets, validTargets,
+                editKeywords, validItems);
+        testRandom(200, new ListType[]{ListType.EDIT}, validTargets,
+                validTargets, validTargets, validTargets, validTargets,
+                editKeywords, validItems, validItems);
+        testRandom(200, new ListType[]{ListType.EDIT}, randomTargets,
+                randomTargets, randomTargets, randomTargets,
+                editKeywords, randomItems, randomItems);
+
+        // Random aliasing
+        for (int i = 0; i < 3; i++) {
+            testRandom(20, ListType.ALIAS, ListType.ALL, ListType.COMMAND,
+                    ListType.ALL);
+            testRandom(20, ListType.ALIAS, ListType.ALL, ListType.ALL,
+                    ListType.ALL);
+    
+            testRandom(20, ListType.ALL, ListType.ALL);
+            testRandom(20, ListType.ALL, ListType.ALL, ListType.ALL);
+            testRandom(20, ListType.ALL, ListType.ALL, ListType.ALL,
+                    ListType.ALL);
+        }
+
+    }
+    
+    /**
+     * Tests strings that have been known to crash the program before
+     */
+    private void knownCrashTest() {
+
+        test("edit po1");
+        test("add tue 2pm tue 4pm");
+        test("add today 2pm yesterday 2pm");
+        test("report");
+        test("add \"task\"");
+        test("edit task");
+        test("edit \"task\"");
+
+        test("add meep 2pm tomorrow");
+        test("add meepietwo");
+        test("edit meepietwo date tomorrow");
+        test("search     ");
+        
+        test("alias show orange");
+        test("show $4");
+        test("unalias show");
+    }
+    
+    /**
+     * Tests a string made out of the specified combination of ListTypes.<br>
+     * The combination is used in that order.
+     * @param times the number of times to test that combination
+     * @param listTypes the combination of ListTypes to use.
+     */
+    private void testRandom(int times, ListType...listTypes) {
+        for (int i = 0; i < times; i++) {
+            testRandom(listTypes);
+        }
+    }
+    
+    private void testRandom(ListType...listTypes) {
+        StringBuilder inputString = new StringBuilder();
+        
+        String spacebar = "";
+        for (ListType listType : listTypes) {
+            inputString.append(spacebar);
+            inputString.append(keywordLibrary.getRandom(listType));
+            spacebar = " ";
+        }
+        
+        test(inputString.toString());
+    }
+    
+    /**
+     * Tests a string made out of the specified combination of ListTypes.<br>
+     * The combination is used in that order.
+     * @param times the number of times to test that combination
+     * @param listTypes the combination of ListTypes to use.
+     */
+    private void testRandom(int times, ListType[]...listTypes) {
+        for (int i = 0; i < times; i++) {
+            testRandom(listTypes);
+        }
+    }
+    
+    private void testRandom(ListType[]...listTypes) {
+        StringBuilder inputString = new StringBuilder();
+        
+        String spacebar = "";
+        for (ListType[] listType : listTypes) {
+            inputString.append(spacebar);
+            inputString.append(keywordLibrary.getRandom(listType));
+            spacebar = " ";
+        }
+        
+        test(inputString.toString());
+    }
+    
+    private void test(String input) {
+        totalStrings++;
+        testedStrings.add(input);
+        
+        try {
+            log("Input: " + input);
+            String result = mainController.runCommand(input);
+            log(result);
+        } catch (Exception e) {
+            System.out.println("Exception Thrown!");
+            System.out.println(" Attempted Input: [" + input + "]");
+            printLog();
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    private void terminateAndPrintLog() {
+        printLog();
+        deleteTestFiles();
+        System.exit(0);
+    }
+    
+    private void log(String result) {
+        if (logQueue.remainingCapacity() <= 0) {
+            logQueue.poll();
+        }
+        logQueue.offer(result);
+    }
+
+    private void printLog() {
+        while (!logQueue.isEmpty()) {
+            System.out.println("*******");
+            System.out.println(logQueue.poll());
+        }
+    }
+
+    private void deleteTestFiles() {
+        try {
+            Path path = Paths.get(TEST_FILENAME);
+            Files.deleteIfExists(path);
+            path = Paths.get(TEST_ALIAS_FILENAME);
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\test\CrashTester.java
+
+
+
+
+
