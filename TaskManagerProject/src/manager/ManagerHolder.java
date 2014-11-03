@@ -10,6 +10,7 @@ import manager.datamanager.FreeDaySearchManager;
 import manager.datamanager.ReportManager;
 import manager.datamanager.SearchManager;
 import manager.datamanager.UndoManager;
+import manager.datamanager.freetimemanager.FreeTimeSearchManager;
 import data.TaskData;
 
 public class ManagerHolder {
@@ -20,6 +21,7 @@ public class ManagerHolder {
     private DeleteManager deleteManager;
     private UndoManager undoManager;
     private FreeDaySearchManager freeDaySearchManager;
+    private FreeTimeSearchManager freeTimeSearchManager;
     private AliasManager aliasManager;
     private ReportManager reportManager;
 
@@ -33,6 +35,7 @@ public class ManagerHolder {
         deleteManager = new DeleteManager(taskData);
         undoManager = new UndoManager(taskData);
         freeDaySearchManager = new FreeDaySearchManager(taskData);
+        freeTimeSearchManager = new FreeTimeSearchManager(taskData);
         reportManager = new ReportManager(taskData);
         aliasManager = new AliasManager(aliasStorage, taskData);
         
@@ -66,6 +69,10 @@ public class ManagerHolder {
 
     public FreeDaySearchManager getFreeDaySearchManager() {
         return freeDaySearchManager;
+    }
+    
+    public FreeTimeSearchManager getFreeTimeSearchManager() {
+    	return freeTimeSearchManager;
     }
 
     public ReportManager getReportManager() {
