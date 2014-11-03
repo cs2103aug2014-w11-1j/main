@@ -7,8 +7,10 @@ import main.message.DeleteSuccessfulMessage;
  * @author nathanajah
  */
 public class DeleteSuccessfulFormatter {
-    private final static String FORMAT_LINE = "Task %1$s deleted." +
+    private final static String FORMAT_SINGLE = "Task %1$s deleted." +
             System.lineSeparator();
+    private final static String HEADER_MULTI = "%1$d tasks deleted.";
+    private final static String TASKNAME_MULTI = "- %1$s";
     
     /**
      * Formats a DeleteSuccessfulMessage to a String.
@@ -16,6 +18,39 @@ public class DeleteSuccessfulFormatter {
      * @return The formatted Message.
      */
     public String format(DeleteSuccessfulMessage message) {
-        return String.format(FORMAT_LINE, message.getTask().name);
+        assert message.getTask().length > 0;
+        
+        switch(message.getTask().length) {
+            case 1 :
+                return formatSingleTask(message);
+            default :
+                return formatMultiTask(message);
+        }
+    }
+    
+    private String formatSingleTask(DeleteSuccessfulMessage message) {
+        assert message.getTask().length == 1;
+        return String.format(FORMAT_SINGLE, message.getTask()[0].name);
+    }
+    
+    private String formatMultiTask(DeleteSuccessfulMessage message) {
+        assert message.getTask().length > 1;
+        return getMultiHeader(message) + getMultiTaskList(message);
+    }
+    
+    private String getMultiHeader(DeleteSuccessfulMessage message) {
+        return String.format(HEADER_MULTI, message.getTask().length) + 
+                System.lineSeparator();
+    }
+    
+    private String getMultiTaskList(DeleteSuccessfulMessage message) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < message.getTask().length; i++) {
+            builder.append(String.format(TASKNAME_MULTI, 
+                    message.getTask()[i].name));
+            builder.append(System.lineSeparator());
+        }
+        
+        return builder.toString();
     }
 }

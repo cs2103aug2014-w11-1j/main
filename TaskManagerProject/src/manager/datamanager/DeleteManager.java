@@ -1,5 +1,8 @@
 package manager.datamanager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import main.command.TaskIdSet;
 import manager.result.DeleteResult;
 import manager.result.Result;
@@ -27,6 +30,9 @@ public class DeleteManager extends AbstractManager {
         TaskId returnTaskId = null;
         TaskInfo returnTaskInfo = null;
         
+        List<TaskId> idList = new ArrayList<TaskId>();
+        List<TaskInfo> taskList = new ArrayList<TaskInfo>();
+        
         for (TaskId taskId : taskIdSet) {
         	if (taskId == null) {
         	    allSuccessful = false;
@@ -34,8 +40,8 @@ public class DeleteManager extends AbstractManager {
         	}
 
             // PLACEHOLDER : Change later to a proper batch response.
-            returnTaskId = taskId;
-        	returnTaskInfo = taskData.getTaskInfo(taskId);
+            idList.add(taskId);
+            taskList.add(taskData.getTaskInfo(taskId));
         	boolean isSuccessful = taskData.remove(taskId);
         	
         	if (!isSuccessful){
@@ -45,7 +51,12 @@ public class DeleteManager extends AbstractManager {
         }
         
         if (allSuccessful) {
-            return new DeleteResult(returnTaskId, returnTaskInfo);
+            TaskId[] taskIds = new TaskId[idList.size()];
+            TaskInfo[] tasks = new TaskInfo[taskList.size()];
+            
+            idList.toArray(taskIds);
+            taskList.toArray(tasks);
+            return new DeleteResult(taskIds, tasks);
         } else {
             taskData.reverseLastChange();
             return new SimpleResult(Result.Type.DELETE_FAILURE);

@@ -5,12 +5,12 @@ import data.taskinfo.TaskInfo;
 
 public class DeleteResult implements Result{
 	
-	private TaskId taskId;
-	private TaskInfo taskInfo;
+	private TaskId[] taskIds;
+	private TaskInfo[] tasks;
 	
-	public DeleteResult(TaskId taskId, TaskInfo taskInfo){
-		this.taskId = taskId;
-		this.taskInfo = taskInfo;
+	public DeleteResult(TaskId[] taskIds, TaskInfo[] tasks){
+		this.taskIds = taskIds;
+		this.tasks = tasks;
 	}
 
 	@Override
@@ -18,12 +18,12 @@ public class DeleteResult implements Result{
 		return Type.DELETE_SUCCESS;
 	}
 	
-	public TaskId getTaskId(){
-		return taskId;
+	public TaskId[] getTaskIds(){
+		return taskIds;
 	}
 
-	public TaskInfo getTaskInfo(){
-		return taskInfo;
+	public TaskInfo[] getTasks(){
+		return tasks;
 	}
 	
 }

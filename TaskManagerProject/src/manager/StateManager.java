@@ -351,8 +351,8 @@ public class StateManager {
                 tryExitEditMode();
             	DeleteResult deleteResult = (DeleteResult)result;
                 DeleteSuccessfulMessage deleteSuccessMessage = 
-                		new DeleteSuccessfulMessage(deleteResult.getTaskInfo(), 
-                		        deleteResult.getTaskId());
+                		new DeleteSuccessfulMessage(deleteResult.getTasks(), 
+                		        deleteResult.getTaskIds());
                 return deleteSuccessMessage;
                 
             case DELETE_FAILURE : 
