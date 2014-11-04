@@ -48,9 +48,7 @@ public class CommandParser {
                     String[] curTokens = Arrays.copyOfRange(tokens, i, j);
                     String curSubstring = String.join(SYMBOL_DELIM, curTokens);
 
-                    if (isPriority(curSubstring) || isTag(curSubstring) ||
-                            DateTimeParser.isDate(curSubstring) ||
-                            DateTimeParser.isTime(curSubstring)) {
+                    if (!isKeyword(curSubstring)) {
                         toRemove.set(i, j);
                         break;
                     }
@@ -66,6 +64,12 @@ public class CommandParser {
             }
             return cleanedName.toString().trim();
         }
+    }
+
+    private static boolean isKeyword(String curSubstring) {
+        return !(isPriority(curSubstring) || isTag(curSubstring) ||
+                isStatus(curSubstring) || DateTimeParser.isDate(curSubstring) ||
+                DateTimeParser.isTime(curSubstring));
     }
 
     /**
@@ -194,6 +198,10 @@ public class CommandParser {
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    private static boolean isStatus(String possibleStatus) {
+        return parseStatus(possibleStatus) != null;
     }
 
     private static String removeFirstChar(String s) {
