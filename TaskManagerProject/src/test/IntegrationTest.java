@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import jline.SimpleCompletor;
 import main.MainController;
 import main.command.alias.AliasStorage;
 import manager.ManagerHolder;
@@ -44,8 +45,9 @@ public class IntegrationTest {
         String aliasFileName = TEST_ALIAS_FILENAME;
         deleteTestFiles();
 
+        SimpleCompletor completor = new SimpleCompletor(new String[]{});
         AutoCompleteDictionary autoCompleteDictionary =
-                new AutoCompleteDictionary(null);
+                new AutoCompleteDictionary(completor);
 
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
@@ -80,42 +82,42 @@ public class IntegrationTest {
         String expected = "a";
         
         input = "add orange +high";
-        expected = "Task orange added sucessfully." + NEWL;
+        expected = "Task orange added successfully." + NEWL;
         output = mainController.runCommand(input);
         assertSame(expected, output);
 
         input = "add purple 2pm 14 Oct 2014";
-        expected = "Task purple added sucessfully." + NEWL;
+        expected = "Task purple added successfully." + NEWL;
         output = mainController.runCommand(input);
         assertSame(expected, output);
         
         input = "add green";
-        expected = "Task green added sucessfully." + NEWL;
+        expected = "Task green added successfully." + NEWL;
         output = mainController.runCommand(input);
         assertSame(expected, output);
         
         input = "add violet 2pm 14 Oct 2014 4pm 14 Oct 2014";
-        expected = "Task violet added sucessfully." + NEWL;
+        expected = "Task violet added successfully." + NEWL;
         output = mainController.runCommand(input);
         assertSame(expected, output);
         
         input = "show";
         expected = "Tue, 14 Oct 2014 ---" + NEWL +
-                    "1) [   14:00   ] purple                                                 - [PO9]" + NEWL +
-                    "2) [14:00-16:00] violet                                                 - [1JL]" + NEWL +
+                    "1) [   14:00   ] purple                                                 - [FE5]" + NEWL +
+                    "2) [14:00-16:00] violet                                                 - [7YA]" + NEWL +
                     "Floating Tasks ---" + NEWL +
-                    "3)               green                                                  - [Z5M]" + NEWL +
-                    "4)               orange                                                 - [4GQ]" + NEWL;
+                    "3)               green                                                  - [P1C]" + NEWL +
+                    "4)               orange                                                 - [0WF]" + NEWL;
         output = mainController.runCommand(input);
         assertSame(expected, output);
         
         input = "delete green";
         expected = "Task green deleted." + NEWL +
                 "Tue, 14 Oct 2014 ---" + NEWL +
-                "1) [   14:00   ] purple                                                 - [PO9]" + NEWL +
-                "2) [14:00-16:00] violet                                                 - [1JL]" + NEWL +
+                "1) [   14:00   ] purple                                                 - [FE5]" + NEWL +
+                "2) [14:00-16:00] violet                                                 - [7YA]" + NEWL +
                 "Floating Tasks ---" + NEWL +
-                "3)               orange                                                 - [4GQ]" + NEWL;
+                "3)               orange                                                 - [0WF]" + NEWL;
         output = mainController.runCommand(input);
         assertSame(expected, output);
 

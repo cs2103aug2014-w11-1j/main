@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import jline.SimpleCompletor;
 import main.MainController;
 import main.command.alias.AliasStorage;
 import manager.ManagerHolder;
@@ -58,8 +59,9 @@ public class CrashTester {
         String aliasFileName = TEST_ALIAS_FILENAME;
         deleteTestFiles();
 
+        SimpleCompletor completor = new SimpleCompletor(new String[]{});
         AutoCompleteDictionary autoCompleteDictionary =
-                new AutoCompleteDictionary(null);
+                new AutoCompleteDictionary(completor);
 
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
