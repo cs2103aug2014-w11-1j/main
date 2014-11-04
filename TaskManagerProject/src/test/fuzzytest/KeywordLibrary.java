@@ -145,6 +145,7 @@ public class KeywordLibrary {
 
         addToList("show", COMMAND, SEARCH);
         addToList("search", COMMAND, SEARCH);
+        addToList("view", COMMAND, SEARCH);
         addToList("ls", COMMAND, SEARCH, RANDOM);
         addToList("set", COMMAND, EDIT, TASKID, RANDOM);
         addToList("edit", COMMAND, EDIT);
@@ -161,19 +162,24 @@ public class KeywordLibrary {
         addToList("alias", COMMAND, ALIAS);
         addToList("custom", COMMAND, ALIAS);
         addToList("unalias", COMMAND, UNALIAS);
+        addToList("urgent", COMMAND);
+        addToList("mark", COMMAND);
+        addToList("done", COMMAND);
+        addToList("unmark", COMMAND);
+        addToList("reschedule", COMMAND);
 
         addToList(AGAIN, "tag", COMMAND, EDIT, EDITKEYWORD, TASKID);
         addToList("add", COMMAND, ADD, EDITKEYWORD, TASKID, RANDOM);
         addToList("delete", COMMAND, DELETE, EDITKEYWORD, RANDOM);
         addToList("del", COMMAND, DELETE, EDITKEYWORD, TASKID);
 
-        addToList(AGAIN, "clear", EDITKEYWORD);
-        addToList("time", EDITKEYWORD);
-        addToList("name", EDITKEYWORD, RANDOM);
-        addToList("date", EDITKEYWORD, RANDOM);
-        addToList("datetime", EDITKEYWORD);
-        addToList("priority", EDITKEYWORD);
-        addToList("status", EDITKEYWORD);
+        addToList(AGAIN, "clear", COMMAND, EDITKEYWORD);
+        addToList("time", COMMAND, EDITKEYWORD);
+        addToList("name", COMMAND, EDITKEYWORD, RANDOM);
+        addToList("date", COMMAND, EDITKEYWORD, RANDOM);
+        addToList("datetime", COMMAND, EDITKEYWORD);
+        addToList("priority", COMMAND, EDITKEYWORD);
+        addToList("status", COMMAND, EDITKEYWORD);
         addToList("edit", EDITKEYWORD);
         addToList("tag add", EDITKEYWORD);
         addToList("tag del", EDITKEYWORD);

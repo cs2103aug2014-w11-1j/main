@@ -58,6 +58,8 @@ public class EditCommand extends TargetedCommand {
         UNMARK,
         STATUS,
         RESCHEDULE,
+        PRIORITY,
+        URGENT,
         RENAME
     }
 
@@ -131,6 +133,10 @@ public class EditCommand extends TargetedCommand {
                 return parseStatusParams(args);
             case RESCHEDULE :
                 return parseRescheduleParams(args);
+            case PRIORITY :
+                return parsePriorityParams(args);
+            case URGENT :
+                return parseUrgentParams(args);
             case RENAME :
                 return parseRenameParams(args);
             default :
@@ -168,6 +174,21 @@ public class EditCommand extends TargetedCommand {
     
     private TaskInfo parseRescheduleParams(String args) {
         return parseEditParams(ARGUMENT_DATETIME + " " + args);
+    }
+    
+    private TaskInfo parsePriorityParams(String args) {
+        return parseEditParams(ARGUMENT_PRIORITY + " " + args);
+    }
+    
+    private TaskInfo parseUrgentParams(String args) {
+        TaskInfo taskInfo = TaskInfo.createEmpty();
+        
+        args = args.trim();
+        if (args.length() == 0) {
+            taskInfo.priority = Priority.HIGH;
+            return taskInfo;
+        }
+        return null;
     }
 
     private TaskInfo parseRenameParams(String args) {

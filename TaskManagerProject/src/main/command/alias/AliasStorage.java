@@ -196,7 +196,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 
         defineDefaultCommands(
                 (args, managerHolder) -> new SearchCommand(args, managerHolder),
-                "show", "search", "ls");
+                "show", "search", "ls", "view");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new EditCommand(args, managerHolder),
@@ -205,7 +205,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new EditCommand(args, managerHolder, ParseType.MARK),
-                "mark");
+                "mark", "done");
 
         defineDefaultCommands(
                 (args, managerHolder) ->
@@ -219,13 +219,23 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 
         defineDefaultCommands(
                 (args, managerHolder) ->
+                new EditCommand(args, managerHolder, ParseType.PRIORITY),
+                "priority");
+
+        defineDefaultCommands(
+                (args, managerHolder) ->
+                new EditCommand(args, managerHolder, ParseType.URGENT),
+                "urgent");
+
+        defineDefaultCommands(
+                (args, managerHolder) ->
                 new EditCommand(args, managerHolder, ParseType.RESCHEDULE),
-                "reschedule");
+                "reschedule", "time", "date", "datetime");
 
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new EditCommand(args, managerHolder, ParseType.RENAME),
-                "rename");
+                "rename", "name");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new UndoCommand(managerHolder),
@@ -250,7 +260,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 
         defineDefaultCommands(
                 (args, managerHolder) -> new DetailsCommand(args, managerHolder),
-                "detail", "details");
+                "detail", "details", "info");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new BackCommand(managerHolder),
@@ -262,11 +272,11 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 
         defineDefaultCommands(
                 (args, managerHolder) -> new AliasCommand(args, managerHolder),
-                "alias", "custom");
+                "alias", "custom", "bind");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new AliasDeleteCommand(args, managerHolder),
-                "unalias");
+                "unalias", "unbind");
 
     }
 
