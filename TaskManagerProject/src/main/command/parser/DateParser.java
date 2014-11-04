@@ -50,7 +50,7 @@ public class DateParser {
         }
 
         parsedDate = parseDateAsPlusMinus(dateString);
-        if (parsedDate != null) {
+        if (parsedDate == null) {
             parsedDate = parseDateAsRelativeToNow(dateString);
         }
         return parsedDate;
