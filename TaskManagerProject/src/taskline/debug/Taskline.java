@@ -29,7 +29,7 @@ public class Taskline {
         String aliasFileName = "alias.txt";
 
         AutoCompleteDictionary autoCompleteDictionary =
-                new AutoCompleteDictionary();
+                new AutoCompleteDictionary(null);
         
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(

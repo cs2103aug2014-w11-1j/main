@@ -22,6 +22,7 @@ import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class SearchManager extends AbstractManager {
     private static final Logger log = TasklineLogger.getLogger();
 

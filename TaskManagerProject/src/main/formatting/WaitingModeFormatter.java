@@ -6,6 +6,7 @@ import main.modeinfo.SearchModeInfo;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class WaitingModeFormatter {
     private final static String PROMPT = "Did you mean:";
     private final static String FORMAT_CHOICE = "%1$d)%2$s";

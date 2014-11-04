@@ -5,8 +5,9 @@ import data.taskinfo.TaskInfo;
 
 /**
  * The ModeInfo for the state when the program is in the search mode.
- * @author nathanajah
  */
+
+//@author A0113011L
 public class SearchModeInfo implements ModeInfo {
 
     private String[] suggestions;

@@ -3,6 +3,7 @@ package manager.datamanager.searchfilter;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class TagFilter implements Filter{
     public Type getType() {
         return Type.FILTER_TAG;

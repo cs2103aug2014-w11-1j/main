@@ -115,15 +115,6 @@ public class SummaryUtility {
         return LINE_FLOATING;
     }
     
-    private boolean isEndingAtMidnight(TaskInfo task) {
-        LocalTime midnight = LocalTime.parse("00:00");
-        return task.startTime != null && task.endTime.equals(midnight);
-    }
-    
-    private boolean isOneDayAfter(TaskInfo taskBefore, TaskInfo taskAfter) {
-        return taskBefore.endDate.plusDays(1).equals(taskAfter.endDate);
-    }
-    
     private LocalDate getActualDate(TaskInfo task) {
         if (task.endTime == null) {
             return task.endDate;

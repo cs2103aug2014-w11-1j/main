@@ -2,12 +2,14 @@ package ui;
 
 import java.io.IOException;
 
+import jline.ArgumentCompletor;
 import jline.ConsoleReader;
 import main.MainController;
 import ui.input.Input;
 import ui.input.InputOperation;
 import ui.input.InputString;
 
+//@author A0113011L
 public class UIDisplay {
     private UserInputReader userInputReader;
     private UserOutputWriter userOutputWriter;
@@ -15,12 +17,12 @@ public class UIDisplay {
     private final MainController mainController;
     
     
-    public UIDisplay(MainController mainController) {
+    public UIDisplay(MainController mainController, ArgumentCompletor completor) {
         this.mainController = mainController;
         try {
             ConsoleReader reader = new ConsoleReader();
             reader.clearScreen();
-            userInputReader = new UserInputReader(reader);
+            userInputReader = new UserInputReader(reader, completor);
             userOutputWriter = new UserOutputWriter(reader);
             
             String header = "Welcome to Taskline.";

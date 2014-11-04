@@ -3,7 +3,7 @@ package manager.datamanager.searchfilter;
 import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
-
+//@author A0113011L
 public class PriorityFilter implements Filter {
 
     private Priority[] priorities;

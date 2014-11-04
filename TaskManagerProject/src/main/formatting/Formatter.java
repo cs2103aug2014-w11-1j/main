@@ -16,8 +16,9 @@ import main.response.Response;
 
 /**
  * Formatter. Responsible for formatting Response objects to String.
- * @author nathanajah
  */
+
+//@author A0113011L
 public class Formatter {
     private AddSuccessfulFormatter addSuccessfulFormatter;
     private DeleteSuccessfulFormatter deleteSuccessfulFormatter;

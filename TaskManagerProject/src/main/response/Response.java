@@ -4,6 +4,7 @@ import main.message.EnumMessage;
 import main.message.Message;
 import main.modeinfo.ModeInfo;
 
+//@author A0113011L
 public class Response {
 
     Message message;

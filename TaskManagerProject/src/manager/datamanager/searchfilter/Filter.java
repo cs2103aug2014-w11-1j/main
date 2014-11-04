@@ -2,6 +2,7 @@ package manager.datamanager.searchfilter;
 
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public interface Filter {
     public enum Type {
         FILTER_TAG,
