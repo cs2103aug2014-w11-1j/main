@@ -9,6 +9,7 @@ import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
 import taskline.TasklineLogger;
 import ui.debug.UIDisplay;
+import data.AutoCompleteDictionary;
 import data.TaskData;
 
 /**
@@ -27,9 +28,12 @@ public class Taskline {
         String fileName = "tasks.txt";
         String aliasFileName = "alias.txt";
 
+        AutoCompleteDictionary autoCompleteDictionary =
+                new AutoCompleteDictionary();
+        
         AliasStorage aliasStorage = new AliasStorage();
-        IFileInputOutput aliasFileInputOutput =
-                new AliasFileInputOutput(aliasStorage, aliasFileName);
+        IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
+                aliasStorage, aliasFileName, autoCompleteDictionary);
 
         TaskData taskData = new TaskData();
         IFileInputOutput fileInputOutput =

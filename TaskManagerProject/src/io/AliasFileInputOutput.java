@@ -11,18 +11,21 @@ import java.util.logging.Logger;
 import main.command.alias.AliasValuePair;
 import main.command.alias.IAliasStorageFileInputOutput;
 import taskline.TasklineLogger;
+import data.AutoCompleteDictionary;
 
 public class AliasFileInputOutput implements IFileInputOutput {
     private static final Logger log = TasklineLogger.getLogger();
     
+    private final AutoCompleteDictionary autoCompleteDictionary;
     private final IAliasStorageFileInputOutput aliasStorage;
     private final String fileName;
     private String fileHash = "";
 
     public AliasFileInputOutput(IAliasStorageFileInputOutput aliasStorage,
-            String fileName) {
+            String fileName, AutoCompleteDictionary autoCompleteDictionary) {
         this.aliasStorage = aliasStorage;
         this.fileName = fileName;
+        this.autoCompleteDictionary = autoCompleteDictionary;
     }
 
     /* (non-Javadoc)
@@ -38,6 +41,7 @@ public class AliasFileInputOutput implements IFileInputOutput {
             return false;
         } else {
             aliasStorage.setAllCustomAliases(aliases);
+            updateAutoCompleteDictionary();
             return true;
         }
     }
@@ -50,6 +54,7 @@ public class AliasFileInputOutput implements IFileInputOutput {
         boolean result = writeAliasesToFile();
         
         if (result == true) {
+            updateAutoCompleteDictionary();
             fileHash = IFileInputOutput.computeHash(fileName);
         }
         
@@ -116,5 +121,10 @@ public class AliasFileInputOutput implements IFileInputOutput {
         String currentHash = IFileInputOutput.computeHash(fileName);
         return fileHash.equals(currentHash);
     }
-
+    
+    private void updateAutoCompleteDictionary() {
+        String[] allBindedStrings = aliasStorage.getAllBindedStrings();
+        autoCompleteDictionary.refreshDictionary(allBindedStrings);
+    }
+    
 }

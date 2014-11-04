@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import test.fuzzytest.KeywordLibrary;
 import test.fuzzytest.KeywordLibrary.ListType;
+import data.AutoCompleteDictionary;
 import data.TaskData;
 
 /**
@@ -57,10 +58,12 @@ public class CrashTester {
         String aliasFileName = TEST_ALIAS_FILENAME;
         deleteTestFiles();
 
+        AutoCompleteDictionary autoCompleteDictionary =
+                new AutoCompleteDictionary();
 
         AliasStorage aliasStorage = new AliasStorage();
-        IFileInputOutput aliasFileInputOutput =
-                new AliasFileInputOutput(aliasStorage, aliasFileName);
+        IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
+                aliasStorage, aliasFileName, autoCompleteDictionary);
 
         TaskData taskData = new TaskData();
         IFileInputOutput fileInputOutput =

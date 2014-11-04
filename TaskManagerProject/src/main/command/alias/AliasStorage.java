@@ -151,6 +151,21 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         }
     }
 
+
+    @Override
+    public String[] getAllBindedStrings() {
+        int totalSize = customMap.size() + defaultMap.size();
+        HashSet<String> stringSet = new HashSet<>(totalSize);
+        
+        Set<String> customSet = customMap.keySet();
+        Set<String> defaultSet = defaultMap.keySet();
+
+        stringSet.addAll(customSet);
+        stringSet.addAll(defaultSet);
+        
+        return stringSet.toArray(new String[0]);
+    }
+
     private boolean tryPutAllCustomAliases(AliasValuePair[] aliases) {
         for (AliasValuePair aliasValuePair : aliases) {
             String alias = aliasValuePair.alias;

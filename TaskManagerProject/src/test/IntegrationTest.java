@@ -18,6 +18,7 @@ import manager.ManagerHolder;
 import org.junit.After;
 import org.junit.Test;
 
+import data.AutoCompleteDictionary;
 import data.TaskData;
 
 public class IntegrationTest {
@@ -38,10 +39,12 @@ public class IntegrationTest {
         String aliasFileName = TEST_ALIAS_FILENAME;
         deleteTestFiles();
 
+        AutoCompleteDictionary autoCompleteDictionary =
+                new AutoCompleteDictionary();
 
         AliasStorage aliasStorage = new AliasStorage();
-        IFileInputOutput aliasFileInputOutput =
-                new AliasFileInputOutput(aliasStorage, aliasFileName);
+        IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
+                aliasStorage, aliasFileName, autoCompleteDictionary);
 
         TaskData taskData = new TaskData();
         IFileInputOutput fileInputOutput =

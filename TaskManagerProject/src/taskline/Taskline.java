@@ -8,14 +8,12 @@ import java.io.IOException;
 
 import main.MainController;
 import main.command.alias.AliasStorage;
-import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
 
 import org.fusesource.jansi.AnsiConsole;
-import static org.fusesource.jansi.Ansi.*;
-import static org.fusesource.jansi.Ansi.Color.*;
 
 import ui.UIDisplay;
+import data.AutoCompleteDictionary;
 import data.TaskData;
 
 /**
@@ -32,9 +30,12 @@ public class Taskline {
         String fileName = "tasks.txt";
         String aliasFileName = "alias.txt";
 
+        AutoCompleteDictionary autoCompleteDictionary =
+                new AutoCompleteDictionary();
+        
         AliasStorage aliasStorage = new AliasStorage();
-        IFileInputOutput aliasFileInputOutput =
-                new AliasFileInputOutput(aliasStorage, aliasFileName);
+        IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
+                aliasStorage, aliasFileName, autoCompleteDictionary);
 
         TaskData taskData = new TaskData();
         IFileInputOutput fileInputOutput =
