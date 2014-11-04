@@ -14,6 +14,7 @@ public class SummaryUtility {
     private final static int WIDTH_ABSOLUTE = 7;
     private final static String LINE_FLOATING = "Floating Tasks ---";
     private final static String LINE_NO_TASK = "No tasks found.";
+    private final static String LINE_BLANK = "";
 
     
     private String getDateLine(TaskInfo task) {
@@ -148,12 +149,18 @@ public class SummaryUtility {
             int numberWidth = numberLength(tasks.length) + 2;
             for (int i = 0; i < tasks.length; i++) {
                 if (tasks[i].endDate == null) {
-                    if (i == 0 || tasks[i-1].endDate != null) {
+                    if (i == 0) {
+                        result.add(getFloatingTaskLine());
+                    } else if (tasks[i - 1].endDate != null) {
+                        result.add(LINE_BLANK);
                         result.add(getFloatingTaskLine());
                     }
                 }
                 else {
-                    if (i == 0 || isDifferentDate(tasks[i], tasks[i-1])) {
+                    if (i == 0) {
+                        result.add(getDateLine(tasks[i]));
+                    } else if (isDifferentDate(tasks[i], tasks[i - 1])) {
+                        result.add(LINE_BLANK);
                         result.add(getDateLine(tasks[i]));
                     }
                 }

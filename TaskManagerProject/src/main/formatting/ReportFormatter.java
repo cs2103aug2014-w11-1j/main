@@ -22,6 +22,6 @@ public class ReportFormatter {
         TaskInfo[] tasks = new TaskInfo[message.getUrgentTask().size()];
         message.getUrgentTask().toArray(tasks);
         result.append(summaryUtility.format(tasks, null));
-        return result.toString();
+        return result.toString() + System.lineSeparator();
     }
 }
