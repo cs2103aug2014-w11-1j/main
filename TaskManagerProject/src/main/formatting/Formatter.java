@@ -1,11 +1,13 @@
 package main.formatting;
 
 import main.message.AddSuccessfulMessage;
+import main.message.AliasMessage;
 import main.message.DeleteSuccessfulMessage;
 import main.message.DetailsMessage;
 import main.message.EditSuccessfulMessage;
 import main.message.EnumMessage;
 import main.message.FreeDaySearchMessage;
+import main.message.FreeTimeSearchMessage;
 import main.message.Message;
 import main.message.ReportMessage;
 import main.modeinfo.EditModeInfo;
@@ -27,6 +29,8 @@ public class Formatter {
     private DetailsFormatter detailsFormatter;
     private ReportFormatter reportFormatter;
     private FreeDaySearchFormatter freeDaySearchFormatter;
+    private FreeTimeSearchFormatter freeTimeSearchFormatter;
+    private AliasFormatter aliasFormatter;
     
     private EditModeFormatter editModeFormatter;
     private SearchModeFormatter searchModeFormatter;
@@ -74,6 +78,8 @@ public class Formatter {
         detailsFormatter = new DetailsFormatter();
         reportFormatter = new ReportFormatter();
         freeDaySearchFormatter = new FreeDaySearchFormatter();
+        freeTimeSearchFormatter = new FreeTimeSearchFormatter();
+        aliasFormatter = new AliasFormatter();
         
         editModeFormatter = new EditModeFormatter();
         searchModeFormatter = new SearchModeFormatter();
@@ -84,41 +90,63 @@ public class Formatter {
     private String formatMessage(Message message) {
         String formattedMessage = "";
         switch(message.getType()) {
+            
             case ADD_SUCCESSFUL :
                 AddSuccessfulMessage addSuccessfulMessage = 
                         (AddSuccessfulMessage)message;
                 formattedMessage = addSuccessfulFormatter.format(
                         addSuccessfulMessage);
                 break;
+                
             case EDIT_SUCCESSFUL :
                 EditSuccessfulMessage editSuccessfulMessage =
                         (EditSuccessfulMessage)message;
                 formattedMessage = editSuccessfulFormatter.format(
                         editSuccessfulMessage);
                 break;
+                
             case DELETE_SUCCESSFUL :
                 DeleteSuccessfulMessage deleteSuccessfulMessage =
                         (DeleteSuccessfulMessage)message;
                 formattedMessage = deleteSuccessfulFormatter.format(
                         deleteSuccessfulMessage);
                 break;
+                
             case ENUM_MESSAGE :
                 EnumMessage enumMessage = (EnumMessage)message;
                 formattedMessage = enumFormatter.format(enumMessage);
                 break;
+                
             case DETAILS :
                 DetailsMessage detailsMessage = (DetailsMessage)message;
                 formattedMessage = detailsFormatter.format(detailsMessage);
                 break;
+                
             case REPORT :
                 ReportMessage reportMessage = (ReportMessage)message;
                 formattedMessage = reportFormatter.format(reportMessage);
                 break;
+                
             case FREE_DAY_SEARCH_SUCCESSFUL :
                 FreeDaySearchMessage freeDaySearchMessage = 
                         (FreeDaySearchMessage)message;
                 formattedMessage = 
                         freeDaySearchFormatter.format(freeDaySearchMessage);
+                break;
+                
+            case ALIAS_MESSAGE :
+                AliasMessage aliasMessage = (AliasMessage)message;
+                formattedMessage = aliasFormatter.format(aliasMessage);
+                break;
+                
+            case FREE_TIME_SEARCH_SUCCESSFUL :
+                FreeTimeSearchMessage freeTimeMessage =
+                        (FreeTimeSearchMessage)message;
+                formattedMessage =
+                        freeTimeSearchFormatter.format(freeTimeMessage);
+                break;
+            default :
+                break;
 
         }
         return formattedMessage;

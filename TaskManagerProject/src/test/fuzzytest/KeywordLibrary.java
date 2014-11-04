@@ -41,6 +41,8 @@ public class KeywordLibrary {
         QUIT,
         ALIAS,
         UNALIAS,
+        FREEDAY,
+        FREETIME,
         ALL
     }
     
@@ -162,6 +164,8 @@ public class KeywordLibrary {
         addToList("alias", COMMAND, ALIAS);
         addToList("custom", COMMAND, ALIAS);
         addToList("unalias", COMMAND, UNALIAS);
+        addToList("freeday", COMMAND, FREEDAY);
+        addToList("freetime", COMMAND, FREETIME);
         addToList("urgent", COMMAND);
         addToList("mark", COMMAND);
         addToList("done", COMMAND);

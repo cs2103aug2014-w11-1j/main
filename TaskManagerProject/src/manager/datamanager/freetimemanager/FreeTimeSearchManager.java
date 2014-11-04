@@ -14,15 +14,22 @@ import data.taskinfo.TaskInfo;
 //@author A0119432L
 public class FreeTimeSearchManager extends AbstractManager {
 	
-	
 	private ArrayList<TaskInfo> taskList;
 	private ArrayList<Interval> freeTimeList;
 	private final LocalTime DAY_START_TIME = LocalTime.of(0, 0);
 	private final LocalTime DAY_END_TIME = LocalTime.of(23, 59);
+	
 	public FreeTimeSearchManager(TaskData taskData) {
 		super(taskData);
 	}
-	
+
+    public Result searchFreeTimeSlot(LocalDate date){
+        taskList = getTaskList();
+        freeTimeList = generateTimeList();
+        processTaskList(date);
+        return new FreeTimeResult(date, freeTimeList);
+    }
+    
 	private Interval getTaskTimeOnDate(TaskInfo taskInfo, LocalDate date){
 		
 		
@@ -78,7 +85,7 @@ public class FreeTimeSearchManager extends AbstractManager {
 		return list;
 	}
 	
-	public void processInterval(Interval interval){
+	private void processInterval(Interval interval){
 		if (interval == null){
 			return;
 		}
@@ -96,13 +103,6 @@ public class FreeTimeSearchManager extends AbstractManager {
 			Interval itvl = getTaskTimeOnDate(taskInfo, date);
 			processInterval(itvl);
 		}
-	}
-	
-	public Result searchFreeTimeSlot(LocalDate date){
-		taskList = getTaskList();
-		freeTimeList = generateTimeList();
-		processTaskList(date);
-		return new FreeTimeResult(date, freeTimeList);
 	}
 		
 

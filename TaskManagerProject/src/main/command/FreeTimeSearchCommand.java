@@ -1,5 +1,7 @@
 package main.command;
 
+import java.time.LocalDate;
+
 import main.command.parser.CommandParser;
 import main.command.parser.DateTimePair;
 import manager.ManagerHolder;
@@ -9,7 +11,7 @@ import manager.result.Result;
 public class FreeTimeSearchCommand extends Command {
 
 	private FreeTimeSearchManager freeTimeSearchManager;
-	private DateTimePair date;
+	private LocalDate date;
 	
 	public FreeTimeSearchCommand(String args, ManagerHolder managerHolder) {
 		super(managerHolder);
@@ -18,25 +20,32 @@ public class FreeTimeSearchCommand extends Command {
 	}
 	
 	private void parse(String args) {
-		date = CommandParser.parseDateTimes(args);
+		DateTimePair dateTimePair = CommandParser.parseDateTimes(args);
+		
+		if (dateTimePair.getNumOfDates() == 1 && 
+		        dateTimePair.getNumOfTimes() == 0) {
+		    
+		    assert dateTimePair.getSecondDate() == null;
+		    date = dateTimePair.getFirstDate();
+		} else {
+		    date = null;
+		}
 	}
 
 	@Override
 	protected boolean isValidArguments() {
-		// TODO Auto-generated method stub
-		return false;
+	    return date != null;
 	}
 
 	@Override
 	protected boolean isCommandAllowed() {
-		// TODO Auto-generated method stub
-		return false;
+	    return stateManager.canSearch();
 	}
 
 	@Override
 	protected Result executeAction() {
-		// TODO Auto-generated method stub
-		return null;
+	    Result result = freeTimeSearchManager.searchFreeTimeSlot(date);
+	    return result;
 	}
 	
 }
