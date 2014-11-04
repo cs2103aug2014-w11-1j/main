@@ -9,8 +9,8 @@ import data.taskinfo.TaskInfo;
  * has been executed. (i.e. all the changes to TaskData in the last action)<br>
  * It is used to reverse all modifications to TaskData at once.
  * 
- * @author Oh
  */
+//@author A0065475X
 public class UndoSnapshot {
     private ArrayList<UndoTaskSnapshot> taskSnapshotList;
     private final TaskData taskData;

@@ -9,6 +9,7 @@ import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 public class Task {
     private static final int NOT_FOUND = -1;
     private TaskInfo taskInfo;

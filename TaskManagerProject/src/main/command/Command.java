@@ -7,6 +7,7 @@ import manager.StateManager;
 import manager.result.Result;
 import manager.result.SimpleResult;
 
+//@author A0065475X
 public abstract class Command {
     protected final StateManager stateManager;
     

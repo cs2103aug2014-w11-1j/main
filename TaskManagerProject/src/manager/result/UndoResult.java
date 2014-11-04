@@ -2,6 +2,7 @@ package manager.result;
 
 import data.TaskId;
 
+//@author A0065475X
 public class UndoResult implements Result {
     private final TaskId[] taskIds;
     private final Type type;

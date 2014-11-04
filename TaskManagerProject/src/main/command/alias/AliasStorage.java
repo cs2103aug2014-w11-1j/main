@@ -26,6 +26,7 @@ import main.command.UndoCommand;
 import manager.ManagerHolder;
 
 
+//@author A0065475X
 public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput {
     // Variable string: \$ (String replaced with user's argument when aliased)
     public static final String VARIABLE_STRING = "\\$";

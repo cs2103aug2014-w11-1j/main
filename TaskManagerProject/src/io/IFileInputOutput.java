@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+//@author A0065475X
 public interface IFileInputOutput {
 
     /**

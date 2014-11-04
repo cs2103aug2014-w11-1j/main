@@ -1,5 +1,6 @@
 package manager.result;
 
+//@author A0065475X
 public class AliasSetResult implements Result {
 
     private final String alias;

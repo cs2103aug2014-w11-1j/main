@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+//@author A0065475X
 public class TaskInfo {
 
     public String name;

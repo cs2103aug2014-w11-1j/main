@@ -6,6 +6,7 @@ import manager.ManagerHolder;
 import manager.datamanager.FreeDaySearchManager;
 import manager.result.Result;
 
+//@author A0065475X
 public class FreeDaySearchCommand extends Command {
     private FreeDaySearchManager freeDaySearchManager;
     private DateTimePair dateTimePair;

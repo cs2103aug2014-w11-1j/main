@@ -10,6 +10,7 @@ import data.TaskData;
 import data.TaskId;
 import data.UndoSnapshot;
 
+//@author A0065475X
 public class UndoManager extends AbstractManager {
     private static int UNDO_LIMIT = 100;
     private LinkedList<UndoSnapshot> undoHistory;

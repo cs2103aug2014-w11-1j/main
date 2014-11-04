@@ -4,6 +4,7 @@ import manager.ManagerHolder;
 import manager.datamanager.AliasManager;
 import manager.result.Result;
 
+//@author A0065475X
 public class AliasCommand extends Command {
 
     private final AliasManager aliasManager;

@@ -54,7 +54,7 @@ public class EditManager extends AbstractManager {
                 allSuccessful = false;
                 break;
             }
-            // TODO : Change later to a proper batch response.
+
             editedTask = mergeTasks(originTask, taskInfo);
             boolean isSuccessful = taskData.setTaskInfo(taskId, editedTask);
 

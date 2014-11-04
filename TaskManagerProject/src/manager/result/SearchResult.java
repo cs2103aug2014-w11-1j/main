@@ -1,8 +1,5 @@
 package manager.result;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-
 import manager.datamanager.searchfilter.Filter;
 import data.TaskId;
 import data.taskinfo.TaskInfo;

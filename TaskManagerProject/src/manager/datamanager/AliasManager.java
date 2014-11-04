@@ -7,6 +7,7 @@ import manager.result.Result;
 import manager.result.SimpleResult;
 import data.TaskData;
 
+//@author A0065475X
 public class AliasManager extends AbstractManager {
     private final IAliasStorage aliasStorage;
 

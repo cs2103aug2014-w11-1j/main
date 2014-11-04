@@ -18,8 +18,8 @@ import data.TaskData;
  * How to put a logger in your class:<br>
  * private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
  *
- * @author Oh
  */
+//@author A0065475X
 public class Taskline {
 
     public static void main(String[] args) {

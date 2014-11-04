@@ -12,6 +12,14 @@ import manager.result.Result;
 import manager.result.SearchResult;
 import data.TaskId;
 
+/**
+ * Any command that "acts" on existing tasks should extend TargetedCommand.<br>
+ * TargetedCommand gives the functionality to parse task numbers, absolute task
+ * Ids, and to act on tasks by specifying keywords.
+ * (e.g. delete orange juice)
+ * Examples: edit, delete.
+ */
+//@author A0065475X
 public abstract class TargetedCommand extends Command {
     
     private static final char DELIMITER_WHITESPACE = ' ';

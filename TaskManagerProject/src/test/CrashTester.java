@@ -25,8 +25,8 @@ import data.TaskData;
 
 /**
  * Tests a bunch of random inputs to see if anything crashes the program.
- * @author Oh
  */
+//@author A0065475X
 public class CrashTester {
     private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
     private static final String TEST_FILENAME = "testTasks.txt";

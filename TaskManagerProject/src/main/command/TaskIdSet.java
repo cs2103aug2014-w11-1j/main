@@ -8,8 +8,8 @@ import data.TaskId;
 /**
  * A set of task IDs that is used for a command operation.
  * 
- * @author Oh
  */
+//@author A0065475X
 public class TaskIdSet implements Iterable<TaskId>{
     private ArrayList<TaskId> idList;
     

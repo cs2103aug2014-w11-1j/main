@@ -13,6 +13,8 @@ import data.taskinfo.Priority;
 import data.taskinfo.Status;
 import data.taskinfo.TaskInfo;
 
+
+//@author A0065475X
 public class EditCommand extends TargetedCommand {
     private static final String ARGUMENT_CLEAR = "clear";
     private static final String ARGUMENT_DESCRIPTION = "details";
@@ -172,6 +174,7 @@ public class EditCommand extends TargetedCommand {
         return parseEditParams(ARGUMENT_NAME + " " + args);
     }
 
+    //@author A0111862M
     private TaskInfo parseEditParams(String args) {
         Scanner sc = new Scanner(args);
         if (!sc.hasNext()) {
@@ -246,12 +249,14 @@ public class EditCommand extends TargetedCommand {
     }
 
 
+    //@author A0065475X
     protected void tryChangeToStartEditModeCommand() {
         if (parseType == ParseType.NORMAL && taskToEdit == null) {
             setSpecialOperation(Operation.EDIT_MODE);
         }
     }
 
+    //@author A0111862M
     private void parseDateTimes(String editParam, TaskInfo editTask) {
         DateTimePair dtPair = CommandParser.parseDateTimes(editParam);
         if (dtPair.isEmpty()) {
@@ -283,6 +288,7 @@ public class EditCommand extends TargetedCommand {
         }
     }
 
+    //@author A0111862M
     private void parseTags(String editParam, TaskInfo editTask) {
         if (editParam.isEmpty()) {
             return;
@@ -318,6 +324,7 @@ public class EditCommand extends TargetedCommand {
         sc.close();
     }
     
+    //@author A0065475X
     private boolean clearInfo(String info) {
         info = info.trim();
         switch(info) {

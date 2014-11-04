@@ -4,6 +4,7 @@ import manager.ManagerHolder;
 import manager.result.Result;
 import manager.result.SimpleResult;
 
+//@author A0065475X
 public class BackCommand extends Command {
     
     public BackCommand (ManagerHolder managerHolder) {

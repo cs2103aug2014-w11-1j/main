@@ -1,5 +1,6 @@
 package manager.result;
 
+//@author A0065475X
 public interface Result {
     public enum Type {
         ADD_SUCCESS,

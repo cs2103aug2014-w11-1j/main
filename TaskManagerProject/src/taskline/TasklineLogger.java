@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+//@author A0065475X
 public class TasklineLogger {
     private static final String LOGGER_FILENAME = "taskline.log";
     private static String LOGGER_NAME = "Taskline";

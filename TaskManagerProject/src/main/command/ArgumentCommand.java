@@ -5,6 +5,7 @@ import manager.ManagerHolder;
 import manager.result.Result;
 
 
+//@author A0065475X
 public class ArgumentCommand extends TargetedCommand {
 
     public ArgumentCommand(String args, ManagerHolder managerHolder) {

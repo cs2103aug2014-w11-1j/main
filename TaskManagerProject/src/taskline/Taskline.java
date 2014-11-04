@@ -19,8 +19,8 @@ import data.TaskData;
 /**
  * Does the main initialization of the program structure.
  *
- * @author Oh
  */
+//@author A0065475X
 public class Taskline {
 
     public static void main(String[] args) throws IOException {

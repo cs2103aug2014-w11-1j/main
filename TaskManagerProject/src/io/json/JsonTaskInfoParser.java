@@ -20,6 +20,7 @@ import javax.json.stream.JsonParsingException;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 public class JsonTaskInfoParser {
 
     private static final String JSON_TASKS = "tasks";

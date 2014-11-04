@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 
 import main.MainController;
 import main.command.alias.AliasStorage;
-import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
 
 import org.junit.After;
@@ -21,6 +20,12 @@ import org.junit.Test;
 import data.AutoCompleteDictionary;
 import data.TaskData;
 
+//@author A0065475X-unused
+/**
+ * Integration test. No longer used because the outputs changed too often.<br>
+ * Now we use the CrashTester instead to check whether the program crashes
+ * when certain inputs are used.
+ */
 public class IntegrationTest {
     private static final String NEWL = "\r\n";
 

@@ -10,9 +10,8 @@ import data.taskinfo.TaskInfo;
 
 /**
  * Facade for task data - used by the managers. (e.g. SearchManager)
- * 
- * @author Oh
  */
+//@author A0065475X
 public interface ITaskData {
 
     public static final int NO_TASK = -1;

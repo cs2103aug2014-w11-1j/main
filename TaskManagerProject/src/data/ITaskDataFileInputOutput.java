@@ -4,9 +4,8 @@ import data.taskinfo.TaskInfo;
 
 /**
  * Facade for task data - used by FileInputOutput
- * 
- * @author Oh
  */
+//@author A0065475X
 public interface ITaskDataFileInputOutput {
 
     public abstract TaskId getFirst();

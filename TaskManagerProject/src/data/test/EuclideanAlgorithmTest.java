@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import data.EuclideanAlgorithm;
 
+//@author A0065475X
 public class EuclideanAlgorithmTest {
 
     private void computeReversePrime() {

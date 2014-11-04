@@ -4,9 +4,8 @@ import data.taskinfo.TaskInfo;
 
 /**
  * Facade for task data - used by the undoManager
- * 
- * @author Oh
  */
+//@author A0065475X
 public interface ITaskDataUndo {
 
     public static final int NO_TASK = -1;

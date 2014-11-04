@@ -9,8 +9,8 @@ import data.taskinfo.TaskInfo;
  * <br>
  * Note: if taskInfo = NO_TASK, it means the task did not exist before the change.
  * 
- * @author Oh
  */
+//@author A0065475X
 public class UndoTaskSnapshot {
 
     public static TaskInfo NO_TASK = null;

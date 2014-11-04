@@ -18,6 +18,7 @@ import data.TaskId;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 class StubManagerHolder extends ManagerHolder {
     private StubAddManager stubAddManager;
     private StubSearchManager stubSearchManager;
