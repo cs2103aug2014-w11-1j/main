@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DateTimePair {
+
+
     protected DatePair dates;
     protected TimePair times;
 
@@ -18,7 +20,7 @@ public class DateTimePair {
     }
 
     void add(LocalDate d) {
-        if (d == null || isFull()) {
+        if (isFull()) {
             return;
         }
 
@@ -26,7 +28,7 @@ public class DateTimePair {
     }
 
     void add(LocalTime t) {
-        if (t == null || isFull()) {
+        if (isFull()) {
             return;
         }
 
