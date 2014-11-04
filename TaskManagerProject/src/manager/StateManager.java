@@ -465,23 +465,29 @@ public class StateManager {
             case ALIAS_SUCCESS : {
                 AliasSetResult aliasResult = (AliasSetResult)result;
                 return new AliasMessage(aliasResult.getAlias(),
-                        aliasResult.getValue(),
+                        aliasResult.getValue(), aliasResult.isReplacePrevious(),
                         AliasMessage.AliasType.ALIAS_SET_SUCCESS);
             }
                 
-            case ALIAS_FAILURE :
-                return new AliasMessage(null, null,
-                        AliasMessage.AliasType.ALIAS_SET_FAILURE);
-                
-            case ALIAS_DELETE_SUCCESS : {
-                AliasDeleteResult aliasResult = (AliasDeleteResult)result;
-                return new AliasMessage(aliasResult.getAlias(), null,
+            case ALIAS_FAILURE : {
+                AliasSetResult aliasResult = (AliasSetResult)result;
+                return new AliasMessage(aliasResult.getAlias(), null, false,
                         AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
             }
                 
-            case ALIAS_DELETE_FAILURE :
-                return new AliasMessage(null, null,
+            case ALIAS_DELETE_SUCCESS : {
+                AliasDeleteResult aliasResult = (AliasDeleteResult)result;
+                return new AliasMessage(aliasResult.getAlias(), 
+                        aliasResult.getValue(),
+                        AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
+            }
+                
+            case ALIAS_DELETE_FAILURE : {
+                AliasDeleteResult aliasResult = (AliasDeleteResult)result;
+                return new AliasMessage(aliasResult.getAlias(), 
+                        aliasResult.getValue(),
                         AliasMessage.AliasType.ALIAS_DELETE_FAILURE);
+            }
 
             default:
                 throw new UnsupportedOperationException("Unknown state: " +

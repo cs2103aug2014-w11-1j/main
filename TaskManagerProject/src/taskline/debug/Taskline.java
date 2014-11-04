@@ -1,5 +1,6 @@
 package taskline.debug;
 
+import jline.SimpleCompletor;
 import io.AliasFileInputOutput;
 import io.FileInputOutput;
 import io.IFileInputOutput;
@@ -28,8 +29,9 @@ public class Taskline {
         String fileName = "tasks.txt";
         String aliasFileName = "alias.txt";
 
+        SimpleCompletor simpleCompletor = new SimpleCompletor(new String[]{});  
         AutoCompleteDictionary autoCompleteDictionary =
-                new AutoCompleteDictionary(null);
+                new AutoCompleteDictionary(simpleCompletor);
         
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(

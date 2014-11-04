@@ -6,7 +6,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     DateTimeFilterTest.class,
-    KeywordFilterTest.class
+    KeywordFilterTest.class,
+    SuggestionFilterTest.class
 })
 public class FilterTestSuite {
 }

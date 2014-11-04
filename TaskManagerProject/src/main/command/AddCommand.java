@@ -38,8 +38,10 @@ public class AddCommand extends Command {
 
     private void parseDateTimes(String args, TaskInfo task) {
         DateTimePair range = CommandParser.parseDateTimesInSequence(args);
-        if (range.isEmpty() ||
-                range.getNumOfTimes() < range.getNumOfDates()) {
+        if (range.isEmpty()) {
+            return;
+        }
+        if (range.getNumOfDates() == 2 && range.getNumOfTimes() == 0) {
             return;
         }
 
@@ -55,12 +57,22 @@ public class AddCommand extends Command {
         if (range.hasFirstDate() && range.hasSecondDate()) {
             task.startDate = range.getFirstDate();
             task.endDate = range.getSecondDate();
+
+            // only 1 time: duplicate first time.
+            if (!range.hasSecondTime()) {
+                task.startTime = range.getFirstTime();
+            }
         }
 
         // one date, use the same for both
         if (range.hasFirstDate() != range.hasSecondDate()) {
             task.startDate = task.endDate = range.hasFirstDate() ?
                 range.getFirstDate() : range.getSecondDate();
+
+            // there can only be one date if there is only one time
+            if (!range.hasSecondTime()) {
+                task.startDate = null;
+            }
         }
 
         // no date, get the next possible date for the times
@@ -71,11 +83,11 @@ public class AddCommand extends Command {
                 task.endDate = getNextOccurrence(
                     range.getSecondTime(), range.getFirstTime(), task.startDate);
             }
-        }
-
-        // there can only be one date if there is only one time
-        if (!range.hasSecondTime()) {
-            task.startDate = null;
+            
+            // there can only be one date if there is only one time
+            if (!range.hasSecondTime()) {
+                task.startDate = null;
+            }
         }
     }
 

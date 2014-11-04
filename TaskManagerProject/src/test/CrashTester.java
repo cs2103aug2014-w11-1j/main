@@ -131,6 +131,19 @@ public class CrashTester {
             testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(edit, validTargets, validTargets, editKeywords, dateTime);
         }
+
+        testRandom(10, ListType.FREEDAY, ListType.DATETIME);
+        testRandom(10, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME);
+        testRandom(10, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME,
+                ListType.DATETIME);
+        testRandom(10, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME,
+                ListType.DATETIME, ListType.DATETIME);
+        testRandom(40, ListType.FREEDAY, ListType.ALL, ListType.ALL,
+                ListType.ALL, ListType.ALL);
+
+        testRandom(30, ListType.FREETIME, ListType.DATETIME);
+        testRandom(10, ListType.FREETIME, ListType.DATETIME, ListType.DATETIME);
+        testRandom(40, ListType.FREETIME, ListType.ALL, ListType.ALL);
         
         testRandom(30, ListType.DELETE, ListType.ALL);
         testRandom(30, ListType.DELETE, ListType.RANDOM);

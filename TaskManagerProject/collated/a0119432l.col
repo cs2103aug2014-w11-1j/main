@@ -3,7 +3,7 @@
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\AddSuccessfulMessage.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\AddSuccessfulMessage.java
 	 */
 
 public class AddSuccessfulMessage implements Message {
@@ -24,14 +24,14 @@ public class AddSuccessfulMessage implements Message {
 
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\AddSuccessfulMessage.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\AddSuccessfulMessage.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\DeleteSuccessfulMessage.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\DeleteSuccessfulMessage.java
 	 */
 
 public class DeleteSuccessfulMessage implements Message {
@@ -51,14 +51,14 @@ public class DeleteSuccessfulMessage implements Message {
     }
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\DeleteSuccessfulMessage.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\DeleteSuccessfulMessage.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\EditSuccessfulMessage.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\EditSuccessfulMessage.java
 	 */
 
 public class EditSuccessfulMessage implements Message{
@@ -100,14 +100,14 @@ public class EditSuccessfulMessage implements Message{
     }
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\EditSuccessfulMessage.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\EditSuccessfulMessage.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\FreeDaySearchMessage.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\FreeDaySearchMessage.java
 	 */
 
 public class FreeDaySearchMessage implements Message {
@@ -155,14 +155,14 @@ public class FreeDaySearchMessage implements Message {
     }
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\FreeDaySearchMessage.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\FreeDaySearchMessage.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\FreeTimeSearchMessage.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\FreeTimeSearchMessage.java
 	 */
 
 public class FreeTimeSearchMessage implements Message{
@@ -190,14 +190,14 @@ public class FreeTimeSearchMessage implements Message{
 	
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\FreeTimeSearchMessage.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\FreeTimeSearchMessage.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\ReportMessage.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\ReportMessage.java
 	 */
 
 public class ReportMessage implements Message{
@@ -229,14 +229,14 @@ public class ReportMessage implements Message{
 	}
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\message\ReportMessage.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\message\ReportMessage.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\AddManager.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\AddManager.java
 	 */
 
 public class AddManager extends AbstractManager {
@@ -265,14 +265,14 @@ public class AddManager extends AbstractManager {
     
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\AddManager.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\AddManager.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\DeleteManager.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\DeleteManager.java
 	 */
 
 public class DeleteManager extends AbstractManager {
@@ -319,14 +319,14 @@ public class DeleteManager extends AbstractManager {
        
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\DeleteManager.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\DeleteManager.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\EditManager.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\EditManager.java
 	 */
 
 public class EditManager extends AbstractManager {
@@ -357,7 +357,7 @@ public class EditManager extends AbstractManager {
                 allSuccessful = false;
                 break;
             }
-            // TODO : Change later to a proper batch response.
+
             editedTask = mergeTasks(originTask, taskInfo);
             boolean isSuccessful = taskData.setTaskInfo(taskId, editedTask);
 
@@ -662,14 +662,14 @@ public class EditManager extends AbstractManager {
     }
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\EditManager.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\EditManager.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\FreeDaySearchManager.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\FreeDaySearchManager.java
 	 */
 
 public class FreeDaySearchManager extends AbstractManager {
@@ -911,27 +911,34 @@ public class FreeDaySearchManager extends AbstractManager {
 		}
 	}
 }
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\FreeDaySearchManager.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\FreeDaySearchManager.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\FreeTimeSearchManager.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\FreeTimeSearchManager.java
 	 */
 
 public class FreeTimeSearchManager extends AbstractManager {
-	
 	
 	private ArrayList<TaskInfo> taskList;
 	private ArrayList<Interval> freeTimeList;
 	private final LocalTime DAY_START_TIME = LocalTime.of(0, 0);
 	private final LocalTime DAY_END_TIME = LocalTime.of(23, 59);
+	
 	public FreeTimeSearchManager(TaskData taskData) {
 		super(taskData);
 	}
-	
+
+    public Result searchFreeTimeSlot(LocalDate date){
+        taskList = getTaskList();
+        freeTimeList = generateTimeList();
+        processTaskList(date);
+        return new FreeTimeResult(date, freeTimeList);
+    }
+    
 	private Interval getTaskTimeOnDate(TaskInfo taskInfo, LocalDate date){
 		
 		
@@ -987,7 +994,7 @@ public class FreeTimeSearchManager extends AbstractManager {
 		return list;
 	}
 	
-	public void processInterval(Interval interval){
+	private void processInterval(Interval interval){
 		if (interval == null){
 			return;
 		}
@@ -1006,25 +1013,18 @@ public class FreeTimeSearchManager extends AbstractManager {
 			processInterval(itvl);
 		}
 	}
-	
-	public Result searchFreeTimeSlot(LocalDate date){
-		taskList = getTaskList();
-		freeTimeList = generateTimeList();
-		processTaskList(date);
-		return new FreeTimeResult(date, freeTimeList);
-	}
 		
 
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\FreeTimeSearchManager.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\FreeTimeSearchManager.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\Interval.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\Interval.java
 	 */
 
 public class Interval {
@@ -1061,14 +1061,14 @@ public class Interval {
 	}
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\Interval.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\freetimemanager\Interval.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\ReportManager.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\ReportManager.java
 	 */
 
 public class ReportManager extends AbstractManager{
@@ -1145,14 +1145,14 @@ public class ReportManager extends AbstractManager{
 }
 
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\ReportManager.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\ReportManager.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeDayManagerTest.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeDayManagerTest.java
 	 */
 
 public class FreeDayManagerTest {
@@ -1459,14 +1459,14 @@ public class FreeDayManagerTest {
 	}
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeDayManagerTest.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeDayManagerTest.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeTimeManagerTest.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeTimeManagerTest.java
 	 */
 
 public class FreeTimeManagerTest {
@@ -1687,14 +1687,14 @@ public class FreeTimeManagerTest {
 	}
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeTimeManagerTest.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\test\FreeTimeManagerTest.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\AddResult.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\AddResult.java
 	 */
 
 public class AddResult implements Result {
@@ -1721,14 +1721,14 @@ public class AddResult implements Result {
 
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\AddResult.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\AddResult.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\DeleteResult.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\DeleteResult.java
 	 */
 
 public class DeleteResult implements Result{
@@ -1756,14 +1756,14 @@ public class DeleteResult implements Result{
 	
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\DeleteResult.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\DeleteResult.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\EditResult.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\EditResult.java
 	 */
 
 public class EditResult implements Result {
@@ -1808,14 +1808,14 @@ public class EditResult implements Result {
 
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\EditResult.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\EditResult.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\FreeDayResult.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\FreeDayResult.java
 	 */
 
 public class FreeDayResult implements Result{
@@ -1863,14 +1863,14 @@ public class FreeDayResult implements Result{
 
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\FreeDayResult.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\FreeDayResult.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\FreeTimeResult.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\FreeTimeResult.java
 	 */
 
 public class FreeTimeResult implements Result {
@@ -1907,14 +1907,14 @@ public class FreeTimeResult implements Result {
 	}
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\FreeTimeResult.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\FreeTimeResult.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\ReportResult.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\ReportResult.java
 	 */
 
 public class ReportResult implements Result{
@@ -1948,14 +1948,14 @@ public class ReportResult implements Result{
 
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\ReportResult.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\ReportResult.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\StartEditModeResult.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\StartEditModeResult.java
 	 */
 
 public class StartEditModeResult implements Result {
@@ -1976,14 +1976,14 @@ public class StartEditModeResult implements Result {
     }
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\result\StartEditModeResult.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\result\StartEditModeResult.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\StateManager.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\StateManager.java
 	 */
 
 public class StateManager {
@@ -2396,23 +2396,29 @@ public class StateManager {
             case ALIAS_SUCCESS : {
                 AliasSetResult aliasResult = (AliasSetResult)result;
                 return new AliasMessage(aliasResult.getAlias(),
-                        aliasResult.getValue(),
+                        aliasResult.getValue(), aliasResult.isReplacePrevious(),
                         AliasMessage.AliasType.ALIAS_SET_SUCCESS);
             }
                 
-            case ALIAS_FAILURE :
-                return new AliasMessage(null, null,
-                        AliasMessage.AliasType.ALIAS_SET_FAILURE);
-                
-            case ALIAS_DELETE_SUCCESS : {
-                AliasDeleteResult aliasResult = (AliasDeleteResult)result;
-                return new AliasMessage(aliasResult.getAlias(), null,
+            case ALIAS_FAILURE : {
+                AliasSetResult aliasResult = (AliasSetResult)result;
+                return new AliasMessage(aliasResult.getAlias(), null, false,
                         AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
             }
                 
-            case ALIAS_DELETE_FAILURE :
-                return new AliasMessage(null, null,
+            case ALIAS_DELETE_SUCCESS : {
+                AliasDeleteResult aliasResult = (AliasDeleteResult)result;
+                return new AliasMessage(aliasResult.getAlias(), 
+                        aliasResult.getValue(),
+                        AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
+            }
+                
+            case ALIAS_DELETE_FAILURE : {
+                AliasDeleteResult aliasResult = (AliasDeleteResult)result;
+                return new AliasMessage(aliasResult.getAlias(), 
+                        aliasResult.getValue(),
                         AliasMessage.AliasType.ALIAS_DELETE_FAILURE);
+            }
 
             default:
                 throw new UnsupportedOperationException("Unknown state: " +
@@ -2423,14 +2429,14 @@ public class StateManager {
 
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\StateManager.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\StateManager.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\UpdateManager.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\UpdateManager.java
 	 */
 
 public class UpdateManager {
@@ -2495,7 +2501,7 @@ public class UpdateManager {
 	
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\manager\UpdateManager.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\UpdateManager.java
 
 
 

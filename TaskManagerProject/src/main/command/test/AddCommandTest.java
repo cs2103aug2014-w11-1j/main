@@ -92,7 +92,7 @@ public class AddCommandTest {
         task = getTaskInfoWithoutName(d);
 
         assertEquals(null, task.startDate);
-        assertEquals(null, task.endDate);
+        assertEquals(DATE_EARLY, task.endDate);
         assertEquals(null, task.startTime);
         assertEquals(null, task.endTime);
 

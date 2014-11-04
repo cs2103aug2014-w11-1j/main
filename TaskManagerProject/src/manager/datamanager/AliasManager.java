@@ -23,20 +23,24 @@ public class AliasManager extends AbstractManager {
             boolean isAlreadyBinded = aliasStorage.isAlreadyBinded(alias);
             value = aliasStorage.createCustomCommand(alias, target);
             
-            return new AliasSetResult(alias, value, isAlreadyBinded);
+            return new AliasSetResult(alias, value, isAlreadyBinded,
+                    Result.Type.ALIAS_SUCCESS);
             
         } else {
-            return new SimpleResult(Result.Type.ALIAS_FAILURE);
+            return new AliasSetResult(alias, target, false,
+                    Result.Type.ALIAS_FAILURE);
         }
     }
 
     public Result deleteAlias(String alias) {
         String value = aliasStorage.deleteCustomCommand(alias);
         if (value != null) {
-            return new AliasDeleteResult(alias, value);
+            return new AliasDeleteResult(alias, value,
+                    Result.Type.ALIAS_DELETE_SUCCESS);
         }
         else {
-            return new SimpleResult(Result.Type.ALIAS_DELETE_FAILURE);
+            return new AliasDeleteResult(alias, null,
+                    Result.Type.ALIAS_DELETE_FAILURE);
         }
     }
 }
