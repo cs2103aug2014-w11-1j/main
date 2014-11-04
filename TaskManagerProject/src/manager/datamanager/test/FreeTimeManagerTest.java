@@ -36,7 +36,7 @@ public class FreeTimeManagerTest {
 		TaskData taskData = new TaskData();
 		FreeTimeSearchManager manager = new FreeTimeSearchManager(taskData);
 		Result result;
-		
+
 		taskData.add(task1);
 		result = manager.searchFreeTimeSlot(getDate(11, 16));
 		FreeTimeResult freeTimeResult = (FreeTimeResult) result;
@@ -44,24 +44,8 @@ public class FreeTimeManagerTest {
 		
 		
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
-		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
-		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
-		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
-		freeTimeList.add(new Interval(getTime(10, 0), getTime(10, 59),false));
-		freeTimeList.add(new Interval(getTime(11, 0), getTime(11, 59),false));
-		freeTimeList.add(new Interval(getTime(12, 0), getTime(12, 59),false));
-		freeTimeList.add(new Interval(getTime(13, 0), getTime(13, 59),false));
-		freeTimeList.add(new Interval(getTime(14, 0), getTime(14, 59),false));
-		freeTimeList.add(new Interval(getTime(15, 0), getTime(15, 59),false));
-		freeTimeList.add(new Interval(getTime(16, 0), getTime(16, 59),false));
-		freeTimeList.add(new Interval(getTime(17, 0), getTime(17, 59),false));
-		freeTimeList.add(new Interval(getTime(18, 0), getTime(18, 59),false));
-		freeTimeList.add(new Interval(getTime(19, 0), getTime(19, 59),false));
-		freeTimeList.add(new Interval(getTime(20, 0), getTime(20, 59),false));
-		freeTimeList.add(new Interval(getTime(21, 0), getTime(21, 59),false));
-		freeTimeList.add(new Interval(getTime(22, 0), getTime(22, 59),false));
-		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
-		
+        freeTimeList.add(makeInterval(0, 3));
+        freeTimeList.add(makeInterval(10, 24));
 		
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
 	}
@@ -82,9 +66,7 @@ public class FreeTimeManagerTest {
 		
 		
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
-		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
-		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
-		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
+        freeTimeList.add(makeInterval(0, 3));
 		
 		
 		
@@ -109,21 +91,8 @@ public class FreeTimeManagerTest {
 		
 				
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
-		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
-		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
-		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
-		freeTimeList.add(new Interval(getTime(12, 0), getTime(12, 59),false));
-		freeTimeList.add(new Interval(getTime(13, 0), getTime(13, 59),false));
-		freeTimeList.add(new Interval(getTime(14, 0), getTime(14, 59),false));
-		freeTimeList.add(new Interval(getTime(15, 0), getTime(15, 59),false));
-		freeTimeList.add(new Interval(getTime(16, 0), getTime(16, 59),false));
-		freeTimeList.add(new Interval(getTime(17, 0), getTime(17, 59),false));
-		freeTimeList.add(new Interval(getTime(18, 0), getTime(18, 59),false));
-		freeTimeList.add(new Interval(getTime(19, 0), getTime(19, 59),false));
-		freeTimeList.add(new Interval(getTime(20, 0), getTime(20, 59),false));
-		freeTimeList.add(new Interval(getTime(21, 0), getTime(21, 59),false));
-		freeTimeList.add(new Interval(getTime(22, 0), getTime(22, 59),false));
-		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
+        freeTimeList.add(makeInterval(0, 3));
+        freeTimeList.add(makeInterval(12, 24));
 		
 		
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
@@ -148,7 +117,7 @@ public class FreeTimeManagerTest {
 		
 		
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
-		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
+        freeTimeList.add(makeInterval(2, 3));
 		
 		
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
@@ -174,34 +143,16 @@ public class FreeTimeManagerTest {
 		
 		
 		ArrayList<Interval> freeTimeList = new ArrayList<>();
-		freeTimeList.add(new Interval(getTime(0, 0), getTime(0, 59),false));
-		freeTimeList.add(new Interval(getTime(1, 0), getTime(1, 59),false));
-		freeTimeList.add(new Interval(getTime(2, 0), getTime(2, 59),false));
-		freeTimeList.add(new Interval(getTime(3, 0), getTime(3, 59),false));
-		freeTimeList.add(new Interval(getTime(4, 0), getTime(4, 59),false));
-		freeTimeList.add(new Interval(getTime(5, 0), getTime(5, 59),false));
-		freeTimeList.add(new Interval(getTime(6, 0), getTime(6, 59),false));
-		freeTimeList.add(new Interval(getTime(7, 0), getTime(7, 59),false));
-		freeTimeList.add(new Interval(getTime(8, 0), getTime(8, 59),false));
-		freeTimeList.add(new Interval(getTime(9, 0), getTime(9, 59),false));
-		freeTimeList.add(new Interval(getTime(10, 0), getTime(10, 59),false));
-		freeTimeList.add(new Interval(getTime(11, 0), getTime(11, 59),false));
-		freeTimeList.add(new Interval(getTime(12, 0), getTime(12, 59),false));
-		freeTimeList.add(new Interval(getTime(13, 0), getTime(13, 59),false));
-		freeTimeList.add(new Interval(getTime(14, 0), getTime(14, 59),false));
-		freeTimeList.add(new Interval(getTime(15, 0), getTime(15, 59),false));
-		freeTimeList.add(new Interval(getTime(16, 0), getTime(16, 59),false));
-		freeTimeList.add(new Interval(getTime(17, 0), getTime(17, 59),false));
-		freeTimeList.add(new Interval(getTime(18, 0), getTime(18, 59),false));
-		freeTimeList.add(new Interval(getTime(19, 0), getTime(19, 59),false));
-		freeTimeList.add(new Interval(getTime(20, 0), getTime(20, 59),false));
-		freeTimeList.add(new Interval(getTime(21, 0), getTime(21, 59),false));
-		freeTimeList.add(new Interval(getTime(22, 0), getTime(22, 59),false));
-		freeTimeList.add(new Interval(getTime(23, 0), getTime(23, 59),false));
+        freeTimeList.add(makeInterval(0, 24));
 		
 		
 		assertResultEquals(freeTimeList, freeTimeResult.getFreeTimeList());
 	}
+	
+	private Interval makeInterval(int startHour, int endHour) {
+	    return new Interval(getTime(startHour, 0), getTime(endHour-1, 59), false);
+	}
+	
 	private boolean assertResultEquals(ArrayList<Interval> list1, ArrayList<Interval> list2){
 		boolean result = true;
 		int size1 = list1.size();

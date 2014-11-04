@@ -42,7 +42,7 @@ public class FreeTimeSearchFormatter {
     
     private String formatInterval(Interval interval) {
         LocalTime startTime = interval.getStartTime();
-        LocalTime endTime = interval.getEndTime();
+        LocalTime endTime = interval.getRoundedEndTime();
         
         StringBuilder sb = new StringBuilder();
         sb.append(formatTime(startTime));
