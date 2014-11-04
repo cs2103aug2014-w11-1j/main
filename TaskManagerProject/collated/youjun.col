@@ -3,7 +3,7 @@
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\command\CommandController.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\command\CommandController.java
 	 */
 
  */
@@ -51,14 +51,14 @@ public class CommandController {
     }
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\command\CommandController.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\command\CommandController.java
 
 
 
 
 
 	/**
-	 * origin: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\MainController.java
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\MainController.java
 	 */
 
  */
@@ -104,7 +104,7 @@ public class MainController {
     }
 }
 
-	// End of segment: C:\Users\bruce\desktop\main\TaskManagerProject\src\main\MainController.java
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\MainController.java
 
 
 

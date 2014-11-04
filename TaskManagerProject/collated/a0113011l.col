@@ -1,0 +1,3218 @@
+//@author: a0113011l
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\data\AutoCompleteDictionary.java
+	 */
+
+    public void refreshDictionary(String[] strings) {
+        completor.setCandidateStrings(strings);
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\data\AutoCompleteDictionary.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\AddSuccessfulFormatter.java
+	 */
+
+public class AddSuccessfulFormatter {
+    private final static String FORMAT_LINE = "Task %1$s added successfully." +
+            System.lineSeparator();
+    
+    /**
+     * Formats an AddSuccessfulMessage to a String.
+     * @param message The Message to be formatted.
+     * @return The formatted Message.
+     */
+    public String format(AddSuccessfulMessage message) {
+        return String.format(FORMAT_LINE, message.getTask().name);
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\AddSuccessfulFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\DeleteSuccessfulFormatter.java
+	 */
+
+public class DeleteSuccessfulFormatter {
+    private final static String FORMAT_SINGLE = "Task %1$s deleted." +
+            System.lineSeparator();
+    private final static String HEADER_MULTI = "%1$d tasks deleted.";
+    private final static String TASKNAME_MULTI = "- %1$s";
+    
+    /**
+     * Formats a DeleteSuccessfulMessage to a String.
+     * @param message The DeleteSuccessfulMessage to be formatted.
+     * @return The formatted Message.
+     */
+    public String format(DeleteSuccessfulMessage message) {
+        assert message.getTask().length > 0;
+        
+        switch(message.getTask().length) {
+            case 1 :
+                return formatSingleTask(message);
+            default :
+                return formatMultiTask(message);
+        }
+    }
+    
+    private String formatSingleTask(DeleteSuccessfulMessage message) {
+        assert message.getTask().length == 1;
+        return String.format(FORMAT_SINGLE, message.getTask()[0].name);
+    }
+    
+    private String formatMultiTask(DeleteSuccessfulMessage message) {
+        assert message.getTask().length > 1;
+        return getMultiHeader(message) + getMultiTaskList(message);
+    }
+    
+    private String getMultiHeader(DeleteSuccessfulMessage message) {
+        return String.format(HEADER_MULTI, message.getTask().length) + 
+                System.lineSeparator();
+    }
+    
+    private String getMultiTaskList(DeleteSuccessfulMessage message) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < message.getTask().length; i++) {
+            builder.append(String.format(TASKNAME_MULTI, 
+                    message.getTask()[i].name));
+            builder.append(System.lineSeparator());
+        }
+        
+        return builder.toString();
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\DeleteSuccessfulFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\DetailsFormatter.java
+	 */
+
+public class DetailsFormatter {
+    DetailsUtility detailsUtility;
+
+    public DetailsFormatter() {
+        detailsUtility = new DetailsUtility();
+    }
+    
+    private String arrayListToString(ArrayList<String> lines) {
+        StringBuilder builder = new StringBuilder("");
+        for (String line : lines) {
+            builder.append(line);
+            builder.append(System.lineSeparator());
+        }
+        return builder.toString();
+    }
+    
+    /**
+     * Format the DetailsMessage to a String.
+     * @param message The DetailsMessage to be formatted.
+     * @return The formatted Message.
+     */
+    public String format(DetailsMessage message) {
+        TaskInfo task = message.getTask();
+        TaskId taskId = message.getTaskId();
+        return arrayListToString(
+                detailsUtility.formatToArray(task, taskId));
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\DetailsFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\EditModeFormatter.java
+	 */
+
+public class EditModeFormatter {
+    private final static String FORMAT_LINE = "You are now editing %1$s." + 
+            System.lineSeparator();
+    
+    private String arrayListToString(ArrayList<String> lines) {
+        StringBuilder builder = new StringBuilder("");
+        for (String line : lines) {
+            builder.append(line);
+            builder.append(System.lineSeparator());
+        }
+        return builder.toString();
+    }
+    
+    /**
+     * Format an EditModeInfo to a String.
+     * @param editInfo The EditModeInfo that needs to be formatted.
+     * @return The formatted ModeInfo.
+     */
+    public String format(EditModeInfo editInfo) {
+        DetailsUtility detailsUtil = new DetailsUtility();
+        ArrayList<String> lines = new ArrayList<String>();
+        lines.add(String.format(FORMAT_LINE, editInfo.getTaskId()));
+        ArrayList<String> detailsLines = detailsUtil.formatToArray(editInfo.getTask(), 
+                editInfo.getTaskId());
+        lines.addAll(detailsLines);
+        return arrayListToString(lines);
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\EditModeFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\EditSuccessfulFormatter.java
+	 */
+
+public class EditSuccessfulFormatter {
+    private final static String CHANGED_NAME = "Task name changed.";
+    private final static String CHANGED_TIME = "Time changed.";
+    private final static String CHANGED_PRIORITY = "Priority changed.";
+    private final static String ADDED_TAG = "Tag added.";
+    private final static String DELETED_TAG = "Tag deleted.";
+    private final static String CHANGED_DETAILS = "Details changed.";
+    private final static String CHANGED_STATUS = "Status changed.";
+    
+    private String getChangedFieldString(
+            EditSuccessfulMessage.Field changedField) {
+        String changedFieldString = "";
+        switch(changedField) {
+            case NAME :
+                changedFieldString = CHANGED_NAME;
+                break;
+            case PRIORITY :
+                changedFieldString = CHANGED_PRIORITY;
+                break;
+            case TIME :
+                changedFieldString = CHANGED_TIME;
+                break;
+            case TAGS_ADD :
+                changedFieldString = ADDED_TAG;
+                break;
+            case TAGS_DELETE :
+                changedFieldString = DELETED_TAG;
+                break;
+            case DETAILS :
+                changedFieldString = CHANGED_DETAILS;
+            case STATUS : 
+                changedFieldString = CHANGED_STATUS;
+        }
+        return changedFieldString;
+    }
+    
+    
+    private ArrayList<String> formatToArray(EditSuccessfulMessage message) {
+        ArrayList<String> result = new ArrayList<String>();
+        
+        for (Field field : message.getChangedField()) {
+            result.add(getChangedFieldString(field));
+        }
+        
+        TaskInfo[] tasks = message.getTask();
+        TaskId[] taskIds = message.getTaskId();
+        
+        DetailsUtility detailsUtility = new DetailsUtility();
+        
+        for (int i = 0; i < tasks.length; i++) {
+            ArrayList<String> detailsLines =
+                    detailsUtility.formatToArray(tasks[i], taskIds[i]);
+            
+            result.add("");
+            result.addAll(detailsLines);
+        }
+        
+        return result;
+    }
+    
+    private String arrayListToString(ArrayList<String> lines) {
+        StringBuilder builder = new StringBuilder("");
+        for (String line : lines) {
+            builder.append(line);
+            builder.append(System.lineSeparator());
+        }
+        return builder.toString();
+    }
+    
+    public String format(EditSuccessfulMessage message) {
+        return arrayListToString(formatToArray(message));
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\EditSuccessfulFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\EmptyModeFormatter.java
+	 */
+
+public class EmptyModeFormatter {
+	
+	/**
+	 * Returns an empty String, since the ModeInfo is empty.
+	 * @param emptyInfo
+	 * @return an empty String.
+	 */
+    public String format(EmptyModeInfo emptyInfo) {
+        return "";
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\EmptyModeFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\EnumFormatter.java
+	 */
+
+public class EnumFormatter {
+    
+    private final static String MESSAGE_INVALID_ARGUMENT = 
+            "Sorry, Taskline could not execute your command." +
+            System.lineSeparator();    
+    private final static String MESSAGE_INVALID_COMMAND =
+            "The command is invalid." + System.lineSeparator();            
+    private final static String MESSAGE_ADD_FAILED =
+            "Add failed. Please try again." +
+            System.lineSeparator();
+    private final static String MESSAGE_DELETE_FAILED =
+            "Delete failed. Please try again." +
+            System.lineSeparator();
+    private final static String MESSAGE_EDIT_FAILED =
+            "Edit failed. Please try again." +
+            System.lineSeparator();
+    private final static String MESSAGE_ADD_TAG_FAILED =
+            "Add tag failed. Please try again." +
+            System.lineSeparator();
+    private final static String MESSAGE_DELETE_TAG_FAILED =
+            "Delete tag failed. Please try again." +
+            System.lineSeparator();
+    private final static String MESSAGE_SEARCH_SUCCESS = "";
+    private final static String MESSAGE_SEARCH_FAILED = 
+            "Search failed. Please try again." +
+            System.lineSeparator();
+    private final static String MESSAGE_EDIT_STARTED = "";
+    private final static String MESSAGE_EDIT_ENDED = 
+            "Exiting edit mode." + 
+            System.lineSeparator();
+    private final static String MESSAGE_UNDO_SUCCESS = 
+            "Undo successful." + 
+            System.lineSeparator();
+    private final static String MESSAGE_UNDO_FAILED = 
+            "Undo failed. Please try again." +
+            System.lineSeparator();
+    private final static String MESSAGE_REDO_SUCCESS =
+            "Redo successful." +
+            System.lineSeparator();
+    private final static String MESSAGE_REDO_FAILED =
+            "Redo failed." +
+            System.lineSeparator();
+    private final static String MESSAGE_SEARCH_ENDED =
+            "Search ended." +
+            System.lineSeparator();
+    private final static String MESSAGE_EXIT = 
+            "Exiting Taskline." +
+            System.lineSeparator();
+    private final static String MESSAGE_EMPTY = "";
+
+    /**
+     * Format an EnumMessage.
+     * @param message The EnumMessage that needs to be formatted.
+     * @return The message, formatted to a String.
+     */
+    public String format(EnumMessage message) {
+        String formattedResult;
+        switch(message.getMessageType()) {
+            case EMPTY_STRING :
+                formattedResult = MESSAGE_EMPTY;
+                break;
+            case INVALID_ARGUMENT :
+                formattedResult = MESSAGE_INVALID_ARGUMENT;
+                break;
+            case INVALID_COMMAND :
+                formattedResult = MESSAGE_INVALID_COMMAND;
+                break;
+            case ADD_FAILED :
+                formattedResult = MESSAGE_ADD_FAILED;
+                break;
+            case EDIT_FAILED :
+                formattedResult = MESSAGE_EDIT_FAILED;
+                break;
+            case DELETE_FAILED :
+                formattedResult = MESSAGE_DELETE_FAILED;
+                break;
+            case ADD_TAG_FAILED :
+                formattedResult = MESSAGE_ADD_TAG_FAILED;
+                break;
+            case DELETE_TAG_FAILED :
+                formattedResult = MESSAGE_DELETE_TAG_FAILED;
+                break;
+            case SEARCH_SUCCESS :
+                formattedResult = MESSAGE_SEARCH_SUCCESS;
+                break;
+            case SEARCH_FAILED :
+                formattedResult = MESSAGE_SEARCH_FAILED;
+                break;
+            case EDIT_STARTED :
+                formattedResult = MESSAGE_EDIT_STARTED;
+                break;
+            case EDIT_ENDED :
+                formattedResult = MESSAGE_EDIT_ENDED;
+                break;
+            case UNDO_SUCCESS :
+                formattedResult = MESSAGE_UNDO_SUCCESS;
+                break;
+            case UNDO_FAILED :
+                formattedResult = MESSAGE_UNDO_FAILED;
+                break;
+            case REDO_SUCCESS :
+                formattedResult = MESSAGE_REDO_SUCCESS;
+                break;
+            case REDO_FAILED :
+                formattedResult = MESSAGE_REDO_FAILED;
+                break;
+            case SEARCH_ENDED :
+                formattedResult = MESSAGE_SEARCH_ENDED;
+                break;
+            case EXIT :
+                formattedResult = MESSAGE_EXIT;
+                break;
+            default :
+                formattedResult = "";
+                break;
+        }
+        return formattedResult;
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\EnumFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\Formatter.java
+	 */
+
+public class Formatter {
+    private AddSuccessfulFormatter addSuccessfulFormatter;
+    private DeleteSuccessfulFormatter deleteSuccessfulFormatter;
+    private EditSuccessfulFormatter editSuccessfulFormatter;
+    private EnumFormatter enumFormatter;
+    private DetailsFormatter detailsFormatter;
+    private ReportFormatter reportFormatter;
+    private FreeDaySearchFormatter freeDaySearchFormatter;
+    private FreeTimeSearchFormatter freeTimeSearchFormatter;
+    private AliasFormatter aliasFormatter;
+    
+    private EditModeFormatter editModeFormatter;
+    private SearchModeFormatter searchModeFormatter;
+    private EmptyModeFormatter emptyModeFormatter;
+    private WaitingModeFormatter waitingModeFormatter;
+    
+    class MessageModePair {
+        public Message.Type messageType;
+        public ModeInfo.Type modeInfoType;
+        
+        public MessageModePair(Message.Type messageType, 
+                ModeInfo.Type modeInfoType) {
+            this.messageType = messageType;
+            this.modeInfoType = modeInfoType;
+        }
+    }
+    
+    private final MessageModePair modePrintPair[] = new MessageModePair[]{
+            new MessageModePair(Message.Type.ADD_SUCCESSFUL, 
+                    ModeInfo.Type.EDIT_MODE),
+            new MessageModePair(Message.Type.ADD_SUCCESSFUL, 
+                    ModeInfo.Type.SEARCH_MODE),
+            new MessageModePair(Message.Type.DELETE_SUCCESSFUL, 
+                    ModeInfo.Type.EDIT_MODE),
+            new MessageModePair(Message.Type.DELETE_SUCCESSFUL, 
+                    ModeInfo.Type.SEARCH_MODE),
+            new MessageModePair(Message.Type.ENUM_MESSAGE,
+                    ModeInfo.Type.SEARCH_MODE),
+            new MessageModePair(Message.Type.ENUM_MESSAGE,
+                    ModeInfo.Type.EDIT_MODE),
+            new MessageModePair(Message.Type.EDIT_SUCCESSFUL,
+                    ModeInfo.Type.SEARCH_MODE),
+            new MessageModePair(Message.Type.ENUM_MESSAGE,
+                    ModeInfo.Type.WAITING_MODE),
+    };
+
+    /**
+     * The constructor for Formatter.
+     */
+    public Formatter() {
+        addSuccessfulFormatter = new AddSuccessfulFormatter();
+        deleteSuccessfulFormatter = new DeleteSuccessfulFormatter();
+        editSuccessfulFormatter = new EditSuccessfulFormatter();
+        enumFormatter = new EnumFormatter();
+        detailsFormatter = new DetailsFormatter();
+        reportFormatter = new ReportFormatter();
+        freeDaySearchFormatter = new FreeDaySearchFormatter();
+        freeTimeSearchFormatter = new FreeTimeSearchFormatter();
+        aliasFormatter = new AliasFormatter();
+        
+        editModeFormatter = new EditModeFormatter();
+        searchModeFormatter = new SearchModeFormatter();
+        emptyModeFormatter = new EmptyModeFormatter();
+        waitingModeFormatter = new WaitingModeFormatter();
+    }
+    
+    private String formatMessage(Message message) {
+        String formattedMessage = "";
+        switch(message.getType()) {
+            
+            case ADD_SUCCESSFUL :
+                AddSuccessfulMessage addSuccessfulMessage = 
+                        (AddSuccessfulMessage)message;
+                formattedMessage = addSuccessfulFormatter.format(
+                        addSuccessfulMessage);
+                break;
+                
+            case EDIT_SUCCESSFUL :
+                EditSuccessfulMessage editSuccessfulMessage =
+                        (EditSuccessfulMessage)message;
+                formattedMessage = editSuccessfulFormatter.format(
+                        editSuccessfulMessage);
+                break;
+                
+            case DELETE_SUCCESSFUL :
+                DeleteSuccessfulMessage deleteSuccessfulMessage =
+                        (DeleteSuccessfulMessage)message;
+                formattedMessage = deleteSuccessfulFormatter.format(
+                        deleteSuccessfulMessage);
+                break;
+                
+            case ENUM_MESSAGE :
+                EnumMessage enumMessage = (EnumMessage)message;
+                formattedMessage = enumFormatter.format(enumMessage);
+                break;
+                
+            case DETAILS :
+                DetailsMessage detailsMessage = (DetailsMessage)message;
+                formattedMessage = detailsFormatter.format(detailsMessage);
+                break;
+                
+            case REPORT :
+                ReportMessage reportMessage = (ReportMessage)message;
+                formattedMessage = reportFormatter.format(reportMessage);
+                break;
+                
+            case FREE_DAY_SEARCH_SUCCESSFUL :
+                FreeDaySearchMessage freeDaySearchMessage = 
+                        (FreeDaySearchMessage)message;
+                formattedMessage = 
+                        freeDaySearchFormatter.format(freeDaySearchMessage);
+                break;
+                
+            case ALIAS_MESSAGE :
+                AliasMessage aliasMessage = (AliasMessage)message;
+                formattedMessage = aliasFormatter.format(aliasMessage);
+                break;
+                
+            case FREE_TIME_SEARCH_SUCCESSFUL :
+                FreeTimeSearchMessage freeTimeMessage =
+                        (FreeTimeSearchMessage)message;
+                formattedMessage =
+                        freeTimeSearchFormatter.format(freeTimeMessage);
+                break;
+            default :
+                break;
+
+        }
+        return formattedMessage;
+    }
+    
+    private String formatModeInfo(ModeInfo modeInfo) {
+        String formattedModeInfo = "";
+        switch (modeInfo.getType()) {
+            case EMPTY_MODE :
+                EmptyModeInfo emptyModeInfo = (EmptyModeInfo) modeInfo;
+                formattedModeInfo = emptyModeFormatter.format(emptyModeInfo);
+                break;
+            case EDIT_MODE :
+                EditModeInfo editModeInfo = (EditModeInfo) modeInfo;
+                formattedModeInfo = editModeFormatter.format(editModeInfo);
+                break;
+            case SEARCH_MODE :
+                SearchModeInfo waitingModeInfo = (SearchModeInfo) modeInfo;
+                formattedModeInfo = searchModeFormatter.format(waitingModeInfo);
+                break;
+            case WAITING_MODE :
+                SearchModeInfo searchModeInfo = (SearchModeInfo) modeInfo;
+                formattedModeInfo = waitingModeFormatter.format(searchModeInfo);
+                break;
+        }
+        return formattedModeInfo;
+    }
+    
+    private boolean shouldPrintMode(Response response) {
+        for (MessageModePair pair : modePrintPair) {
+            if (pair.messageType == response.getMessage().getType() && 
+                    pair.modeInfoType == response.getModeInfo().getType()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Format the Response to String.
+     * @param response The Response object to be formatted.
+     * @return The formatted String.
+     */
+    public String format(Response response) {
+        if (shouldPrintMode(response)) {
+            return formatMessage(response.getMessage()) + 
+                    formatModeInfo(response.getModeInfo());
+        } else {
+            return formatMessage(response.getMessage());
+        }
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\Formatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\FreeDaySearchFormatter.java
+	 */
+
+public class FreeDaySearchFormatter {
+    private final static String LINE_HEADER = 
+            "You do not have any planned tasks on these days:" + 
+            System.lineSeparator();
+    private final static String LINE_NOTASK = 
+            "You do not have any planned tasks between %1$s and %2$s." + 
+            System.lineSeparator();
+    private final static String LINE_DATE = 
+            "- %1$s" + System.lineSeparator();
+    
+    private final static String FORMAT_SHORTDATE = 
+            "d MMMM y";
+    private final static String FORMAT_DATE = 
+            "E, d MMMM y";
+    
+    private String formatDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
+        return formatter.format(date);
+    }
+    
+    private String formatShortDate(LocalDate date) {
+        DateTimeFormatter formatter = 
+                DateTimeFormatter.ofPattern(FORMAT_SHORTDATE);
+        return formatter.format(date);
+    }
+    
+    private String getAllFree(LocalDate startDate, LocalDate endDate) {
+        return String.format(LINE_NOTASK, 
+                formatShortDate(startDate), formatShortDate(endDate));
+    }
+    
+    public String format(FreeDaySearchMessage message) {
+        StringBuilder result = new StringBuilder();
+        
+        if (message.getFirstBusyDate() == null) {
+            return getAllFree(message.getSearchStartDate(), message.getSearchEndDate());
+        } else {
+            assert message.getLastBusyDate() != null;
+            ArrayList<LocalDate> freeDates = message.getFreeDateList();
+
+            result.append(LINE_HEADER);
+            LocalDate current = message.getSearchStartDate();
+            
+            do {
+                if (current.compareTo(message.getFirstBusyDate()) < 0) {
+                    result.append(String.format(LINE_DATE, formatDate(current)));
+                } else if (current.compareTo(message.getLastBusyDate()) > 0) {
+                    result.append(String.format(LINE_DATE, formatDate(current)));
+                } else if (freeDates.contains(current)) {
+                    result.append(String.format(LINE_DATE, formatDate(current)));
+                }
+                current = current.plusDays(1);
+            } while (!current.equals(message.getSearchEndDate().plusDays(1)));
+            
+            return result.toString();
+        }
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\FreeDaySearchFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\ReportFormatter.java
+	 */
+
+public class ReportFormatter {
+    private final static String HEADER_REPORT = "You have %1$s tasks today, "
+            + "and %2$s tasks tomorrow." + System.lineSeparator() + 
+            "Below are the high-priority tasks." + System.lineSeparator();
+    SummaryUtility summaryUtility;
+    public ReportFormatter() {
+        summaryUtility = new SummaryUtility();
+    }
+    
+    public String format(ReportMessage message) {
+        StringBuilder result = new StringBuilder();
+        result.append(String.format(HEADER_REPORT, 
+                message.getCountTodayTask(), message.getCountTmrTask()));
+        TaskInfo[] tasks = new TaskInfo[message.getUrgentTask().size()];
+        message.getUrgentTask().toArray(tasks);
+        result.append(summaryUtility.format(tasks, null));
+        return result.toString();
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\ReportFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\SearchModeFormatter.java
+	 */
+
+public class SearchModeFormatter {
+    private final static String LINE_SUGGESTION = "Did you mean: ";
+    
+    private SummaryUtility summaryUtility;
+    
+    public SearchModeFormatter() {
+        summaryUtility = new SummaryUtility();
+    }
+
+    private String getSuggestionLine(String[] suggestions) {
+        assert suggestions != null;
+        StringBuilder builder = new StringBuilder(LINE_SUGGESTION);
+        builder.append(String.join(",", suggestions));
+        builder.append("?");
+        return builder.toString();
+    }
+    
+    public String format(SearchModeInfo modeInfo) {
+        StringBuilder result = new StringBuilder();
+        if (modeInfo.getTasks().length != 0 && modeInfo.getSuggestions() != null) {
+            result.append(getSuggestionLine(modeInfo.getSuggestions()));
+            result.append(System.lineSeparator());
+        }
+        result.append(summaryUtility.format(modeInfo.getTasks(), 
+                modeInfo.getTaskIds()));
+        
+        return result.toString();
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\SearchModeFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\AddSuccessfulFormatterTest.java
+	 */
+
+public class AddSuccessfulFormatterTest {
+
+    @Test
+    public void test() {
+        TaskInfo task = TaskInfo.create();
+        task.name = "ABCD";
+        
+        TaskId taskId = new TaskId(123);
+        AddSuccessfulMessage message = new AddSuccessfulMessage(task, taskId);
+        
+        AddSuccessfulFormatter formatter = new AddSuccessfulFormatter();
+       
+        String result = formatter.format(message);
+        
+        assertEquals("Task ABCD added successfully." + 
+                System.lineSeparator(), result);
+    }
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\AddSuccessfulFormatterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\DeleteSuccessfulFormatterTest.java
+	 */
+
+public class DeleteSuccessfulFormatterTest {
+
+    @Test
+    public void testSingle() {
+        TaskInfo task = TaskInfo.create();
+        task.name = "ABCD";
+        
+        TaskId taskId = new TaskId(1);
+        
+        TaskInfo[] tasks = new TaskInfo[1];
+        TaskId[] taskIds = new TaskId[1];
+        
+        tasks[0] = task;
+        taskIds[0] = taskId;
+        DeleteSuccessfulMessage message = 
+                new DeleteSuccessfulMessage(tasks, taskIds);
+        
+        DeleteSuccessfulFormatter formatter = new DeleteSuccessfulFormatter();
+        
+        assertEquals("Task ABCD deleted." + System.lineSeparator(), 
+                formatter.format(message));
+    }
+
+    @Test
+    public void testMulti() {
+        TaskInfo[] tasks = new TaskInfo[2];
+        TaskId[] taskIds = new TaskId[2];
+        
+        tasks[0] = TaskInfo.create();
+        tasks[0].name = "ABCD";
+        taskIds[0] = new TaskId(1);
+        
+        tasks[1] = TaskInfo.create();
+        tasks[1].name = "EFGH";
+        taskIds[1] = new TaskId(2);
+        
+        DeleteSuccessfulMessage message = 
+                new DeleteSuccessfulMessage(tasks, taskIds);
+        
+        DeleteSuccessfulFormatter formatter = new DeleteSuccessfulFormatter();
+        
+        assertEquals("2 tasks deleted." + System.lineSeparator() +
+                "- ABCD" + System.lineSeparator() +
+                "- EFGH" + System.lineSeparator(), 
+                formatter.format(message));
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\DeleteSuccessfulFormatterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\EditSuccessfulFormatterTest.java
+	 */
+
+public class EditSuccessfulFormatterTest {
+
+    @Test
+    public void test() {
+        EditSuccessfulFormatter formatter = new EditSuccessfulFormatter();
+        
+        TaskId[] taskIds = new TaskId[1];
+        TaskInfo[] tasks = new TaskInfo[1];
+        
+        taskIds[0] = new TaskId(TaskId.toIntId("4GQ"));
+        tasks[0] = TaskInfo.create();
+        tasks[0].endTime = LocalTime.parse("13:13");
+        tasks[0].endDate = LocalDate.parse("2014-10-02");
+        tasks[0].name = "This is a task";
+        tasks[0].details = "HAHAHAHA";
+        tasks[0].priority = Priority.HIGH;
+        tasks[0].tags = new Tag[2];
+        tasks[0].tags[0] = new Tag("abcd");
+        tasks[0].tags[1] = new Tag("efgh");
+        tasks[0].status = Status.DONE;
+        Field[] field = new Field[2];
+        field[0] = Field.NAME;
+        field[1] = Field.STATUS;
+        EditSuccessfulMessage message = 
+                new EditSuccessfulMessage(tasks, taskIds, field);
+        
+        String formattedString = formatter.format(message);
+        
+        String expectedString = 
+                "Task name changed." + System.lineSeparator() +
+                "Status changed." + System.lineSeparator() +
+                System.lineSeparator() + 
+                "Task [4GQ]" + System.lineSeparator() +
+                "   Name: This is a task" + System.lineSeparator() +
+                "   Time: 13:13 (PM)" + System.lineSeparator() +
+                "   Date: Thursday, 2 Oct 2014" + System.lineSeparator() +
+                "   Tags: abcd, efgh" + System.lineSeparator() + 
+                "   Priority: High" + System.lineSeparator() +
+                "   Status: Done" + System.lineSeparator() +
+                "   Description: HAHAHAHA" + System.lineSeparator();
+        
+        Assert.assertEquals(expectedString, formattedString);
+    }
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\EditSuccessfulFormatterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\EnumFormatterTest.java
+	 */
+
+public class EnumFormatterTest {
+
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\EnumFormatterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\ReportFormatterTest.java
+	 */
+
+public class ReportFormatterTest {
+
+    @Test
+    public void test() {
+        ArrayList<TaskInfo> tasks = new ArrayList<TaskInfo>();
+        TaskInfo task1 = TaskInfo.create();
+        task1.endDate = LocalDate.parse("2011-12-03");
+        task1.endTime = LocalTime.parse("10:50");
+        task1.name = "abcd";
+        task1.priority = Priority.HIGH;
+        tasks.add(task1);
+        
+        TaskInfo task2 = TaskInfo.create();
+        task2.endDate = LocalDate.parse("2011-12-03");
+        task2.endTime = LocalTime.parse("13:00");
+        task2.name = "efgh";
+        task2.priority = Priority.HIGH;
+        tasks.add(task2);
+        
+        TaskInfo task3 = TaskInfo.create();
+        task3.endDate = LocalDate.parse("2011-12-04");
+        task3.endTime = LocalTime.parse("12:00");
+        task3.name = "ijkl";
+        task3.priority = Priority.HIGH;
+        tasks.add(task3);
+        
+        ReportMessage message = new ReportMessage(5, 3, tasks);
+        
+        String expected = "You have 5 tasks today, and 3 tasks tomorrow." + System.lineSeparator() +
+                "Below are the high-priority tasks." + System.lineSeparator() +
+                "Sat, 3 Dec 2011 ---" + System.lineSeparator() +
+                "1) [   10:50   ] abcd                                                          " + System.lineSeparator() +
+                "2) [   13:00   ] efgh                                                          " + System.lineSeparator() +
+                "Sun, 4 Dec 2011 ---" + System.lineSeparator() +
+                "3) [   12:00   ] ijkl                                                          " + System.lineSeparator();
+        
+        ReportFormatter formatter = new ReportFormatter();
+        assertEquals(expected, formatter.format(message));
+    }
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\ReportFormatterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\SearchModeFormatterTest.java
+	 */
+
+public class SearchModeFormatterTest {
+
+    @Test
+    public void testSingleTask() {
+        SearchModeFormatter formatter = new SearchModeFormatter();
+        TaskId taskId = TaskId.makeTaskId("1ab");
+        TaskInfo taskInfo = TaskInfo.create();
+        taskInfo.details = "This is a detail";
+        taskInfo.name = "This is a name";
+        taskInfo.endTime = LocalTime.parse("12:40");
+        taskInfo.endDate = LocalDate.parse("2014-10-01");
+        taskInfo.tags = new Tag[2];
+        taskInfo.tags[0] = new Tag("wow");
+        taskInfo.tags[1] = new Tag("amazing");
+        taskInfo.priority = Priority.HIGH;
+        taskInfo.status = Status.UNDONE;
+        
+        TaskId[] taskIdArray = new TaskId[1];
+        TaskInfo[] taskInfoArray = new TaskInfo[1];
+        taskIdArray[0] = taskId;
+        taskInfoArray[0] = taskInfo;
+        
+        SearchModeInfo searchModeInfo = new SearchModeInfo(taskInfoArray, 
+                taskIdArray, null);
+        String result = formatter.format(searchModeInfo);
+        
+        String expected = "Wed, 1 Oct 2014 ---" + System.lineSeparator() +
+                "1) [   12:40   ] This is a name" +
+                "                                         - [1AB]" + 
+                System.lineSeparator();
+        
+        Assert.assertEquals(expected, result);
+    }
+    
+    @Test
+    public void testOverLengthTaskName() {
+        SearchModeFormatter formatter = new SearchModeFormatter();
+        TaskId taskId = TaskId.makeTaskId("1ab");
+        TaskInfo taskInfo = TaskInfo.create();
+        taskInfo.details = "This is a detail";
+        taskInfo.name = "This is a very very long name abcdefghijklmnopqrstuvwxyz "
+                + "zyxwvutsrqponmlkjihgfedbca";
+        taskInfo.endTime = LocalTime.parse("12:40");
+        taskInfo.endDate = LocalDate.parse("2014-10-01");
+        taskInfo.tags = new Tag[2];
+        taskInfo.tags[0] = new Tag("wow");
+        taskInfo.tags[1] = new Tag("amazing");
+        taskInfo.priority = Priority.HIGH;
+        taskInfo.status = Status.UNDONE;
+        
+        TaskId[] taskIdArray = new TaskId[1];
+        TaskInfo[] taskInfoArray = new TaskInfo[1];
+        taskIdArray[0] = taskId;
+        taskInfoArray[0] = taskInfo;
+        
+        SearchModeInfo searchModeInfo = new SearchModeInfo(taskInfoArray, 
+                taskIdArray, null);
+        String result = formatter.format(searchModeInfo);
+        
+        String expected = "Wed, 1 Oct 2014 ---" + System.lineSeparator() +
+                "1) [   12:40   ] " +
+                "This is a very very long name abcdefghijklmnopqrstuv..."
+                + "- [1AB]" + System.lineSeparator();
+        
+        Assert.assertEquals(expected, result);
+    }
+
+    @Test
+    public void testSugggestion() {
+        SearchModeFormatter formatter = new SearchModeFormatter();
+        TaskId taskId = new TaskId(TaskId.toIntId("1AB"));
+        TaskInfo taskInfo = TaskInfo.create();
+        taskInfo.details = "This is a detail";
+        taskInfo.name = "This is a very very long name abcdefghijklmnopqrstuvwxyz "
+                + "zyxwvutsrqponmlkjihgfedbca";
+        taskInfo.endTime = LocalTime.parse("12:40");
+        taskInfo.endDate = LocalDate.parse("2014-10-01");
+        taskInfo.tags = new Tag[2];
+        taskInfo.tags[0] = new Tag("wow");
+        taskInfo.tags[1] = new Tag("amazing");
+        taskInfo.priority = Priority.HIGH;
+        taskInfo.status = Status.UNDONE;
+        
+        TaskId[] taskIdArray = new TaskId[1];
+        TaskInfo[] taskInfoArray = new TaskInfo[1];
+        String[] suggestionArray = new String[1];
+        taskIdArray[0] = taskId;
+        taskInfoArray[0] = taskInfo;
+        suggestionArray[0] = "orange";
+        
+        SearchModeInfo searchModeInfo = new SearchModeInfo(taskInfoArray, 
+                taskIdArray, suggestionArray);
+        String result = formatter.format(searchModeInfo);
+        
+        String expected = "Did you mean: orange?" + System.lineSeparator() + 
+                "Wed, 1 Oct 2014 ---" + System.lineSeparator() +
+                "1) [   12:40   ] " +
+                "This is a very very long name abcdefghijklmnopqrstuv..."
+                + "- [1AB]" + System.lineSeparator();
+        
+        Assert.assertEquals(expected, result);
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\test\SearchModeFormatterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\WaitingModeFormatter.java
+	 */
+
+public class WaitingModeFormatter {
+    private final static String PROMPT = "Did you mean:";
+    private final static String FORMAT_CHOICE = "%1$d)%2$s";
+    
+    private ArrayList<String> formatToArrayList(TaskInfo[] tasks, TaskId[] taskId) {
+        ArrayList<String> result = new ArrayList<String>();
+        result.add(PROMPT);
+        for (int i = 0; i < tasks.length; i++) {
+            int lineNumber = i + 1;
+            result.add(String.format(FORMAT_CHOICE, lineNumber, tasks[i].name));
+        }
+        return result;
+    }
+    
+    private String arrayListToStringLines(ArrayList<String> lines) {
+        StringBuilder result = new StringBuilder();
+        for (String line : lines) {
+            result.append(line);
+            result.append(System.lineSeparator());
+        }
+        return result.toString();
+    }
+    
+    public String format(SearchModeInfo searchInfo) {
+        TaskInfo[] tasks = searchInfo.getTasks();
+        TaskId[] taskIds = searchInfo.getTaskIds();
+        ArrayList<String> formattedTaskArray = 
+                formatToArrayList(tasks, taskIds);
+        return arrayListToStringLines(formattedTaskArray);
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\formatting\WaitingModeFormatter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\modeinfo\EditModeInfo.java
+	 */
+
+public class EditModeInfo implements ModeInfo {
+
+    private TaskId taskId;
+    private TaskInfo taskInfo;
+    
+    /**
+     * Constructor for the EditModeInfo.
+     * @param taskInfo The task that is currently being edited.
+     * @param taskId The TaskId of the task that is currently bein edited.
+     */
+    public EditModeInfo(TaskInfo taskInfo, TaskId taskId) {
+        this.taskId = taskId;
+        this.taskInfo = taskInfo;
+    }
+    
+    /**
+     * Return the type of the ModeInfo, which is Type.EDIT_MODE.
+     */
+    public Type getType() {
+        return Type.EDIT_MODE;
+    }
+    
+    /**
+     * Get the TaskId of the task that is being edited.
+     * @return The TaskId.
+     */
+    public TaskId getTaskId() {
+        return taskId;
+    }
+    
+    /**
+     * Get the TaskInfo of the task that is being edited.
+     * @return The TaskInfo.
+     */
+    public TaskInfo getTask() {
+        return taskInfo;
+    }
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\modeinfo\EditModeInfo.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\modeinfo\EmptyModeInfo.java
+	 */
+
+public class EmptyModeInfo implements ModeInfo {
+
+	/**
+	 * Get the Type of the ModeInfo, which is Type.EMPTY_MODE.
+	 */
+    public Type getType() {
+        return Type.EMPTY_MODE;
+    }
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\modeinfo\EmptyModeInfo.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\modeinfo\ModeInfo.java
+	 */
+
+public interface ModeInfo {
+    public enum Type {
+        EMPTY_MODE,
+        SEARCH_MODE,
+        WAITING_MODE,
+        EDIT_MODE
+    }
+    
+    /**
+     * Get the Type of the ModeInfo.
+     * @return
+     */
+    public Type getType();
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\modeinfo\ModeInfo.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\modeinfo\SearchModeInfo.java
+	 */
+
+public class SearchModeInfo implements ModeInfo {
+
+    private String[] suggestions;
+    private TaskInfo[] tasks;
+    private TaskId[] taskIds;
+    private boolean inWaitingMode;
+    
+    /**
+     * Constructor for SearchModeInfo.
+     * @param tasks The TaskInfo of the search results.
+     * @param taskIds The TaskId of the search results.
+     * @param suggestions The suggestions of the search.
+     */
+    public SearchModeInfo(TaskInfo[] tasks, TaskId[] taskIds, 
+            String[] suggestions) {
+        this.tasks = tasks;
+        this.taskIds = taskIds;
+        this.suggestions = suggestions;
+    }
+    
+    /**
+     * Get the type of this ModeInfo, which is Type.SEARCH_MODE.
+     */
+    public Type getType() {
+        if (inWaitingMode) {
+            return Type.WAITING_MODE;
+        } else {
+            return Type.SEARCH_MODE;
+        }
+    }
+    
+    /**
+     * Return the search results as an array of TaskInfo.
+     * @return The array of TaskInfo.
+     */
+    public TaskInfo[] getTasks() {
+        return tasks;
+    }
+    
+    /**
+     * Return the IDs of the search results as an array of TaskId.
+     * @return The array of TaskId.
+     */
+    public TaskId[] getTaskIds() {
+        return taskIds;
+    }
+    
+    public String[] getSuggestions() {
+        return suggestions;
+    }
+    
+    public void  makeIntoWaitingModeInfo() {
+        inWaitingMode = true;
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\modeinfo\SearchModeInfo.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\response\Response.java
+	 */
+
+public class Response {
+
+    Message message;
+    ModeInfo modeInfo;
+    
+    /**
+     * The constructor for the Response class.
+     * @param message The Message part of this Response.
+     * @param modeInfo The ModeInfo part of this Response.
+     */
+    public Response(Message message, ModeInfo modeInfo) {
+        this.message = message;
+        this.modeInfo = modeInfo;
+    }
+    
+    /**
+     * Get the Message part of the Response.
+     * @return Message part of the Response.
+     */
+    public Message getMessage() {
+        return message;
+    }
+    
+    /**
+     * Get the ModeInfo part of the Response.
+     * @return ModeInfo part of the Response.
+     */
+    public ModeInfo getModeInfo() {
+        return modeInfo;
+    }
+    
+    public boolean isExitResponse() {
+        if (message == null) {
+            return false;
+            
+        } else if (message.getType() != Message.Type.ENUM_MESSAGE) {
+            return false;
+            
+        } else {
+            EnumMessage enumMessage = (EnumMessage)message;
+            return (enumMessage.getMessageType() == EnumMessage.MessageType.EXIT);
+        }
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\main\response\Response.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\DateTimeFilter.java
+	 */
+
+public class DateTimeFilter implements Filter{
+    LocalDateTime minTime;
+    LocalDateTime maxTime;
+    
+    public DateTimeFilter(LocalDateTime minTime, LocalDateTime maxTime) {
+        this.minTime = minTime;
+        this.maxTime = maxTime;
+    }
+    
+    public Type getType() {
+        return Type.FILTER_DATETIME;
+    }
+    
+    public boolean filter(TaskInfo task) {
+        if (task.endDate == null || task.endTime == null) {
+            return false;
+        }
+        
+        LocalDateTime taskTime = LocalDateTime.of(task.endDate, task.endTime);
+        return minTime.compareTo(taskTime) <= 0 && 
+                taskTime.compareTo(maxTime) <= 0;
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\DateTimeFilter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\Filter.java
+	 */
+
+public interface Filter {
+    public enum Type {
+        FILTER_TAG,
+        FILTER_DATETIME,
+        FILTER_DATE,
+        FILTER_PRIORITY,
+        FILTER_STATUS,
+        FILTER_KEYWORD,
+        FILTER_SUGGESTION
+    }
+
+    public Type getType();
+    public boolean filter(TaskInfo task);
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\Filter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\KeywordFilter.java
+	 */
+
+public class KeywordFilter implements Filter{
+    public Type getType() {
+        return Type.FILTER_KEYWORD;
+    }
+    
+    private String[] keywords;
+    
+    public KeywordFilter(String[] keywords) {
+        this.keywords = keywords;
+    }
+    
+    private boolean match(String keyword, String details) {
+        if (details == null) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile("[A-Za-z0-9]+");
+        Matcher matcher = pattern.matcher(details);
+        while (matcher.find()) {
+            if (keyword.toLowerCase().equals(
+                    matcher.group().toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean filter(TaskInfo task) {
+        for (String keyword : keywords) {
+            if (!match(keyword, task.details) && !match(keyword, task.name)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public String[] getKeywords() {
+        return keywords;
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\KeywordFilter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\PriorityFilter.java
+	 */
+
+public class PriorityFilter implements Filter {
+
+    private Priority[] priorities;
+    public PriorityFilter(Priority[] priorities) {
+        this.priorities = priorities;
+    }
+    
+    public Type getType() {
+        return Type.FILTER_PRIORITY;
+    }
+    
+    private boolean match(Priority priority, TaskInfo task) {
+        return task.priority == priority;
+    }
+    
+    public boolean filter(TaskInfo task) {
+        for (Priority priority : priorities) {
+            if (match(priority, task)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\PriorityFilter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\StatusFilter.java
+	 */
+
+public class StatusFilter implements Filter {
+
+    private Status[] statuses;
+
+    public StatusFilter(Status[] statuses) {
+        this.statuses = statuses;
+    }
+
+    public static StatusFilter makeDefault() {
+        return new StatusFilter(new Status[]{Status.UNDONE});
+    }
+
+    public Type getType() {
+        return Type.FILTER_STATUS;
+    }
+
+    private boolean match(Status status, TaskInfo task) {
+        return task.status == status;
+    }
+
+    public boolean filter(TaskInfo task) {
+        for (Status status : statuses) {
+            if (match(status, task)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\StatusFilter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\SuggestionFilter.java
+	 */
+
+public class SuggestionFilter implements Filter {
+    String keywords[];
+    
+    public SuggestionFilter(String[] keywords) {
+        this.keywords = keywords;
+    }
+    
+    private boolean match(String keyword, String details) {
+        if (details == null) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile("[A-Za-z0-9]+");
+        Matcher matcher = pattern.matcher(details);
+        while (matcher.find()) {
+            if (keyword.toLowerCase().equals(
+                    matcher.group().toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public String getTopSuggestion() {
+        if (keywords.length == 0) {
+            return null;
+        } else {
+            return keywords[0];
+        }
+    }
+    
+    @Override
+    public Type getType() {
+        return Type.FILTER_SUGGESTION;
+    }
+
+    @Override
+    public boolean filter(TaskInfo task) {
+        for (String keyword : keywords) {
+            if (match(keyword, task.name) || match(keyword, task.details)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\SuggestionFilter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\TagFilter.java
+	 */
+
+public class TagFilter implements Filter{
+    public Type getType() {
+        return Type.FILTER_TAG;
+    }
+    
+    Tag[] tags;
+    
+    public boolean filter(TaskInfo task) 
+    {
+        if (task.tags == null) {
+            return false;
+        }
+        
+        for (Tag filterTag : tags) {
+            boolean isExist = false;
+            for (Tag taskTag : task.tags) {
+                if (taskTag.equals(filterTag)) {
+                    isExist = true;
+                }
+            }
+            if (!isExist) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public TagFilter(Tag[] tags) {
+        this.tags = tags;
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\TagFilter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\test\DateTimeFilterTest.java
+	 */
+
+public class DateTimeFilterTest {
+
+	@Test
+	public void testFloating() {
+		LocalDateTime min = LocalDateTime.parse("2014-11-28T03:05:40");
+		LocalDateTime max = LocalDateTime.parse("2014-11-29T01:02:03");
+		DateTimeFilter filter = new DateTimeFilter(min, max);
+		
+		TaskInfo taskInfo = TaskInfo.create();
+		taskInfo.endDate = null;
+		taskInfo.endTime = null;
+        taskInfo.startDate = null;
+        taskInfo.startTime = null;
+		
+		assertFalse(filter.filter(taskInfo));
+	}
+	
+	@Test
+	public void testEndOnlyTrue() {
+		LocalDateTime min = LocalDateTime.parse("2014-11-28T03:05:40");
+		LocalDateTime max = LocalDateTime.parse("2014-11-29T01:02:03");
+		DateTimeFilter filter = new DateTimeFilter(min, max);
+		
+		TaskInfo taskInfo = TaskInfo.create();
+		taskInfo.endDate = LocalDate.parse("2014-11-28");
+		taskInfo.endTime = LocalTime.parse("12:00:00");
+		
+		assertTrue(filter.filter(taskInfo));
+	}
+	
+	@Test
+	public void testEndOnlyFalse() {
+		LocalDateTime min = LocalDateTime.parse("2014-11-28T03:05:40");
+		LocalDateTime max = LocalDateTime.parse("2014-11-29T01:02:03");
+		DateTimeFilter filter = new DateTimeFilter(min, max);
+		
+		TaskInfo taskInfo = TaskInfo.create();
+		taskInfo.endDate = LocalDate.parse("2014-11-29");
+		taskInfo.endTime = LocalTime.parse("02:00:00");
+		
+		assertFalse(filter.filter(taskInfo));		
+	}
+	
+	@Test
+	public void testEndOnlyExactMax() {
+		LocalDateTime min = LocalDateTime.parse("2014-11-28T01:05:00");
+		LocalDateTime max = LocalDateTime.parse("2014-11-28T03:05:00");
+		DateTimeFilter filter = new DateTimeFilter(min, max);
+		
+		TaskInfo taskInfo = TaskInfo.create();
+		taskInfo.endDate = LocalDate.parse("2014-11-28");
+		taskInfo.endTime = LocalTime.parse("03:05:00");
+		
+		assertTrue(filter.filter(taskInfo));		
+	}
+	
+	@Test
+	public void testEndOnlyExactMin() {
+		LocalDateTime min = LocalDateTime.parse("2014-11-28T01:05:00");
+		LocalDateTime max = LocalDateTime.parse("2014-11-28T03:05:00");
+		DateTimeFilter filter = new DateTimeFilter(min, max);
+		
+		TaskInfo taskInfo = TaskInfo.create();
+		taskInfo.endDate = LocalDate.parse("2014-11-28");
+		taskInfo.endTime = LocalTime.parse("01:05:00");
+		
+		assertTrue(filter.filter(taskInfo));		
+	}
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\test\DateTimeFilterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\test\KeywordFilterTest.java
+	 */
+
+public class KeywordFilterTest {
+
+    @Test
+    public void testType() {
+        String[] words = new String[]{"test"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertEquals(Filter.Type.FILTER_KEYWORD, filter.getType());
+    }
+    
+    @Test
+    public void testSingleWordNameTrue() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "I am going to test this task";
+        testedTask.details = null;
+        String[] words = new String[]{"test"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testSingleWordDetailsTrue() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.details = "I am going to test this task";
+        testedTask.name = null;
+        String[] words = new String[]{"test"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+
+    @Test
+    public void testSingleWordNameFalse() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "I am going to test this task";
+        testedTask.details = null;
+        String[] words = new String[]{"doesntexist"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertFalse(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testSingleDetailsNameFalse() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = null;
+        testedTask.details = "I am going to test this task";
+        String[] words = new String[]{"doesntexist"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertFalse(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testSingleWordDetailsFalse() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = null;
+        testedTask.details = "I am going to test this task";
+        String[] words = new String[]{"doesntexist"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertFalse(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testSingleWordBoth() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "This exist.";
+        testedTask.details = "I am going to test this task";
+        String[] words = new String[]{"exist"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+ 
+    @Test
+    public void testMultipleWordsDetailsPartial() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = null;
+        testedTask.details = "I am going to test this task";
+        String[] words = new String[]{"task", "exist"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertFalse(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testCaseSensitivity() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "I am going to test this task";
+        testedTask.details = null;
+        String[] words = new String[]{"TeSt"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testTab() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "abcd\ttest\tjaksldjf";
+        String[] words = new String[]{"test"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testNewline() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "hahaha\ntest\nhahaha";
+        String[] words = new String[]{"test"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    @Test
+    public void testPunctuation(){
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "hahaha$%^$%^$!@#test^$&@#$hahaha";
+        String[] words = new String[]{"test"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\test\KeywordFilterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\test\SuggestionFilterTest.java
+	 */
+
+public class SuggestionFilterTest {
+
+    @Test
+    public void testType() {
+        String[] words = new String[]{"test"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertEquals(Filter.Type.FILTER_SUGGESTION, filter.getType());
+    }
+    
+    @Test
+    public void testTopSuggestion() {
+        String[] words = new String[]{"test", "abcd", "efgh"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertEquals("test", filter.getTopSuggestion());
+    }
+    
+    @Test
+    public void testSingleWordNameTrue() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "I am going to test this task";
+        testedTask.details = null;
+        String[] words = new String[]{"test"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testSingleWordDetailsTrue() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.details = "I am going to test this task";
+        testedTask.name = null;
+        String[] words = new String[]{"test"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+
+    @Test
+    public void testSingleWordNameFalse() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "I am going to test this task";
+        testedTask.details = null;
+        String[] words = new String[]{"doesntexist"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertFalse(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testSingleDetailsNameFalse() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = null;
+        testedTask.details = "I am going to test this task";
+        String[] words = new String[]{"doesntexist"};
+        KeywordFilter filter = new KeywordFilter(words);
+        assertFalse(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testSingleWordDetailsFalse() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = null;
+        testedTask.details = "I am going to test this task";
+        String[] words = new String[]{"doesntexist"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertFalse(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testSingleWordBoth() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "This exist.";
+        testedTask.details = "I am going to test this task";
+        String[] words = new String[]{"exist"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+ 
+    @Test
+    public void testMultipleWordsDetailsPartial() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = null;
+        testedTask.details = "I am going to test this task";
+        String[] words = new String[]{"task", "exist"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testCaseSensitivity() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "I am going to test this task";
+        testedTask.details = null;
+        String[] words = new String[]{"TeSt"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testTab() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "abcd\ttest\tjaksldjf";
+        String[] words = new String[]{"test"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    
+    @Test
+    public void testNewline() {
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "hahaha\ntest\nhahaha";
+        String[] words = new String[]{"test"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+    @Test
+    public void testPunctuation(){
+        TaskInfo testedTask = TaskInfo.create();
+        testedTask.name = "hahaha$%^$%^$!@#test^$&@#$hahaha";
+        String[] words = new String[]{"test"};
+        SuggestionFilter filter = new SuggestionFilter(words);
+        assertTrue(filter.filter(testedTask));
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\searchfilter\test\SuggestionFilterTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\SearchManager.java
+	 */
+
+public class SearchManager extends AbstractManager {
+    private static final Logger log = TasklineLogger.getLogger();
+
+    
+    SuggestionFinder suggestionFinder;
+    TaskInfoId[] lastSearchedTasks;
+    String[] lastSearchedSuggestions;
+
+    class TaskInfoId {
+        public TaskInfo taskInfo;
+        public TaskId taskId;
+        public TaskInfoId(TaskInfo taskInfo, TaskId taskId) {
+            this.taskInfo = taskInfo;
+            this.taskId = taskId;
+        }
+    }
+    
+    public SearchManager(TaskData taskData) {
+        super(taskData);
+        suggestionFinder = new SuggestionFinder(taskData);
+    }
+
+    private void sortTasks(List<TaskInfoId> tasks) {
+        tasks.sort(new Comparator<TaskInfoId>() {
+            @Override
+            public int compare(TaskInfoId task1, TaskInfoId task2) {
+                if (task1.taskInfo.endDate == null) {
+                    if (task2.taskInfo.endDate == null) {
+                        return 0;
+                    }
+                    else {
+                        return 1;
+                    }
+                } else if (task2.taskInfo.endDate == null) {
+                    return -1;
+                }
+                
+                if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) < 0) {
+                    return -1;
+                } else if (task1.taskInfo.endDate.compareTo(task2.taskInfo.endDate) > 0) {
+                    return 1;
+                } else {
+                    if (task1.taskInfo.endTime == null) {
+                        return 1;
+                    } else if (task2.taskInfo.endTime == null) {
+                        return -1;
+                    } else {
+                        return task1.taskInfo.endTime.compareTo(task2.taskInfo.endTime);
+                    }
+                }
+            }
+        });
+    }
+    
+    private Set<TaskId> applyFilter(Filter filter) {
+        Set<TaskId> resultSet = new HashSet<TaskId>();
+        
+        TaskId currentId = taskData.getFirst();
+        while (currentId.isValid()) {
+            TaskInfo task = taskData.getTaskInfo(currentId);
+            if (filter.filter(task)) {
+                resultSet.add(currentId);
+            }
+            currentId = taskData.getNext(currentId);
+        }
+        
+        return resultSet;
+    }
+    
+    private Set<TaskId> findMatchingTasks(Filter[] filters) {
+        Set<TaskId> currentMatch = getAllId();
+        
+        for (Filter filter : filters) {
+            Set<TaskId> matching = applyFilter(filter);
+            currentMatch.retainAll(matching);
+        }
+        
+        return currentMatch;
+    }
+    
+    private Set<TaskId> getAllId() {
+        Set<TaskId> resultSet = new HashSet<TaskId>();
+        
+        TaskId currentId = taskData.getFirst();
+        while (currentId.isValid()) {
+            resultSet.add(currentId);
+            currentId = taskData.getNext(currentId);
+        }
+        
+        return resultSet;
+    }
+    
+    TaskInfoId[] split(TaskInfoId task) {
+        List<TaskInfoId> result = new ArrayList<TaskInfoId>();
+        if (task.taskInfo.getStartTime() == null) {
+            result.add(task);
+        } else {
+            LocalDate currentDate = task.taskInfo.getStartDate();
+            LocalTime currentTime = task.taskInfo.getStartTime();
+            while (!currentDate.equals(task.taskInfo.getEndDate())) {
+                TaskInfo taskInfo = new TaskInfo(task.taskInfo);
+                TaskId taskId = task.taskId;
+                taskInfo.startTime = currentTime;
+                taskInfo.startDate = currentDate;
+                taskInfo.endTime = LocalTime.MIDNIGHT;
+                taskInfo.endDate = currentDate.plusDays(1);
+                TaskInfoId taskInfoId = new TaskInfoId(taskInfo, taskId);
+                result.add(taskInfoId);
+                currentTime = LocalTime.parse("00:00");
+                currentDate = currentDate.plusDays(1);
+            }
+            
+            if (!currentTime.equals(task.taskInfo.getEndTime())) {
+                TaskInfo taskInfo = new TaskInfo(task.taskInfo);
+                TaskId taskId = task.taskId;
+                taskInfo.startTime = currentTime;
+                taskInfo.startDate = currentDate;
+                taskInfo.endTime = task.taskInfo.endTime;
+                taskInfo.endDate = task.taskInfo.endDate;
+                TaskInfoId taskInfoId = new TaskInfoId(taskInfo, taskId);
+                result.add(taskInfoId);
+            }
+        }
+        
+        TaskInfoId[] resultArray = new TaskInfoId[result.size()];
+        result.toArray(resultArray);
+        return resultArray;
+    }
+    
+    TaskInfoId[] getTaskInfoIdArray(Set<TaskId> taskIds) {
+        List<TaskInfoId> result = new ArrayList<TaskInfoId>();
+        for (TaskId taskId : taskIds) {
+            TaskInfo taskInfo = taskData.getTaskInfo(taskId);
+            TaskInfoId taskInfoId = new TaskInfoId(taskInfo, taskId);
+            Collections.addAll(result, split(taskInfoId));
+        }
+
+        sortTasks(result);
+        TaskInfoId[] resultArray = new TaskInfoId[result.size()];
+        result.toArray(resultArray);
+        return resultArray;
+    }
+    
+    private void updateSearchedTasks(Set<TaskId> taskIds) {
+        lastSearchedTasks = getTaskInfoIdArray(taskIds);
+    }
+    
+    private SearchResult searchWithSuggestion(Filter[] filters) {
+        Set<TaskId> taskIds = findMatchingTasks(filters);
+        
+        updateSearchedTasks(taskIds);
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
+                getIdArray(lastSearchedTasks), filters);
+        
+        List<String> suggestions = new ArrayList<String>();
+        for (int i = 0; i < filters.length; i++) {
+            if (filters[i].getType() == Filter.Type.FILTER_SUGGESTION) {
+                SuggestionFilter filter = (SuggestionFilter)filters[i];
+                suggestions.add(filter.getTopSuggestion());
+            }
+        }
+        
+        String[] suggestionArray = new String[suggestions.size()];
+        suggestions.toArray(suggestionArray);
+        result.setSuggestion(suggestionArray);
+        lastSearchedSuggestions = suggestionArray;
+        
+        return result;
+    }
+    
+    /*public SearchResult searchWithoutUpdate(Filter[] filters) {
+        Set <TaskId> taskIds = findMatchingTasks(filters);
+        TaskInfoId[] infoIds = getTaskInfoIdArray(taskIds);
+        
+        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
+                getInfoArray(infoIds),
+                getIdArray(infoIds),
+                filters);
+        
+        return result;
+    }*/
+    
+    private SearchResult searchAndUpdate(Filter[] filters) {
+        Set<TaskId> taskIds = findMatchingTasks(filters);
+        updateSearchedTasks(taskIds);
+        
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
+                getIdArray(lastSearchedTasks), filters);
+        
+        lastSearchedSuggestions = null;
+        return result;
+    }
+    
+    private TaskInfo[] getInfoArray(TaskInfoId[] tasks) {
+        TaskInfo[] infoArray = new TaskInfo[tasks.length];
+        for (int i = 0; i < tasks.length; i++) {
+            infoArray[i] = tasks[i].taskInfo;
+        }
+        return infoArray;
+    }
+    
+    private TaskId[] getIdArray(TaskInfoId[] tasks) {
+        TaskId[] idArray = new TaskId[tasks.length];
+        for (int i = 0; i < tasks.length; i++) {
+            idArray[i] = tasks[i].taskId;
+        }
+        return idArray;
+    }
+    
+    public Result searchTasks(Filter[] filters) {
+        assert filters != null : "filters can't be null";
+        log.log(Level.FINER, "Conduct search: " + filters.length + " filters");
+        
+        SearchResult result = searchAndUpdate(filters);
+        
+        if (result.getTaskIds().length == 0) {
+            Filter[] newFilters = 
+                    suggestionFinder.generateSuggestionFilters(filters);
+            if (newFilters == null) {
+                return result;
+            } else {
+                return searchWithSuggestion(newFilters);
+            }
+        } else {
+            return result;
+        }
+    }
+    
+    public SearchResult getLastSearchResult() {
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks),
+                getIdArray(lastSearchedTasks), null);
+        result.setSuggestion(lastSearchedSuggestions);
+
+        return result;
+    }
+    
+    public Result details(TaskId taskId) {
+        return new DetailsResult(taskData.getTaskInfo(taskId), taskId);
+    }
+
+    public TaskId getAbsoluteIndex(int relativeIndex) {
+        if (relativeIndex > lastSearchedTasks.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        return lastSearchedTasks[relativeIndex - 1].taskId;
+    }
+
+    public TaskInfo getTaskInfo(int relativeIndex) {
+        if (relativeIndex >= lastSearchedTasks.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        return lastSearchedTasks[relativeIndex - 1].taskInfo;
+    }
+
+    public TaskInfo getTaskInfo(TaskId taskId) {
+        return taskData.getTaskInfo(taskId);
+    }
+    
+    // TODO: Use this in a TargetedCommand search.
+    /* 
+    private void removeDuplicates() {
+        HashSet<TaskId> idSet = new HashSet<>();
+        LinkedList<TaskId> newIdList = new LinkedList<>();
+        LinkedList<TaskInfo> newTaskList = new LinkedList<>();
+        
+        for (int i = 0; i < taskIds.length; i++) {
+            if (!idSet.contains(taskIds[i])) {
+                idSet.add(taskIds[i]);
+                newIdList.offer(taskIds[0]);
+                newTaskList.offer(tasks[0]);
+            }
+        }
+
+        assert newIdList.size() == newTaskList.size();
+        taskIds = new TaskId[newIdList.size()];
+        tasks = new TaskInfo[newTaskList.size()];
+        for (int i = 0; i < taskIds.length; i++) {
+            taskIds[i] = newIdList.poll();
+            tasks[i] = newTaskList.poll();
+        }
+
+        assert newIdList.size() == 0;
+        assert newTaskList.size() == 0;
+    }*/
+}
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\SearchManager.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\suggestion\EditDistance.java
+	 */
+
+public class EditDistance {
+    private int dpTable[][];
+    private boolean calculated[][];
+    
+    String stringOne, stringTwo;
+    
+    private int calculate(int indexOne, int indexTwo) {
+        if (indexOne == 0) {
+            return indexTwo;
+        } else if (indexTwo == 0) {
+            return indexOne;
+        } else if (calculated[indexOne][indexTwo]) {
+                return dpTable[indexOne][indexTwo];
+        } else {
+            int currentAnswer;
+            if (isMatching(indexOne, indexTwo)) {
+                currentAnswer = calculateMatch(indexOne, indexTwo);
+            } else {
+                currentAnswer = calculateChange(indexOne, indexTwo);
+            }
+            
+            currentAnswer = Math.min(currentAnswer, calculateInsert(indexOne, indexTwo));
+            currentAnswer = Math.min(currentAnswer, calculateDelete(indexOne, indexTwo));
+            
+            updateDpTable(indexOne, indexTwo, currentAnswer);
+            return currentAnswer;
+        }
+    }
+
+    private void updateDpTable(int indexOne, int indexTwo, int currentAnswer) {
+        calculated[indexOne][indexTwo] = true;
+        dpTable[indexOne][indexTwo] = currentAnswer;
+    }
+    
+    private boolean isMatching(int indexOne, int indexTwo) {
+        return stringOne.charAt(indexOne - 1) == stringTwo.charAt(indexTwo - 1);
+    }
+    
+    private int calculateInsert(int indexOne, int indexTwo) {
+        return calculate(indexOne, indexTwo - 1) + 1;
+    }
+    
+    private int calculateDelete(int indexOne, int indexTwo) {
+        return calculate(indexOne - 1, indexTwo) + 1;
+    }
+    
+    private int calculateChange(int indexOne, int indexTwo) {
+        return calculate(indexOne - 1, indexTwo - 1) + 1;
+    }
+    
+    private int calculateMatch(int indexOne, int indexTwo) {
+        assert isMatching(indexOne, indexTwo);
+        return calculate(indexOne - 1, indexTwo - 1);
+    }
+    public EditDistance(String stringOne, String stringTwo) {
+        assert stringOne != null;
+        assert stringTwo != null;
+        dpTable = new int[stringOne.length() + 1][stringTwo.length() + 1];
+        calculated = new boolean[stringOne.length() + 1][stringTwo.length() + 1];
+        
+        this.stringOne = stringOne;
+        this.stringTwo = stringTwo;
+    }
+    
+    public int getDistance() {
+        return calculate(stringOne.length(), stringTwo.length());
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\suggestion\EditDistance.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\suggestion\KeywordSuggestion.java
+	 */
+
+public class KeywordSuggestion {
+    private String keyword;
+    private int distance;
+    private int numberOfMatches;
+    
+    public KeywordSuggestion(String keyword, int distance) {
+        this.keyword = keyword;
+        this.distance = distance;
+        this.numberOfMatches = 0;
+    }
+    
+    public String getKeyword() {
+        return keyword;
+    }
+    
+    public int getDistance(){
+        return distance;
+    }
+    
+    public void setNumberOfMatches(int numberOfMatches) {
+        this.numberOfMatches = numberOfMatches;
+    }
+    
+    public int getNumberOfMatches() {
+        return numberOfMatches;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        
+        if (o == null) {
+            return false;
+        }
+        
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        
+        KeywordSuggestion keywordSuggestion = (KeywordSuggestion)o;
+        return keyword.equals(keywordSuggestion.keyword);
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\suggestion\KeywordSuggestion.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\suggestion\SuggestionFinder.java
+	 */
+
+public class SuggestionFinder {
+    private final static int LIMIT_DISTANCE = 5;
+    
+    private final static Comparator<KeywordSuggestion> COMPARE_MATCH =
+            new Comparator<KeywordSuggestion>() {
+                public int compare(KeywordSuggestion a,
+                        KeywordSuggestion b) {
+                    return b.getNumberOfMatches() - a.getNumberOfMatches();
+                }
+            };
+    ITaskData taskData;
+    
+    public SuggestionFinder(ITaskData taskData) {
+        this.taskData = taskData;
+    }
+    
+    Set<KeywordSuggestion> mergeKeywordList(Set<KeywordSuggestion> listOne,
+            Set<KeywordSuggestion> listTwo) {
+        Set<KeywordSuggestion> result = new HashSet<KeywordSuggestion>();
+        if (listOne.size() == 0) {
+            result.addAll(listTwo);
+        } else if (listTwo.size() == 0) {
+            result.addAll(listOne);
+        } else {
+            KeywordSuggestion keywordOne = listOne.iterator().next();
+            KeywordSuggestion keywordTwo = listTwo.iterator().next();
+            
+            if (keywordOne.getDistance() <= keywordTwo.getDistance()) {
+                result.addAll(listOne);
+            }
+            if (keywordOne.getDistance() >= keywordTwo.getDistance()) {
+                result.addAll(listTwo);
+            }
+        }
+        
+        return result;
+    }
+    
+    void updateKeywordList(Set<KeywordSuggestion> keywords, 
+            KeywordSuggestion newKeyword) {
+        if (keywords.size() == 0) {
+            keywords.add(newKeyword);
+        } else {
+            KeywordSuggestion firstSuggestion = keywords.iterator().next();
+            if (firstSuggestion.getDistance() > newKeyword.getDistance()) {
+                keywords.clear();
+                keywords.add(newKeyword);
+            } else if (firstSuggestion.getDistance() == 
+                    newKeyword.getDistance()) {
+                keywords.add(newKeyword);
+            }
+        }
+    }
+    
+    private int getLimit(String string) {
+        return string.length() * 2 / 5;
+    }
+    
+    Set<KeywordSuggestion> findKeywords(String filterString, String string) {
+        Set<KeywordSuggestion> keywords = new HashSet<KeywordSuggestion>();
+        if (string != null) {
+            Pattern pattern = Pattern.compile("[A-Za-z0-9]+");
+            Matcher matcher = pattern.matcher(string);
+            
+            while (matcher.find()) {
+                String currentWord = matcher.group();
+                EditDistance editDistance = new EditDistance(filterString, 
+                        currentWord);
+                KeywordSuggestion newKeyword = new KeywordSuggestion(
+                        currentWord, editDistance.getDistance());
+                if (newKeyword.getDistance() <= getLimit(filterString)) {
+                    updateKeywordList(keywords, newKeyword);
+                }
+            }
+        }
+        return keywords;
+    }
+    
+    Set<KeywordSuggestion> findKeywords(String filterString, TaskInfo taskInfo) {
+        Set<KeywordSuggestion> keywordsInName = 
+                findKeywords(filterString, taskInfo.name);
+        Set<KeywordSuggestion> keywordsInDetails = 
+                findKeywords(filterString, taskInfo.details);
+        return mergeKeywordList(keywordsInName, keywordsInDetails);
+    }
+    
+    Set<KeywordSuggestion> findKeywords(String filterString) {
+        Set<KeywordSuggestion> keywords = new HashSet<KeywordSuggestion>();
+        TaskId currentId = taskData.getFirst();
+        while (currentId.isValid()) {
+            TaskInfo task = taskData.getTaskInfo(currentId);
+            Set<KeywordSuggestion> newList = findKeywords(filterString, task);
+            keywords = mergeKeywordList(keywords, newList);
+            currentId = taskData.getNext(currentId);
+        }
+        
+        return keywords;
+    }
+    
+    void updateMatch(KeywordSuggestion keyword) {
+        TaskId currentId = taskData.getFirst();
+        String keywordArray[] = new String[1];
+        keywordArray[0] = keyword.getKeyword();
+        
+        KeywordFilter filter = new KeywordFilter(keywordArray);
+        while (currentId.isValid()) {
+            TaskInfo task = taskData.getTaskInfo(currentId);
+            if (filter.filter(task)) {
+                int numberOfMatches = keyword.getNumberOfMatches();
+                numberOfMatches++;
+                keyword.setNumberOfMatches(numberOfMatches);
+            }
+            currentId = taskData.getNext(currentId);
+        }
+    }
+    
+    private List<KeywordSuggestion> sortKeywords(Set<KeywordSuggestion> keywords) {
+        List<KeywordSuggestion> keywordList = 
+                new ArrayList<KeywordSuggestion>(keywords);
+        
+        for (KeywordSuggestion keyword : keywordList) {
+            updateMatch(keyword);
+        }
+        
+        Collections.sort(keywordList, COMPARE_MATCH);
+        
+        return keywordList;
+    }
+    
+    private SuggestionFilter getSuggestionFilter(String filterString) {
+        Set<KeywordSuggestion> suggestions = findKeywords(filterString);
+        List<KeywordSuggestion> suggestionList = sortKeywords(suggestions);
+        String[] suggestionArray = new String[suggestionList.size()];
+        for (int i = 0; i < suggestionList.size(); i++) {
+            suggestionArray[i] = suggestionList.get(i).getKeyword();
+        }
+        
+        SuggestionFilter suggestionFilter = 
+                new SuggestionFilter(suggestionArray);
+        if (suggestionArray.length == 0) {
+            return null;
+        }
+        
+        return suggestionFilter;
+    }
+    
+    private List<SuggestionFilter> getSuggestionFilter(KeywordFilter filter) {
+        String[] filterStrings = filter.getKeywords();
+        List<SuggestionFilter> newFilterList = new ArrayList<SuggestionFilter>();
+        for (String filterString : filterStrings) {
+            SuggestionFilter suggestionFilter = getSuggestionFilter(filterString);
+            if (suggestionFilter == null) {
+                return null;
+            }
+            newFilterList.add(getSuggestionFilter(filterString));
+        }
+        
+        return newFilterList;
+    }
+    
+    public Filter[] generateSuggestionFilters(Filter[] filters) {
+        List<Filter> newFilters = new ArrayList<Filter>();
+        for (int i = 0; i < filters.length; i++) {
+            if (filters[i].getType() == Type.FILTER_KEYWORD) {
+                List<SuggestionFilter> suggestionFilters = 
+                        getSuggestionFilter((KeywordFilter)filters[i]);
+                if (suggestionFilters == null)
+                    return null;
+                newFilters.addAll(getSuggestionFilter((KeywordFilter)filters[i]));
+            } else {
+                newFilters.add(filters[i]);
+            }
+        }
+        
+        Filter[] newFilterArray = new Filter[newFilters.size()];
+        newFilters.toArray(newFilterArray);
+        return newFilterArray;
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\suggestion\SuggestionFinder.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\suggestion\test\EditDistanceTest.java
+	 */
+
+public class EditDistanceTest {
+
+    @Test
+    public void testEmpty() {
+        test("", "", 0);
+    }
+    
+    @Test
+    public void testOneEmpty() {
+        test("ThisIsAPointlessString", "", 22);
+    }
+    
+    @Test
+    public void testTwoEmpty() {
+        test("", "ThisIsAPointlessString", 22);
+    }
+    
+    @Test
+    public void testInsert() {
+        test("abcdfgh", "abcdefgh", 1);
+    }
+    
+    @Test
+    public void testDelete() {
+        test("abcdefgh", "abcdfgh", 1);
+    }
+    
+    @Test
+    public void testChange() {
+        test("abcdefgh", "abccefgh", 1);
+    }
+    
+    @Test
+    public void testCombination() {
+        test("kitten", "sitting", 3);
+    }
+    
+    public void test(String stringOne, String stringTwo, int expected) {
+        EditDistance editDistance = new EditDistance(stringOne, stringTwo);
+        int distance = editDistance.getDistance();
+        assertEquals(expected, distance);
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\manager\datamanager\suggestion\test\EditDistanceTest.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\debug\UIDisplay.java
+	 */
+
+public class UIDisplay {
+    private UserInputReader userInputReader;
+    private UserOutputWriter userOutputWriter;
+    
+    private final MainController mainController;
+    
+    private final static String MESSAGE_WELCOME = "Welcome to Taskline." +
+            System.lineSeparator();
+    
+    public UIDisplay(MainController mainController) {
+        this.mainController = mainController;
+        
+        userInputReader = new UserInputReader();
+        userOutputWriter = new UserOutputWriter();
+    }
+    
+    /**
+     * Called from main
+     */
+    public void commandLoopIteration() {
+        userOutputWriter.printOutput(MESSAGE_WELCOME);
+        while (!isReadyToExit()) {
+            String input = userInputReader.readInput();
+            String output = mainController.runCommand(input);
+            userOutputWriter.printOutput(output);
+        }
+    }
+    
+    public boolean isReadyToExit() {
+        return mainController.isReadyToExit();
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\debug\UIDisplay.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\debug\UserInputReader.java
+	 */
+
+public class UserInputReader {
+    private Scanner scanner;
+    
+    public UserInputReader() {
+        scanner = new Scanner(System.in);
+    }
+    public String readInput() {
+        return scanner.nextLine();
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\debug\UserInputReader.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\debug\UserOutputWriter.java
+	 */
+
+public class UserOutputWriter {
+    public void printOutput(String output) {
+        System.out.print(output);
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\debug\UserOutputWriter.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\input\Input.java
+	 */
+
+public interface Input {
+    public enum Type {
+        INPUT_STRING,
+        INPUT_OPERATION
+    }
+    
+    public Type getType();
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\input\Input.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\input\InputOperation.java
+	 */
+
+public class InputOperation implements Input {
+    public enum Operation {
+        SCROLL_UP,
+        SCROLL_DOWN,
+        PREV_COMMAND,
+        NEXT_COMMAND
+    }
+    
+    Operation operation;
+    public InputOperation(Operation operation) {
+        this.operation = operation;
+    }
+    
+    public Type getType() {
+        return Type.INPUT_OPERATION;
+    }
+    
+    public Operation getOperation() {
+        return operation;
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\input\InputOperation.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\input\InputString.java
+	 */
+
+public class InputString implements Input {
+
+    private String inputString;
+    
+    public InputString(String string) {
+        this.inputString = string;
+    }
+    
+    @Override
+    public Type getType() {
+        return Type.INPUT_STRING;
+    }
+    
+    public String getString() {
+        return inputString;
+    }
+
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\input\InputString.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\UIDisplay.java
+	 */
+
+public class UIDisplay {
+    private UserInputReader userInputReader;
+    private UserOutputWriter userOutputWriter;
+    
+    private final MainController mainController;
+    
+    
+    public UIDisplay(MainController mainController, ArgumentCompletor completor) {
+        this.mainController = mainController;
+        try {
+            ConsoleReader reader = new ConsoleReader();
+            reader.clearScreen();
+            userInputReader = new UserInputReader(reader, completor);
+            userOutputWriter = new UserOutputWriter(reader);
+            
+            String header = "Welcome to Taskline.";
+            String lines = mainController.runCommand("report");
+            userOutputWriter.printOutput(header, lines);
+        } catch(IOException e) {
+            System.out.println("IOException : " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Called from main
+     */
+    public void commandLoopIteration() {
+        while (!isReadyToExit()) {
+            try {
+                Input input = userInputReader.getInput();
+                processInput(input);
+            }
+            catch(IOException e) {
+                System.out.println("Something went wrong.");
+                System.out.println("Please try again.");
+            }
+        }
+    }
+    
+    public void processInput(Input input) throws IOException {
+        switch (input.getType()) {
+            case INPUT_STRING :
+                InputString inputString = (InputString)input;
+                String output = mainController.runCommand(inputString.getString());
+                String header = ">" + inputString.getString();
+                userOutputWriter.printOutput(header, output);
+                break;
+            case INPUT_OPERATION :
+                InputOperation inputOperation = (InputOperation)input;
+                switch (inputOperation.getOperation()) {
+                    case SCROLL_UP :
+                        userOutputWriter.scrollUp();
+                        break;
+                    case SCROLL_DOWN :
+                        userOutputWriter.scrollDown();
+                        break;
+                    case PREV_COMMAND :
+                        userOutputWriter.prevCommand();
+                        break;
+                    case NEXT_COMMAND :
+                        userOutputWriter.nextCommand();
+                        break;
+                }
+        }
+    }
+    
+    public boolean isReadyToExit() {
+        return mainController.isReadyToExit();
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\UIDisplay.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\UserInputReader.java
+	 */
+
+public class UserInputReader {
+    private ConsoleReader reader;
+    enum Mode {
+        SCROLL_MODE,
+        INPUT_MODE
+    }
+
+    private final static int KEY_ESC = 27;
+    private final static int KEY_ENTER = 13;
+    private final static int KEY_UP = 16;
+    private final static int KEY_DOWN = 14;
+    private final static int KEY_LEFT = 2;
+    private final static int KEY_RIGHT = 6;
+    private final static int KEY_BACKSPACE = 8;
+    private final static int KEY_DELETE = 127;
+    private final static int KEY_PGUP = 11;
+    private final static int KEY_PGDN = 12;
+    private final static int KEY_TAB = 9;
+    
+    private final static int ASCII_SPACE = 32;
+    
+    private final static String PROMPT_INPUT = ">";
+    private final static String PROMPT_SCROLL = "--- SCROLL MODE ---";
+    
+    Mode currentMode;
+    
+    ArgumentCompletor completor;
+    
+    public UserInputReader(ConsoleReader reader, 
+            ArgumentCompletor completor) throws IOException {
+        this.reader = reader;
+        this.completor = completor;
+        currentMode = Mode.INPUT_MODE;
+    }
+    
+    public Input getInput() throws IOException {
+        switchMode(currentMode);
+        Input result = null;
+        
+        while (result == null) {
+            int key = readKey();
+            result = processKey(key);
+        }
+        
+        return result;
+    }
+    
+    private Input processKey(int key) throws IOException {
+        switch(currentMode) {
+            case SCROLL_MODE :
+                return processKeyScroll(key);
+            case INPUT_MODE :
+                return processKeyInput(key);
+        }
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private Input processKeyScroll(int key) throws IOException {
+        switch(key) {
+            case KEY_UP :
+                return new InputOperation(InputOperation.Operation.SCROLL_UP);
+            case KEY_DOWN :
+                return new InputOperation(InputOperation.Operation.SCROLL_DOWN);
+            case KEY_ESC :
+                switchMode(Mode.INPUT_MODE);
+                return null;
+            case KEY_PGDN :
+                return new InputOperation(InputOperation.Operation.NEXT_COMMAND);
+            case KEY_PGUP :
+                return new InputOperation(InputOperation.Operation.PREV_COMMAND);
+            default :
+                return null;
+        }
+    }
+
+    private Input processKeyInput(int key) throws IOException {
+        switch(key) {
+            case KEY_ESC :
+                switchMode(Mode.SCROLL_MODE);
+                return null;
+            case KEY_ENTER :
+                reader.printNewline();
+                String bufferString = reader.getCursorBuffer().toString();
+                InputString input = 
+                        new InputString(bufferString);
+                reader.getHistory().addToHistory(bufferString);
+                reader.getHistory().moveToEnd();
+                reader.getCursorBuffer().clearBuffer();
+                return input;
+            case KEY_UP :
+                if (reader.getHistory().previous()) {
+                    clearInput();
+                    reader.putString(reader.getHistory().current());
+                    reader.flushConsole();
+                }
+                return null;
+            case KEY_DOWN :
+                if (reader.getHistory().next()) {
+                    clearInput();
+                    reader.putString(reader.getHistory().current());
+                    reader.flushConsole();
+                }
+                return null;
+            case KEY_BACKSPACE :
+                reader.backspace();
+                reader.flushConsole();
+                return null;
+            case KEY_LEFT :
+                int currentCursorPosition = reader.getCursorBuffer().cursor;
+                if (reader.setCursorPosition(currentCursorPosition - 1)) {
+                    reader.flushConsole();
+                }
+                return null;
+            case KEY_RIGHT :
+                int currentPosition = reader.getCursorBuffer().cursor;
+                if (reader.setCursorPosition(currentPosition + 1)) {
+                    reader.flushConsole();
+                }
+                return null;
+            case KEY_DELETE :
+                reader.delete();
+                reader.flushConsole();
+                return null;
+            case KEY_TAB :
+                String currentString = reader.getCursorBuffer().toString();
+                
+                List<String> possibleList = new ArrayList<String>();
+                if (completor.complete(currentString, reader.getCursorBuffer().cursor, possibleList) >= 0) {
+                    if (possibleList.size() == 1) {
+                        clearInput();
+                        reader.putString(possibleList.get(0));
+                        reader.flushConsole();
+                    }
+                }
+                return null;
+            default :
+                if (key >= ASCII_SPACE) {
+                    reader.putString(Character.toString((char)key));
+                    reader.flushConsole();
+                }
+                return null;
+        }
+    }
+
+    private int readKey() throws IOException {
+        return reader.readVirtualKey();
+    }
+    
+    private void switchMode(Mode newMode) throws IOException {
+        clearLine();
+        currentMode = newMode;
+        
+        switch (newMode) {
+            case INPUT_MODE :
+                reader.printString(PROMPT_INPUT);
+                break;
+            case SCROLL_MODE :
+                reader.printString(PROMPT_SCROLL);
+                break;
+        }
+        reader.flushConsole();
+    }
+    
+    private void clearInput() throws IOException {
+        while (reader.getCursorBuffer().length() > 0) {
+            reader.backspace();
+        }
+    }
+    
+    private void clearPrompt() throws IOException {
+        for (int i = 0; i < reader.getTermwidth(); i++) {
+            reader.printString("\b");
+        }
+        for (int i = 0; i < reader.getTermwidth() - 1; i++) {
+            reader.printString(" ");;
+        }
+        for (int i = 0; i < reader.getTermwidth(); i++) {
+            reader.printString("\b");
+        }
+    }
+    
+    private void clearLine() throws IOException {
+        clearInput();
+        clearPrompt();
+    }
+}
+
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\UserInputReader.java
+
+
+
+
+
+	/**
+	 * origin: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\UserOutputWriter.java
+	 */
+
+public class UserOutputWriter {
+    List<String> lines;
+    List<Integer> headers;
+    ConsoleReader reader;
+    int currentLine;
+    
+    private final static String EXEC_CLEARSCREEN = 
+            "mode.com con cols=%1$d lines=%2$d";
+    
+    
+    public UserOutputWriter(ConsoleReader reader) throws IOException {
+        this.reader = reader;
+        clearScreen();
+        lines = new ArrayList<String>();
+        headers = new ArrayList<Integer>();
+    }
+    
+    public void addHeader(String header) {
+        if (header != null) {
+            headers.add(lines.size());
+            lines.add(header);
+        }
+    }
+    
+    public void printOutput(String header, String output) throws IOException {
+        int prevSize = lines.size();
+        
+        addHeader(header);
+        String[] array = output.split(System.lineSeparator());
+        
+        lines.addAll(Arrays.asList(array));
+        
+        int start = prevSize;
+        show(start);
+    }
+    
+    private int getHeader(int lineNumber) {
+        int headerLineNumber = -1;
+        for (int i = 0; i < headers.size(); i++) {
+            if (headers.get(i) <= lineNumber) {
+                headerLineNumber = headers.get(i);
+            }
+        }
+        return headerLineNumber;
+    }
+    
+    private void show(int startLine) throws IOException {
+        clearScreen();
+        int numberOfLines = reader.getTermheight();
+        int numberOfOutputLines = numberOfLines - 1;
+        int numberOfStoredLines = lines.size();
+        
+        int endLine = Math.min(numberOfStoredLines, 
+                startLine + numberOfOutputLines);
+        
+        int numberOfAvailableLines = endLine - startLine;
+        
+        int numberOfPaddingLines = numberOfOutputLines - numberOfAvailableLines;
+        
+        StringBuilder builder = new StringBuilder();
+        builder.append("\033[36m" + lines.get(getHeader(startLine)));
+        builder.append(ansi().reset());
+        builder.append(System.lineSeparator());
+        for (int i = startLine + 1; i < endLine; i++) {
+            builder.append(lines.get(i));
+            builder.append(System.lineSeparator());
+        }
+        
+        for (int i = 0; i < numberOfPaddingLines; i++) {
+            builder.append(System.lineSeparator());
+        }
+        reader.printString(builder.toString());
+        reader.flushConsole();
+        
+        
+        currentLine = startLine;
+    }
+    
+    private void clearScreen() throws IOException {
+        reader.clearScreen();
+        String executedCommand = String.format(EXEC_CLEARSCREEN, 
+                reader.getTermwidth(), reader.getTermheight());
+        Process p = Runtime.getRuntime().exec(executedCommand);
+        try {
+            p.waitFor();
+        } catch (InterruptedException e) {
+        }
+        reader.flushConsole();
+    }
+    
+    public void scrollUp() throws IOException {
+        if (currentLine > 0) {
+            show(currentLine - 1);
+        }
+    }
+    
+    public void scrollDown() throws IOException {
+        if (currentLine < lines.size() - 2) {
+            show(currentLine + 1);
+        }
+    }
+    
+    private int findPreviousHeader(int currentHeader) {
+        int previousHeader = -1;
+        for (int i = 0; i < headers.size(); i++) {
+            if (headers.get(i) < currentHeader) {
+                previousHeader = headers.get(i);
+            }
+        }
+        return previousHeader;
+    }
+    
+    private int findNextHeader(int currentHeader) {
+        for (int i = 0; i < headers.size(); i++) {
+            if (headers.get(i) > currentHeader) {
+                return headers.get(i);
+            }
+        }
+        return -1;
+    }
+    
+    public void prevCommand() throws IOException {
+        int currentHeader = getHeader(currentLine);
+        int nextLine;
+        if (currentHeader == currentLine) {
+            nextLine = findPreviousHeader(currentHeader);
+            if (nextLine == -1) {
+                nextLine = 0;
+            }
+        } else {
+            nextLine = currentHeader;
+        }
+        show(nextLine);
+    }
+    
+    public void nextCommand() throws IOException {
+        int currentHeader = getHeader(currentLine);
+        int nextLine = findNextHeader(currentHeader);
+        if (nextLine == -1) {
+            nextLine = lines.size() - 2;
+        }
+        show(nextLine);
+    }
+}
+	// End of segment: c:\Users\BRUCE\Desktop\main\TaskManagerProject\src\ui\UserOutputWriter.java
+
+
+
+
+
