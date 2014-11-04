@@ -21,9 +21,10 @@ import data.taskinfo.TaskInfo;
  *    Priority: High
  *    Description: I will die if I don't eat my apples!
  *    
- * @author Nathan
  *
  */
+
+//@author A0113011L
 public class EditSuccessfulFormatter {
     private final static String CHANGED_NAME = "Task name changed.";
     private final static String CHANGED_TIME = "Time changed.";

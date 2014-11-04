@@ -59,7 +59,7 @@ public class CrashTester {
         deleteTestFiles();
 
         AutoCompleteDictionary autoCompleteDictionary =
-                new AutoCompleteDictionary();
+                new AutoCompleteDictionary(null);
 
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(

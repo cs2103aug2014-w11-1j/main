@@ -5,6 +5,7 @@ import manager.datamanager.suggestion.EditDistance;
 
 import org.junit.Test;
 
+//@author A0113011L
 public class EditDistanceTest {
 
     @Test

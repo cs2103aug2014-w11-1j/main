@@ -1,5 +1,6 @@
 package manager.datamanager.suggestion;
 
+//@author A0113011L
 public class KeywordSuggestion {
     private String keyword;
     private int distance;

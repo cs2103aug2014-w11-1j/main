@@ -1,5 +1,6 @@
 package manager.datamanager.suggestion;
 
+//@author A0113011L
 public class EditDistance {
     private int dpTable[][];
     private boolean calculated[][];

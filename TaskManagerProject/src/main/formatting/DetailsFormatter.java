@@ -18,9 +18,10 @@ import data.taskinfo.TaskInfo;
  *    Priority: High
  *    Description: I will die if I don't eat my apples!
  *    
- * @author Nathan
  *
  */
+
+//@author A0113011L
 public class DetailsFormatter {
     DetailsUtility detailsUtility;
 

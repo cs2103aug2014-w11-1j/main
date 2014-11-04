@@ -19,9 +19,10 @@ import main.modeinfo.EditModeInfo;
  *    Priority: High
  *    Description: I will die if I don't eat my apples!
  * 
- * @author nathanajah
  *
  */
+
+//@author A0113011L
 public class EditModeFormatter {
     private final static String FORMAT_LINE = "You are now editing %1$s." + 
             System.lineSeparator();

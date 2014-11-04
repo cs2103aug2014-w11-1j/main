@@ -3,9 +3,10 @@ package main.modeinfo;
 /**
  * A ModeInfo that is used when the user is in the normal mode, without
  * any specific mode to print out.
- * @author nathanajah
  *
  */
+
+//@author A0113011L
 public class EmptyModeInfo implements ModeInfo {
 
 	/**

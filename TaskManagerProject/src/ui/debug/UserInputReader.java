@@ -2,6 +2,7 @@ package ui.debug;
 
 import java.util.Scanner;
 
+//@author A0113011L
 public class UserInputReader {
     private Scanner scanner;
     

@@ -3,7 +3,7 @@ package manager.datamanager.searchfilter;
 import data.taskinfo.Status;
 import data.taskinfo.TaskInfo;
 
-
+//@author A0113011L
 public class StatusFilter implements Filter {
 
     private Status[] statuses;

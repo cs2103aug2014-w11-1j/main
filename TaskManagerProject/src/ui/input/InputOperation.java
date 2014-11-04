@@ -2,6 +2,7 @@ package ui.input;
 
 import ui.input.Input.Type;
 
+//@author A0113011L
 public class InputOperation implements Input {
     public enum Operation {
         SCROLL_UP,

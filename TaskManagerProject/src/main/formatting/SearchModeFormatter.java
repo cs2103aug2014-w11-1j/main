@@ -14,8 +14,9 @@ import main.modeinfo.SearchModeInfo;
  * 4) [   21:10   ] Go to the supermarket and shop for some apples for p... - [gf4]
  * Floating Tasks ---
  * 5) [           ] Remember to eat an apple today                          - [a8d]
- * @author nathanajah
  */
+
+//@author A0113011L
 public class SearchModeFormatter {
     private final static String LINE_SUGGESTION = "Did you mean: ";
     

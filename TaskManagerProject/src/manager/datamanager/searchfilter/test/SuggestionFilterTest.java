@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class SuggestionFilterTest {
 
     @Test

@@ -4,9 +4,10 @@ import main.modeinfo.EmptyModeInfo;
 
 /**
  * A formatter for the EmptyModeInfo.
- * @author nathanajah
  *
  */
+
+//@author A0113011L
 public class EmptyModeFormatter {
 	
 	/**

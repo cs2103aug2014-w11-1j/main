@@ -4,9 +4,10 @@ import main.message.EnumMessage;
 
 /**
  * Formatter for EnumMessage.
- * @author nathanajah
  *
  */
+
+//@author A0113011L
 public class EnumFormatter {
     
     private final static String MESSAGE_INVALID_ARGUMENT = 

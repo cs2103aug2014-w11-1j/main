@@ -2,14 +2,18 @@ package data;
 
 import java.util.Arrays;
 
+import jline.SimpleCompletor;
+
 public class AutoCompleteDictionary {
     
-    public AutoCompleteDictionary() {
-        
+    SimpleCompletor completor;
+    
+    public AutoCompleteDictionary(SimpleCompletor completor) {
+        this.completor = completor;
     }
-
-    //@author A0065475X
+    
+    //@author A0113011L
     public void refreshDictionary(String[] strings) {
-        System.out.println(Arrays.toString(strings));
+        completor.setCandidateStrings(strings);
     }
 }

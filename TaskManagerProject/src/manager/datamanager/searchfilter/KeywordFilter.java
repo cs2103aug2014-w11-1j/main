@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class KeywordFilter implements Filter{
     public Type getType() {
         return Type.FILTER_KEYWORD;

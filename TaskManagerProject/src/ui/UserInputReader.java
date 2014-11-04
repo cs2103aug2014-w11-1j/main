@@ -1,12 +1,16 @@
 package ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import jline.ArgumentCompletor;
 import jline.ConsoleReader;
 import ui.input.Input;
 import ui.input.InputOperation;
 import ui.input.InputString;
 
+//@author A0113011L
 public class UserInputReader {
     private ConsoleReader reader;
     enum Mode {
@@ -24,6 +28,7 @@ public class UserInputReader {
     private final static int KEY_DELETE = 127;
     private final static int KEY_PGUP = 11;
     private final static int KEY_PGDN = 12;
+    private final static int KEY_TAB = 9;
     
     private final static int ASCII_SPACE = 32;
     
@@ -32,8 +37,12 @@ public class UserInputReader {
     
     Mode currentMode;
     
-    public UserInputReader(ConsoleReader reader) throws IOException {
+    ArgumentCompletor completor;
+    
+    public UserInputReader(ConsoleReader reader, 
+            ArgumentCompletor completor) throws IOException {
         this.reader = reader;
+        this.completor = completor;
         currentMode = Mode.INPUT_MODE;
     }
     
@@ -124,6 +133,18 @@ public class UserInputReader {
             case KEY_DELETE :
                 reader.delete();
                 reader.flushConsole();
+                return null;
+            case KEY_TAB :
+                String currentString = reader.getCursorBuffer().toString();
+                
+                List<String> possibleList = new ArrayList<String>();
+                if (completor.complete(currentString, reader.getCursorBuffer().cursor, possibleList) >= 0) {
+                    if (possibleList.size() == 1) {
+                        clearInput();
+                        reader.putString(possibleList.get(0));
+                        reader.flushConsole();
+                    }
+                }
                 return null;
             default :
                 if (key >= ASCII_SPACE) {

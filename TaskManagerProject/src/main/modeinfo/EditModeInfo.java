@@ -3,6 +3,7 @@ package main.modeinfo;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class EditModeInfo implements ModeInfo {
 
     private TaskId taskId;

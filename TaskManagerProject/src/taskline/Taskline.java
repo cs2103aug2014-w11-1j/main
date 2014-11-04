@@ -6,6 +6,10 @@ import io.IFileInputOutput;
 
 import java.io.IOException;
 
+import jline.ArgumentCompletor;
+import jline.Completor;
+import jline.NullCompletor;
+import jline.SimpleCompletor;
 import main.MainController;
 import main.command.alias.AliasStorage;
 import manager.ManagerHolder;
@@ -30,8 +34,14 @@ public class Taskline {
         String fileName = "tasks.txt";
         String aliasFileName = "alias.txt";
 
+        SimpleCompletor simpleCompletor = new SimpleCompletor(new String[]{});
         AutoCompleteDictionary autoCompleteDictionary =
-                new AutoCompleteDictionary();
+                new AutoCompleteDictionary(simpleCompletor);
+        
+        ArgumentCompletor argumentCompletor = new ArgumentCompletor(
+                new Completor[]{
+                        simpleCompletor, 
+                        new NullCompletor()});
         
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
@@ -46,7 +56,7 @@ public class Taskline {
         MainController mainController = new MainController(managerHolder,
                 aliasStorage, aliasFileInputOutput);
         
-        UIDisplay uiDisplay = new UIDisplay(mainController);
+        UIDisplay uiDisplay = new UIDisplay(mainController, argumentCompletor);
 
         startCommandLoop(uiDisplay);
         TasklineLogger.closeLoggerFileHandler();
