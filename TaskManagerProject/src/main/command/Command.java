@@ -51,7 +51,27 @@ public abstract class Command {
         return response;
     }
     
+    /**
+     * If the parsing parsed something invalid, (e.g. delete with no tasks
+     * specified), make this return false. This will cause the program to
+     * print an "invalid arguments" message to the user.
+     * @return true iff the arguments parse into something that's valid.
+     */
     protected abstract boolean isValidArguments();
+    /**
+     * This is the check with the StateManager for clearance to use the
+     * command.<br>
+     * e.g. for add command, this will look like:<br>
+     * return stateManager.canAdd();
+     * @return true iff StateManager approves the execution of the command.
+     */
     protected abstract boolean isCommandAllowed();
+    /**
+     * The command's functionality should be written here. Make the necessary
+     * calls to the managers involved here. Get the execution result from the
+     * manager.
+     * @return a result, which will automatically be used to update the
+     * StateManager.
+     */
     protected abstract Result executeAction();
 }

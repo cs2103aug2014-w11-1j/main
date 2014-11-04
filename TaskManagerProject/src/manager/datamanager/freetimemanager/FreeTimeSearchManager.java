@@ -3,6 +3,7 @@ package manager.datamanager.freetimemanager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import manager.datamanager.AbstractManager;
 import manager.result.FreeTimeResult;
@@ -14,16 +15,25 @@ import data.taskinfo.TaskInfo;
 //@author A0119432L
 public class FreeTimeSearchManager extends AbstractManager {
 	
-	
 	private ArrayList<TaskInfo> taskList;
 	private ArrayList<Interval> freeTimeList;
 	private final LocalTime DAY_START_TIME = LocalTime.of(0, 0);
 	private final LocalTime DAY_END_TIME = LocalTime.of(23, 59);
+	
 	public FreeTimeSearchManager(TaskData taskData) {
 		super(taskData);
 	}
-	
-	private Interval getTaskTimeOnDate(TaskInfo taskInfo, LocalDate date){
+
+    public Result searchFreeTimeSlot(LocalDate date){
+        taskList = getTaskList();
+        freeTimeList = generateTimeList();
+        processTaskList(date);
+        postProcessIntervalList();
+        return new FreeTimeResult(date, freeTimeList);
+    }
+    
+
+    private Interval getTaskTimeOnDate(TaskInfo taskInfo, LocalDate date){
 		
 		
 		if (taskInfo.getEndDate() == null){ // floating task
@@ -78,7 +88,7 @@ public class FreeTimeSearchManager extends AbstractManager {
 		return list;
 	}
 	
-	public void processInterval(Interval interval){
+	private void processInterval(Interval interval){
 		if (interval == null){
 			return;
 		}
@@ -97,13 +107,27 @@ public class FreeTimeSearchManager extends AbstractManager {
 			processInterval(itvl);
 		}
 	}
-	
-	public Result searchFreeTimeSlot(LocalDate date){
-		taskList = getTaskList();
-		freeTimeList = generateTimeList();
-		processTaskList(date);
-		return new FreeTimeResult(date, freeTimeList);
-	}
 		
-
+    private void postProcessIntervalList() {
+        LinkedList<Interval> mergedIntervals = new LinkedList<>();
+        
+        for (Interval interval : freeTimeList) {
+            if (!interval.isOccupied()) {
+                Interval previous = mergedIntervals.isEmpty() ? null :
+                    mergedIntervals.getLast();
+                
+                if (previous != null && interval.immediatelyAfter(previous)) {
+                    mergedIntervals.removeLast();
+                    mergedIntervals.addLast(previous.concatenate(interval));
+                } else {
+                    mergedIntervals.add(new Interval(interval));
+                }
+            }
+        }
+        
+        freeTimeList = new ArrayList<>(mergedIntervals.size());
+        for (Interval interval : mergedIntervals) {
+            freeTimeList.add(interval);
+        }
+    }
 }

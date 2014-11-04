@@ -1,6 +1,5 @@
 package main.command.alias;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,6 +18,7 @@ import main.command.EditCommand;
 import main.command.EditCommand.ParseType;
 import main.command.ExitCommand;
 import main.command.FreeDaySearchCommand;
+import main.command.FreeTimeSearchCommand;
 import main.command.RedoCommand;
 import main.command.ReportCommand;
 import main.command.SearchCommand;
@@ -253,6 +253,11 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 (args, managerHolder) ->
                 new FreeDaySearchCommand(args, managerHolder),
                 "freeday");
+
+        defineDefaultCommands(
+                (args, managerHolder) ->
+                new FreeTimeSearchCommand(args, managerHolder),
+                "freetime");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new DeleteCommand(args, managerHolder),
