@@ -140,9 +140,9 @@ public class CrashTester {
         
         testRandom(ListType.SEARCH);
 
-        testRandom(100, ListType.COMMAND, ListType.ALL);
-        testRandom(100, ListType.COMMAND, ListType.ALL, ListType.ALL);
-        testRandom(100, ListType.COMMAND, ListType.ALL, ListType.ALL, ListType.ALL);
+        testRandom(150, ListType.COMMAND, ListType.ALL);
+        testRandom(150, ListType.COMMAND, ListType.ALL, ListType.ALL);
+        testRandom(150, ListType.COMMAND, ListType.ALL, ListType.ALL, ListType.ALL);
         testRandom(30, ListType.UNALIAS, ListType.COMMAND);
 
         testRandom(100, ListType.SEARCH, ListType.ALL);

@@ -10,6 +10,6 @@ public class AutoCompleteDictionary {
 
     //@author A0065475X
     public void refreshDictionary(String[] strings) {
-        System.out.println(Arrays.toString(strings));
+        
     }
 }
