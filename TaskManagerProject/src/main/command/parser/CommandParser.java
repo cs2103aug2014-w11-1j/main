@@ -237,4 +237,22 @@ public class CommandParser {
         return sB.toString();
     }
 
+    public static String stripIgnoreSymbols(String args) {
+        if (hasIgnoredSegment(args)) {
+            String ignoredSegment = getIgnoredSegment(args);
+            int startIgnoreIdx = args.indexOf(ignoredSegment);
+            int endIgnoreIdx = startIgnoreIdx + ignoredSegment.length();
+
+            // recursively parse non-ignored segments
+            String front = args.substring(0, startIgnoreIdx).trim();
+            String back = args.substring(endIgnoreIdx).trim();
+            back = stripIgnoreSymbols(back);
+
+            // remove SYMBOL_IGNORE from both sides
+            String cleanedIgnoredSegment =
+                    ignoredSegment.substring(1, ignoredSegment.length() - 1);
+            return front + " " + cleanedIgnoredSegment + " " + back;
+        }
+        return args;
+    }
 }
