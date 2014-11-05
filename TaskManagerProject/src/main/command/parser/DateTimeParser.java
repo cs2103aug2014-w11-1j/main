@@ -110,10 +110,16 @@ public class DateTimeParser {
     }
 
     public static boolean isDate(String dateString) {
+        if (getDateModifier(dateString) != null) {
+            dateString = removeFirstWord(dateString);
+        }
         return DateParser.isDate(dateString);
     }
 
     public static boolean isTime(String timeString) {
+        if (getDateModifier(timeString) != null) {
+            timeString = removeFirstWord(timeString);
+        }
         return TimeParser.isTime(timeString);
     }
 
