@@ -256,10 +256,12 @@ public class EditManager extends AbstractManager {
             }
 
             boolean isSuccessful = taskData.taskExists(taskId);
-            boolean isTagSuccess = true;
+            boolean isTagSuccess = false;
             for (Tag tag : tags) {
-                 isTagSuccess = taskData.removeTag(taskId, tag);
-                 System.out.println(isTagSuccess);
+                Boolean  isDeleteSuccess = taskData.removeTag(taskId, tag);
+                if (isDeleteSuccess){
+                	isTagSuccess = true;
+                }
             }
 
             taskIdList.add(taskId);
