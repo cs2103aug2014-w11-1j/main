@@ -98,6 +98,8 @@ public class CrashTester {
         ListType[] add = {ListType.ADD};
         ListType[] delete = {ListType.DELETE};
 
+        ListType[] clear = {ListType.CLEAR};
+
         ListType[] dateTime = {ListType.DATETIME};
         ListType[] comma = {ListType.COMMA};
         
@@ -145,12 +147,12 @@ public class CrashTester {
         testRandom(10, ListType.FREETIME, ListType.DATETIME, ListType.DATETIME);
         testRandom(40, ListType.FREETIME, ListType.ALL, ListType.ALL);
         
-        testRandom(30, ListType.DELETE, ListType.ALL);
-        testRandom(30, ListType.DELETE, ListType.RANDOM);
-        testRandom(30, ListType.DELETE, ListType.TASKID);
+        testRandomMaybeSearch(30, ListType.DELETE, ListType.ALL);
+        testRandomMaybeSearch(30, ListType.DELETE, ListType.RANDOM);
+        testRandomMaybeSearch(30, ListType.DELETE, ListType.TASKID);
         
         
-        testRandom(100, ListType.ALL, ListType.ALL);
+        testRandomMaybeSearch(200, ListType.ALL, ListType.ALL);
         testRandom(30, ListType.UNALIAS, ListType.COMMAND);
         
         testRandom(ListType.SEARCH);
@@ -170,17 +172,19 @@ public class CrashTester {
         testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.CONNECTOR, ListType.DATETIME);
         testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.SYMBOL, ListType.DATETIME);
 
-        testRandom(20, ListType.EDIT, ListType.EDITKEYWORD);
-        testRandom(20, ListType.EDIT, ListType.EDITKEYWORD, ListType.RANDOM);
-        testRandom(20, ListType.EDIT, ListType.RANDOM, ListType.RANDOM);
-        testRandom(200, new ListType[]{ListType.EDIT}, validTargets,
-                validTargets, validTargets, validTargets,
-                editKeywords, validItems);
-        testRandom(200, new ListType[]{ListType.EDIT}, validTargets,
-                validTargets, validTargets, validTargets, validTargets,
-                editKeywords, validItems, validItems);
-        testRandom(200, new ListType[]{ListType.EDIT}, randomTargets,
-                randomTargets, randomTargets, randomTargets,
+        testRandomMaybeSearch(20, ListType.EDIT, ListType.EDITKEYWORD);
+        testRandomMaybeSearch(20, ListType.EDIT, ListType.EDITKEYWORD, ListType.RANDOM);
+        testRandomMaybeSearch(20, ListType.EDIT, ListType.RANDOM, ListType.RANDOM);
+        
+        testRandomMaybeSearch(120, edit, validTargets, clear, editKeywords);
+        testRandomMaybeSearch(200, edit, validTargets, editKeywords, validItems);
+        testRandomMaybeSearch(30, edit, validTargets, clear, editKeywords);
+        testRandomMaybeSearch(200, edit, validTargets, validTargets, editKeywords,
+                validItems);
+        testRandomMaybeSearch(200, edit, validTargets, validTargets, validTargets,
+                editKeywords, validItems,
+                validItems);
+        testRandomMaybeSearch(200, edit, randomTargets, randomTargets, randomTargets,
                 editKeywords, randomItems, randomItems);
 
         // Random aliasing
@@ -234,6 +238,23 @@ public class CrashTester {
         }
     }
     
+    /**
+     * Tests a string made out of the specified combination of ListTypes.<br>
+     * The combination is used in that order.<br>
+     * This has a chance of searching before each test.
+     * @param times the number of times to test that combination
+     * @param listTypes the combination of ListTypes to use.
+     */
+    private void testRandomMaybeSearch(int times, ListType...listTypes) {
+        ListType[] maybeSearch = {ListType.SEARCH, ListType.NONE};
+        
+        for (int i = 0; i < times; i++) {
+            test(keywordLibrary.getRandom(maybeSearch));
+            testRandom(listTypes);
+        }
+    }
+    
+    
     private void testRandom(ListType...listTypes) {
         StringBuilder inputString = new StringBuilder();
         
@@ -246,7 +267,7 @@ public class CrashTester {
         
         test(inputString.toString());
     }
-    
+
     /**
      * Tests a string made out of the specified combination of ListTypes.<br>
      * The combination is used in that order.
@@ -258,6 +279,23 @@ public class CrashTester {
             testRandom(listTypes);
         }
     }
+
+    /**
+     * Tests a string made out of the specified combination of ListTypes.<br>
+     * The combination is used in that order.<br>
+     * This has a chance of searching before each test.
+     * @param times the number of times to test that combination
+     * @param listTypes the combination of ListTypes to use.
+     */
+    private void testRandomMaybeSearch(int times, ListType[]...listTypes) {
+        ListType[] maybeSearch = {ListType.SEARCH, ListType.NONE};
+        
+        for (int i = 0; i < times; i++) {
+            test(keywordLibrary.getRandom(maybeSearch));
+            testRandom(listTypes);
+        }
+    }
+    
     
     private void testRandom(ListType[]...listTypes) {
         StringBuilder inputString = new StringBuilder();

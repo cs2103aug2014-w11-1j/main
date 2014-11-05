@@ -32,6 +32,7 @@ public class KeywordLibrary {
         SYMBOL,
         COMMA,
         EDITKEYWORD,
+        CLEAR,
         EDIT,
         DELETE,
         SEARCH,
@@ -180,6 +181,7 @@ public class KeywordLibrary {
         addToList("delete", COMMAND, DELETE, EDITKEYWORD, RANDOM);
         addToList("del", COMMAND, DELETE, EDITKEYWORD, TASKID);
 
+        addToList("clear", CLEAR);
         addToList(AGAIN, "clear", COMMAND, EDITKEYWORD);
         addToList("time", COMMAND, EDITKEYWORD);
         addToList("name", COMMAND, EDITKEYWORD, RANDOM);
@@ -187,6 +189,7 @@ public class KeywordLibrary {
         addToList("datetime", COMMAND, EDITKEYWORD);
         addToList("priority", COMMAND, EDITKEYWORD);
         addToList("status", COMMAND, EDITKEYWORD);
+        addToList("details", EDITKEYWORD);
         addToList("edit", EDITKEYWORD);
         addToList("tag add", EDITKEYWORD);
         addToList("tag del", EDITKEYWORD);
