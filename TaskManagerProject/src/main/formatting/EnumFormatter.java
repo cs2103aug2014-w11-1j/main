@@ -124,6 +124,9 @@ public class EnumFormatter {
                 formattedResult = "";
                 break;
         }
+        if (formattedResult != MESSAGE_EMPTY) {
+            formattedResult = formattedResult + System.lineSeparator();
+        }
         return formattedResult;
     }
 }

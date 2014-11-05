@@ -35,6 +35,7 @@ public class WaitingModeFormatter {
         TaskId[] taskIds = searchInfo.getTaskIds();
         ArrayList<String> formattedTaskArray = 
                 formatToArrayList(tasks, taskIds);
+        formattedTaskArray.add("");
         return arrayListToStringLines(formattedTaskArray);
     }
 }

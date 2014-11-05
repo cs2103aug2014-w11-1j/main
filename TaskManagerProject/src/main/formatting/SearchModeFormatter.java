@@ -42,7 +42,7 @@ public class SearchModeFormatter {
         }
         result.append(summaryUtility.format(modeInfo.getTasks(), 
                 modeInfo.getTaskIds()));
-        
+        result.append(System.lineSeparator());
         return result.toString();
     }
 }

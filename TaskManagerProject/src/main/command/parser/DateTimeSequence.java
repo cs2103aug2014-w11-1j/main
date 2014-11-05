@@ -1,6 +1,5 @@
 package main.command.parser;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DateTimeSequence extends DateTimePair {
@@ -20,7 +19,7 @@ public class DateTimeSequence extends DateTimePair {
     }
 
     @Override
-    void add(LocalDate d) {
+    void add(ParsedDate d) {
         if (d == null || isFull()) {
             return;
         }

@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import main.command.parser.ParsedDate.Frequency;
+
 public class DateParser {
     private static final int MIN_YEAR = 1000;
     private static Map<DateTimeFormatter, String> datePartialFormatPatterns;
@@ -19,10 +21,10 @@ public class DateParser {
     private static Map<String, String> dateWeekOfDayShortForms;
     private static LocalDate datePatternsLastUpdate;
 
-    static LocalDate parseDate(String dateString) {
+    static ParsedDate parseDate(String dateString) {
         buildDatePatternHashMap();
 
-        LocalDate d = parseRelativeDate(dateString);
+        ParsedDate d = parseRelativeDate(dateString);
         if (d == null) {
             d = parseAbsoluteDate(dateString);
         }
@@ -34,26 +36,30 @@ public class DateParser {
         return parseDate(dateString) != null;
     }
 
-    private static LocalDate parseRelativeDate(String dateString) {
+    private static ParsedDate parseRelativeDate(String dateString) {
         // TODO weekdays (absolute?), +7d, -7d
         LocalDate parsedDate = null;
         dateString = dateString.toLowerCase();
 
         parsedDate = parseDateAsDayOfWeek(dateString);
         if (parsedDate != null) {
-            return parsedDate;
+            return new ParsedDate(parsedDate, Frequency.WEEK);
         }
 
         parsedDate = parseDateAsOccasion(dateString);
         if (parsedDate != null) {
-            return parsedDate;
+            return new ParsedDate(parsedDate, Frequency.YEAR);
         }
 
         parsedDate = parseDateAsPlusMinus(dateString);
         if (parsedDate == null) {
             parsedDate = parseDateAsRelativeToNow(dateString);
         }
-        return parsedDate;
+        if (parsedDate != null) {
+            return new ParsedDate(parsedDate);
+        }
+
+        return null;
     }
 
     private static LocalDate parseDateAsRelativeToNow(String dateString) {
@@ -76,7 +82,7 @@ public class DateParser {
     }
 
     private static LocalDate parseDateAsOccasion(String dateString) {
-        // TODO Auto-generated method stub
+        // TODO Occasions such as New Year's / Christmas.
         return null;
     }
 
@@ -129,19 +135,19 @@ public class DateParser {
         return LocalDate.from(adjustedDay);
     }
 
-    private static LocalDate parseAbsoluteDate(String dateString) {
-        LocalDate parsedDate;
-
+    private static ParsedDate parseAbsoluteDate(String dateString) {
         // match full before partial in order to prevent matching more than one.
         LocalDate date = matchDatePatterns(dateFullFormatPatterns, dateString);
         if (date != null) {
-            parsedDate = date;
-        } else {
-            date = matchDatePatterns(datePartialFormatPatterns, dateString);
-            parsedDate = date;
+            return new ParsedDate(date);
         }
 
-        return parsedDate;
+        date = matchDatePatterns(datePartialFormatPatterns, dateString);
+        if (date != null) {
+            return new ParsedDate(date, Frequency.YEAR);
+        }
+
+        return null;
     }
 
     private static LocalDate matchDatePatterns(
@@ -193,7 +199,7 @@ public class DateParser {
             return;
         }
 
-        datePartialFormatPatterns = new HashMap<DateTimeFormatter, String>();
+        datePartialFormatPatterns = new HashMap<>();
 
         // 24 August
         mapPattern(datePartialFormatPatterns,
@@ -215,7 +221,7 @@ public class DateParser {
             return;
         }
 
-        dateFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
+        dateFullFormatPatterns = new HashMap<>();
 
         // 24 Aug 2014
         mapPattern(dateFullFormatPatterns, "d MMM y");

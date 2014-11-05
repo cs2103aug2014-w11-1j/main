@@ -47,6 +47,6 @@ public class DetailsFormatter {
         TaskInfo task = message.getTask();
         TaskId taskId = message.getTaskId();
         return arrayListToString(
-                detailsUtility.formatToArray(task, taskId));
+                detailsUtility.formatToArray(task, taskId)) + System.lineSeparator();
     }
 }

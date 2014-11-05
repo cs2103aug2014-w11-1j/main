@@ -61,7 +61,7 @@ public class FreeDaySearchFormatter {
                 current = current.plusDays(1);
             } while (!current.equals(message.getSearchEndDate().plusDays(1)));
             
-            return result.toString();
+            return result.toString() + System.lineSeparator();
         }
     }
 }

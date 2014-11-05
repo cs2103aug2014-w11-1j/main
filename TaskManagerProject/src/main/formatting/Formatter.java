@@ -192,7 +192,7 @@ public class Formatter {
      */
     public String format(Response response) {
         if (shouldPrintMode(response)) {
-            return formatMessage(response.getMessage()) + 
+            return formatMessage(response.getMessage()) +
                     formatModeInfo(response.getModeInfo());
         } else {
             return formatMessage(response.getMessage());
