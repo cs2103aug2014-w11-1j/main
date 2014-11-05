@@ -81,6 +81,9 @@ public class DateParser {
     }
 
     private static LocalDate parseDateAsOccasion(String dateString) {
+        if (dateString.toLowerCase().equals("christmas")) {
+            return LocalDate.of(LocalDate.now().getYear(), 12, 25);
+        }
         // TODO Occasions such as New Year's / Christmas.
         return null;
     }
