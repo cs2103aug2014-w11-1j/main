@@ -57,17 +57,22 @@ public class DateTimePair {
     }
 
     public LocalDate getFirstDate() {
-        return modifyDate(dates.getFirstDate(), dates.getFirstFrequency(),
-                firstModifier);
+        return modifyDate(dates.getFirstDate(), LocalDate.now(),
+                dates.getFirstFrequency(), firstModifier);
     }
 
     public LocalDate getSecondDate() {
-        return modifyDate(dates.getSecondDate(), dates.getSecondFrequency(),
-                secondModifier);
+        if (hasFirstDate()) {
+            return modifyDate(dates.getSecondDate(), dates.getFirstDate(),
+                    dates.getSecondFrequency(), secondModifier);
+        } else {
+            return modifyDate(dates.getSecondDate(), LocalDate.now(),
+                    dates.getSecondFrequency(), secondModifier);
+        }
     }
 
-    private LocalDate modifyDate(LocalDate date, Frequency frequency,
-            DateModifier modifier) {
+    private LocalDate modifyDate(LocalDate date, LocalDate fromDate,
+            Frequency frequency, DateModifier modifier) {
         // TODO Modify date based on frequency and modfier
         return date;
     }
