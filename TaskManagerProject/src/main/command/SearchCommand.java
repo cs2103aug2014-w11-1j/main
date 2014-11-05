@@ -41,7 +41,7 @@ public class SearchCommand extends Command {
         }
 
         // TODO set up a way to have a common repository of symbols, like DELIM
-        String taskName = CommandParser.parseName(args, false);
+        String taskName = CommandParser.parseName(args);
         if (!taskName.isEmpty()) {
             String delim = " ";
             String[] keywords = taskName.split(delim);

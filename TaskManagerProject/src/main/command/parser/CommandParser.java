@@ -16,13 +16,13 @@ public class CommandParser {
     private final static String SYMBOL_PRIORITY = "+";
     private final static Priority DEFAULT_PRIORITY = null;
 
-    public static String parseName(String args, boolean ignoreStatus) {
-        String name = parseNameRecurse(args, ignoreStatus);
+    public static String parseName(String args) {
+        String name = parseNameRecurse(args);
         String cleanedName = cleanCmdString(name).trim();
         return cleanedName;
     }
 
-    private static String parseNameRecurse(String args, boolean ignoreStatus) {
+    private static String parseNameRecurse(String args) {
         if (hasIgnoredSegment(args)) {
             String ignoredSegment = getIgnoredSegment(args);
             int startIgnoreIdx = args.indexOf(ignoredSegment);
@@ -30,9 +30,9 @@ public class CommandParser {
 
             // recursively parse non-ignored segments
             String front = args.substring(0, startIgnoreIdx).trim();
-            front = parseNameRecurse(front, ignoreStatus);
+            front = parseNameRecurse(front);
             String back = args.substring(endIgnoreIdx).trim();
-            back = parseNameRecurse(back, ignoreStatus);
+            back = parseNameRecurse(back);
 
             // remove SYMBOL_IGNORE from both sides
             String cleanedIgnoredSegment =
@@ -48,7 +48,7 @@ public class CommandParser {
                     String[] curTokens = Arrays.copyOfRange(tokens, i, j);
                     String curSubstring = String.join(SYMBOL_DELIM, curTokens);
 
-                    if (!isKeyword(curSubstring, ignoreStatus)) {
+                    if (!isKeyword(curSubstring)) {
                         toRemove.set(i, j);
                         break;
                     }
@@ -70,18 +70,6 @@ public class CommandParser {
         return !(isPriority(curSubstring) || isTag(curSubstring) ||
                 isStatus(curSubstring) || DateTimeParser.isDate(curSubstring) ||
                 DateTimeParser.isTime(curSubstring));
-    }
-
-    private static boolean isKeyword(String curSubstring, boolean ignoreStatus) {
-        if (ignoreStatus) {
-            return !(isPriority(curSubstring) || isTag(curSubstring) ||
-                    DateTimeParser.isDate(curSubstring) ||
-                    DateTimeParser.isTime(curSubstring));
-        } else {
-            return !(isPriority(curSubstring) || isTag(curSubstring) ||
-                    isStatus(curSubstring) || DateTimeParser.isDate(curSubstring) ||
-                    DateTimeParser.isTime(curSubstring));
-        }
     }
 
     /**
@@ -263,8 +251,8 @@ public class CommandParser {
             // remove SYMBOL_IGNORE from both sides
             String cleanedIgnoredSegment =
                     ignoredSegment.substring(1, ignoredSegment.length() - 1);
-            return front + " " + cleanedIgnoredSegment + " " + back;
+            return (front + " " + cleanedIgnoredSegment + " " + back).trim();
         }
-        return args;
+        return args.trim();
     }
 }
