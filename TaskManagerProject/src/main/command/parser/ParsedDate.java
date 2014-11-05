@@ -1,23 +1,21 @@
 package main.command.parser;
 
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoField;
 
 public class ParsedDate {
     enum Frequency {
-        DAY(Period.ofDays(1)),
-        WEEK(Period.ofWeeks(1)),
-        MONTH(Period.ofMonths(1)),
-        YEAR(Period.ofYears(1));
+        WEEK(ChronoField.ALIGNED_WEEK_OF_YEAR),
+        YEAR(ChronoField.YEAR);
 
-        Period p;
+        ChronoField field;
 
-        Frequency(Period p) {
-            this.p = p;
+        Frequency(ChronoField field) {
+            this.field = field;
         }
 
-        Period getPeriod(){
-            return p;
+        ChronoField getField(){
+            return field;
         }
     }
 
