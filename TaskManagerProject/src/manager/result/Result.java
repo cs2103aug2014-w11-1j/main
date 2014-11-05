@@ -33,7 +33,8 @@ public interface Result {
         ALIAS_SUCCESS,
         ALIAS_FAILURE,
         ALIAS_DELETE_SUCCESS,
-        ALIAS_DELETE_FAILURE
+        ALIAS_DELETE_FAILURE,
+        VIEW_ALIAS_SUCCESS
     }
 
     public Type getType();    // implement this with the correct type.

@@ -63,6 +63,6 @@ public class AliasMessage implements Message {
 
     @Override
     public Type getType() {
-        return Type.ALIAS_MESSAGE;
+        return Type.EDIT_ALIAS;
     }
 }

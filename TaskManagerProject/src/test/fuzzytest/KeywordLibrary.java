@@ -171,6 +171,9 @@ public class KeywordLibrary {
         addToList("done", COMMAND);
         addToList("unmark", COMMAND);
         addToList("reschedule", COMMAND);
+        addToList("aliases", COMMAND);
+        addToList("viewalias", COMMAND);
+        addToList("viewaliases", COMMAND);
 
         addToList(AGAIN, "tag", COMMAND, EDIT, EDITKEYWORD, TASKID);
         addToList("add", COMMAND, ADD, EDITKEYWORD, TASKID, RANDOM);

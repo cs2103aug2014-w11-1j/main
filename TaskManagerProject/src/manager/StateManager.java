@@ -18,6 +18,7 @@ import main.message.FreeDaySearchMessage;
 import main.message.FreeTimeSearchMessage;
 import main.message.Message;
 import main.message.ReportMessage;
+import main.message.ViewAliasMessage;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.modeinfo.ModeInfo;
@@ -39,8 +40,8 @@ import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
 import manager.result.StartEditModeResult;
+import manager.result.ViewAliasResult;
 import taskline.TasklineLogger;
-import taskline.debug.Taskline;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
@@ -481,12 +482,17 @@ public class StateManager {
                         aliasResult.getValue(),
                         AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
             }
-                
+            
             case ALIAS_DELETE_FAILURE : {
                 AliasDeleteResult aliasResult = (AliasDeleteResult)result;
                 return new AliasMessage(aliasResult.getAlias(), 
                         aliasResult.getValue(),
                         AliasMessage.AliasType.ALIAS_DELETE_FAILURE);
+            }
+            
+            case VIEW_ALIAS_SUCCESS : {
+                ViewAliasResult aliasResult = (ViewAliasResult)result;
+                return new ViewAliasMessage(aliasResult.getAliases());
             }
 
             default:

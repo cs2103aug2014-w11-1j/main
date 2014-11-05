@@ -23,6 +23,7 @@ import main.command.RedoCommand;
 import main.command.ReportCommand;
 import main.command.SearchCommand;
 import main.command.UndoCommand;
+import main.command.ViewAliasCommand;
 import manager.ManagerHolder;
 
 
@@ -283,12 +284,18 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 (args, managerHolder) -> new AliasDeleteCommand(args, managerHolder),
                 "unalias", "unbind");
 
+        defineDefaultCommands(
+                (args, managerHolder) -> new ViewAliasCommand(managerHolder),
+                "aliases", "viewalias", "viewaliases");
+
     }
 
     private void initialiseUnoverriableStrings() {
         unoverridableStringSet.add("custom");
         unoverridableStringSet.add("alias");
         unoverridableStringSet.add("unalias");
+        unoverridableStringSet.add("bind");
+        unoverridableStringSet.add("unbind");
     }
 
     private void defineDefaultCommands(

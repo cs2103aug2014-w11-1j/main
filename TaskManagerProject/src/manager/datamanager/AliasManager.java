@@ -1,10 +1,11 @@
 package manager.datamanager;
 
+import main.command.alias.AliasValuePair;
 import main.command.alias.IAliasStorage;
 import manager.result.AliasDeleteResult;
 import manager.result.AliasSetResult;
 import manager.result.Result;
-import manager.result.SimpleResult;
+import manager.result.ViewAliasResult;
 import data.TaskData;
 
 //@author A0065475X
@@ -42,5 +43,10 @@ public class AliasManager extends AbstractManager {
             return new AliasDeleteResult(alias, null,
                     Result.Type.ALIAS_DELETE_FAILURE);
         }
+    }
+    
+    public Result viewAliases() {
+        AliasValuePair[] aliasValuePairs = aliasStorage.getAllCustomAliases();
+        return new ViewAliasResult(aliasValuePairs);
     }
 }

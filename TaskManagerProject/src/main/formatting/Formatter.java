@@ -10,6 +10,7 @@ import main.message.FreeDaySearchMessage;
 import main.message.FreeTimeSearchMessage;
 import main.message.Message;
 import main.message.ReportMessage;
+import main.message.ViewAliasMessage;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.modeinfo.ModeInfo;
@@ -31,6 +32,7 @@ public class Formatter {
     private FreeDaySearchFormatter freeDaySearchFormatter;
     private FreeTimeSearchFormatter freeTimeSearchFormatter;
     private AliasFormatter aliasFormatter;
+    private ViewAliasFormatter viewAliasFormatter;
     
     private EditModeFormatter editModeFormatter;
     private SearchModeFormatter searchModeFormatter;
@@ -80,6 +82,7 @@ public class Formatter {
         freeDaySearchFormatter = new FreeDaySearchFormatter();
         freeTimeSearchFormatter = new FreeTimeSearchFormatter();
         aliasFormatter = new AliasFormatter();
+        viewAliasFormatter = new ViewAliasFormatter();
         
         editModeFormatter = new EditModeFormatter();
         searchModeFormatter = new SearchModeFormatter();
@@ -134,10 +137,11 @@ public class Formatter {
                         freeDaySearchFormatter.format(freeDaySearchMessage);
                 break;
                 
-            case ALIAS_MESSAGE :
+            case EDIT_ALIAS : {
                 AliasMessage aliasMessage = (AliasMessage)message;
                 formattedMessage = aliasFormatter.format(aliasMessage);
                 break;
+            }
                 
             case FREE_TIME_SEARCH_SUCCESSFUL :
                 FreeTimeSearchMessage freeTimeMessage =
@@ -145,8 +149,16 @@ public class Formatter {
                 formattedMessage =
                         freeTimeSearchFormatter.format(freeTimeMessage);
                 break;
+                
+            case VIEW_ALIAS : {
+                ViewAliasMessage aliasMessage = (ViewAliasMessage)message;
+                formattedMessage = viewAliasFormatter.format(aliasMessage);
+                break;
+            }
+                
             default :
                 break;
+                
 
         }
         return formattedMessage;
