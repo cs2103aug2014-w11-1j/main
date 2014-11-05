@@ -5,8 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -102,7 +101,7 @@ public class DateParser {
             case "saturday" :
             case "sun" :
             case "sunday" :
-                return getNextDayOfWeek(dateString);
+                return getDayOfWeek(dateString);
         }
 
         return null;
@@ -122,17 +121,15 @@ public class DateParser {
         }
     }
 
-    private static LocalDate getNextDayOfWeek(String dateString) {
+    private static LocalDate getDayOfWeek(String dateString) {
         buildWeekOfDayMap();
 
         dateString = dateString.toLowerCase();
         if (dateWeekOfDayShortForms.containsKey(dateString)) {
             dateString = dateWeekOfDayShortForms.get(dateString);
         }
-        DayOfWeek dayOfWeek = DayOfWeek.valueOf(dateString.toUpperCase());
-        Temporal adjustedDay = TemporalAdjusters.next(dayOfWeek)
-                .adjustInto(LocalDate.now());
-        return LocalDate.from(adjustedDay);
+        int dayOfWeek = DayOfWeek.valueOf(dateString.toUpperCase()).getValue();
+        return LocalDate.now().with(ChronoField.DAY_OF_WEEK, dayOfWeek);
     }
 
     private static ParsedDate parseAbsoluteDate(String dateString) {

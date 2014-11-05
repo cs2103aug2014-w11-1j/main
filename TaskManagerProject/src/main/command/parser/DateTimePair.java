@@ -2,6 +2,7 @@ package main.command.parser;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 
 import main.command.parser.DateTimeParser.DateModifier;
 import main.command.parser.ParsedDate.Frequency;
@@ -57,24 +58,83 @@ public class DateTimePair {
     }
 
     public LocalDate getFirstDate() {
-        return modifyDate(dates.getFirstDate(), LocalDate.now(),
-                dates.getFirstFrequency(), firstModifier);
+        if (!hasFirstDate()) {
+            return null;
+        }
+
+        modifyDates();
+
+        return dates.getFirstDate();
     }
 
     public LocalDate getSecondDate() {
+        if (!hasSecondDate()) {
+            return null;
+        }
+
+        modifyDates();
+
+        return dates.getSecondDate();
+    }
+
+    private void modifyDates() {
         if (hasFirstDate()) {
-            return modifyDate(dates.getSecondDate(), dates.getFirstDate(),
-                    dates.getSecondFrequency(), secondModifier);
-        } else {
-            return modifyDate(dates.getSecondDate(), LocalDate.now(),
-                    dates.getSecondFrequency(), secondModifier);
+            LocalDate date = modifyDate(dates.getFirstDate(), LocalDate.now(),
+                    dates.getFirstFrequency(), firstModifier);
+            dates.setFirstDate(new ParsedDate(date));
+        }
+
+        if (hasSecondDate()) {
+            LocalDate date = null;
+            if (hasFirstDate() && secondModifier == null) {
+                date = modifyDate(dates.getSecondDate(), dates.getFirstDate(),
+                        dates.getSecondFrequency(), secondModifier);
+            } else {
+                date = modifyDate(dates.getSecondDate(), LocalDate.now(),
+                        dates.getSecondFrequency(), secondModifier);
+            }
+            dates.setSecondDate(new ParsedDate(date));
         }
     }
 
-    private LocalDate modifyDate(LocalDate date, LocalDate fromDate,
+    private static LocalDate modifyDate(LocalDate date, LocalDate fromDate,
             Frequency frequency, DateModifier modifier) {
-        // TODO Modify date based on frequency and modfier
+        if (frequency == null) {
+            return date; // can't modify it if it can only happen once.
+        }
+
+        if (modifier == null) {
+            return getNextOccurrence(date, fromDate, frequency.getField());
+        } else {
+            return modifyDate(date, fromDate, frequency.getField(), modifier);
+        }
+    }
+
+    private static LocalDate modifyDate(LocalDate date, LocalDate fromDate,
+            ChronoField field, DateModifier modifier) {
+        date = date.with(field, fromDate.get(field));
+        switch (modifier) {
+            case PREVIOUS :
+                return date.minus(1, field.getBaseUnit());
+            case THIS :
+                return date;
+            case NEXT :
+                return date.plus(1, field.getBaseUnit());
+        }
         return date;
+    }
+
+    private static LocalDate getNextOccurrence(LocalDate date, LocalDate fromDate,
+            ChronoField field) {
+        date = date.with(field, fromDate.get(field));
+        if (fromDate.isBefore(date)) {
+            return date;
+        } else {
+            do {
+                date = date.plus(1, field.getBaseUnit());
+            } while (!fromDate.isBefore(date));
+            return date;
+        }
     }
 
     public LocalTime getFirstTime() {
