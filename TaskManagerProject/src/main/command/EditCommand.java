@@ -214,13 +214,13 @@ public class EditCommand extends TargetedCommand {
 
         switch (editType.toLowerCase()) {
             case ARGUMENT_NAME :
-                editParam = CommandParser.parseName(sc.nextLine());
+                editParam = CommandParser.parseName(sc.nextLine(), true);
                 editTask.name = editParam;
                 break;
             case ARGUMENT_DESCRIPTION :
             case ARGUMENT_DESCRIPTION_2 :
                 editParam = sc.nextLine().trim();
-                editTask.details = CommandParser.parseName(editParam);
+                editTask.details = CommandParser.parseName(editParam, true);
                 break;
             case ARGUMENT_DATE :
             case ARGUMENT_TIME :

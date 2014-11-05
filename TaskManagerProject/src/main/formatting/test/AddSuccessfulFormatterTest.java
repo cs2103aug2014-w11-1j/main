@@ -25,7 +25,7 @@ public class AddSuccessfulFormatterTest {
         String result = formatter.format(message);
         
         assertEquals("Task ABCD added successfully." + 
-                System.lineSeparator(), result);
+                System.lineSeparator() + System.lineSeparator(), result);
     }
 
 }

@@ -131,7 +131,7 @@ public abstract class TargetedCommand extends Command {
     protected void parseAsSearchString(String searchString) {
         assert targetTaskIdSet == null : "targetTaskIdSet needs to be null";
 
-        searchString = CommandParser.parseName(searchString);
+        searchString = CommandParser.parseName(searchString, true);
         if (!searchString.isEmpty()) {
             String[] keywords = searchString.split(" ");
             keywordFilter = new KeywordFilter(keywords);

@@ -29,8 +29,8 @@ public class DeleteSuccessfulFormatterTest {
         
         DeleteSuccessfulFormatter formatter = new DeleteSuccessfulFormatter();
         
-        assertEquals("Task ABCD deleted." + System.lineSeparator(), 
-                formatter.format(message));
+        assertEquals("Task ABCD deleted." + System.lineSeparator() +
+                System.lineSeparator(), formatter.format(message));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class DeleteSuccessfulFormatterTest {
         
         assertEquals("2 tasks deleted." + System.lineSeparator() +
                 "- ABCD" + System.lineSeparator() +
-                "- EFGH" + System.lineSeparator(), 
+                "- EFGH" + System.lineSeparator() + System.lineSeparator(), 
                 formatter.format(message));
     }
 }

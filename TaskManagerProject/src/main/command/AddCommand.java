@@ -25,7 +25,7 @@ public class AddCommand extends Command {
     private TaskInfo parse(String args) {
         TaskInfo task = TaskInfo.create();
 
-        task.name = CommandParser.parseName(args);
+        task.name = CommandParser.parseName(args, false);
         parseDateTimes(args, task);
         task.tags = CommandParser.parseTags(args);
         Priority p = CommandParser.parsePriority(args);
