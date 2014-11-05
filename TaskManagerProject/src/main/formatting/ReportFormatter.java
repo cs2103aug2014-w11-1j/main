@@ -11,9 +11,7 @@ import data.taskinfo.TaskInfo;
 
 //@author A0113011L
 public class ReportFormatter {
-    private final static String FORMAT_DATE = "Date: %1$s";
     private final static String DATETIME_FORMAT_DATE = "EEEE, d MMM Y";
-    private final static String FORMAT_TIME = "Time: %1$s";
     private final static String DATETIME_FORMAT_TIME = "HH:mm (a)";
     
     private final static String DATETIME_REPORT = "[ %1$s, %2$s ]" +
