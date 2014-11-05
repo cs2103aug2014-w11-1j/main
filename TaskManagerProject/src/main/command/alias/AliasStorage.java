@@ -239,11 +239,11 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 "rename", "name");
 
         defineDefaultCommands(
-                (args, managerHolder) -> new UndoCommand(managerHolder),
+                (args, managerHolder) -> new UndoCommand(args, managerHolder),
                 "undo");
 
         defineDefaultCommands(
-                (args, managerHolder) -> new RedoCommand(managerHolder),
+                (args, managerHolder) -> new RedoCommand(args, managerHolder),
                 "redo");
 
         defineDefaultCommands(

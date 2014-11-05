@@ -7,15 +7,30 @@ import manager.result.Result;
 //@author A0065475X
 public class UndoCommand extends Command {
     private final UndoManager undoManager;
+    int times;
 
-    public UndoCommand(ManagerHolder managerHolder) {
+    public UndoCommand(String args, ManagerHolder managerHolder) {
         super(managerHolder);
         undoManager = managerHolder.getUndoManager();
+        
+        parse(args);
+    }
+    
+    private void parse(String args) {
+        if (args.isEmpty()) {
+            times = 1;
+        } else {
+            try {
+                times = Integer.parseInt(args);
+            } catch (NumberFormatException e) {
+                times = -1;
+            }
+        }
     }
 
     @Override
     protected boolean isValidArguments() {
-        return true;
+        return times >= 1;
     }
 
     @Override
@@ -25,7 +40,7 @@ public class UndoCommand extends Command {
 
     @Override
     protected Result executeAction() {
-        Result result = undoManager.undo();
+        Result result = undoManager.undo(times);
         return result;
     }
 
