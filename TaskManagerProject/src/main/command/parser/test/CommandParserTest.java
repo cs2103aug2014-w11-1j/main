@@ -75,7 +75,7 @@ public class CommandParserTest {
                 TAG+TERM_7, TERM_3, IGNORE, TAG+TERM_4, IGNORE, PRIORITY+PRI_HIGH,
                 PRIORITY+TERM_5, TimeTest.ABS_12_HOURS_LONG_1.type,
                 DateTest.ABS_DMMMY_1.type});
-        String name1 = CommandParser.parseName(test1, false);
+        String name1 = CommandParser.parseName(test1);
         assertEquals(name1, mergeStrings(new String[]{TERM_1, TERM_2, TERM_3,
                 TAG+TERM_4, PRIORITY+TERM_5}));
     }

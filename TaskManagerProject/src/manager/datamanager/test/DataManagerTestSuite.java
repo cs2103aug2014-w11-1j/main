@@ -8,7 +8,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     UndoManagerTest.class,
     FreeDayManagerTest.class,
-    FreeTimeManagerTest.class
+    FreeTimeManagerTest.class,
+    SearchManagerTest.class
 })
 public class DataManagerTestSuite {
 }
