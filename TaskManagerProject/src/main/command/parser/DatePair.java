@@ -2,20 +2,26 @@ package main.command.parser;
 
 import java.time.LocalDate;
 
+import main.command.parser.ParsedDate.Frequency;
+
 
 public class DatePair {
     private LocalDate firstDate;
+    private Frequency firstFrequency;
     private LocalDate secondDate;
+    private Frequency secondFrequency;
 
-    void add(LocalDate d) {
+    void add(ParsedDate d) {
         if (d == null || isFull()) {
             return;
         }
 
         if (!hasFirstDate()) {
-            firstDate = d;
+            firstDate = d.getDate();
+            firstFrequency = d.getFrequency();
         } else {
-            secondDate = d;
+            secondDate = d.getDate();
+            secondFrequency = d.getFrequency();
         }
     }
 
@@ -27,12 +33,22 @@ public class DatePair {
         return secondDate;
     }
 
-    void setFirstDate(LocalDate firstDate) {
-        this.firstDate = firstDate;
+    Frequency getFirstFrequency() {
+        return firstFrequency;
     }
 
-    void setSecondDate(LocalDate secondDate) {
-        this.secondDate = secondDate;
+    Frequency getSecondFrequency() {
+        return secondFrequency;
+    }
+
+    void setFirstDate(ParsedDate d) {
+        this.firstDate = d.getDate();
+        this.firstFrequency = d.getFrequency();
+    }
+
+    void setSecondDate(ParsedDate d) {
+        this.secondDate = d.getDate();
+        this.secondFrequency = d.getFrequency();
     }
 
     boolean hasSecondDate() {

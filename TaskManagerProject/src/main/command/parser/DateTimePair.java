@@ -3,11 +3,16 @@ package main.command.parser;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class DateTimePair {
+import main.command.parser.DateTimeParser.Modifier;
+import main.command.parser.ParsedDate.Frequency;
 
+public class DateTimePair {
+    private Modifier firstModifier;
+    private Modifier secondModifier;
 
     protected DatePair dates;
     protected TimePair times;
+
 
     DateTimePair() {
         dates = new DatePair();
@@ -19,7 +24,7 @@ public class DateTimePair {
         this.times = times;
     }
 
-    void add(LocalDate d) {
+    void add(ParsedDate d) {
         if (isFull()) {
             return;
         }
@@ -35,16 +40,36 @@ public class DateTimePair {
         times.add(t);
     }
 
+    public void add(Modifier modifier) {
+        if (secondModifier != null) {
+            return;
+        }
+
+        if (hasSecondDate() || hasSecondTime()) {
+            secondModifier = modifier;
+        } else {
+            firstModifier = modifier;
+        }
+    }
+
     boolean isFull() {
         return dates.isFull() && times.isFull();
     }
 
     public LocalDate getFirstDate() {
-        return dates.getFirstDate();
+        return modifyDate(dates.getFirstDate(), dates.getFirstFrequency(),
+                firstModifier);
     }
 
     public LocalDate getSecondDate() {
-        return dates.getSecondDate();
+        return modifyDate(dates.getSecondDate(), dates.getSecondFrequency(),
+                secondModifier);
+    }
+
+    private LocalDate modifyDate(LocalDate date, Frequency frequency,
+            Modifier modifier) {
+        // TODO Modify date based on frequency and modfier
+        return date;
     }
 
     public LocalTime getFirstTime() {

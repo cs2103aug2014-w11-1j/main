@@ -1,14 +1,19 @@
 package main.command.parser;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 public class DateTimeParser {
+    enum Modifier {
+        THIS, NEXT, PREVIOUS
+    }
+
     private static final String SYMBOL_DELIM = " ";
     private static Set<String> prepositions;
+    private static HashMap<String, Modifier> modifierMap;
 
     public static DateTimePair parseDateTimesInSequence(String dateTimeString) {
         return parseDateTimes(dateTimeString, true);
@@ -33,8 +38,12 @@ public class DateTimeParser {
                 String[] curTokens = Arrays.copyOfRange(tokens, i, j);
                 String curSubstring = String.join(SYMBOL_DELIM, curTokens);
                 curSubstring = removePrepositions(curSubstring);
+                Modifier modifier = getModifier(curSubstring);
+                if (modifier != null) {
+                    curSubstring = removeFirstWord(curSubstring);
+                }
 
-                LocalDate d = parseDate(curSubstring);
+                ParsedDate d = parseDate(curSubstring);
                 LocalTime t = parseTime(curSubstring);
 
                 boolean hasFound = false;
@@ -48,6 +57,10 @@ public class DateTimeParser {
                 }
 
                 if (hasFound) {
+                    if (modifier != null) {
+                        dtPair.add(modifier);
+                    }
+
                     i = j - 1;
                     break;
                 }
@@ -68,7 +81,27 @@ public class DateTimeParser {
         }
     }
 
-    private static LocalDate parseDate(String dateString) {
+    private static Modifier getModifier(String curSubstring) {
+        buildModifierMap();
+
+        String possibleModifier = curSubstring.split(" ")[0].toLowerCase();
+        return modifierMap.get(possibleModifier);
+    }
+
+    private static void buildModifierMap() {
+        if (modifierMap != null) {
+            return;
+        }
+
+        modifierMap = new HashMap<>();
+
+        modifierMap.put("this", Modifier.THIS);
+        modifierMap.put("next", Modifier.NEXT);
+        modifierMap.put("previous", Modifier.PREVIOUS);
+        modifierMap.put("last", Modifier.PREVIOUS);
+    }
+
+    private static ParsedDate parseDate(String dateString) {
         return DateParser.parseDate(dateString);
     }
 
