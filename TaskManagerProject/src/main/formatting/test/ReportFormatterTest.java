@@ -42,7 +42,9 @@ public class ReportFormatterTest {
         tasks.add(task3);
         
         ReportMessage message = new ReportMessage(5, 3, tasks);
-        
+
+        ReportFormatter formatter = new ReportFormatter();
+        String result = removeFirstLine(formatter.format(message));
         
         String expected = "You have 5 tasks today, and 3 tasks tomorrow." + System.lineSeparator() +
                 "Below are the high-priority tasks." + System.lineSeparator() +
@@ -52,8 +54,12 @@ public class ReportFormatterTest {
                 "Sun, 4 Dec 2011 ---" + System.lineSeparator() +
                 "3) [   12:00   ] ijkl                                                          " + System.lineSeparator() + System.lineSeparator();
         
-        ReportFormatter formatter = new ReportFormatter();
-        //assertEquals(expected, formatter.format(message));
+        assertEquals(expected, result);
+    }
+
+    private String removeFirstLine(String result) {
+        String[] split = result.split(System.lineSeparator(), 2);
+        return split[1];
     }
 
 }
