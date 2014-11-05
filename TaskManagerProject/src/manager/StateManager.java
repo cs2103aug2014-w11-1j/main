@@ -413,7 +413,7 @@ public class StateManager {
             	return tagDeleteSuccessfulMessage;
             	
             case TAG_DELETE_FAILURE :
-            	return new EnumMessage(MessageType.ADD_TAG_FAILED);
+            	return new EnumMessage(MessageType.DELETE_TAG_FAILED);
 
             case SEARCH_SUCCESS : 
                 tryEnterSearchMode((SearchResult)result);
