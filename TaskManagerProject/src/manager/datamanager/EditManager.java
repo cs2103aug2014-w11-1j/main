@@ -294,20 +294,10 @@ public class EditManager extends AbstractManager {
      */
     private TaskInfo mergeTasks(TaskInfo originTask, TaskInfo modifTask ){
     	TaskInfo mergedTask = new TaskInfo(originTask);
+    	
+    	mergedTask = mergeTasksTime(originTask, modifTask);
     	if (modifTask.name != null){
     		mergedTask.name = modifTask.name;
-    	}
-        if (modifTask.startTime != null){
-            mergedTask.startTime = modifTask.startTime;
-        }
-        if (modifTask.startDate != null){
-            mergedTask.startDate = modifTask.startDate;
-        }
-    	if (modifTask.endTime != null){
-    		mergedTask.endTime = modifTask.endTime;
-    	}
-    	if (modifTask.endDate != null){
-    		mergedTask.endDate = modifTask.endDate;
     	}
     	if (modifTask.details != null){
     		mergedTask.details = modifTask.details;
@@ -328,6 +318,50 @@ public class EditManager extends AbstractManager {
     }
 
 
+    private TaskInfo mergeTasksTime(TaskInfo originTask, TaskInfo modifTask){
+    	TaskInfo mergedTask = new TaskInfo(originTask);
+    	if ((modifTask.startDate == null) && (modifTask.startTime == null)
+    		&& (modifTask.endDate != null) && (modifTask.endTime == null)){
+    		mergedTask.startTime = null;
+    		mergedTask.startDate = null;
+    		mergedTask.endDate = modifTask.endDate;
+    	}
+    	if ((modifTask.startDate == null) && (modifTask.startTime == null)
+        		&& (modifTask.endDate == null) && (modifTask.endTime != null)){
+    		mergedTask.startTime = null;
+    		mergedTask.startDate = null;
+    		mergedTask.endTime = modifTask.endTime;
+    	}
+    	if ((modifTask.startDate == null) && (modifTask.startTime == null)
+        		&& (modifTask.endDate != null) && (modifTask.endTime != null)){
+    		mergedTask.startTime = null;
+    		mergedTask.startDate = null;
+    		mergedTask.endDate = modifTask.endDate;
+    		mergedTask.endTime = modifTask.endTime;
+    	}
+    	if ((modifTask.startDate != null) && (modifTask.startTime == null)
+        		&& (modifTask.endDate != null) && (modifTask.endTime == null)){
+    		mergedTask.startDate = modifTask.startDate;
+    		mergedTask.endDate = modifTask.endDate;
+    	}
+    	if ((modifTask.startDate == null) && (modifTask.startTime != null)
+        		&& (modifTask.endDate == null) && (modifTask.endTime != null)){
+    		mergedTask.startTime = modifTask.startTime;
+    		mergedTask.endTime = modifTask.endTime;
+    		if (mergedTask.startDate == null){
+    			mergedTask.startDate = mergedTask.endDate;
+    		}
+    	}
+    	if ((modifTask.startDate != null) && (modifTask.startTime != null)
+        		&& (modifTask.endDate != null) && (modifTask.endTime != null)){
+    		mergedTask.startTime = modifTask.startTime;
+    		mergedTask.startDate = modifTask.startDate;
+    		mergedTask.endDate = modifTask.endDate;
+    		mergedTask.endTime = modifTask.endTime;
+    	}
+    	return mergedTask;
+    }
+    
     private EditSuccessfulMessage.Field[] setChangedFields(TaskInfo taskInfo){
 
         ArrayList<EditSuccessfulMessage.Field> fields =
