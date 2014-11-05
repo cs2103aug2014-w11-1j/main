@@ -60,7 +60,7 @@ public abstract class TargetedCommand extends Command {
             Filter[] filters = new Filter[]{keywordFilter};
             keywordFilter = null;
 
-            Result result = searchManager.searchTasks(filters);
+            Result result = searchManager.searchTasksWithoutSplit(filters);
             Response response = null;
             if (onlyOneSearchResult(result)) {
                 response = executeOnSearchResult(result);

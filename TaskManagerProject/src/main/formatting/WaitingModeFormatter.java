@@ -1,6 +1,7 @@
 package main.formatting;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import main.modeinfo.SearchModeInfo;
 import data.TaskId;
@@ -9,9 +10,11 @@ import data.taskinfo.TaskInfo;
 //@author A0113011L
 public class WaitingModeFormatter {
     private final static String PROMPT = "Did you mean:";
-    private final static String FORMAT_CHOICE = "%1$d)%2$s";
+    private final static String FORMAT_CHOICE = "%1$d) %2$s";
+    private final static String EMPTY = "No tasks found.";
     
     private ArrayList<String> formatToArrayList(TaskInfo[] tasks, TaskId[] taskId) {
+        assert tasks.length > 0;
         ArrayList<String> result = new ArrayList<String>();
         result.add(PROMPT);
         for (int i = 0; i < tasks.length; i++) {
@@ -21,7 +24,14 @@ public class WaitingModeFormatter {
         return result;
     }
     
-    private String arrayListToStringLines(ArrayList<String> lines) {
+    private ArrayList<String> formatEmpty(TaskInfo[] tasks, TaskId[] taskId) {
+        assert tasks.length == 0;
+        ArrayList<String> result = new ArrayList<String>();
+        result.add(EMPTY);
+        return result;
+    }
+    
+    private String listToStringLines(List<String> lines) {
         StringBuilder result = new StringBuilder();
         for (String line : lines) {
             result.append(line);
@@ -33,9 +43,16 @@ public class WaitingModeFormatter {
     public String format(SearchModeInfo searchInfo) {
         TaskInfo[] tasks = searchInfo.getTasks();
         TaskId[] taskIds = searchInfo.getTaskIds();
-        ArrayList<String> formattedTaskArray = 
-                formatToArrayList(tasks, taskIds);
+        List<String> formattedTaskArray;
+        switch(tasks.length){
+            case 0 :
+                formattedTaskArray = formatEmpty(tasks, taskIds);
+                break;
+            default :
+                formattedTaskArray = formatToArrayList(tasks, taskIds);
+                break;
+        }
         formattedTaskArray.add("");
-        return arrayListToStringLines(formattedTaskArray);
+        return listToStringLines(formattedTaskArray);
     }
 }

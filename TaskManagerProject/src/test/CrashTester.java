@@ -196,6 +196,7 @@ public class CrashTester {
                     ListType.ALL);
         }
 
+        testRandom(50, ListType.COMMAND, ListType.ALL);
     }
     
     /**

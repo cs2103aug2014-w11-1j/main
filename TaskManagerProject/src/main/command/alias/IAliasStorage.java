@@ -40,4 +40,8 @@ public interface IAliasStorage {
      */
     public abstract boolean isAlreadyBinded(String alias);
 
+    /**
+     * @return Get the entire list of custom aliases.
+     */
+    public abstract AliasValuePair[] getAllCustomAliases();
 }
