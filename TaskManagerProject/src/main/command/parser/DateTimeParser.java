@@ -7,13 +7,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DateTimeParser {
-    enum Modifier {
+    enum DateModifier {
         THIS, NEXT, PREVIOUS
     }
 
     private static final String SYMBOL_DELIM = " ";
     private static Set<String> prepositions;
-    private static HashMap<String, Modifier> modifierMap;
+    private static HashMap<String, DateModifier> modifierMap;
 
     public static DateTimePair parseDateTimesInSequence(String dateTimeString) {
         return parseDateTimes(dateTimeString, true);
@@ -38,7 +38,7 @@ public class DateTimeParser {
                 String[] curTokens = Arrays.copyOfRange(tokens, i, j);
                 String curSubstring = String.join(SYMBOL_DELIM, curTokens);
                 curSubstring = removePrepositions(curSubstring);
-                Modifier modifier = getModifier(curSubstring);
+                DateModifier modifier = getDateModifier(curSubstring);
                 if (modifier != null) {
                     curSubstring = removeFirstWord(curSubstring);
                 }
@@ -81,7 +81,7 @@ public class DateTimeParser {
         }
     }
 
-    private static Modifier getModifier(String curSubstring) {
+    private static DateModifier getDateModifier(String curSubstring) {
         buildModifierMap();
 
         String possibleModifier = curSubstring.split(" ")[0].toLowerCase();
@@ -95,10 +95,10 @@ public class DateTimeParser {
 
         modifierMap = new HashMap<>();
 
-        modifierMap.put("this", Modifier.THIS);
-        modifierMap.put("next", Modifier.NEXT);
-        modifierMap.put("previous", Modifier.PREVIOUS);
-        modifierMap.put("last", Modifier.PREVIOUS);
+        modifierMap.put("this", DateModifier.THIS);
+        modifierMap.put("next", DateModifier.NEXT);
+        modifierMap.put("previous", DateModifier.PREVIOUS);
+        modifierMap.put("last", DateModifier.PREVIOUS);
     }
 
     private static ParsedDate parseDate(String dateString) {

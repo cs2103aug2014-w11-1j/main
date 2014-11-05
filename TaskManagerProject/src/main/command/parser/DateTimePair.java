@@ -3,12 +3,12 @@ package main.command.parser;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import main.command.parser.DateTimeParser.Modifier;
+import main.command.parser.DateTimeParser.DateModifier;
 import main.command.parser.ParsedDate.Frequency;
 
 public class DateTimePair {
-    private Modifier firstModifier;
-    private Modifier secondModifier;
+    private DateModifier firstModifier;
+    private DateModifier secondModifier;
 
     protected DatePair dates;
     protected TimePair times;
@@ -40,7 +40,7 @@ public class DateTimePair {
         times.add(t);
     }
 
-    public void add(Modifier modifier) {
+    public void add(DateModifier modifier) {
         if (secondModifier != null) {
             return;
         }
@@ -67,7 +67,7 @@ public class DateTimePair {
     }
 
     private LocalDate modifyDate(LocalDate date, Frequency frequency,
-            Modifier modifier) {
+            DateModifier modifier) {
         // TODO Modify date based on frequency and modfier
         return date;
     }
