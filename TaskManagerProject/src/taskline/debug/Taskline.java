@@ -1,5 +1,8 @@
 package taskline.debug;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import jline.SimpleCompletor;
 import io.AliasFileInputOutput;
 import io.FileInputOutput;
@@ -48,8 +51,19 @@ public class Taskline {
         
         UIDisplay uiDisplay = new UIDisplay(mainController);
 
-        startCommandLoop(uiDisplay);
-        TasklineLogger.closeLoggerFileHandler();
+        startCommandLoopWithLogger(uiDisplay);
+    }
+
+    private static void startCommandLoopWithLogger(UIDisplay uiDisplay) {
+        Logger log = TasklineLogger.getLogger();
+        try {
+            startCommandLoop(uiDisplay);
+        } catch (Exception e) {
+            log.log(Level.SEVERE, e.getMessage(), e);
+            throw e;
+        } finally {
+            TasklineLogger.closeLoggerFileHandler();
+        }
     }
 
     private static void startCommandLoop(UIDisplay uiDisplay) {
