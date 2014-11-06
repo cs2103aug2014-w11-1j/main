@@ -11,7 +11,8 @@ public interface Filter {
         FILTER_PRIORITY,
         FILTER_STATUS,
         FILTER_KEYWORD,
-        FILTER_SUGGESTION
+        FILTER_SUGGESTION,
+        FILTER_FLOATING
     }
 
     public Type getType();
