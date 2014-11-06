@@ -89,12 +89,10 @@ public class StateManager {
 
 	public boolean canAdd() {
 		return true;
-	    //return currentState == State.AVAILABLE;
 	}
 
 	public boolean canSearch() {
         return true;
-        //return currentState == State.AVAILABLE;
 	}
 
     public boolean canGetReport() {
@@ -103,17 +101,14 @@ public class StateManager {
 
 	public boolean canEdit() {
         return true;
-        //return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
 	}
 
 	public boolean canDelete() {
         return true;
-        //return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
 	}
 
 	public boolean canUndo() {
         return true;
-        //return currentState == State.AVAILABLE;
 	}
 
     public boolean canGoBack() {
@@ -473,7 +468,7 @@ public class StateManager {
             case ALIAS_FAILURE : {
                 AliasSetResult aliasResult = (AliasSetResult)result;
                 return new AliasMessage(aliasResult.getAlias(), null, false,
-                        AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
+                        AliasMessage.AliasType.ALIAS_SET_FAILURE);
             }
                 
             case ALIAS_DELETE_SUCCESS : {
