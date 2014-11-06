@@ -68,7 +68,7 @@ public class ReportManager extends AbstractManager{
 		ArrayList<TaskInfo> list = new ArrayList<>();
 		for (TaskInfo task : taskList){
 			if ((task.priority == Priority.HIGH) &&
-			((isTaskOnDate(task, LocalDate.now())) || (isTaskOnDate(task, LocalDate.now().plusDays(1))))){
+			((isTaskOnDate(task, LocalDate.now())) || (isTaskOnDate(task, LocalDate.now().minusDays(-1))))){
 				list.add(task);
 			}
 		}
@@ -78,7 +78,7 @@ public class ReportManager extends AbstractManager{
 	public Result report(){
 		taskList = updateTask();
 		ArrayList<TaskInfo> todayTask = getTaskByDate(LocalDate.now());
-		ArrayList<TaskInfo> tmrTask = getTaskByDate(LocalDate.now().plusDays(1));
+		ArrayList<TaskInfo> tmrTask = getTaskByDate(LocalDate.now().minusDays(-1));
 		ArrayList<TaskInfo> urgentTask = getUrgentTask();
 
 		return new ReportResult(todayTask, tmrTask, urgentTask);
