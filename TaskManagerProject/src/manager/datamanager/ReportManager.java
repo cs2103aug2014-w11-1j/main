@@ -13,9 +13,9 @@ import data.taskinfo.TaskInfo;
 
 //@author A0119432L
 public class ReportManager extends AbstractManager{
-	
+
 	private ArrayList<TaskInfo> taskList;
-	
+
 	public ReportManager(TaskData taskData) {
 		super(taskData);
 	}
@@ -31,20 +31,20 @@ public class ReportManager extends AbstractManager{
 			}
 			taskId = taskData.getNext(taskId);
 		}
-		
+
 		return list;
 	}
-	
+
 	private boolean isTaskOnDate(TaskInfo task, LocalDate date){
 	    if (task.getEndDate() == null) {
-	        return true;
+	        return false;
 	    }
-	    
+
 		if (task.getStartDate() == null) {
 		    if (task.getEndDate().equals(date)) {
 		        return true;
 		    }
-		    
+
 		} else {
     		if ((!task.getStartDate().isAfter(date)) &&
     		        (!task.getEndDate().isBefore(date))){
@@ -53,7 +53,7 @@ public class ReportManager extends AbstractManager{
 		}
 		return false;
 	}
-	
+
 	private ArrayList<TaskInfo> getTaskByDate(LocalDate date){
 		ArrayList<TaskInfo> list = new ArrayList<>();
 		for (TaskInfo task : taskList){
@@ -63,24 +63,24 @@ public class ReportManager extends AbstractManager{
 		}
 		return list;
 	}
-	
+
 	private ArrayList<TaskInfo> getUrgentTask(){
 		ArrayList<TaskInfo> list = new ArrayList<>();
 		for (TaskInfo task : taskList){
-			if ((task.priority == Priority.HIGH) && 
-			((isTaskOnDate(task, LocalDate.now())) || (isTaskOnDate(task, LocalDate.now().minusDays(-1))))){
+			if ((task.priority == Priority.HIGH) &&
+			((isTaskOnDate(task, LocalDate.now())) || (isTaskOnDate(task, LocalDate.now().plusDays(1))))){
 				list.add(task);
 			}
 		}
 		return list;
 	}
-	
+
 	public Result report(){
 		taskList = updateTask();
 		ArrayList<TaskInfo> todayTask = getTaskByDate(LocalDate.now());
-		ArrayList<TaskInfo> tmrTask = getTaskByDate(LocalDate.now().minusDays(-1));
+		ArrayList<TaskInfo> tmrTask = getTaskByDate(LocalDate.now().plusDays(1));
 		ArrayList<TaskInfo> urgentTask = getUrgentTask();
-		
+
 		return new ReportResult(todayTask, tmrTask, urgentTask);
 	}
 }
