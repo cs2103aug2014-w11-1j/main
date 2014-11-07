@@ -1,19 +1,9 @@
-package test;
+package test.fuzzytest;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import main.MainController;
-
-import org.junit.After;
-import org.junit.Test;
-
-import taskline.debug.Taskline;
-import test.fuzzytest.KeywordLibrary;
 import test.fuzzytest.KeywordLibrary.ListType;
 
 /**
@@ -21,43 +11,41 @@ import test.fuzzytest.KeywordLibrary.ListType;
  */
 //@author A0065475X
 public class CrashTester {
-    private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
-    private static final String TEST_FILENAME = "testTasks.txt";
     
-    private static final int SIZE_LOGQUEUE = 40;
-    private static final int SIZE_INITIAL_HASHSET = 3000;
+    private final int logQueueSize;
+    private final int SIZE_INITIAL_HASHSET = 3000;
 
-    private static final int RANDOM_SEED = 1;
+    private final int randomSeed;
 
-    private MainController mainController;
+    private TasklineInstanceContainer tasklineInstanceContainer;
     private KeywordLibrary keywordLibrary;
     private HashSet<String> testedStrings;
     private ArrayBlockingQueue<String> logQueue;
     private int totalStrings;
     private boolean success = false;
+    
+    public CrashTester(TasklineInstanceContainer tasklineInstanceContainer,
+            int startingSeed, int logQueueLength) {
+        this.tasklineInstanceContainer = tasklineInstanceContainer;
+        
+        this.randomSeed = startingSeed;
+        this.logQueueSize = logQueueLength;
+        
+    }
 
-    @After
-    public void after() {
+    public void close() {
         if (!success) {
             printLog();
         }
-        deleteTestFiles();
     }
     
-    @Test
-    public void initialiseTest() {
-
-        String fileName = TEST_FILENAME;
-        String aliasFileName = TEST_ALIAS_FILENAME;
-        deleteTestFiles();
-
-        mainController = Taskline.setupTaskLine(fileName, aliasFileName);
+    public void runTest() {
         
-        keywordLibrary = new KeywordLibrary(RANDOM_SEED);
+        keywordLibrary = new KeywordLibrary(randomSeed);
         
         testedStrings = new HashSet<>(SIZE_INITIAL_HASHSET);
         totalStrings = 0;
-        logQueue = new ArrayBlockingQueue<String>(SIZE_LOGQUEUE);
+        logQueue = new ArrayBlockingQueue<String>(logQueueSize);
 
         knownCrashTest();
         fuzzyTest();
@@ -198,6 +186,8 @@ public class CrashTester {
         test("edit meepietwo date tomorrow");
         test("search     ");
         
+        test("add task 3am 29 oct 2014 3am 29 oct 2014");
+        
         test("alias show orange");
         test("show $4");
         test("unalias show");
@@ -293,7 +283,7 @@ public class CrashTester {
         
         try {
             log("Input: " + input);
-            String result = mainController.runCommand(input);
+            String result = mainController().runCommand(input);
             log(result);
         } catch (Exception e) {
             System.out.println("Exception Thrown!");
@@ -302,12 +292,6 @@ public class CrashTester {
             e.printStackTrace();
             throw e;
         }
-    }
-    
-    private void terminateAndPrintLog() {
-        printLog();
-        deleteTestFiles();
-        System.exit(0);
     }
     
     private void log(String result) {
@@ -323,15 +307,8 @@ public class CrashTester {
             System.out.println(logQueue.poll());
         }
     }
-
-    private void deleteTestFiles() {
-        try {
-            Path path = Paths.get(TEST_FILENAME);
-            Files.deleteIfExists(path);
-            path = Paths.get(TEST_ALIAS_FILENAME);
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    
+    private MainController mainController() {
+        return tasklineInstanceContainer.getNextInstance();
     }
 }
