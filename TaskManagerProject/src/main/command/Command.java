@@ -22,7 +22,7 @@ public abstract class Command {
         }
         
         if (isCommandAllowed()) {
-            stateManager.beforeCommandExecutionUpdate();
+            stateManager.beforeCommandUpdate();
 
             Result result = executeAction();
             Response response = stateManager.update(result);

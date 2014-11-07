@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import main.command.TaskIdSet;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.SuggestionFilter;
 import manager.datamanager.suggestion.SuggestionFinder;
@@ -321,8 +322,19 @@ public class SearchManager extends AbstractManager {
         return idArray;
     }
     
-    public Result details(TaskId taskId) {
-        return new DetailsResult(taskData.getTaskInfo(taskId), taskId);
+    public Result details(TaskIdSet taskIdSet) {
+        int size = taskIdSet.size();
+        TaskId[] taskIds = new TaskId[size];
+        TaskInfo[] taskInfos = new TaskInfo[size];
+        
+        int index = 0;
+        for (TaskId taskId : taskIdSet) {
+            taskIds[index] = taskId;
+            taskInfos[index] = taskData.getTaskInfo(taskId);
+            index++;
+        }
+        
+        return new DetailsResult(taskInfos, taskIds);
     }
 
     public TaskId getAbsoluteIndex(int relativeIndex) {
