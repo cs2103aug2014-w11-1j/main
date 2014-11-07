@@ -41,9 +41,7 @@ public class Taskline {
                 new AutoCompleteDictionary(simpleCompletor);
         
         ArgumentCompletor argumentCompletor = new ArgumentCompletor(
-                new Completor[]{
-                        simpleCompletor, 
-                        new NullCompletor()});
+                new Completor[]{simpleCompletor, new NullCompletor()});
         
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(

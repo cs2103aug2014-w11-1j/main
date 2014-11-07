@@ -1,15 +1,15 @@
 package taskline.debug;
 
+import io.AliasFileInputOutput;
+import io.FileInputOutput;
+import io.IFileInputOutput;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jline.SimpleCompletor;
-import io.AliasFileInputOutput;
-import io.FileInputOutput;
-import io.IFileInputOutput;
 import main.MainController;
 import main.command.alias.AliasStorage;
-import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
 import taskline.TasklineLogger;
 import ui.debug.UIDisplay;
@@ -32,6 +32,16 @@ public class Taskline {
         String fileName = "tasks.txt";
         String aliasFileName = "alias.txt";
 
+        MainController mainController = setupTaskLine(fileName, aliasFileName);
+        
+        UIDisplay uiDisplay = new UIDisplay(mainController);
+
+        startCommandLoopWithLogger(uiDisplay);
+    }
+
+    public static MainController setupTaskLine(String fileName,
+            String aliasFileName) {
+        
         SimpleCompletor simpleCompletor = new SimpleCompletor(new String[]{});  
         AutoCompleteDictionary autoCompleteDictionary =
                 new AutoCompleteDictionary(simpleCompletor);
@@ -48,10 +58,7 @@ public class Taskline {
                 fileInputOutput, aliasStorage, aliasFileInputOutput);
         MainController mainController = new MainController(managerHolder,
                 aliasStorage, aliasFileInputOutput);
-        
-        UIDisplay uiDisplay = new UIDisplay(mainController);
-
-        startCommandLoopWithLogger(uiDisplay);
+        return mainController;
     }
 
     private static void startCommandLoopWithLogger(UIDisplay uiDisplay) {

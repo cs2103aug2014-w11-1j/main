@@ -1,9 +1,5 @@
 package test;
 
-import io.AliasFileInputOutput;
-import io.FileInputOutput;
-import io.IFileInputOutput;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,18 +7,14 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import jline.SimpleCompletor;
 import main.MainController;
-import main.command.alias.AliasStorage;
-import manager.ManagerHolder;
 
 import org.junit.After;
 import org.junit.Test;
 
+import taskline.debug.Taskline;
 import test.fuzzytest.KeywordLibrary;
 import test.fuzzytest.KeywordLibrary.ListType;
-import data.AutoCompleteDictionary;
-import data.TaskData;
 
 /**
  * Tests a bunch of random inputs to see if anything crashes the program.
@@ -59,22 +51,7 @@ public class CrashTester {
         String aliasFileName = TEST_ALIAS_FILENAME;
         deleteTestFiles();
 
-        SimpleCompletor completor = new SimpleCompletor(new String[]{});
-        AutoCompleteDictionary autoCompleteDictionary =
-                new AutoCompleteDictionary(completor);
-
-        AliasStorage aliasStorage = new AliasStorage();
-        IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
-                aliasStorage, aliasFileName, autoCompleteDictionary);
-
-        TaskData taskData = new TaskData();
-        IFileInputOutput fileInputOutput =
-                new FileInputOutput(taskData, fileName);
-        
-        ManagerHolder managerHolder =
-                new ManagerHolder(taskData, fileInputOutput, aliasStorage, aliasFileInputOutput);
-        mainController = new MainController(managerHolder,
-                aliasStorage, aliasFileInputOutput);
+        mainController = Taskline.setupTaskLine(fileName, aliasFileName);
         
         keywordLibrary = new KeywordLibrary(RANDOM_SEED);
         
