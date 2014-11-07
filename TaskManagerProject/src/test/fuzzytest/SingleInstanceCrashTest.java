@@ -1,7 +1,13 @@
 package test.fuzzytest;
 
-import test.fuzzytest.KeywordLibrary.ListType;
+import test.fuzzytest.KeywordDictionary.ListType;
 
+/**
+ * The crash test configuration for a single-instance crash test. Focus is on
+ * testing as many different types of input as possible, to see whether anything
+ * causes the program to crash.
+ */
+//@author A0065475X
 public class SingleInstanceCrashTest extends AbstractCrashTest {
 
     public SingleInstanceCrashTest(

@@ -3,11 +3,18 @@ package test.fuzzytest;
 import java.util.ArrayList;
 import java.util.Random;
 
-import test.fuzzytest.KeywordLibrary.ListType;
-import static test.fuzzytest.KeywordLibrary.ListType.*;
+import test.fuzzytest.KeywordDictionary.ListType;
+import static test.fuzzytest.KeywordDictionary.ListType.*;
 
+/**
+ * A dictionary of commonly used keywords or strings used for the crash tester.
+ * <br>
+ * Keywords are sorted into categories (ListType). When you query the
+ * dictionary for a certain keyword type, it retrieves a random (seeded random)
+ * keyword from that list. 
+ */
 //@author A0065475X
-public class KeywordLibrary {
+public class KeywordDictionary {
     
     private static final int RECURSE_PROBABILITY = 4;
     private static final boolean AGAIN = true;
@@ -47,17 +54,26 @@ public class KeywordLibrary {
         ALL
     }
     
-    public KeywordLibrary(int seed) {
+    public KeywordDictionary(int seed) {
         rand = new Random(seed);
         createLists();
         addContent();
     }
     
+    /**
+     * @param listType the category of keywords you want to query
+     * @return a random keyword from the category specified
+     */
     public String getRandom(ListType listType) {
         ArrayList<KeywordToken> list = getList(listType);
         return getRandomKeywordAndProcessRecursively(list, listType);
     }
     
+    /**
+     * @param listTypes the categories of keywords you want to query
+     * @return a random keyword from a random category out of the list of
+     * categories specified.
+     */
     public String getRandom(ListType...listTypes) {
         if (listTypes.length == 1) {
             return getRandom(listTypes[0]);
@@ -67,7 +83,7 @@ public class KeywordLibrary {
         }
     }
 
-    protected String getRandomKeywordAndProcessRecursively(
+    private String getRandomKeywordAndProcessRecursively(
             ArrayList<KeywordToken> list, ListType...listTypes) {
         
         KeywordToken keyword = getRandomElement(list);
@@ -87,7 +103,6 @@ public class KeywordLibrary {
     }
     
     private void addContent() {
-        
 
         addToList("", NONE, DATETIMECONNECTOR, CONNECTOR, RANDOM);
         addToList("to", DATETIMECONNECTOR, CONNECTOR, TASKID, RANDOM);

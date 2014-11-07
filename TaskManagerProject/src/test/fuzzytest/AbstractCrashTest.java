@@ -4,10 +4,10 @@ import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import main.MainController;
-import test.fuzzytest.KeywordLibrary.ListType;
+import test.fuzzytest.KeywordDictionary.ListType;
 
 /**
- * Tests a bunch of random inputs to see if anything crashes the program.
+ * Carries the framework for a crash test.
  */
 //@author A0065475X
 public abstract class AbstractCrashTest {
@@ -18,12 +18,21 @@ public abstract class AbstractCrashTest {
     private final int randomSeed;
 
     private TasklineInstanceContainer tasklineInstanceContainer;
-    private KeywordLibrary keywordLibrary;
+    private KeywordDictionary keywordLibrary;
     private HashSet<String> testedStrings;
     private ArrayBlockingQueue<String> logQueue;
     private int totalStrings;
     private boolean success = false;
     
+    /**
+     * @param tasklineInstanceContainer contains one or more instances
+     * of taskline that is used by the CrashTest.
+     * @param startingSeed random seed. (for deterministic testing)
+     * @param logQueueLength The maximum length of the log queue. CrashTest logs
+     * input and output during the test to a queue. If the test fails, it prints
+     * out the logs. Previous logs are deleted when the log queue length is
+     * exceeded.
+     */
     public AbstractCrashTest(TasklineInstanceContainer tasklineInstanceContainer,
             int startingSeed, int logQueueLength) {
         this.tasklineInstanceContainer = tasklineInstanceContainer;
@@ -41,7 +50,7 @@ public abstract class AbstractCrashTest {
     
     public void runTest() {
         
-        keywordLibrary = new KeywordLibrary(randomSeed);
+        keywordLibrary = new KeywordDictionary(randomSeed);
         
         testedStrings = new HashSet<>(SIZE_INITIAL_HASHSET);
         totalStrings = 0;
@@ -173,6 +182,10 @@ public abstract class AbstractCrashTest {
         test(inputString.toString());
     }
     
+    /**
+     * Tests a specific string by sending it into the taskline instance.
+     * @param input the user input to test. e.g. "add orange juice 2pm"
+     */
     protected void test(String input) {
         totalStrings++;
         testedStrings.add(input);

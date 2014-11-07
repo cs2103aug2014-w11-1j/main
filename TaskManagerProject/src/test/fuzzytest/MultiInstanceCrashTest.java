@@ -1,7 +1,13 @@
 package test.fuzzytest;
 
-import test.fuzzytest.KeywordLibrary.ListType;
+import test.fuzzytest.KeywordDictionary.ListType;
 
+/**
+ * The crash test configuration for a multi-instance crash test. Focus is on
+ * checking whether the other taskline functions properly when one of them is
+ * constantly adding and deleting tasks.
+ */
+//@author A0065475X
 public class MultiInstanceCrashTest extends AbstractCrashTest {
 
     public MultiInstanceCrashTest(

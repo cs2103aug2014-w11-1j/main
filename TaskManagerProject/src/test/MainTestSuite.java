@@ -3,6 +3,10 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * Runs all JUnit tests in the program.
+ * ALWAYS RUN THIS BEFORE COMMITING.
+ */
 //@author A0065475X
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
