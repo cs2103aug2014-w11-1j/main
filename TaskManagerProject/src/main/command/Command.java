@@ -13,6 +13,7 @@ public abstract class Command {
     
     public Command(ManagerHolder managerHolder) {
         stateManager = managerHolder.getStateManager();
+        stateManager.beforeCommandUpdate();
     }
 
 
@@ -22,8 +23,6 @@ public abstract class Command {
         }
         
         if (isCommandAllowed()) {
-            stateManager.beforeCommandUpdate();
-
             Result result = executeAction();
             Response response = stateManager.update(result);
             return response;

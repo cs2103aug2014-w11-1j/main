@@ -28,7 +28,6 @@ import data.taskinfo.TaskInfo;
 public class SearchManager extends AbstractManager {
     private static final Logger log = TasklineLogger.getLogger();
 
-    
     SuggestionFinder suggestionFinder;
     TaskInfoId[] lastSearchedTasks;
     String[] lastSearchedSuggestions;
@@ -341,7 +340,13 @@ public class SearchManager extends AbstractManager {
         if (relativeIndex > lastSearchedTasks.length) {
             throw new IndexOutOfBoundsException();
         }
-        return lastSearchedTasks[relativeIndex - 1].taskId;
+        
+        TaskId taskId = lastSearchedTasks[relativeIndex - 1].taskId;
+        if (taskData.taskExists(taskId)) {
+            return taskId;
+        } else {
+            return null;
+        }
     }
 
     public TaskInfo getTaskInfo(int relativeIndex) {
@@ -354,31 +359,4 @@ public class SearchManager extends AbstractManager {
     public TaskInfo getTaskInfo(TaskId taskId) {
         return taskData.getTaskInfo(taskId);
     }
-    
-    // TODO: Use this in a TargetedCommand search.
-    /* 
-    private void removeDuplicates() {
-        HashSet<TaskId> idSet = new HashSet<>();
-        LinkedList<TaskId> newIdList = new LinkedList<>();
-        LinkedList<TaskInfo> newTaskList = new LinkedList<>();
-        
-        for (int i = 0; i < taskIds.length; i++) {
-            if (!idSet.contains(taskIds[i])) {
-                idSet.add(taskIds[i]);
-                newIdList.offer(taskIds[0]);
-                newTaskList.offer(tasks[0]);
-            }
-        }
-
-        assert newIdList.size() == newTaskList.size();
-        taskIds = new TaskId[newIdList.size()];
-        tasks = new TaskInfo[newTaskList.size()];
-        for (int i = 0; i < taskIds.length; i++) {
-            taskIds[i] = newIdList.poll();
-            tasks[i] = newTaskList.poll();
-        }
-
-        assert newIdList.size() == 0;
-        assert newTaskList.size() == 0;
-    }*/
 }
