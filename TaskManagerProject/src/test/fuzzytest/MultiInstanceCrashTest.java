@@ -8,9 +8,9 @@ public class MultiInstanceCrashTest extends AbstractCrashTest {
             TasklineInstanceContainer tasklineInstanceContainer,
             int startingSeed, int logQueueLength) {
         super(tasklineInstanceContainer, startingSeed, logQueueLength);
-        // TODO Auto-generated constructor stub
     }
-
+    
+    
     @Override
     protected void fuzzyTest() {
         ListType[] edit = {ListType.EDIT};
@@ -30,96 +30,107 @@ public class MultiInstanceCrashTest extends AbstractCrashTest {
         ListType[] randomTargets = {ListType.NUMBER, ListType.NONE, ListType.TASKID};
         ListType[] randomItems = {ListType.DATETIME, ListType.ITEM, ListType.NONE,
                 ListType.RANDOM, ListType.SYMBOL, ListType.CONNECTOR};
-
-        testRandom(30, ListType.ADD, ListType.ALL);
-        testRandom(30, ListType.ADD, ListType.RANDOM, ListType.ITEM);
-        testRandom(60, ListType.ADD, ListType.DATETIME, ListType.DATETIME,
-                ListType.DATETIME, ListType.DATETIME);
-        testRandom(30, add, randomItems, randomItems, randomItems,
-                validItems, validItems, validItems);
-
-        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
         
-        for (int i = 0 ; i < 100; i++) {
-            testRandom(ListType.SEARCH, ListType.RANDOM);
+        for (int i = 0; i <12; i++) {
+            testRandom(3, ListType.ADD, ListType.ALL);
+            testRandom(3, ListType.ADD, ListType.RANDOM, ListType.ITEM);
+            testRandom(3, ListType.ADD, ListType.DATETIME, ListType.DATETIME,
+                    ListType.DATETIME, ListType.DATETIME);
+            testRandom(3, add, randomItems, randomItems, randomItems,
+                    validItems, validItems, validItems);
+    
+            testRandomMaybeSearch(5, ListType.ALL, ListType.ALL);
+            
+            testRandomMaybeSearch(3, ListType.DELETE, ListType.ALL);
+            testRandomMaybeSearch(3, ListType.DELETE, ListType.RANDOM);
+            testRandomMaybeSearch(3, ListType.DELETE, ListType.TASKID);
+    
             testRandom(delete, validTargets);
-            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(delete, validTargets, validTargets);
-            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(delete, validTargets, validTargets, validTargets);
-            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(edit, validTargets, editKeywords, dateTime);
-            testRandom(ListType.SEARCH, ListType.RANDOM);
             testRandom(edit, validTargets, validTargets, editKeywords, dateTime);
+    
+            testRandom(ListType.ADD, ListType.ALL);
+            testRandomMaybeSearch(1, ListType.DELETE, ListType.ALL);
+            
+            testRandomMaybeSearch(3, ListType.ALL, ListType.ALL);
+    
+            testRandom(2, ListType.SEARCH, ListType.ALL, ListType.ALL);
+            
+            testRandom(1, ListType.FREEDAY, ListType.DATETIME);
+            testRandom(1, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME);
+            testRandom(1, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME,
+                    ListType.DATETIME);
+    
+            testRandom(3, ListType.SEARCH, ListType.ALL, ListType.ALL);
+            
+            testRandom(1, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME,
+                    ListType.DATETIME, ListType.DATETIME);
+            testRandom(2, ListType.FREEDAY, ListType.ALL, ListType.ALL,
+                    ListType.ALL, ListType.ALL);
+    
+            testRandomMaybeSearch(5, ListType.ALL, ListType.ALL);
+    
+            testRandom(ListType.ADD, ListType.ALL);
+            testRandomMaybeSearch(1, ListType.DELETE, ListType.ALL);
+            
+            testRandom(1, ListType.FREETIME, ListType.DATETIME);
+            testRandom(1, ListType.FREETIME, ListType.DATETIME, ListType.DATETIME);
+            testRandom(2, ListType.FREETIME, ListType.ALL, ListType.ALL);
+            
+            testRandomMaybeSearch(5, ListType.ALL, ListType.ALL);
+            testRandom(3, ListType.UNALIAS, ListType.COMMAND);
+            
+            testRandom(ListType.SEARCH);
+    
+            testRandom(2, ListType.SEARCH, ListType.ALL);
+    
+            testRandom(2, ListType.COMMAND, ListType.ALL);
+            testRandom(2, ListType.COMMAND, ListType.ALL, ListType.ALL);
+            testRandom(2, ListType.COMMAND, ListType.ALL, ListType.ALL, ListType.ALL);
+            testRandom(3, ListType.UNALIAS, ListType.COMMAND);
+    
+    
+            testRandomMaybeSearch(2, ListType.EDIT, ListType.EDITKEYWORD);
+            
+            testRandom(3, ListType.SEARCH, ListType.ALL, ListType.ALL);
+            
+            testRandomMaybeSearch(2, ListType.EDIT, ListType.EDITKEYWORD, ListType.RANDOM);
+            testRandomMaybeSearch(2, ListType.EDIT, ListType.RANDOM, ListType.RANDOM);
+            
+            testRandomMaybeSearch(6, edit, validTargets, clear, editKeywords);
+            testRandomMaybeSearch(2, edit, validTargets, editKeywords, validItems);
+            testRandomMaybeSearch(3, edit, validTargets, clear, editKeywords);
+            testRandomMaybeSearch(2, edit, validTargets, validTargets, editKeywords,
+                    validItems);
+            testRandomMaybeSearch(2, edit, validTargets, validTargets, validTargets,
+                    editKeywords, validItems,
+                    validItems);
+            testRandomMaybeSearch(2, edit, randomTargets, randomTargets, randomTargets,
+                    editKeywords, randomItems, randomItems);
+
+            testRandomMaybeSearch(15, ListType.DELETE, ListType.ALL);
+            testRandomMaybeSearch(15, ListType.DELETE, ListType.RANDOM);
+            testRandomMaybeSearch(15, ListType.DELETE, ListType.TASKID);
         }
-
-        testRandom(10, ListType.FREEDAY, ListType.DATETIME);
-        testRandom(10, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME);
-        testRandom(10, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME,
-                ListType.DATETIME);
-        testRandom(10, ListType.FREEDAY, ListType.DATETIME, ListType.DATETIME,
-                ListType.DATETIME, ListType.DATETIME);
-        testRandom(40, ListType.FREEDAY, ListType.ALL, ListType.ALL,
-                ListType.ALL, ListType.ALL);
-
-        testRandom(30, ListType.FREETIME, ListType.DATETIME);
-        testRandom(10, ListType.FREETIME, ListType.DATETIME, ListType.DATETIME);
-        testRandom(40, ListType.FREETIME, ListType.ALL, ListType.ALL);
-        
-        testRandomMaybeSearch(30, ListType.DELETE, ListType.ALL);
-        testRandomMaybeSearch(30, ListType.DELETE, ListType.RANDOM);
-        testRandomMaybeSearch(30, ListType.DELETE, ListType.TASKID);
-        
-        
-        testRandomMaybeSearch(200, ListType.ALL, ListType.ALL);
-        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
-        
-        testRandom(ListType.SEARCH);
-
-        testRandom(150, ListType.COMMAND, ListType.ALL);
-        testRandom(150, ListType.COMMAND, ListType.ALL, ListType.ALL);
-        testRandom(150, ListType.COMMAND, ListType.ALL, ListType.ALL, ListType.ALL);
-        testRandom(30, ListType.UNALIAS, ListType.COMMAND);
-
-        testRandom(100, ListType.SEARCH, ListType.ALL);
-        testRandom(50, ListType.SEARCH, ListType.RANDOM);
-        testRandom(50, ListType.SEARCH, ListType.RANDOM, ListType.RANDOM);
-        testRandom(50, ListType.SEARCH, ListType.RANDOM, ListType.RANDOM, ListType.RANDOM);
-        testRandom(200, ListType.SEARCH, ListType.ALL, ListType.ALL, ListType.ALL);
-        testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.DATETIME);
-        testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.RANDOM, ListType.DATETIME);
-        testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.CONNECTOR, ListType.DATETIME);
-        testRandom(50, ListType.SEARCH, ListType.DATETIME, ListType.SYMBOL, ListType.DATETIME);
-
-        testRandomMaybeSearch(20, ListType.EDIT, ListType.EDITKEYWORD);
-        testRandomMaybeSearch(20, ListType.EDIT, ListType.EDITKEYWORD, ListType.RANDOM);
-        testRandomMaybeSearch(20, ListType.EDIT, ListType.RANDOM, ListType.RANDOM);
-        
-        testRandomMaybeSearch(120, edit, validTargets, clear, editKeywords);
-        testRandomMaybeSearch(200, edit, validTargets, editKeywords, validItems);
-        testRandomMaybeSearch(30, edit, validTargets, clear, editKeywords);
-        testRandomMaybeSearch(200, edit, validTargets, validTargets, editKeywords,
-                validItems);
-        testRandomMaybeSearch(200, edit, validTargets, validTargets, validTargets,
-                editKeywords, validItems,
-                validItems);
-        testRandomMaybeSearch(200, edit, randomTargets, randomTargets, randomTargets,
-                editKeywords, randomItems, randomItems);
 
         // Random aliasing
-        for (int i = 0; i < 3; i++) {
-            testRandom(20, ListType.ALIAS, ListType.ALL, ListType.COMMAND,
+        for (int i = 0; i < 80; i++) {
+            testRandom(3, ListType.ALIAS, ListType.ALL, ListType.COMMAND,
                     ListType.ALL);
-            testRandom(20, ListType.ALIAS, ListType.ALL, ListType.ALL,
+            testRandom(2, ListType.COMMAND, ListType.ALL);
+            
+            testRandom(3, ListType.ALIAS, ListType.ALL, ListType.ALL,
                     ListType.ALL);
+
+            testRandom(3, ListType.UNALIAS, ListType.ALL);
     
-            testRandom(20, ListType.ALL, ListType.ALL);
-            testRandom(20, ListType.ALL, ListType.ALL, ListType.ALL);
-            testRandom(20, ListType.ALL, ListType.ALL, ListType.ALL,
+            testRandom(3, ListType.ALL, ListType.ALL);
+            testRandom(3, ListType.ALL, ListType.ALL, ListType.ALL);
+            testRandom(3, ListType.ALL, ListType.ALL, ListType.ALL,
                     ListType.ALL);
         }
-
-        testRandom(50, ListType.COMMAND, ListType.ALL);
     }
 
 }

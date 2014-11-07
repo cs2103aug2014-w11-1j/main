@@ -3,7 +3,6 @@ package main.command;
 import manager.ManagerHolder;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
-import data.TaskId;
 
 public class DetailsCommand extends TargetedCommand {
     private final SearchManager searchManager;

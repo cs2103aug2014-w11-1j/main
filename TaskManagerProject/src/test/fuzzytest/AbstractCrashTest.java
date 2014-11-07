@@ -78,7 +78,11 @@ public abstract class AbstractCrashTest {
         test("edit meepietwo date tomorrow");
         test("search     ");
         
+        test("add yesterday 1300 0pm tomorrow");
+        test("freeday today yesterday");
+
         test("add task 3am 29 oct 2014 3am 29 oct 2014");
+        test("add sat after undone done 2pm tomorrow 2pm ##");
         
         test("alias show orange");
         test("show $4");
@@ -169,9 +173,14 @@ public abstract class AbstractCrashTest {
         test(inputString.toString());
     }
     
-    private void test(String input) {
+    protected void test(String input) {
         totalStrings++;
         testedStrings.add(input);
+        
+        if (totalStrings%100 == 0) {
+            System.out.println("Tested: " + testedStrings.size() + " / " +
+                    totalStrings);
+        }
         
         try {
             MainController mainController = getNextMainController();

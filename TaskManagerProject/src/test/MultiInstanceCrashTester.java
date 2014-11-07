@@ -17,7 +17,7 @@ public class MultiInstanceCrashTester {
     private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
     private static final String TEST_FILENAME = "testTasks.txt";
 
-    private static final int RANDOM_SEED = 2;
+    private static final int RANDOM_SEED = 3;
     private static final float RATIO = 0.3f;
     private static final int LOG_QUEUE_LENGTH = 40;
 

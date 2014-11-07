@@ -50,6 +50,7 @@ public class FreeDaySearchFormatter {
             result.append(LINE_HEADER);
             LocalDate current = message.getSearchStartDate();
             
+            assert !current.isAfter(message.getSearchEndDate());
             do {
                 if (current.compareTo(message.getFirstBusyDate()) < 0) {
                     result.append(String.format(LINE_DATE, formatDate(current)));
