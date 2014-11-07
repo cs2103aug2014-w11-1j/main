@@ -8,17 +8,14 @@ import data.TaskId;
 public class DetailsCommand extends TargetedCommand {
     private final SearchManager searchManager;
 
-    private final TaskId taskId;
-
     public DetailsCommand(String args, ManagerHolder managerHolder) {
         super(managerHolder);
         searchManager = managerHolder.getSearchManager();
 
-        taskId = parse(args);
+        parse(args);
     }
 
-    private TaskId parse(String args) {
-        // TODO use targetTaskIdSet for details command, alter searchManager
+    private void parse(String args) {
         String remaining = tryParseIdsIntoSet(args);
         if (remaining.length() > 0) {
             targetTaskIdSet = null;
@@ -26,13 +23,11 @@ public class DetailsCommand extends TargetedCommand {
         if (targetTaskIdSet == null) {
             parseAsSearchString(args);
         }
-
-        return parseTaskId(args);
     }
 
     @Override
     protected boolean isValidArguments() {
-        return taskId != null;
+        return targetTaskIdSet != null;
     }
 
     @Override
@@ -42,7 +37,7 @@ public class DetailsCommand extends TargetedCommand {
 
     @Override
     protected Result executeAction() {
-        Result result = searchManager.details(taskId);
+        Result result = searchManager.details(targetTaskIdSet);
         return result;
     }
 

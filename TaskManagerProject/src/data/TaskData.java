@@ -31,8 +31,8 @@ public class TaskData implements ITaskData, ITaskDataFileInputOutput, ITaskDataU
     
     private UndoSnapshot undoSnapshot;
     
-    private int firstTask = NO_TASK;
-    private int lastTask = NO_TASK;
+    private int firstTask;
+    private int lastTask;
     
     private int size = 0;
     
@@ -437,6 +437,9 @@ public class TaskData implements ITaskData, ITaskDataFileInputOutput, ITaskDataU
         nextTaskList = new ArrayList<>();
         previousTaskList = new ArrayList<>();
         
+        firstTask = NO_TASK;
+        lastTask = NO_TASK;
+        
         undoSnapshot = new UndoSnapshot(this);
         size = 0;
         hasUnsavedChanges = false;
@@ -528,7 +531,7 @@ public class TaskData implements ITaskData, ITaskDataFileInputOutput, ITaskDataU
     private boolean deleteTask(int index) {
         // Note: Uses lazy deletion to maintain index.
         
-        if (taskList.size() < index)
+        if (taskList.size() <= index)
             return false;
         if (taskList.get(index) == EMPTY_SLOT)
             return false;

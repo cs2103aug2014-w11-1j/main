@@ -71,9 +71,7 @@
     <end type="TARGET" refId="2"/>  
   </generalization>  
   <generalization id="9">    
-    <bendpoint x="336" y="214"/>    
-    <bendpoint x="336" y="484"/>    
-    <end type="SOURCE" refId="6"/>    
+    <end type="SOURCE" refId="7"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
   <generalization id="10">    
@@ -86,7 +84,9 @@
     <end type="TARGET" refId="2"/>  
   </generalization>  
   <generalization id="12">    
-    <end type="SOURCE" refId="7"/>    
+    <bendpoint x="336" y="214"/>    
+    <bendpoint x="336" y="484"/>    
+    <end type="SOURCE" refId="6"/>    
     <end type="TARGET" refId="2"/>  
   </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

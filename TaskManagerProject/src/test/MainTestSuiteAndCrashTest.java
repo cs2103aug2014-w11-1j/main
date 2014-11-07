@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     MainTestSuite.class,
-    CrashTester.class
+    SingleInstanceCrashTester.class
 })
 public class MainTestSuiteAndCrashTest {
 }

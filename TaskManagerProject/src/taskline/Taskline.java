@@ -5,6 +5,8 @@ import io.FileInputOutput;
 import io.IFileInputOutput;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jline.ArgumentCompletor;
 import jline.Completor;
@@ -39,9 +41,7 @@ public class Taskline {
                 new AutoCompleteDictionary(simpleCompletor);
         
         ArgumentCompletor argumentCompletor = new ArgumentCompletor(
-                new Completor[]{
-                        simpleCompletor, 
-                        new NullCompletor()});
+                new Completor[]{simpleCompletor, new NullCompletor()});
         
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
@@ -58,8 +58,19 @@ public class Taskline {
         
         UIDisplay uiDisplay = new UIDisplay(mainController, argumentCompletor);
 
-        startCommandLoop(uiDisplay);
-        TasklineLogger.closeLoggerFileHandler();
+        startCommandLoopWithLogger(uiDisplay);
+    }
+
+    private static void startCommandLoopWithLogger(UIDisplay uiDisplay) {
+        Logger log = TasklineLogger.getLogger();
+        try {
+            startCommandLoop(uiDisplay);
+        } catch (Exception e) {
+            log.log(Level.SEVERE, e.getMessage(), e);
+            throw e;
+        } finally {
+            TasklineLogger.closeLoggerFileHandler();
+        }
     }
 
     private static void startCommandLoop(UIDisplay uiDisplay) {
