@@ -9,7 +9,6 @@ import java.util.Comparator;
 
 import manager.result.FreeDayResult;
 import manager.result.Result;
-import manager.result.SimpleResult;
 import data.TaskData;
 import data.TaskId;
 import data.taskinfo.TaskInfo;

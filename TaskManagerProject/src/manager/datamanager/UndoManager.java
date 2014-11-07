@@ -2,7 +2,6 @@ package manager.datamanager;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.concurrent.Callable;
 
 import manager.result.Result;
 import manager.result.SimpleResult;
