@@ -3,8 +3,6 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.fuzzytest.CrashTester;
-
 /**
  * Runs both the main test suite and the crash tester.<br>
  * I usually run both separately because the crash tester can take a while.<br>
@@ -14,7 +12,7 @@ import test.fuzzytest.CrashTester;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     MainTestSuite.class,
-    CrashTester.class
+    SingleInstanceCrashTester.class
 })
 public class MainTestSuiteAndCrashTest {
 }

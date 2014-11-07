@@ -12,11 +12,13 @@ import main.MainController;
 public class TasklineInstanceContainer {
     private final String fileName;
     private final String aliasFileName;
-    
+
     private final float ratio;
     private final MainController[] mainControllers;
     private final boolean multiple;
     private final Random rand;
+
+    private int indexOfLastInstance;
 
     private TasklineInstanceContainer(String fileName, String aliasFileName,
             int seed, boolean multiple, float ratio) {
@@ -36,7 +38,6 @@ public class TasklineInstanceContainer {
             mainControllers = new MainController[1];
             mainControllers[0] = Taskline.setupTaskLine(fileName, aliasFileName);
         }
-        
     }
     
     public static TasklineInstanceContainer createMonoInstance(String fileName,
@@ -54,19 +55,25 @@ public class TasklineInstanceContainer {
     public MainController getNextInstance() {
         if (multiple) {
             if (rand.nextDouble() < ratio) {
+                indexOfLastInstance = 1;
                 return mainControllers[0];
             } else {
+                indexOfLastInstance = 2;
                 return mainControllers[1];
             }
         } else {
+            indexOfLastInstance = 1;
             return mainControllers[0];
         }
+    }
+    
+    public int indexOfLastInstance() {
+        return indexOfLastInstance;
     }
 
     public void close() {
         deleteTestFiles();
     }
-
 
     private void deleteTestFiles() {
         try {

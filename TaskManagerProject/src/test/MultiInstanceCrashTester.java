@@ -3,7 +3,8 @@ package test;
 import org.junit.After;
 import org.junit.Test;
 
-import test.fuzzytest.CrashTester;
+import test.fuzzytest.AbstractCrashTest;
+import test.fuzzytest.MultiInstanceCrashTest;
 import test.fuzzytest.TasklineInstanceContainer;
 
 /**
@@ -20,7 +21,7 @@ public class MultiInstanceCrashTester {
     private static final float RATIO = 0.3f;
     private static final int LOG_QUEUE_LENGTH = 40;
 
-    private CrashTester crashTester;
+    private AbstractCrashTest crashTester;
     private TasklineInstanceContainer tasklineInstanceContainer;
 
     @After
@@ -34,7 +35,7 @@ public class MultiInstanceCrashTester {
         tasklineInstanceContainer = TasklineInstanceContainer.
                 createMultiInstance(TEST_FILENAME, TEST_ALIAS_FILENAME,
                         RANDOM_SEED, RATIO);
-        crashTester = new CrashTester(tasklineInstanceContainer,
+        crashTester = new MultiInstanceCrashTest(tasklineInstanceContainer,
                 RANDOM_SEED, LOG_QUEUE_LENGTH);
         
         crashTester.runTest();
