@@ -197,7 +197,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 
         defineDefaultCommands(
                 (args, managerHolder) -> new SearchCommand(args, managerHolder),
-                "show", "search", "ls", "view");
+                "show", "search", "list", "view", "tasks");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new EditCommand(args, managerHolder),

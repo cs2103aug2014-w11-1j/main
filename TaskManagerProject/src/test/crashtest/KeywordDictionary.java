@@ -1,10 +1,10 @@
-package test.fuzzytest;
+package test.crashtest;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import test.fuzzytest.KeywordDictionary.ListType;
-import static test.fuzzytest.KeywordDictionary.ListType.*;
+import test.crashtest.KeywordDictionary.ListType;
+import static test.crashtest.KeywordDictionary.ListType.*;
 
 /**
  * A dictionary of commonly used keywords or strings used for the crash tester.
