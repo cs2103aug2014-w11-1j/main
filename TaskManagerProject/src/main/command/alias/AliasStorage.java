@@ -313,6 +313,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
             String... commandStrings) {
 
         for (String commandString : commandStrings) {
+            assert !commandString.contains(" ");
             defaultMap.put(commandString, commandFunction);
         }
     }
