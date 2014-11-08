@@ -51,8 +51,12 @@ public class FreeDaySearchManager extends AbstractManager {
 		taskList.clear();
 		taskList = null;   
 	}
+	
 	public Result searchFreeDay(LocalTime startTime, LocalDate startDate,
 			LocalTime endTime, LocalDate endDate) {
+	    
+	    assert startBeforeEnd(startTime, startDate, endTime, endDate);
+	    
 		updateTaskList();
 
 		LocalDate checkDate = null;
@@ -91,7 +95,12 @@ public class FreeDaySearchManager extends AbstractManager {
 		return new FreeDayResult(freeDays, firstStartDate, checkDate, startDate, endDate);
 	}
 
-	private void uodateFreeDay(LocalTime startTime, LocalDate startDate,
+	private boolean startBeforeEnd(LocalTime startTime, LocalDate startDate,
+            LocalTime endTime, LocalDate endDate) {
+        return !endDate.isBefore(startDate) && !endTime.isBefore(startTime);
+    }
+
+    private void uodateFreeDay(LocalTime startTime, LocalDate startDate,
 			LocalTime endTime, LocalDate endDate, LocalDate checkDate,
 			ArrayList<LocalDate> freeDays, TaskInfo task) {
 		if (firstContainingDate(task, startTime, endTime).isAfter(

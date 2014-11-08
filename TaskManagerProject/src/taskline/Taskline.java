@@ -5,6 +5,8 @@ import io.FileInputOutput;
 import io.IFileInputOutput;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jline.ArgumentCompletor;
 import jline.Completor;
@@ -31,21 +33,7 @@ public class Taskline {
 
     public static void main(String[] args) throws IOException {
         AnsiConsole.systemInstall();
-        
-        System.out.println(ansi().fg(Color.RED).a("The quick brown fox jumps over the lazy dog."));
-        System.out.println();
-        System.out.println(ansi().fg(Color.GREEN).a("The quick brown fox jumps over the lazy dog."));
-        System.out.println();
-        System.out.println(ansi().fg(Color.CYAN).a("The quick brown fox jumps over the lazy dog."));
-        System.out.println();
-        System.out.println(ansi().fg(Color.YELLOW).a("The quick brown fox jumps over the lazy dog."));
-        System.out.println();
-        System.out.println(ansi().fg(Color.BLUE).a("The quick brown fox jumps over the lazy dog."));
-        System.out.println();
-        System.out.println(ansi().fg(Color.MAGENTA).a("The quick brown fox jumps over the lazy dog."));
-        System.out.println();
-        System.out.println(ansi().reset());
-/*        TasklineLogger.setupLogger();
+        TasklineLogger.setupLogger();
 
         String fileName = "tasks.txt";
         String aliasFileName = "alias.txt";
@@ -55,9 +43,7 @@ public class Taskline {
                 new AutoCompleteDictionary(simpleCompletor);
         
         ArgumentCompletor argumentCompletor = new ArgumentCompletor(
-                new Completor[]{
-                        simpleCompletor, 
-                        new NullCompletor()});
+                new Completor[]{simpleCompletor, new NullCompletor()});
         
         AliasStorage aliasStorage = new AliasStorage();
         IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
@@ -75,7 +61,20 @@ public class Taskline {
         UIDisplay uiDisplay = new UIDisplay(mainController, argumentCompletor);
 
         startCommandLoop(uiDisplay);
-        TasklineLogger.closeLoggerFileHandler();*/
+        TasklineLogger.closeLoggerFileHandler();
+        startCommandLoopWithLogger(uiDisplay);
+    }
+
+    private static void startCommandLoopWithLogger(UIDisplay uiDisplay) {
+        Logger log = TasklineLogger.getLogger();
+        try {
+            startCommandLoop(uiDisplay);
+        } catch (Exception e) {
+            log.log(Level.SEVERE, e.getMessage(), e);
+            throw e;
+        } finally {
+            TasklineLogger.closeLoggerFileHandler();
+        }
     }
 
     private static void startCommandLoop(UIDisplay uiDisplay) {

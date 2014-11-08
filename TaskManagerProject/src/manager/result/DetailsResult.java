@@ -5,20 +5,20 @@ import data.taskinfo.TaskInfo;
 
 public class DetailsResult implements Result {
 
-    private TaskInfo task;
-    private TaskId taskId;
+    private TaskInfo[] tasks;
+    private TaskId[] taskIds;
     
-    public DetailsResult(TaskInfo task, TaskId taskId) {
-        this.task = task;
-        this.taskId = taskId;
+    public DetailsResult(TaskInfo[] tasks, TaskId[] taskIds) {
+        this.tasks = tasks;
+        this.taskIds = taskIds;
     }
     
-    public TaskInfo getTask() {
-        return task;
+    public TaskInfo[] getTasks() {
+        return tasks;
     }
     
-    public TaskId getTaskId() {
-        return taskId;
+    public TaskId[] getTaskIds() {
+        return taskIds;
     }
     
     @Override

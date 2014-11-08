@@ -3,6 +3,7 @@ package main.formatting;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import main.formatting.utility.SummaryUtility;
 import main.message.ReportMessage;
@@ -14,11 +15,19 @@ public class ReportFormatter {
     private final static String DATETIME_FORMAT_DATE = "EEEE, d MMM Y";
     private final static String DATETIME_FORMAT_TIME = "HH:mm (a)";
     
-    private final static String DATETIME_REPORT = "[ %1$s, %2$s ]" +
+    private final static String REPORT_DATETIME = "[ %1$s, %2$s ]" +
             System.lineSeparator();
-    private final static String HEADER_REPORT = "You have %1$s tasks today, " +
-            "and %2$s tasks tomorrow." + System.lineSeparator() + 
-            "Below are the high-priority tasks." + System.lineSeparator();
+    private final static String REPORT_HEADER = "You have %1$s tasks today, " +
+            "and %2$s tasks tomorrow." + System.lineSeparator();
+
+    private final static String REPORT_MISSED =
+            "Overdue tasks:" + System.lineSeparator();
+    private final static String REPORT_URGENT =
+            "High-priority tasks:" + System.lineSeparator();
+    private final static String REPORT_NON_URGENT =
+            "Non-urgent tasks:" + System.lineSeparator();
+    private final static String REPORT_NO_TASKS =
+            "Congratulations! You have no pending tasks." + System.lineSeparator();
     
     SummaryUtility summaryUtility;
     public ReportFormatter() {
@@ -27,14 +36,61 @@ public class ReportFormatter {
     
     public String format(ReportMessage message) {
         StringBuilder result = new StringBuilder();
-        result.append(String.format(DATETIME_REPORT, currentDate(),
+        result.append(String.format(REPORT_DATETIME, currentDate(),
                 currentTime()));
-        result.append(String.format(HEADER_REPORT, 
+        result.append(String.format(REPORT_HEADER, 
                 message.getCountTodayTask(), message.getCountTmrTask()));
-        TaskInfo[] tasks = new TaskInfo[message.getUrgentTask().size()];
-        message.getUrgentTask().toArray(tasks);
-        result.append(summaryUtility.format(tasks, null));
-        return result.toString() + System.lineSeparator();
+
+        TaskInfo[] urgentTasks = retrieveUrgentTasks(message);
+        TaskInfo[] nonUrgentTasks = retrieveNonUrgentTasks(message);
+        TaskInfo[] missedTasks = retrieveMissedTasks(message);
+
+        if (missedTasks.length != 0) {
+            result.append(REPORT_MISSED);
+            result.append(summaryUtility.format(missedTasks, null));
+            result.append(System.lineSeparator());
+        }
+
+        if (urgentTasks.length != 0) {
+            result.append(REPORT_URGENT);
+            result.append(summaryUtility.format(urgentTasks, null));
+            result.append(System.lineSeparator());
+        }
+
+        if (nonUrgentTasks.length != 0) {
+            result.append(REPORT_NON_URGENT);
+            result.append(summaryUtility.format(nonUrgentTasks, null));
+            result.append(System.lineSeparator());
+        }
+        
+        if (missedTasks.length == 0 && urgentTasks.length == 0 &&
+                nonUrgentTasks.length == 0) {
+            result.append(REPORT_NO_TASKS);
+            result.append(System.lineSeparator());
+        }
+        
+        return result.toString();
+    }
+
+    private TaskInfo[] retrieveUrgentTasks(ReportMessage message) {
+        ArrayList<TaskInfo> taskList = message.getUrgentTasks();
+        TaskInfo[] tasks = new TaskInfo[taskList.size()];
+        taskList.toArray(tasks);
+        return tasks;
+    }
+
+    private TaskInfo[] retrieveNonUrgentTasks(ReportMessage message) {
+        ArrayList<TaskInfo> taskList = message.getNonUrgentTasks();
+        TaskInfo[] tasks = new TaskInfo[taskList.size()];
+        taskList.toArray(tasks);
+        return tasks;
+    }
+
+    private TaskInfo[] retrieveMissedTasks(ReportMessage message) {
+        ArrayList<TaskInfo> taskList = message.getMissedTasks();
+        TaskInfo[] tasks = new TaskInfo[taskList.size()];
+        taskList.toArray(tasks);
+        return tasks;
     }
     
     

@@ -44,8 +44,19 @@ public class DetailsFormatter {
      * @return The formatted Message.
      */
     public String format(DetailsMessage message) {
-        TaskInfo task = message.getTask();
-        TaskId taskId = message.getTaskId();
+        TaskInfo[] tasks = message.getTasks();
+        TaskId[] taskIds = message.getTaskIds();
+        assert tasks.length == taskIds.length;
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < tasks.length; i++) {
+            builder.append(formatDetails(tasks[i], taskIds[i]));
+        }
+        
+        return builder.toString();
+    }
+
+    private String formatDetails(TaskInfo task, TaskId taskId) {
         return arrayListToString(
                 detailsUtility.formatToArray(task, taskId)) + System.lineSeparator();
     }

@@ -50,7 +50,7 @@ public class UpdateManager {
 		undoManager.updateUndoHistory();
 	}
 	
-	public void preExecutionCheck(){
+	public void beforeCommandUpdate(){
 		 boolean fileChanged = readFromFile();
 	        
         if (fileChanged) {

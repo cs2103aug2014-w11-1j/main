@@ -193,10 +193,10 @@ public class StateManager {
     }
 
     /**
-     * This method is called just before every command execution.
+     * This method is called just before anything is done by the command.
      */
-    public void beforeCommandExecutionUpdate() {
-       updateManager.preExecutionCheck();
+    public void beforeCommandUpdate() {
+       updateManager.beforeCommandUpdate();
     }
 
     
@@ -434,9 +434,14 @@ public class StateManager {
 
             case INVALID_ARGUMENT : 
                 return new EnumMessage(MessageType.INVALID_ARGUMENT);
+                
             case REPORT : 
             	ReportResult reportResult = (ReportResult) result;
-            	return new ReportMessage(reportResult.countTodayTask(), reportResult.countTmrTask(), reportResult.getUrgentTask());
+            	return new ReportMessage(reportResult.countTodayTasks(),
+            	        reportResult.countTmrTasks(),
+            	        reportResult.getUrgentTasks(),
+            	        reportResult.getNonUrgentTasks(),
+            	        reportResult.getMissedTasks());
                 
             case FREE_DAY : 
             	FreeDayResult freeDayResult = (FreeDayResult) result;
@@ -455,8 +460,8 @@ public class StateManager {
                 
             case DETAILS :
                 DetailsResult detailsResult = (DetailsResult)result;
-                return new DetailsMessage(detailsResult.getTask(),
-                        detailsResult.getTaskId());
+                return new DetailsMessage(detailsResult.getTasks(),
+                        detailsResult.getTaskIds());
                 
             case ALIAS_SUCCESS : {
                 AliasSetResult aliasResult = (AliasSetResult)result;

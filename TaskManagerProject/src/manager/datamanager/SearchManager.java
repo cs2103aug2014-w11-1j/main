@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import main.command.TaskIdSet;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.SuggestionFilter;
 import manager.datamanager.suggestion.SuggestionFinder;
@@ -27,7 +28,6 @@ import data.taskinfo.TaskInfo;
 public class SearchManager extends AbstractManager {
     private static final Logger log = TasklineLogger.getLogger();
 
-    
     SuggestionFinder suggestionFinder;
     TaskInfoId[] lastSearchedTasks;
     String[] lastSearchedSuggestions;
@@ -321,15 +321,32 @@ public class SearchManager extends AbstractManager {
         return idArray;
     }
     
-    public Result details(TaskId taskId) {
-        return new DetailsResult(taskData.getTaskInfo(taskId), taskId);
+    public Result details(TaskIdSet taskIdSet) {
+        int size = taskIdSet.size();
+        TaskId[] taskIds = new TaskId[size];
+        TaskInfo[] taskInfos = new TaskInfo[size];
+        
+        int index = 0;
+        for (TaskId taskId : taskIdSet) {
+            taskIds[index] = taskId;
+            taskInfos[index] = taskData.getTaskInfo(taskId);
+            index++;
+        }
+        
+        return new DetailsResult(taskInfos, taskIds);
     }
 
     public TaskId getAbsoluteIndex(int relativeIndex) {
         if (relativeIndex > lastSearchedTasks.length) {
             throw new IndexOutOfBoundsException();
         }
-        return lastSearchedTasks[relativeIndex - 1].taskId;
+        
+        TaskId taskId = lastSearchedTasks[relativeIndex - 1].taskId;
+        if (taskData.taskExists(taskId)) {
+            return taskId;
+        } else {
+            return null;
+        }
     }
 
     public TaskInfo getTaskInfo(int relativeIndex) {
@@ -342,31 +359,4 @@ public class SearchManager extends AbstractManager {
     public TaskInfo getTaskInfo(TaskId taskId) {
         return taskData.getTaskInfo(taskId);
     }
-    
-    // TODO: Use this in a TargetedCommand search.
-    /* 
-    private void removeDuplicates() {
-        HashSet<TaskId> idSet = new HashSet<>();
-        LinkedList<TaskId> newIdList = new LinkedList<>();
-        LinkedList<TaskInfo> newTaskList = new LinkedList<>();
-        
-        for (int i = 0; i < taskIds.length; i++) {
-            if (!idSet.contains(taskIds[i])) {
-                idSet.add(taskIds[i]);
-                newIdList.offer(taskIds[0]);
-                newTaskList.offer(tasks[0]);
-            }
-        }
-
-        assert newIdList.size() == newTaskList.size();
-        taskIds = new TaskId[newIdList.size()];
-        tasks = new TaskInfo[newTaskList.size()];
-        for (int i = 0; i < taskIds.length; i++) {
-            taskIds[i] = newIdList.poll();
-            tasks[i] = newTaskList.poll();
-        }
-
-        assert newIdList.size() == 0;
-        assert newTaskList.size() == 0;
-    }*/
 }

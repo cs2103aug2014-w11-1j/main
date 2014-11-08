@@ -201,7 +201,7 @@ class StubSearchManager extends SearchManager {
     }
 
     @Override
-    public Result details(TaskId taskId) {
+    public Result details(TaskIdSet taskIdSet) {
         return null;
     }
 }
@@ -224,7 +224,7 @@ class StubStateManager extends StateManager {
     }
 
     @Override
-    public void beforeCommandExecutionUpdate() {
+    public void beforeCommandUpdate() {
         return;
     }
 

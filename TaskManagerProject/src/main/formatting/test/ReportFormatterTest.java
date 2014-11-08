@@ -40,19 +40,47 @@ public class ReportFormatterTest {
         task3.name = "ijkl";
         task3.priority = Priority.HIGH;
         tasks.add(task3);
+
+        ArrayList<TaskInfo> nonUrgentTasks = new ArrayList<TaskInfo>();
+
+        ArrayList<TaskInfo> missedTasks = new ArrayList<TaskInfo>();
+        TaskInfo task4 = TaskInfo.create();
+        task4.endDate = LocalDate.parse("2011-11-04");
+        task4.endTime = LocalTime.parse("08:42");
+        task4.name = "mnop";
+        missedTasks.add(task4);
         
-        ReportMessage message = new ReportMessage(5, 3, tasks);
+        ReportMessage message = new ReportMessage(5, 3, tasks, nonUrgentTasks,
+                missedTasks);
 
         ReportFormatter formatter = new ReportFormatter();
         String result = removeFirstLine(formatter.format(message));
         
         String expected = "You have 5 tasks today, and 3 tasks tomorrow." + System.lineSeparator() +
-                "Below are the high-priority tasks." + System.lineSeparator() +
+                "Overdue tasks:" + System.lineSeparator() +
+                "Fri, 4 Nov 2011 ---" + System.lineSeparator() +
+                "1) [   08:42   ] mnop                                                          " + System.lineSeparator() + System.lineSeparator() +
+                "High-priority tasks:" + System.lineSeparator() +
                 "Sat, 3 Dec 2011 ---" + System.lineSeparator() +
                 "1) [   10:50   ] abcd                                                          " + System.lineSeparator() +
                 "2) [   13:00   ] efgh                                                          " + System.lineSeparator() + System.lineSeparator() +
                 "Sun, 4 Dec 2011 ---" + System.lineSeparator() +
                 "3) [   12:00   ] ijkl                                                          " + System.lineSeparator() + System.lineSeparator();
+        
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testEmpty() {
+        ArrayList<TaskInfo> noTasks = new ArrayList<>();
+        ReportMessage message = new ReportMessage(0, 0, noTasks, noTasks,
+                noTasks);
+
+        ReportFormatter formatter = new ReportFormatter();
+        String result = removeFirstLine(formatter.format(message));
+        
+        String expected = "You have 0 tasks today, and 0 tasks tomorrow." + System.lineSeparator() +
+                "Congratulations! You have no pending tasks." + System.lineSeparator() + System.lineSeparator();
         
         assertEquals(expected, result);
     }
