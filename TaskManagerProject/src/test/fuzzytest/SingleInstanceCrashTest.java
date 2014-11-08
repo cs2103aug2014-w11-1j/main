@@ -36,14 +36,18 @@ public class SingleInstanceCrashTest extends AbstractCrashTest {
         ListType[] randomItems = {ListType.DATETIME, ListType.ITEM, ListType.NONE,
                 ListType.RANDOM, ListType.SYMBOL, ListType.CONNECTOR};
 
-        testRandom(30, ListType.ADD, ListType.ALL);
-        testRandom(30, ListType.ADD, ListType.RANDOM, ListType.ITEM);
-        testRandom(60, ListType.ADD, ListType.DATETIME, ListType.DATETIME,
-                ListType.DATETIME, ListType.DATETIME);
-        testRandom(30, add, randomItems, randomItems, randomItems,
-                validItems, validItems, validItems);
-
         testRandom(30, ListType.UNALIAS, ListType.COMMAND);
+        
+        for (int i = 0; i < 30; i++) {
+            testRandom(1, ListType.ADD, ListType.ALL);
+            testRandom(1, ListType.ADD, ListType.RANDOM, ListType.ITEM);
+            testRandom(2, ListType.ADD, ListType.DATETIME, ListType.DATETIME,
+                    ListType.DATETIME, ListType.DATETIME);
+            testRandom(ListType.REPORT);
+            testRandom(1, add, randomItems, randomItems, randomItems,
+                    validItems, validItems, validItems);
+        }
+
         
         for (int i = 0 ; i < 100; i++) {
             testRandom(ListType.SEARCH, ListType.RANDOM);

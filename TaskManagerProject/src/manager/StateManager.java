@@ -434,9 +434,14 @@ public class StateManager {
 
             case INVALID_ARGUMENT : 
                 return new EnumMessage(MessageType.INVALID_ARGUMENT);
+                
             case REPORT : 
             	ReportResult reportResult = (ReportResult) result;
-            	return new ReportMessage(reportResult.countTodayTask(), reportResult.countTmrTask(), reportResult.getUrgentTask());
+            	return new ReportMessage(reportResult.countTodayTasks(),
+            	        reportResult.countTmrTasks(),
+            	        reportResult.getUrgentTasks(),
+            	        reportResult.getNonUrgentTasks(),
+            	        reportResult.getMissedTasks());
                 
             case FREE_DAY : 
             	FreeDayResult freeDayResult = (FreeDayResult) result;

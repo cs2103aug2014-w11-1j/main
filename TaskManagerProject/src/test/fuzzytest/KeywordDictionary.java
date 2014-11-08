@@ -51,6 +51,7 @@ public class KeywordDictionary {
         UNALIAS,
         FREEDAY,
         FREETIME,
+        REPORT,
         ALL
     }
     
@@ -182,6 +183,7 @@ public class KeywordDictionary {
         addToList("unalias", COMMAND, UNALIAS);
         addToList("freeday", COMMAND, FREEDAY);
         addToList("freetime", COMMAND, FREETIME);
+        addToList("report", COMMAND, REPORT);
         addToList("urgent", COMMAND);
         addToList("mark", COMMAND);
         addToList("done", COMMAND);
