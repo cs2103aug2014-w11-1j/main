@@ -8,11 +8,10 @@ import main.command.alias.AliasController;
 import main.command.alias.IAliasStorage;
 import manager.ManagerHolder;
 
+//@author A0065475X
 /**
  * Handles the parsing of commands.
  * Commands are returned to MainController for execution.
- *
- * @author You Jun
  */
 public class CommandController {
     private ManagerHolder managerHolder;
@@ -28,23 +27,23 @@ public class CommandController {
      * Retrieves a command object given an input string.<br>
      * The default command bindings are stored in
      * AliasStorage.initialiseDefaultCommands()
-     * 
+     *
      * @param commandString the input string
      * @return a Command object that is ready to be executed.
      */
     public Command getCommand(String commandString) {
 
         commandString = aliasController.replaceAlias(commandString);
-        
+
         String[] split = commandString.split(" ", 2);
         String commandType = extractFirstToken(split);
         String arguments = extractSecondToken(split);
 
         BiFunction<String, ManagerHolder, Command> makeCommand;
         makeCommand = aliasController.getReservedCommand(commandType);
-        
+
         Command command = makeCommand.apply(arguments, managerHolder);
-        
+
         return command;
     }
 
