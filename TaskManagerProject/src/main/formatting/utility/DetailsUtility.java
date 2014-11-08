@@ -1,6 +1,7 @@
 package main.formatting.utility;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,6 +27,10 @@ public class DetailsUtility {
     private final static String FORMAT_PRIORITY = "Priority: %1$s";
     private final static String FORMAT_DESCRIPTION = "Description: %1$s";
     private final static String FORMAT_STATUS = "Status: %1$s";
+    
+    private final static String FORMAT_START_DATETIME = "Start: %1$s";
+    private final static String FORMAT_END_DATETIME = "End: %1$s";
+    private final static String DATETIME_FORMAT_DATETIME = "E, d MMM Y, HH:mm (a)";
 
     private final static String ERROR_PRIORITY_NULL = "Priority is null.";
     private final static String ERROR_STATUS_NULL = "Status is null.";
@@ -42,6 +47,38 @@ public class DetailsUtility {
                 DateTimeFormatter.ofPattern(DATETIME_FORMAT_DATE);
         String formattedDate = formatter.format(date);
         return String.format(FORMAT_DATE, formattedDate);
+    }
+    
+    private String formatStartDateTime(LocalDate date, LocalTime time) {
+        String formattedDateTime;
+        
+        if (time == null) {
+            formattedDateTime = formatDate(date);
+        } else {
+            LocalDateTime datetime = date.atTime(time);
+            
+            DateTimeFormatter formatter = 
+                    DateTimeFormatter.ofPattern(DATETIME_FORMAT_DATETIME);
+            formattedDateTime = formatter.format(datetime);
+        }
+        
+        return String.format(FORMAT_START_DATETIME, formattedDateTime);
+    }
+    
+    private String formatEndDateTime(LocalDate date, LocalTime time) {
+        String formattedDateTime;
+        
+        if (time == null) {
+            formattedDateTime = formatDate(date);
+        } else {
+            LocalDateTime datetime = date.atTime(time);
+            
+            DateTimeFormatter formatter = 
+                    DateTimeFormatter.ofPattern(DATETIME_FORMAT_DATETIME);
+            formattedDateTime = formatter.format(datetime);
+        }
+        
+        return String.format(FORMAT_END_DATETIME, formattedDateTime);
     }
 
     private String buildTagsString(Tag[] tags) {
@@ -97,6 +134,10 @@ public class DetailsUtility {
         builder.append(s);
         return builder.toString();
     }
+    
+    boolean isEndOnly(TaskInfo task) {
+        return task.startDate == null && task.startTime == null;
+    }
 
     /**
      * Format a pair of TaskInfo and TaskId to an ArrayList of String, where
@@ -113,14 +154,21 @@ public class DetailsUtility {
         String nameLine = String.format(FORMAT_NAME,  task.name);
         result.add(addIndentation(nameLine, 3));
 
-        if (task.endTime != null) {
-            String timeLine = formatTime(task.endTime);
-            result.add(addIndentation(timeLine, 3));
-        }
-
-        if (task.endDate != null) {
-            String dateLine = formatDate(task.endDate);
-            result.add(addIndentation(dateLine, 3));
+        if (isEndOnly(task)) {
+            if (task.endTime != null) {
+                String timeLine = formatTime(task.endTime);
+                result.add(addIndentation(timeLine, 3));
+            }
+            if (task.endDate != null) {
+                String dateLine = formatDate(task.endDate);
+                result.add(addIndentation(dateLine, 3));
+            }
+        } else {
+            String startLine = formatStartDateTime(task.startDate, task.startTime);
+            String endLine = formatEndDateTime(task.endDate, task.endTime);
+            
+            result.add(startLine);
+            result.add(endLine);
         }
 
         if (task.tags != null) {

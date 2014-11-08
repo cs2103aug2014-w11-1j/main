@@ -15,6 +15,8 @@ import main.command.alias.AliasStorage;
 import manager.ManagerHolder;
 
 import org.fusesource.jansi.AnsiConsole;
+import static org.fusesource.jansi.Ansi.ansi;
+import org.fusesource.jansi.Ansi.Color;
 
 import ui.UIDisplay;
 import data.AutoCompleteDictionary;
@@ -29,7 +31,21 @@ public class Taskline {
 
     public static void main(String[] args) throws IOException {
         AnsiConsole.systemInstall();
-        TasklineLogger.setupLogger();
+        
+        System.out.println(ansi().fg(Color.RED).a("The quick brown fox jumps over the lazy dog."));
+        System.out.println();
+        System.out.println(ansi().fg(Color.GREEN).a("The quick brown fox jumps over the lazy dog."));
+        System.out.println();
+        System.out.println(ansi().fg(Color.CYAN).a("The quick brown fox jumps over the lazy dog."));
+        System.out.println();
+        System.out.println(ansi().fg(Color.YELLOW).a("The quick brown fox jumps over the lazy dog."));
+        System.out.println();
+        System.out.println(ansi().fg(Color.BLUE).a("The quick brown fox jumps over the lazy dog."));
+        System.out.println();
+        System.out.println(ansi().fg(Color.MAGENTA).a("The quick brown fox jumps over the lazy dog."));
+        System.out.println();
+        System.out.println(ansi().reset());
+/*        TasklineLogger.setupLogger();
 
         String fileName = "tasks.txt";
         String aliasFileName = "alias.txt";
@@ -59,7 +75,7 @@ public class Taskline {
         UIDisplay uiDisplay = new UIDisplay(mainController, argumentCompletor);
 
         startCommandLoop(uiDisplay);
-        TasklineLogger.closeLoggerFileHandler();
+        TasklineLogger.closeLoggerFileHandler();*/
     }
 
     private static void startCommandLoop(UIDisplay uiDisplay) {
