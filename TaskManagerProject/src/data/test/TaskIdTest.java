@@ -15,6 +15,7 @@ public class TaskIdTest {
             testStringConvert(i);
         }
 
+        //Test: conversion to int
         testIntConvert("A7D");
         testIntConvert("8AD");
         testIntConvert("0AA");
@@ -25,6 +26,7 @@ public class TaskIdTest {
         testIntConvert("A1C");
         testIntConvert("BG0");
 
+        //Test: invalid strings
         testInvalidString("ggg");
         testInvalidString("a00");
         testInvalidString("a0cF");
@@ -42,6 +44,7 @@ public class TaskIdTest {
         testInvalidString("E");
         testInvalidString("ggg");
 
+        //Test: Valid strings
         testValidString("g3d");
         testValidString("e3a");
         testValidString("aa0");

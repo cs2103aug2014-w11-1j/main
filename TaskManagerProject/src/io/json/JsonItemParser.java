@@ -17,6 +17,10 @@ import javax.json.stream.JsonGenerator;
 import data.taskinfo.Priority;
 import data.taskinfo.Status;
 
+/**
+ * Used to parse the individual items used in the Json file. e.g. dates times
+ * priorities etc
+ */
 //@author A0065475X
 public class JsonItemParser {
     

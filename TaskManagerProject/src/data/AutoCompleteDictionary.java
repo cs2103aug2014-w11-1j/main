@@ -1,9 +1,12 @@
 package data;
 
-import java.util.Arrays;
-
 import jline.SimpleCompletor;
 
+/**
+ * A dictionary that keeps an updated list of strings that can be
+ * auto-completed.
+ */
+//@author A0113011L
 public class AutoCompleteDictionary {
     
     SimpleCompletor completor;
@@ -12,7 +15,6 @@ public class AutoCompleteDictionary {
         this.completor = completor;
     }
     
-    //@author A0113011L
     public void refreshDictionary(String[] strings) {
         completor.setCandidateStrings(strings);
     }
