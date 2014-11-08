@@ -14,72 +14,72 @@ public class TargetedCommandTest {
     public void test() {
         StubTargetedCommand command = new StubTargetedCommand();
 
-        String args;
+        String input;
         String result;
 
         // Valid inputs
-        args = "1,2 , 3, 4 , 5-8 , 9 - 10   , 11   oran";
-        result = command.tryParseIdsIntoSet(args);
+        input = "1,2 , 3, 4 , 5-8 , 9 - 10   , 11   oran";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1,2,3,4,5,6,7,8,9,10,11", command.toString());
         assertEquals("oran", result);
 
-        args = "  2    ,  4 -    5   , 555 -  558 3333 3333 , 3333";
-        result = command.tryParseIdsIntoSet(args);
+        input = "  2    ,  4 -    5   , 555 -  558 3333 3333 , 3333";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("2,4,5,555,556,557,558", command.toString());
         assertEquals("3333 3333 , 3333", result);
 
-        args = "1,2,3,4,3-6 7";
-        result = command.tryParseIdsIntoSet(args);
+        input = "1,2,3,4,3-6 7";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1,2,3,4,5,6", command.toString());
         assertEquals("7", result);
 
-        args = "1- 2   oran";
-        result = command.tryParseIdsIntoSet(args);
+        input = "1- 2   oran";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1,2", command.toString());
         assertEquals("oran", result);
 
-        args = "1 -3   oran";
-        result = command.tryParseIdsIntoSet(args);
+        input = "1 -3   oran";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1,2,3", command.toString());
         assertEquals("oran", result);
 
-        args = "1- 4   ";
-        result = command.tryParseIdsIntoSet(args);
+        input = "1- 4   ";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1,2,3,4", command.toString());
         assertEquals("", result);
 
-        args = "   1  , 4   ";
-        result = command.tryParseIdsIntoSet(args);
+        input = "   1  , 4   ";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1,4", command.toString());
         assertEquals("", result);
 
-        args = " 1";
-        result = command.tryParseIdsIntoSet(args);
+        input = " 1";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1", command.toString());
         assertEquals("", result);
 
-        args = " 1 2";
-        result = command.tryParseIdsIntoSet(args);
+        input = " 1 2";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1", command.toString());
         assertEquals("2", result);
 
-        args = " 1,2";
-        result = command.tryParseIdsIntoSet(args);
+        input = " 1,2";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("1,2", command.toString());
         assertEquals("", result);
 
-        args = "12";
-        result = command.tryParseIdsIntoSet(args);
+        input = "12";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("12", command.toString());
         assertEquals("", result);
 
-        args = "3,3,4";
-        result = command.tryParseIdsIntoSet(args);
+        input = "3,3,4";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("3,4", command.toString());
         assertEquals("", result);
 
-        args = "3,3-3,4 3";
-        result = command.tryParseIdsIntoSet(args);
+        input = "3,3-3,4 3";
+        result = command.tryParseIdsIntoSet(input);
         assertEquals("3,4", command.toString());
         assertEquals("3", result);
 

@@ -24,6 +24,14 @@ public class CommandController {
         aliasController = new AliasController(aliasStorage, aliasFileInputOutput);
     }
 
+    /**
+     * Retrieves a command object given an input string.<br>
+     * The default command bindings are stored in
+     * AliasStorage.initialiseDefaultCommands()
+     * 
+     * @param commandString the input string
+     * @return a Command object that is ready to be executed.
+     */
     public Command getCommand(String commandString) {
 
         commandString = aliasController.replaceAlias(commandString);

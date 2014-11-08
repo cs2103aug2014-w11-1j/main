@@ -66,8 +66,8 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
      * @see main.command.alias.IAliasStorage#getCustomCommand(java.lang.String)
      */
     @Override
-    public String getCustomCommand(String cmdString) {
-        return customMap.get(cmdString);
+    public String getCustomCommand(String commandString) {
+        return customMap.get(commandString);
     }
 
     /* (non-Javadoc)
@@ -182,6 +182,12 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         return true;
     }
 
+    /**
+     * Returns the default command that is executed when the command string fits
+     * none of the other commands.
+     * @param input the first token of the input string.
+     * @return an ArgumentCommand, which is the default command.
+     */
     private BiFunction<String, ManagerHolder, Command> defaultMakeCommand(
             String input) {
 
@@ -189,6 +195,10 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 new ArgumentCommand(input + " " + args, managerHolder);
     }
 
+    
+    /**
+     * Initialise all the default commands in taskline here.
+     */
     private void initialiseDefaultCommands() {
 
         defineDefaultCommands(
