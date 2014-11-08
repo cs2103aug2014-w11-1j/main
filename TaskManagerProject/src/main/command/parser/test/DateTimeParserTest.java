@@ -318,4 +318,39 @@ public class DateTimeParserTest {
         DateTimePair dtPair = DateTimeParser.parseDateTimes(testDate);
         assertEquals(expectedDate, dtPair.getFirstDate());
     }
+
+    @Test
+    public void testRelativeTimes() {
+        LocalTime now = LocalTime.now();
+
+        String plusHour = "+5h";
+        String plusMin = "+5m";
+        // String plusSec = "+5s";
+
+        assertTime(now.plusHours(5), plusHour);
+        assertTime(now.plusMinutes(5), plusMin);
+        // assertTime(now.plusSeconds(5), plusSec);
+
+        String testIncompletePlus = "+5";
+        assertTime(null, testIncompletePlus);
+
+        String minusHour = "-5h";
+        String minusMin = "-5m";
+        // String minusSec = "-5s";
+
+        assertTime(now.minusHours(5), minusHour);
+        assertTime(now.minusMinutes(5), minusMin);
+        // assertTime(now.minusSeconds(5), minusSec);
+    }
+
+    private static void assertTime(LocalTime expectedTime, String testTime) {
+        DateTimePair dtPair = DateTimeParser.parseDateTimes(testTime);
+        if (expectedTime == null) {
+            assertEquals(expectedTime, dtPair.getFirstTime());
+        } else {
+            assertEquals(expectedTime.getHour(), dtPair.getFirstTime().getHour());
+            assertEquals(expectedTime.getMinute(), dtPair.getFirstTime().getMinute());
+            // assertEquals(expectedTime.getSecond(), dtPair.getFirstTime().getSecond());
+        }
+    }
 }
