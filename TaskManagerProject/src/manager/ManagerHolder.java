@@ -13,18 +13,22 @@ import manager.datamanager.UndoManager;
 import manager.datamanager.freetimemanager.FreeTimeSearchManager;
 import data.TaskData;
 
+/**
+ * A class which packages all the managers. It is passed into a Command object
+ * to allow the command to act on the managers.
+ */
 //@author A0065475X
 public class ManagerHolder {
-    private StateManager stateManager;
-    private AddManager addManager;
-    private SearchManager searchManager;
-    private EditManager editManager;
-    private DeleteManager deleteManager;
-    private UndoManager undoManager;
-    private FreeDaySearchManager freeDaySearchManager;
-    private FreeTimeSearchManager freeTimeSearchManager;
-    private AliasManager aliasManager;
-    private ReportManager reportManager;
+    private final StateManager stateManager;
+    private final AddManager addManager;
+    private final SearchManager searchManager;
+    private final EditManager editManager;
+    private final DeleteManager deleteManager;
+    private final UndoManager undoManager;
+    private final FreeDaySearchManager freeDaySearchManager;
+    private final FreeTimeSearchManager freeTimeSearchManager;
+    private final AliasManager aliasManager;
+    private final ReportManager reportManager;
 
 
     public ManagerHolder(TaskData taskData, IFileInputOutput fileInputOutput, 

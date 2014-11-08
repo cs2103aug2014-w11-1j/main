@@ -19,6 +19,9 @@ import javax.json.stream.JsonParsingException;
 
 import main.command.alias.AliasValuePair;
 
+/**
+ * the main Json Parser for Aliases.
+ */
 //@author A0065475X
 public class JsonAliasParser {
     private static final String JSON_ALIASES = "aliases";

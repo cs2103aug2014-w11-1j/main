@@ -1,5 +1,9 @@
 package main.message;
 
+/**
+ * For any message that does not need to contain any more information than its
+ * type.
+ */
 public class EnumMessage implements Message{
     public enum MessageType {
         EMPTY_STRING,

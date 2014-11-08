@@ -7,6 +7,10 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Carries all the information used by a task.<br>
+ * It acts simply as a struct. All of its attributes are public.
+ */
 //@author A0065475X
 public class TaskInfo {
 
@@ -20,9 +24,15 @@ public class TaskInfo {
     public Tag[] tags;
     public Priority priority;
     public Status status;
-
+    /**
+     * @deprecated
+     */
     public int numberOfTimes;
+    /**
+     * @deprecated
+     */
     public Duration repeatInterval;
+    
 
     public static final int REPEAT_INDEFINITELY = -1;
 

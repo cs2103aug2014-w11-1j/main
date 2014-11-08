@@ -14,7 +14,7 @@ import manager.ManagerHolder;
 import taskline.TasklineLogger;
 
 /**
- *
+ * Controls the main logic of the program - the command execution process.
  * @author You Jun
  */
 public class MainController {
