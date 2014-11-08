@@ -253,12 +253,12 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new FreeDaySearchCommand(args, managerHolder),
-                "freeday", "freedate");
+                "freeday", "freedays", "freedate", "freedates");
 
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new FreeTimeSearchCommand(args, managerHolder),
-                "freetime");
+                "freetime", "freeslot");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new DeleteCommand(args, managerHolder),
