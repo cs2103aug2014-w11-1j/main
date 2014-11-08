@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import main.command.parser.ParsedDate.Frequency;
 
-
+//@author A0111862M
 public class DatePair {
     private LocalDate firstDate;
     private Frequency firstFrequency;

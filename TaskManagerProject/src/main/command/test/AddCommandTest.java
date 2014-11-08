@@ -13,6 +13,7 @@ import data.taskinfo.Priority;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+//@author A0111862M
 public class AddCommandTest {
 
     private static final String TIME_STR_EARLY = "9:46 AM";

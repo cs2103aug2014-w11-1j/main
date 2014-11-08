@@ -2,6 +2,7 @@ package main.command.parser;
 
 import java.time.LocalTime;
 
+//@author A0111862M
 public class DateTimeSequence extends DateTimePair {
     private int count;
     private int max;
