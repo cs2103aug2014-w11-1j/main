@@ -10,6 +10,9 @@ import data.taskinfo.Status;
 import data.taskinfo.Tag;
 
 //@author A0111862M
+/**
+ * Utility class for Command classes to parse parts of tasks from strings.
+ */
 public class CommandParser {
     private final static String SYMBOL_DELIM = " ";
     private final static String SYMBOL_IGNORE = "\"";
