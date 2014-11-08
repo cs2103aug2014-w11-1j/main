@@ -167,8 +167,8 @@ public class DetailsUtility {
             String startLine = formatStartDateTime(task.startDate, task.startTime);
             String endLine = formatEndDateTime(task.endDate, task.endTime);
             
-            result.add(startLine);
-            result.add(endLine);
+            result.add(addIndentation(startLine, 3));
+            result.add(addIndentation(endLine, 3));
         }
 
         if (task.tags != null) {
