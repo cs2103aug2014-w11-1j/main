@@ -313,7 +313,8 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
             String... commandStrings) {
 
         for (String commandString : commandStrings) {
-            assert !commandString.contains(" ");
+            assert !commandString.contains(" ") : "Error in command: [" +
+                    commandString + "] - Command cannot have multiple words.";
             defaultMap.put(commandString, commandFunction);
         }
     }
