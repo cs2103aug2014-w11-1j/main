@@ -84,7 +84,7 @@ public class SearchManager extends AbstractManager {
         TaskId currentId = taskData.getFirst();
         while (currentId.isValid()) {
             TaskInfo task = taskData.getTaskInfo(currentId);
-            if (filter.filter(task)) {
+            if (filter.isMatching(task)) {
                 resultSet.add(currentId);
             }
             currentId = taskData.getNext(currentId);
@@ -183,12 +183,32 @@ public class SearchManager extends AbstractManager {
         return newArray;
     }
     
+    private TaskInfoId[] refilter(Filter[] filters, TaskInfoId[] taskInfoIds) {
+        List<TaskInfoId> filteredList = new ArrayList<TaskInfoId>();
+        for (int i = 0; i < taskInfoIds.length; i++) {
+            boolean isMatching = true;
+            for (int j = 0; j < filters.length; j++) {
+                if (!filters[j].isMatching(taskInfoIds[i].taskInfo)){
+                    isMatching = false;
+                    break;
+                }
+            }
+            if (isMatching)
+                filteredList.add(taskInfoIds[i]);
+        }
+        
+        TaskInfoId[] result = new TaskInfoId[filteredList.size()];
+        filteredList.toArray(result);
+        return result;
+    }
+    
     private SearchResult searchWithSuggestion(Filter[] filters) {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         
         updateSearchedTasks(taskIds);
         
         lastSearchedTasks = splitAll(lastSearchedTasks);
+        lastSearchedTasks = refilter(filters, lastSearchedTasks);
         sortTasks(lastSearchedTasks);
         
         SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
@@ -238,6 +258,7 @@ public class SearchManager extends AbstractManager {
         updateSearchedTasks(taskIds);
         
         lastSearchedTasks = splitAll(lastSearchedTasks);
+        lastSearchedTasks = refilter(filters, lastSearchedTasks);
         
         sortTasks(lastSearchedTasks);
         
@@ -290,7 +311,7 @@ public class SearchManager extends AbstractManager {
             if (newFilters == null) {
                 return result;
             } else {
-                return searchWithSuggestion(newFilters);
+                return searchWithSuggestionWithoutSplit(newFilters);
             }
         } else {
             return result;

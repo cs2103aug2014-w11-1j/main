@@ -5,7 +5,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import main.formatting.utility.ColorUtility.Color;
 import data.TaskId;
+import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
 public class SummaryUtility {
@@ -16,6 +18,11 @@ public class SummaryUtility {
     private final static String LINE_NO_TASK = "No tasks found.";
     private final static String LINE_BLANK = "";
 
+    ColorUtility colorUtility;
+    
+    public SummaryUtility(){
+        colorUtility = new ColorUtility();
+    }
     
     private String getDateLine(TaskInfo task) {
         LocalDate date;
@@ -101,14 +108,24 @@ public class SummaryUtility {
     
     private String getTaskInfoLine(TaskInfo task, TaskId taskId, 
             int taskNumber, 
-            int numberWidth) {
+            int numberWidth,
+            Color color) {
         StringBuilder line = new StringBuilder();
         int taskNameWidth = WIDTH_LINE - WIDTH_ABSOLUTE - WIDTH_TIME - 
                 numberWidth;
         line.append(getTaskNumberString(taskNumber, numberWidth));
         line.append(getTimeString(task.startTime, task.endTime));
-        line.append(getTaskNameString(task.name, taskNameWidth));
+        
+        String taskNameString = getTaskNameString(task.name, taskNameWidth);
+        
+        if (task.priority == Priority.HIGH){ 
+            line.append(colorUtility.colorize(taskNameString, Color.YELLOW));
+        } else {
+            line.append(taskNameString);
+        }
+        
         line.append(getAbsoluteTaskIdString(taskId));
+        
         return line.toString();
     }
     
@@ -129,7 +146,23 @@ public class SummaryUtility {
             }
         }
     }
-    
+
+    private LocalDate getCompleteTaskEndDate(TaskInfo[] tasks, TaskId[] taskIds,
+            TaskId wantedTaskId) {
+        LocalDate result = null;
+        
+        for (int i = 0; i < tasks.length; i++) {
+            if (taskIds[i].equals(wantedTaskId) && 
+                    getActualDate(tasks[i]) != null) {
+                if (result == null || 
+                        result.compareTo(getActualDate(tasks[i])) < 0) {
+                    result = getActualDate(tasks[i]);
+                }
+            }
+        }
+        
+        return result;
+    }    
     private boolean isDifferentDate(TaskInfo task1, TaskInfo task2) {
         LocalDate date1 = getActualDate(task1);
         LocalDate date2 = getActualDate(task2);
@@ -138,6 +171,25 @@ public class SummaryUtility {
         } else {
             return !date1.equals(date2);
         }
+    }
+    
+    private boolean isOverdue(TaskInfo[] tasks, TaskId[] taskIds, 
+            TaskId wantedTaskId) {
+        LocalDate date = getCompleteTaskEndDate(tasks, taskIds, wantedTaskId);
+        if (date == null) {
+            return false;
+        } else {
+            LocalDate now = LocalDate.now();
+            if (date.compareTo(now) < 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    
+    private boolean isUrgent(TaskInfo task) {
+        return task.priority == Priority.HIGH;
     }
     
     private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
@@ -166,10 +218,10 @@ public class SummaryUtility {
                 }
                 if (taskIds == null) {
                     result.add(getTaskInfoLine(tasks[i], null, 
-                            i + 1 , numberWidth));
+                            i + 1 , numberWidth, Color.WHITE));
                 } else {
                     result.add(getTaskInfoLine(tasks[i], taskIds[i], 
-                            i + 1, numberWidth));
+                            i + 1, numberWidth, Color.WHITE));
                 }
             }
         }

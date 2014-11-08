@@ -16,5 +16,5 @@ public interface Filter {
     }
 
     public Type getType();
-    public boolean filter(TaskInfo task);
+    public boolean isMatching(TaskInfo task);
 }

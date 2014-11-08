@@ -42,7 +42,7 @@ public class SuggestionFilter implements Filter {
     }
 
     @Override
-    public boolean filter(TaskInfo task) {
+    public boolean isMatching(TaskInfo task) {
         for (String keyword : keywords) {
             if (match(keyword, task.name) || match(keyword, task.details)) {
                 return true;
