@@ -1,2 +1,2 @@
-java -jar C:\Users\BRUCE\Desktop\main\TaskManagerProject\WindowsHotKeyRegister.jar
-java -jar C:\Users\BRUCE\Desktop\main\TaskManagerProject\taskline.jar
+java -jar WindowsHotKeyRegister.jar
+java -jar taskline.jar
