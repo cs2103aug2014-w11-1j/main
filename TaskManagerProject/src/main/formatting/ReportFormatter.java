@@ -10,6 +10,27 @@ import main.message.ReportMessage;
 import data.taskinfo.TaskInfo;
 
 
+/**
+ * Formatter for the ReportMessage class.
+ * Example:
+ * [  Sunday, 9 Nov 2014, 17:17 (PM) ]
+ * You have 2 tasks today, and 1 tasks tomorrow.
+ * Overdue tasks:
+ * Fri, 7 Nov 2014 ---
+ *   [   11:00   ] Task1
+ *   [   17:00   ] Task2
+ *   
+ * High-priority tasks:
+ * Sun, 9 Nov 2014 ---
+ *   [12:00-14:00] Task3
+ * 
+ * Non-urgent tasks:
+ * Sun, 9 Nov 2014
+ *   [   15:00   ] Task4
+ *   
+ * @author Nathan
+ *
+ */
 //@author A0113011L
 public class ReportFormatter {
     private final static String DATETIME_FORMAT_DATE = "EEEE, d MMM Y";
@@ -34,6 +55,11 @@ public class ReportFormatter {
         summaryUtility = new SummaryUtility();
     }
     
+    /**
+     * Format the ReportMessage to a String.
+     * @param message The message to be formatted.
+     * @return The formatting result.
+     */
     public String format(ReportMessage message) {
         StringBuilder result = new StringBuilder();
         result.append(String.format(REPORT_DATETIME, currentDate(),
