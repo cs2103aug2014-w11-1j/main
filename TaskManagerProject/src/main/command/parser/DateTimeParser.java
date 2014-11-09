@@ -180,7 +180,8 @@ public class DateTimeParser {
         assert string != null;
 
         if (!string.isEmpty()) {
-            return string.split(SYMBOL_DELIM, 2)[1];
+            String[] split = string.split(SYMBOL_DELIM, 2);
+            return split.length > 1 ? split[1] : split[0];
         } else {
             return string;
         }
