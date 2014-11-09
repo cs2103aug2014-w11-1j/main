@@ -17,6 +17,8 @@ public class SummaryUtility {
     private final static String LINE_FLOATING = "Floating Tasks ---";
     private final static String LINE_NO_TASK = "No tasks found.";
     private final static String LINE_BLANK = "";
+    
+    private final static int BULLET = -1;
 
     ColorUtility colorUtility;
     
@@ -38,7 +40,7 @@ public class SummaryUtility {
     
     private String getTimeString(LocalTime startTime, LocalTime endTime) {
         if(startTime == null && endTime == null) {
-            return "              ";
+            return "[           ] ";
         } else if (startTime == null) {
             DateTimeFormatter formatter = 
                     DateTimeFormatter.ofPattern("HH:mm");
@@ -94,8 +96,12 @@ public class SummaryUtility {
     }
     
     private String getTaskNumberString(int taskNumber, int width) {
-        String line = Integer.toString(taskNumber) + ") ";
-        return padLeftToWidth(line, width);
+        if (taskNumber == BULLET) {
+            return "   ";
+        } else {
+            String line = Integer.toString(taskNumber) + ") ";
+            return padLeftToWidth(line, width);
+        }
     }
     
     private String getAbsoluteTaskIdString(TaskId taskId) {
@@ -118,11 +124,7 @@ public class SummaryUtility {
         
         String taskNameString = getTaskNameString(task.name, taskNameWidth);
         
-        if (task.priority == Priority.HIGH){ 
-            line.append(colorUtility.colorize(taskNameString, Color.YELLOW));
-        } else {
-            line.append(taskNameString);
-        }
+        line.append(colorUtility.colorize(taskNameString, color));
         
         line.append(getAbsoluteTaskIdString(taskId));
         
@@ -160,7 +162,6 @@ public class SummaryUtility {
                 }
             }
         }
-        
         return result;
     }    
     private boolean isDifferentDate(TaskInfo task1, TaskInfo task2) {
@@ -173,19 +174,24 @@ public class SummaryUtility {
         }
     }
     
-    private boolean isOverdue(TaskInfo[] tasks, TaskId[] taskIds, 
-            TaskId wantedTaskId) {
-        LocalDate date = getCompleteTaskEndDate(tasks, taskIds, wantedTaskId);
+    private boolean isOverdue(LocalDate date) {
         if (date == null) {
             return false;
         } else {
             LocalDate now = LocalDate.now();
-            if (date.compareTo(now) < 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return date.compareTo(now) < 0;
         }
+    }
+    
+    private boolean isOverdue(TaskInfo[] tasks, TaskId[] taskIds, 
+            TaskId wantedTaskId) {
+        LocalDate date = getCompleteTaskEndDate(tasks, taskIds, wantedTaskId);
+        return isOverdue(date);
+    }
+    
+    private boolean isOverdueNoId(TaskInfo task) {
+        LocalDate date = getActualDate(task);
+        return isOverdue(date);
     }
     
     private boolean isUrgent(TaskInfo task) {
@@ -193,12 +199,17 @@ public class SummaryUtility {
     }
     
     private ArrayList<String> formatToArrayList(TaskInfo[] tasks, 
-            TaskId[] taskIds) {
+            TaskId[] taskIds, boolean isNumbered) {
         ArrayList<String> result = new ArrayList<String>();
         if (tasks.length == 0)
             result.add(LINE_NO_TASK);
         else {
-            int numberWidth = numberLength(tasks.length) + 2;
+            int numberWidth;
+            if (!isNumbered) {
+                numberWidth = 3;
+            } else {
+                numberWidth = numberLength(tasks.length) + 2;
+            }
             for (int i = 0; i < tasks.length; i++) {
                 if (tasks[i].endDate == null) {
                     if (i == 0) {
@@ -216,12 +227,34 @@ public class SummaryUtility {
                         result.add(getDateLine(tasks[i]));
                     }
                 }
-                if (taskIds == null) {
-                    result.add(getTaskInfoLine(tasks[i], null, 
-                            i + 1 , numberWidth, Color.WHITE));
+                int lineNumber;
+                if (isNumbered) {
+                    lineNumber = i + 1;
                 } else {
-                    result.add(getTaskInfoLine(tasks[i], taskIds[i], 
-                            i + 1, numberWidth, Color.WHITE));
+                    lineNumber = BULLET;
+                }
+                if (taskIds == null) {
+                    if (isOverdueNoId(tasks[i])) {
+                        result.add(getTaskInfoLine(tasks[i], null, 
+                                lineNumber, numberWidth, Color.RED));
+                    } else if (isUrgent(tasks[i])) {
+                        result.add(getTaskInfoLine(tasks[i], null,
+                                lineNumber, numberWidth, Color.YELLOW));
+                    } else {
+                        result.add(getTaskInfoLine(tasks[i], null,
+                                lineNumber, numberWidth, Color.WHITE));
+                    }
+                } else {
+                    if (isOverdue(tasks, taskIds, taskIds[i])) {
+                        result.add(getTaskInfoLine(tasks[i], taskIds[i], 
+                                lineNumber, numberWidth, Color.RED));
+                    } else if (isUrgent(tasks[i])) {
+                        result.add(getTaskInfoLine(tasks[i], taskIds[i],
+                                lineNumber, numberWidth, Color.YELLOW));
+                    } else {
+                        result.add(getTaskInfoLine(tasks[i], taskIds[i],
+                                lineNumber, numberWidth, Color.WHITE));
+                    }
                 }
             }
         }
@@ -238,9 +271,10 @@ public class SummaryUtility {
         return result.toString();
     }
     
-    public String format(TaskInfo[] tasks, TaskId[] taskIds) {
+    public String format(TaskInfo[] tasks, TaskId[] taskIds, 
+            boolean isNumbered) {
         ArrayList<String> formattedTaskArray = 
-                formatToArrayList(tasks, taskIds);
+                formatToArrayList(tasks, taskIds, isNumbered);
         return arrayListToStringLines(formattedTaskArray);
     }
 }

@@ -3,7 +3,9 @@ package manager.datamanager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
+import manager.datamanager.SearchManager.TaskInfoId;
 import manager.result.ReportResult;
 import manager.result.Result;
 import data.TaskData;
@@ -32,6 +34,51 @@ public class ReportManager extends AbstractManager{
         return new ReportResult(todayTasks.size(), tmrTasks.size(),
                 urgentTasks, nonUrgentTasks, missedTasks);
     }
+    
+    private LocalDate getActualDate(TaskInfo task) {
+        if (task.endTime == null) {
+            return task.endDate;
+        } else if (task.startTime == null) {
+            return task.endDate;
+        } else {
+            if (task.endTime == LocalTime.MIDNIGHT) {
+                return task.endDate.plusDays(-1);
+            } else {
+                return task.endDate;
+            }
+        }
+    }
+    
+    private ArrayList<TaskInfo> split(TaskInfo task) {
+        ArrayList<TaskInfo> result = new ArrayList<TaskInfo>();
+        if (task.getStartTime() == null) {
+            result.add(task);
+        } else {
+            LocalDate currentDate = task.getStartDate();
+            LocalTime currentTime = task.getStartTime();
+            while (!currentDate.equals(task.getEndDate())) {
+                TaskInfo taskInfo = new TaskInfo(task);
+                taskInfo.startTime = currentTime;
+                taskInfo.startDate = currentDate;
+                taskInfo.endTime = LocalTime.MIDNIGHT;
+                taskInfo.endDate = currentDate.plusDays(1);
+                result.add(taskInfo);
+                currentTime = LocalTime.parse("00:00");
+                currentDate = currentDate.plusDays(1);
+            }
+            
+            if (!currentTime.equals(task.getEndTime())) {
+                TaskInfo taskInfo = new TaskInfo(task);
+                taskInfo.startTime = currentTime;
+                taskInfo.startDate = currentDate;
+                taskInfo.endTime = task.endTime;
+                taskInfo.endDate = task.endDate;
+                result.add(taskInfo);
+            }
+        }
+        
+        return result;
+    }
 
 	private ArrayList<TaskInfo> updateTasks() {
 		ArrayList<TaskInfo> list = new ArrayList<>();
@@ -40,7 +87,7 @@ public class ReportManager extends AbstractManager{
 		while (taskId.isValid()) {
 			task = taskData.getTaskInfo(taskId);
 			if (task.status == Status.UNDONE) {
-			    list.add(task);
+			    list.addAll(split(task));
 			}
 			taskId = taskData.getNext(taskId);
 		}
@@ -49,22 +96,7 @@ public class ReportManager extends AbstractManager{
 	}
 
 	private boolean isTaskOnDate(TaskInfo task, LocalDate date){
-	    if (task.getEndDate() == null) {
-	        return false;
-	    }
-
-		if (task.getStartDate() == null) {
-		    if (task.getEndDate().equals(date)) {
-		        return true;
-		    }
-
-		} else {
-    		if ((!task.getStartDate().isAfter(date)) &&
-    		        (!task.getEndDate().isBefore(date))){
-    			return true;
-    		}
-		}
-		return false;
+	    return date.equals(getActualDate(task));
 	}
 
     private ArrayList<TaskInfo> getTaskByDate(LocalDate date){

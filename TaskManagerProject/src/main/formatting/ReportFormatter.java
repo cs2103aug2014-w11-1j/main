@@ -47,19 +47,19 @@ public class ReportFormatter {
 
         if (missedTasks.length != 0) {
             result.append(REPORT_MISSED);
-            result.append(summaryUtility.format(missedTasks, null));
+            result.append(summaryUtility.format(missedTasks, null, false));
             result.append(System.lineSeparator());
         }
 
         if (urgentTasks.length != 0) {
             result.append(REPORT_URGENT);
-            result.append(summaryUtility.format(urgentTasks, null));
+            result.append(summaryUtility.format(urgentTasks, null, false));
             result.append(System.lineSeparator());
         }
 
         if (nonUrgentTasks.length != 0) {
             result.append(REPORT_NON_URGENT);
-            result.append(summaryUtility.format(nonUrgentTasks, null));
+            result.append(summaryUtility.format(nonUrgentTasks, null, false));
             result.append(System.lineSeparator());
         }
         
