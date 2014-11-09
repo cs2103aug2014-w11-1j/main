@@ -4,12 +4,16 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 
 //@author A0111862M
+/**
+ * Container class for a LocalDate and a Frequency.
+ */
 public class ParsedDate {
+    // the frequency of a date (e.g. Christmas happens once a YEAR).
     enum Frequency {
         WEEK(ChronoField.ALIGNED_WEEK_OF_YEAR),
         YEAR(ChronoField.YEAR);
 
-        ChronoField field;
+        private ChronoField field;
 
         Frequency(ChronoField field) {
             this.field = field;
@@ -20,31 +24,23 @@ public class ParsedDate {
         }
     }
 
-    LocalDate date;
-    Frequency frequency;
+    private LocalDate date;
+    private Frequency frequency;
 
-    public ParsedDate(LocalDate date) {
+    ParsedDate(LocalDate date) {
         this.date = date;
     }
 
-    public ParsedDate(LocalDate date, Frequency frequency) {
+    ParsedDate(LocalDate date, Frequency frequency) {
         this(date);
         this.frequency = frequency;
     }
 
-    public LocalDate getDate() {
+    LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Frequency getFrequency() {
+    Frequency getFrequency() {
         return frequency;
-    }
-
-    public void setFrequency(Frequency frequency) {
-        this.frequency = frequency;
     }
 }

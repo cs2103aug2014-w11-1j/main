@@ -3,6 +3,9 @@ package main.command.parser;
 import java.time.LocalTime;
 
 //@author A0111862M
+/**
+ * Container class for a pair of times.
+ */
 public class TimePair {
     private LocalTime firstTime;
     private LocalTime secondTime;

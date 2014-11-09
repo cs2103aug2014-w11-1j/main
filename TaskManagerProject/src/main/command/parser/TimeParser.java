@@ -9,9 +9,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 //@author A0111862M
+/**
+ * Utility class for parsing times from strings.
+ */
 public class TimeParser {
     private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
 
+    /**
+     * Parses a string to a time.
+     *
+     * @param timeString
+     *            a string that is possibly a time
+     * @return the LocalTime corresponding to the string
+     */
     static LocalTime parseTime(String timeString) {
         buildTimePatternHashMap();
 
@@ -23,19 +33,38 @@ public class TimeParser {
         return t;
     }
 
+    /**
+     * Checks if a string can be parsed into a time
+     *
+     * @param timeString
+     *            a string that is possibly a time
+     * @return true if the string can be parsed into a time, false otherwise
+     */
     static boolean isTime(String timeString) {
         return parseTime(timeString) != null;
     }
 
+    /**
+     * Parses strings in a format relative to the current time.
+     */
     private static LocalTime parseRelativeTime(String timeString) {
-        // TODO Support for relative times (+3h, -3h, now, etc)
-        LocalTime parsedTime = null;
-        parsedTime = parseRelativeTimeAsPlusMinus(timeString);
-        return parsedTime;
+        if (timeString.equalsIgnoreCase("now")) {
+            return LocalTime.now();
+        } else {
+            return parseRelativeTimeAsPlusMinus(timeString);
+        }
     }
 
+    /**
+     * Parses string in the formats: "+xh", "+xm", or "+xs", or their minus
+     * variants. These refer to x number of hours, minutes, or seconds relative
+     * to the current time.
+     *
+     * @param timeString
+     *            a possible relative time
+     * @return the time if valid, null otherwise
+     */
     private static LocalTime parseRelativeTimeAsPlusMinus(String timeString) {
-        // TODO refactor into enum map to support "second", "sec", "min", etc.
         timeString = timeString.toLowerCase();
         String number = null;
         String unit = null;
@@ -70,6 +99,16 @@ public class TimeParser {
         return time;
     }
 
+    /**
+     * Matches a string to a map of time formats.
+     *
+     * @param timeMap
+     *            the map of time formats
+     * @param timeString
+     *            the string to be matched
+     * @return the LocalTime corresponding to the string if valid, null
+     *         otherwise
+     */
     private static LocalTime matchTimePatterns(
             Map<DateTimeFormatter, String> timeMap, String timeString) {
         // 3 pm -> 3 PM
