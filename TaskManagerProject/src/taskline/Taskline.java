@@ -17,8 +17,6 @@ import main.command.alias.AliasStorage;
 import manager.ManagerHolder;
 
 import org.fusesource.jansi.AnsiConsole;
-import static org.fusesource.jansi.Ansi.ansi;
-import org.fusesource.jansi.Ansi.Color;
 
 import ui.UIDisplay;
 import data.AutoCompleteDictionary;

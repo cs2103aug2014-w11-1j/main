@@ -41,7 +41,7 @@ public class SearchModeFormatter {
             result.append(System.lineSeparator());
         }
         result.append(summaryUtility.format(modeInfo.getTasks(), 
-                modeInfo.getTaskIds()));
+                modeInfo.getTaskIds(), true));
         result.append(System.lineSeparator());
         return result.toString();
     }

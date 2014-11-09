@@ -125,7 +125,7 @@ public class SuggestionFinder {
         KeywordFilter filter = new KeywordFilter(keywordArray);
         while (currentId.isValid()) {
             TaskInfo task = taskData.getTaskInfo(currentId);
-            if (filter.filter(task)) {
+            if (filter.isMatching(task)) {
                 int numberOfMatches = keyword.getNumberOfMatches();
                 numberOfMatches++;
                 keyword.setNumberOfMatches(numberOfMatches);

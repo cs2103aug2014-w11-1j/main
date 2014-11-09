@@ -27,7 +27,7 @@ public class KeywordFilterTest {
         testedTask.details = null;
         String[] words = new String[]{"test"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     
     @Test
@@ -37,7 +37,7 @@ public class KeywordFilterTest {
         testedTask.name = null;
         String[] words = new String[]{"test"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class KeywordFilterTest {
         testedTask.details = null;
         String[] words = new String[]{"doesntexist"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertFalse(filter.filter(testedTask));
+        assertFalse(filter.isMatching(testedTask));
     }
     
     @Test
@@ -57,7 +57,7 @@ public class KeywordFilterTest {
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"doesntexist"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertFalse(filter.filter(testedTask));
+        assertFalse(filter.isMatching(testedTask));
     }
     
     @Test
@@ -67,7 +67,7 @@ public class KeywordFilterTest {
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"doesntexist"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertFalse(filter.filter(testedTask));
+        assertFalse(filter.isMatching(testedTask));
     }
     
     @Test
@@ -77,7 +77,7 @@ public class KeywordFilterTest {
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"exist"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
  
     @Test
@@ -87,7 +87,7 @@ public class KeywordFilterTest {
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"task", "exist"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertFalse(filter.filter(testedTask));
+        assertFalse(filter.isMatching(testedTask));
     }
     
     @Test
@@ -97,7 +97,7 @@ public class KeywordFilterTest {
         testedTask.details = null;
         String[] words = new String[]{"TeSt"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     
     @Test
@@ -106,7 +106,7 @@ public class KeywordFilterTest {
         testedTask.name = "abcd\ttest\tjaksldjf";
         String[] words = new String[]{"test"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     
     @Test
@@ -115,7 +115,7 @@ public class KeywordFilterTest {
         testedTask.name = "hahaha\ntest\nhahaha";
         String[] words = new String[]{"test"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     @Test
     public void testPunctuation(){
@@ -123,6 +123,6 @@ public class KeywordFilterTest {
         testedTask.name = "hahaha$%^$%^$!@#test^$&@#$hahaha";
         String[] words = new String[]{"test"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
 }

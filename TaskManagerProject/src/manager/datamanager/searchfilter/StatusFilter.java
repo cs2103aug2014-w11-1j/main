@@ -24,7 +24,7 @@ public class StatusFilter implements Filter {
         return task.status == status;
     }
 
-    public boolean filter(TaskInfo task) {
+    public boolean isMatching(TaskInfo task) {
         for (Status status : statuses) {
             if (match(status, task)) {
                 return true;

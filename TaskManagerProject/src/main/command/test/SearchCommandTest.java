@@ -156,13 +156,13 @@ public class SearchCommandTest {
         task.endDate = minDate;
         task.endTime = minTime;
 
-        assertTrue(f.filter(task));
+        assertTrue(f.isMatching(task));
 
         // boundary case; partition: valid, upper bound
         task.endDate = maxDate;
         task.endTime = maxTime;
 
-        assertTrue(f.filter(task));
+        assertTrue(f.isMatching(task));
 
         // boundary case; partition: invalid, lower bound
         task.endDate = LocalDateTime.of(minDate, minTime)
@@ -170,7 +170,7 @@ public class SearchCommandTest {
         task.endTime = LocalDateTime.of(minDate, minTime)
                 .minusNanos(1).toLocalTime();
 
-        assertFalse(f.filter(task));
+        assertFalse(f.isMatching(task));
 
         // boundary case; partition: invalid, upper bound
         task.endDate = LocalDateTime.of(maxDate, maxTime)
@@ -178,7 +178,7 @@ public class SearchCommandTest {
         task.endTime = LocalDateTime.of(maxDate, maxTime)
                 .plusNanos(1).toLocalTime();
 
-        assertFalse(f.filter(task));
+        assertFalse(f.isMatching(task));
     }
 
     private KeywordFilter getKeywordFilter(String test) {

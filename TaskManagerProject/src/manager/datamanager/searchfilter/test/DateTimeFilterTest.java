@@ -28,7 +28,7 @@ public class DateTimeFilterTest {
         taskInfo.startDate = null;
         taskInfo.startTime = null;
 		
-		assertFalse(filter.filter(taskInfo));
+		assertFalse(filter.isMatching(taskInfo));
 	}
 	
 	@Test
@@ -41,7 +41,7 @@ public class DateTimeFilterTest {
 		taskInfo.endDate = LocalDate.parse("2014-11-28");
 		taskInfo.endTime = LocalTime.parse("12:00:00");
 		
-		assertTrue(filter.filter(taskInfo));
+		assertTrue(filter.isMatching(taskInfo));
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class DateTimeFilterTest {
 		taskInfo.endDate = LocalDate.parse("2014-11-29");
 		taskInfo.endTime = LocalTime.parse("02:00:00");
 		
-		assertFalse(filter.filter(taskInfo));		
+		assertFalse(filter.isMatching(taskInfo));		
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class DateTimeFilterTest {
 		taskInfo.endDate = LocalDate.parse("2014-11-28");
 		taskInfo.endTime = LocalTime.parse("03:05:00");
 		
-		assertTrue(filter.filter(taskInfo));		
+		assertTrue(filter.isMatching(taskInfo));		
 	}
 	
 	@Test
@@ -80,6 +80,19 @@ public class DateTimeFilterTest {
 		taskInfo.endDate = LocalDate.parse("2014-11-28");
 		taskInfo.endTime = LocalTime.parse("01:05:00");
 		
-		assertTrue(filter.filter(taskInfo));		
+		assertTrue(filter.isMatching(taskInfo));		
 	}
+
+    @Test
+    public void testEndDateOnly() {
+        LocalDateTime min = LocalDateTime.parse("2014-11-28T01:05:00");
+        LocalDateTime max = LocalDateTime.parse("2014-11-28T03:05:00");
+        DateTimeFilter filter = new DateTimeFilter(min, max);
+        
+        TaskInfo taskInfo = TaskInfo.create();
+        taskInfo.endDate = LocalDate.parse("2014-11-28");
+        taskInfo.endTime = null;
+        
+        assertTrue(filter.isMatching(taskInfo));        
+    }
 }

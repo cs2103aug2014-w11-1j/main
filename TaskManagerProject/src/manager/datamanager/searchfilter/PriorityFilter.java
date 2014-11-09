@@ -19,7 +19,7 @@ public class PriorityFilter implements Filter {
         return task.priority == priority;
     }
     
-    public boolean filter(TaskInfo task) {
+    public boolean isMatching(TaskInfo task) {
         for (Priority priority : priorities) {
             if (match(priority, task)) {
                 return true;
