@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+//@author A0111862M
 public class TimeParser {
     private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
 

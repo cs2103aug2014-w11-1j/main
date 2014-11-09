@@ -3,9 +3,9 @@ package test;
 import org.junit.After;
 import org.junit.Test;
 
-import test.fuzzytest.AbstractCrashTest;
-import test.fuzzytest.SingleInstanceCrashTest;
-import test.fuzzytest.TasklineInstanceContainer;
+import test.crashtest.AbstractCrashTest;
+import test.crashtest.SingleInstanceCrashTest;
+import test.crashtest.TasklineInstanceContainer;
 
 /**
  * The original crash tester. Tests a bunch of random input, together with some

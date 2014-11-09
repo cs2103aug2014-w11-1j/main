@@ -6,13 +6,13 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import main.command.parser.DateTimeParser;
 import main.command.parser.DateTimePair;
+import main.command.parser.DateTimeParser;
 
 import org.junit.Test;
 
+//@author A0111862M
 public class DateTimeParserTest {
-
     @Test
     public void testParseDateTimePairs() {
         LocalDate d1 = LocalDate.of(2014, 10, 17);

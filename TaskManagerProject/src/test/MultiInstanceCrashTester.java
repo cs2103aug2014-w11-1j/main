@@ -3,14 +3,18 @@ package test;
 import org.junit.After;
 import org.junit.Test;
 
-import test.fuzzytest.AbstractCrashTest;
-import test.fuzzytest.MultiInstanceCrashTest;
-import test.fuzzytest.TasklineInstanceContainer;
+import test.crashtest.AbstractCrashTest;
+import test.crashtest.MultiInstanceCrashTest;
+import test.crashtest.TasklineInstanceContainer;
 
 /**
  * Two separate instance of taskline operating on the same file.<br>
  * Used to check whether the file can be modified externally without crashing
- * taskline.
+ * taskline.<br>
+ * It does this by creating two independent instances of Taskline which operate
+ * on the same files “testFile.txt” and “testAlias.txt” and sends random input
+ * to one of the two, picked randomly, to see if they are able to cause each
+ * other to crash.
  */
 //@author A0065475X
 public class MultiInstanceCrashTester {

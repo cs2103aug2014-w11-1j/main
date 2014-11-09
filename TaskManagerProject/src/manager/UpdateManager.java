@@ -9,6 +9,10 @@ import manager.result.SearchResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+/**
+ * In charge of getting updates for StateManager from the managers and
+ * the FileInputOutput classes.
+ */
 //@author A0119432L
 public class UpdateManager {
 

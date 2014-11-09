@@ -1,10 +1,10 @@
-package test.fuzzytest;
+package test.crashtest;
 
 import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import main.MainController;
-import test.fuzzytest.KeywordDictionary.ListType;
+import test.crashtest.KeywordDictionary.ListType;
 
 /**
  * Carries the framework for a crash test.

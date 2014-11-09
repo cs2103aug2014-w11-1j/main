@@ -1,6 +1,6 @@
-package test.fuzzytest;
+package test.crashtest;
 
-import test.fuzzytest.KeywordDictionary.ListType;
+import test.crashtest.KeywordDictionary.ListType;
 
 /**
  * The crash test configuration for a multi-instance crash test. Focus is on

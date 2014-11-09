@@ -1,4 +1,4 @@
-package test.fuzzytest;
+package test.crashtest;
 
 import java.io.IOException;
 import java.nio.file.Files;

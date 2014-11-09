@@ -9,6 +9,9 @@ import data.EuclideanAlgorithm;
 //@author A0065475X
 public class EuclideanAlgorithmTest {
 
+    /**
+     * Run this to compute the multiplicative inverse of a number mod m.
+     */
     private void computeReversePrime() {
         EuclideanAlgorithm result;
         // Actual computation of reverse prime.
