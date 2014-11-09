@@ -1,7 +1,5 @@
 package data;
 
-import java.util.Arrays;
-
 import jline.SimpleCompletor;
 
 public class AutoCompleteDictionary {

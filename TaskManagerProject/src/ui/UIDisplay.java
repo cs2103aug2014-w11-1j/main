@@ -15,9 +15,9 @@ public class UIDisplay {
     private UserOutputWriter userOutputWriter;
     
     private final MainController mainController;
-    
-    
-    public UIDisplay(MainController mainController, ArgumentCompletor completor) {
+
+
+    public UIDisplay(MainController mainController, ArgumentCompletor completor)  {
         this.mainController = mainController;
         try {
             ConsoleReader reader = new ConsoleReader();
