@@ -36,6 +36,10 @@ public class UpdateManager {
 		searchManager.searchTasks(filters);
 	}
 	
+	/**
+	 * This is to get the current search info within search mode
+	 * @return current search info
+	 */
 	public SearchModeInfo getSearchModeInfo(){
 		SearchResult redoSearchResult = searchManager.getLastSearchResult();
         TaskInfo[] tasks = redoSearchResult.getTasks();
