@@ -35,7 +35,7 @@ public class SuggestionFilterTest {
         testedTask.details = null;
         String[] words = new String[]{"test"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     
     @Test
@@ -45,7 +45,7 @@ public class SuggestionFilterTest {
         testedTask.name = null;
         String[] words = new String[]{"test"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class SuggestionFilterTest {
         testedTask.details = null;
         String[] words = new String[]{"doesntexist"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertFalse(filter.filter(testedTask));
+        assertFalse(filter.isMatching(testedTask));
     }
     
     @Test
@@ -65,7 +65,7 @@ public class SuggestionFilterTest {
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"doesntexist"};
         KeywordFilter filter = new KeywordFilter(words);
-        assertFalse(filter.filter(testedTask));
+        assertFalse(filter.isMatching(testedTask));
     }
     
     @Test
@@ -75,7 +75,7 @@ public class SuggestionFilterTest {
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"doesntexist"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertFalse(filter.filter(testedTask));
+        assertFalse(filter.isMatching(testedTask));
     }
     
     @Test
@@ -85,7 +85,7 @@ public class SuggestionFilterTest {
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"exist"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
  
     @Test
@@ -95,7 +95,7 @@ public class SuggestionFilterTest {
         testedTask.details = "I am going to test this task";
         String[] words = new String[]{"task", "exist"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     
     @Test
@@ -105,7 +105,7 @@ public class SuggestionFilterTest {
         testedTask.details = null;
         String[] words = new String[]{"TeSt"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     
     @Test
@@ -114,7 +114,7 @@ public class SuggestionFilterTest {
         testedTask.name = "abcd\ttest\tjaksldjf";
         String[] words = new String[]{"test"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     
     @Test
@@ -123,7 +123,7 @@ public class SuggestionFilterTest {
         testedTask.name = "hahaha\ntest\nhahaha";
         String[] words = new String[]{"test"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
     @Test
     public void testPunctuation(){
@@ -131,6 +131,6 @@ public class SuggestionFilterTest {
         testedTask.name = "hahaha$%^$%^$!@#test^$&@#$hahaha";
         String[] words = new String[]{"test"};
         SuggestionFilter filter = new SuggestionFilter(words);
-        assertTrue(filter.filter(testedTask));
+        assertTrue(filter.isMatching(testedTask));
     }
 }

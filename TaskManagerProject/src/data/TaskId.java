@@ -3,7 +3,8 @@ package data;
 import java.util.Random;
 
 /**
- * Immutable.
+ * Absolute ID of a task.<br>
+ * Immutable
  */
 //@author A0065475X
 public final class TaskId implements Comparable<TaskId> {

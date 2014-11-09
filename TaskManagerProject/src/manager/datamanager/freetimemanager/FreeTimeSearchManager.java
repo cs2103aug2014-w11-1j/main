@@ -3,6 +3,7 @@ package manager.datamanager.freetimemanager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import manager.datamanager.AbstractManager;
 import manager.result.FreeTimeResult;
@@ -27,10 +28,12 @@ public class FreeTimeSearchManager extends AbstractManager {
         taskList = getTaskList();
         freeTimeList = generateTimeList();
         processTaskList(date);
+        postProcessIntervalList();
         return new FreeTimeResult(date, freeTimeList);
     }
     
-	private Interval getTaskTimeOnDate(TaskInfo taskInfo, LocalDate date){
+
+    private Interval getTaskTimeOnDate(TaskInfo taskInfo, LocalDate date){
 		
 		
 		if (taskInfo.getEndDate() == null){ // floating task
@@ -105,5 +108,26 @@ public class FreeTimeSearchManager extends AbstractManager {
 		}
 	}
 		
-
+    private void postProcessIntervalList() {
+        LinkedList<Interval> mergedIntervals = new LinkedList<>();
+        
+        for (Interval interval : freeTimeList) {
+            if (!interval.isOccupied()) {
+                Interval previous = mergedIntervals.isEmpty() ? null :
+                    mergedIntervals.getLast();
+                
+                if (previous != null && interval.immediatelyAfter(previous)) {
+                    mergedIntervals.removeLast();
+                    mergedIntervals.addLast(previous.concatenate(interval));
+                } else {
+                    mergedIntervals.add(new Interval(interval));
+                }
+            }
+        }
+        
+        freeTimeList = new ArrayList<>(mergedIntervals.size());
+        for (Interval interval : mergedIntervals) {
+            freeTimeList.add(interval);
+        }
+    }
 }

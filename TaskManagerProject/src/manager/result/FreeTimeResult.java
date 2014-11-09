@@ -13,7 +13,7 @@ public class FreeTimeResult implements Result {
 	
 	public FreeTimeResult(LocalDate date, ArrayList<Interval> list){
 		this.date = date;
-		this.freeTimeList = processList(list);
+		this.freeTimeList = new ArrayList<>(list);
 	}
 	
 	public LocalDate getDate(){
@@ -24,15 +24,6 @@ public class FreeTimeResult implements Result {
 		return freeTimeList;
 	}
 	
-	private ArrayList<Interval> processList(ArrayList<Interval> list){
-		ArrayList<Interval> tempList = new ArrayList<>();
-		for (Interval itvl : list){
-			if (!itvl.isOccupied()){
-				tempList.add(itvl);
-			}
-		}
-		return tempList;
-	}
 
 	@Override
 	public Type getType() {

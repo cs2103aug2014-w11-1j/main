@@ -35,7 +35,7 @@ public class StateManagerTest {
         Result result;
         
         result = new SimpleResult(Type.ADD_FAILURE);
-        stateManager.beforeCommandExecutionUpdate();
+        stateManager.beforeCommandUpdate();
         assertEquals("taskData read\n", testOutput.getOutputAndClear());
         stateManager.update(result);
         assertEquals("update undo\n"

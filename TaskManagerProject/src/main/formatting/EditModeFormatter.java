@@ -48,6 +48,7 @@ public class EditModeFormatter {
         ArrayList<String> detailsLines = detailsUtil.formatToArray(editInfo.getTask(), 
                 editInfo.getTaskId());
         lines.addAll(detailsLines);
+        lines.add("");
         return arrayListToString(lines);
     }
 }

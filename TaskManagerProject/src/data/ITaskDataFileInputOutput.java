@@ -3,7 +3,8 @@ package data;
 import data.taskinfo.TaskInfo;
 
 /**
- * Facade for task data - used by FileInputOutput
+ * Facade for TaskData - used by FileInputOutput to synchronise TaskData with
+ * an external file.
  */
 //@author A0065475X
 public interface ITaskDataFileInputOutput {

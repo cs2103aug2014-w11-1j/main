@@ -9,7 +9,8 @@ import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 /**
- * Facade for task data - used by the managers. (e.g. SearchManager)
+ * Facade for TaskData - used by the managers for read/write operations to
+ * TaskData. (e.g. SearchManager)
  */
 //@author A0065475X
 public interface ITaskData {

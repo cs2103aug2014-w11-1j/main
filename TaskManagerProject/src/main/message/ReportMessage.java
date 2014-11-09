@@ -7,27 +7,41 @@ import data.taskinfo.TaskInfo;
 //@author A0119432L
 public class ReportMessage implements Message{
 	
-	private int countTodayTask;
-	private int countTmrTask;
-	private ArrayList<TaskInfo> urgentTask;
+	private final int countTodayTasks;
+	private final int countTmrTasks;
+    private final ArrayList<TaskInfo> urgentTasks;
+    private final ArrayList<TaskInfo> nonUrgentTasks;
+    private final ArrayList<TaskInfo> missedTasks;
 	
-	public ReportMessage(int countTodayTask, int countTmrTask, ArrayList<TaskInfo> urgentTask){
-		this.countTodayTask = countTodayTask;
-		this.countTmrTask = countTmrTask;
-		this.urgentTask = urgentTask;
+	public ReportMessage(int countTodayTask, int countTmrTask,
+	        ArrayList<TaskInfo> urgentTasks, ArrayList<TaskInfo> nonUrgentTasks,
+	        ArrayList<TaskInfo> missedTasks) {
+		this.countTodayTasks = countTodayTask;
+		this.countTmrTasks = countTmrTask;
+        this.urgentTasks = urgentTasks;
+        this.nonUrgentTasks = nonUrgentTasks;
+        this.missedTasks = missedTasks;
 	}
 	
-	public int getCountTodayTask(){
-		return countTodayTask;
+	public int getCountTodayTask() {
+		return countTodayTasks;
 	}
 	
-	public int getCountTmrTask(){
-		return countTmrTask;
+	public int getCountTmrTask() {
+		return countTmrTasks;
 	}
-	
-	public ArrayList<TaskInfo> getUrgentTask(){
-		return urgentTask;
-	}
+    
+    public ArrayList<TaskInfo> getUrgentTasks() {
+        return urgentTasks;
+    }
+    
+    public ArrayList<TaskInfo> getNonUrgentTasks() {
+        return nonUrgentTasks;
+    }
+
+    public ArrayList<TaskInfo> getMissedTasks() {
+        return missedTasks;
+    }
 
 	public Type getType() {
 		return Type.REPORT;

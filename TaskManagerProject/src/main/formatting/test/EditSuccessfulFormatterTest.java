@@ -58,7 +58,8 @@ public class EditSuccessfulFormatterTest {
                 "   Tags: abcd, efgh" + System.lineSeparator() + 
                 "   Priority: High" + System.lineSeparator() +
                 "   Status: Done" + System.lineSeparator() +
-                "   Description: HAHAHAHA" + System.lineSeparator();
+                "   Description: HAHAHAHA" + System.lineSeparator() +
+                System.lineSeparator();
         
         Assert.assertEquals(expectedString, formattedString);
     }

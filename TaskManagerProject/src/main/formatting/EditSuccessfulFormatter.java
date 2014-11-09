@@ -82,6 +82,7 @@ public class EditSuccessfulFormatter {
             result.addAll(detailsLines);
         }
         
+        result.add("");
         return result;
     }
     

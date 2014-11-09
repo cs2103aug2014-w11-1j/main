@@ -23,6 +23,7 @@ import main.command.RedoCommand;
 import main.command.ReportCommand;
 import main.command.SearchCommand;
 import main.command.UndoCommand;
+import main.command.ViewAliasCommand;
 import manager.ManagerHolder;
 
 
@@ -65,8 +66,8 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
      * @see main.command.alias.IAliasStorage#getCustomCommand(java.lang.String)
      */
     @Override
-    public String getCustomCommand(String cmdString) {
-        return customMap.get(cmdString);
+    public String getCustomCommand(String commandString) {
+        return customMap.get(commandString);
     }
 
     /* (non-Javadoc)
@@ -181,6 +182,12 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         return true;
     }
 
+    /**
+     * Returns the default command that is executed when the command string fits
+     * none of the other commands.
+     * @param input the first token of the input string.
+     * @return an ArgumentCommand, which is the default command.
+     */
     private BiFunction<String, ManagerHolder, Command> defaultMakeCommand(
             String input) {
 
@@ -188,6 +195,10 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 new ArgumentCommand(input + " " + args, managerHolder);
     }
 
+    
+    /**
+     * Initialise all the default commands in taskline here.
+     */
     private void initialiseDefaultCommands() {
 
         defineDefaultCommands(
@@ -196,7 +207,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 
         defineDefaultCommands(
                 (args, managerHolder) -> new SearchCommand(args, managerHolder),
-                "show", "search", "ls", "view");
+                "show", "search", "list", "view", "tasks");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new EditCommand(args, managerHolder),
@@ -238,11 +249,11 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 "rename", "name");
 
         defineDefaultCommands(
-                (args, managerHolder) -> new UndoCommand(managerHolder),
+                (args, managerHolder) -> new UndoCommand(args, managerHolder),
                 "undo");
 
         defineDefaultCommands(
-                (args, managerHolder) -> new RedoCommand(managerHolder),
+                (args, managerHolder) -> new RedoCommand(args, managerHolder),
                 "redo");
 
         defineDefaultCommands(
@@ -252,12 +263,12 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new FreeDaySearchCommand(args, managerHolder),
-                "freeday");
+                "freeday", "freedays", "freedate", "freedates");
 
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new FreeTimeSearchCommand(args, managerHolder),
-                "freetime");
+                "freetime", "freeslot");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new DeleteCommand(args, managerHolder),
@@ -283,12 +294,18 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 (args, managerHolder) -> new AliasDeleteCommand(args, managerHolder),
                 "unalias", "unbind");
 
+        defineDefaultCommands(
+                (args, managerHolder) -> new ViewAliasCommand(managerHolder),
+                "aliases", "viewalias", "viewaliases");
+
     }
 
     private void initialiseUnoverriableStrings() {
         unoverridableStringSet.add("custom");
         unoverridableStringSet.add("alias");
         unoverridableStringSet.add("unalias");
+        unoverridableStringSet.add("bind");
+        unoverridableStringSet.add("unbind");
     }
 
     private void defineDefaultCommands(
@@ -296,6 +313,8 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
             String... commandStrings) {
 
         for (String commandString : commandStrings) {
+            assert !commandString.contains(" ") : "Error in command: [" +
+                    commandString + "] - Command cannot have multiple words.";
             defaultMap.put(commandString, commandFunction);
         }
     }

@@ -1,8 +1,15 @@
 package main.command.parser;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
+//@author A0111862M
+/**
+ * Container class for a DatePair and a TimePair, with DateModifiers for both
+ * sets of date and time.
+ * <p>
+ * Also adds dates and times in sequence, so adding 2 dates, and then a time
+ * will allocate the time to the second slot instead of the first.
+ */
 public class DateTimeSequence extends DateTimePair {
     private int count;
     private int max;
@@ -13,15 +20,9 @@ public class DateTimeSequence extends DateTimePair {
         max = 4;
     }
 
-    DateTimeSequence(DatePair dates, TimePair times) {
-        super(dates, times);
-        count = 0;
-        max = 0;
-    }
-
     @Override
-    void add(LocalDate d) {
-        if (d == null || isFull()) {
+    void add(ParsedDate d) {
+        if (isFull()) {
             return;
         }
 
@@ -43,7 +44,7 @@ public class DateTimeSequence extends DateTimePair {
 
     @Override
     void add(LocalTime t) {
-        if (t == null || isFull()) {
+        if (isFull()) {
             return;
         }
 

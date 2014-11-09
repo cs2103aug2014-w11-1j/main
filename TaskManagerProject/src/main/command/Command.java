@@ -7,12 +7,22 @@ import manager.StateManager;
 import manager.result.Result;
 import manager.result.SimpleResult;
 
+/**
+ * The base Command class.<br>
+ * All commands should extend this class.<br>
+ * Overwrite the isValidArguments(), isCommandAllowed() and executeAction() to
+ * implement the command's functionality.<br>
+ * <br>
+ * If you wish for the command to be executed on existing tasks, try extending
+ * TargetedCommand, which extends this class, instead.
+ */
 //@author A0065475X
 public abstract class Command {
     protected final StateManager stateManager;
     
     public Command(ManagerHolder managerHolder) {
         stateManager = managerHolder.getStateManager();
+        stateManager.beforeCommandUpdate();
     }
 
 
@@ -22,8 +32,6 @@ public abstract class Command {
         }
         
         if (isCommandAllowed()) {
-            stateManager.beforeCommandExecutionUpdate();
-
             Result result = executeAction();
             Response response = stateManager.update(result);
             return response;

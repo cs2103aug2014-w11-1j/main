@@ -1,13 +1,20 @@
-package test.fuzzytest;
+package test.crashtest;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import test.fuzzytest.KeywordLibrary.ListType;
-import static test.fuzzytest.KeywordLibrary.ListType.*;
+import test.crashtest.KeywordDictionary.ListType;
+import static test.crashtest.KeywordDictionary.ListType.*;
 
+/**
+ * A dictionary of commonly used keywords or strings used for the crash tester.
+ * <br>
+ * Keywords are sorted into categories (ListType). When you query the
+ * dictionary for a certain keyword type, it retrieves a random (seeded random)
+ * keyword from that list. 
+ */
 //@author A0065475X
-public class KeywordLibrary {
+public class KeywordDictionary {
     
     private static final int RECURSE_PROBABILITY = 4;
     private static final boolean AGAIN = true;
@@ -32,6 +39,7 @@ public class KeywordLibrary {
         SYMBOL,
         COMMA,
         EDITKEYWORD,
+        CLEAR,
         EDIT,
         DELETE,
         SEARCH,
@@ -43,20 +51,30 @@ public class KeywordLibrary {
         UNALIAS,
         FREEDAY,
         FREETIME,
+        REPORT,
         ALL
     }
     
-    public KeywordLibrary(int seed) {
+    public KeywordDictionary(int seed) {
         rand = new Random(seed);
         createLists();
         addContent();
     }
     
+    /**
+     * @param listType the category of keywords you want to query
+     * @return a random keyword from the category specified
+     */
     public String getRandom(ListType listType) {
         ArrayList<KeywordToken> list = getList(listType);
         return getRandomKeywordAndProcessRecursively(list, listType);
     }
     
+    /**
+     * @param listTypes the categories of keywords you want to query
+     * @return a random keyword from a random category out of the list of
+     * categories specified.
+     */
     public String getRandom(ListType...listTypes) {
         if (listTypes.length == 1) {
             return getRandom(listTypes[0]);
@@ -66,7 +84,7 @@ public class KeywordLibrary {
         }
     }
 
-    protected String getRandomKeywordAndProcessRecursively(
+    private String getRandomKeywordAndProcessRecursively(
             ArrayList<KeywordToken> list, ListType...listTypes) {
         
         KeywordToken keyword = getRandomElement(list);
@@ -86,7 +104,6 @@ public class KeywordLibrary {
     }
     
     private void addContent() {
-        
 
         addToList("", NONE, DATETIMECONNECTOR, CONNECTOR, RANDOM);
         addToList("to", DATETIMECONNECTOR, CONNECTOR, TASKID, RANDOM);
@@ -166,17 +183,22 @@ public class KeywordLibrary {
         addToList("unalias", COMMAND, UNALIAS);
         addToList("freeday", COMMAND, FREEDAY);
         addToList("freetime", COMMAND, FREETIME);
+        addToList("report", COMMAND, REPORT);
         addToList("urgent", COMMAND);
         addToList("mark", COMMAND);
         addToList("done", COMMAND);
         addToList("unmark", COMMAND);
         addToList("reschedule", COMMAND);
+        addToList("aliases", COMMAND);
+        addToList("viewalias", COMMAND);
+        addToList("viewaliases", COMMAND);
 
         addToList(AGAIN, "tag", COMMAND, EDIT, EDITKEYWORD, TASKID);
         addToList("add", COMMAND, ADD, EDITKEYWORD, TASKID, RANDOM);
         addToList("delete", COMMAND, DELETE, EDITKEYWORD, RANDOM);
         addToList("del", COMMAND, DELETE, EDITKEYWORD, TASKID);
 
+        addToList("clear", CLEAR);
         addToList(AGAIN, "clear", COMMAND, EDITKEYWORD);
         addToList("time", COMMAND, EDITKEYWORD);
         addToList("name", COMMAND, EDITKEYWORD, RANDOM);
@@ -184,6 +206,7 @@ public class KeywordLibrary {
         addToList("datetime", COMMAND, EDITKEYWORD);
         addToList("priority", COMMAND, EDITKEYWORD);
         addToList("status", COMMAND, EDITKEYWORD);
+        addToList("details", EDITKEYWORD);
         addToList("edit", EDITKEYWORD);
         addToList("tag add", EDITKEYWORD);
         addToList("tag del", EDITKEYWORD);

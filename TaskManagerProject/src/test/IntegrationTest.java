@@ -1,25 +1,18 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
-import io.AliasFileInputOutput;
-import io.FileInputOutput;
-import io.IFileInputOutput;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import jline.SimpleCompletor;
 import main.MainController;
-import main.command.alias.AliasStorage;
-import manager.ManagerHolder;
 
 import org.junit.After;
 import org.junit.Test;
 
-import data.AutoCompleteDictionary;
-import data.TaskData;
+import taskline.debug.Taskline;
 
 //@author A0065475X-unused
 /**
@@ -45,22 +38,8 @@ public class IntegrationTest {
         String aliasFileName = TEST_ALIAS_FILENAME;
         deleteTestFiles();
 
-        SimpleCompletor completor = new SimpleCompletor(new String[]{});
-        AutoCompleteDictionary autoCompleteDictionary =
-                new AutoCompleteDictionary(completor);
-
-        AliasStorage aliasStorage = new AliasStorage();
-        IFileInputOutput aliasFileInputOutput = new AliasFileInputOutput(
-                aliasStorage, aliasFileName, autoCompleteDictionary);
-
-        TaskData taskData = new TaskData();
-        IFileInputOutput fileInputOutput =
-                new FileInputOutput(taskData, fileName);
-        
-        ManagerHolder managerHolder = new ManagerHolder(taskData,
-                fileInputOutput, aliasStorage, aliasFileInputOutput);
-        MainController mainController = new MainController(managerHolder,
-                aliasStorage, aliasFileInputOutput);
+        MainController mainController = Taskline.setupTaskLine(fileName,
+                aliasFileName);
         
         test(mainController);
     }
@@ -103,11 +82,11 @@ public class IntegrationTest {
         
         input = "show";
         expected = "Tue, 14 Oct 2014 ---" + NEWL +
-                    "1) [   14:00   ] purple                                                 - [FE5]" + NEWL +
-                    "2) [14:00-16:00] violet                                                 - [7YA]" + NEWL +
+                    "1) [   14:00   ] \u001b[31mpurple                                                 \u001b[0m- [FE5]" + NEWL +
+                    "2) [14:00-16:00] \u001b[31mviolet                                                 \u001b[0m- [7YA]" + NEWL +
                     "Floating Tasks ---" + NEWL +
-                    "3)               green                                                  - [P1C]" + NEWL +
-                    "4)               orange                                                 - [0WF]" + NEWL;
+                    "3) [           ] green                                                  - [P1C]" + NEWL +
+                    "4) [           ] \u001b[33morange                                                 \u001b[0m- [0WF]" + NEWL;
         output = mainController.runCommand(input);
         assertSame(expected, output);
         

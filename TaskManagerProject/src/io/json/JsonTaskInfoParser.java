@@ -20,6 +20,9 @@ import javax.json.stream.JsonParsingException;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+/**
+ * the main Json Parser for Tasks.
+ */
 //@author A0065475X
 public class JsonTaskInfoParser {
 

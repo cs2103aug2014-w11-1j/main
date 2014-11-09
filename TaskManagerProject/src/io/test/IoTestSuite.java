@@ -7,7 +7,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     FileInputOutputTest.class,
-    JsonReaderWriterTest.class
+    JsonReaderWriterTest.class,
+    JsonItemParserTest.class
 })
 public class IoTestSuite {
 

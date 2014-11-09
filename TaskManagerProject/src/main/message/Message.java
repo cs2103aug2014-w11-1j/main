@@ -1,5 +1,8 @@
 package main.message;
 
+/**
+ * Carries information regarding the last command execution.
+ */
 public interface Message {
     public enum Type {
         ENUM_MESSAGE,
@@ -8,7 +11,8 @@ public interface Message {
         DELETE_SUCCESSFUL,
         FREE_DAY_SEARCH_SUCCESSFUL,
         FREE_TIME_SEARCH_SUCCESSFUL,
-        ALIAS_MESSAGE,
+        EDIT_ALIAS,
+        VIEW_ALIAS,
         DETAILS,
         REPORT
     }

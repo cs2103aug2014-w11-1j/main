@@ -3,6 +3,7 @@ package manager.datamanager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import main.command.TaskIdSet;
 import manager.datamanager.searchfilter.Filter;
 import manager.datamanager.searchfilter.SuggestionFilter;
 import manager.datamanager.suggestion.SuggestionFinder;
@@ -26,7 +28,6 @@ import data.taskinfo.TaskInfo;
 public class SearchManager extends AbstractManager {
     private static final Logger log = TasklineLogger.getLogger();
 
-    
     SuggestionFinder suggestionFinder;
     TaskInfoId[] lastSearchedTasks;
     String[] lastSearchedSuggestions;
@@ -45,8 +46,8 @@ public class SearchManager extends AbstractManager {
         suggestionFinder = new SuggestionFinder(taskData);
     }
 
-    private void sortTasks(List<TaskInfoId> tasks) {
-        tasks.sort(new Comparator<TaskInfoId>() {
+    private void sortTasks(TaskInfoId[] tasks) {
+        Arrays.sort(tasks, new Comparator<TaskInfoId>() {
             @Override
             public int compare(TaskInfoId task1, TaskInfoId task2) {
                 if (task1.taskInfo.endDate == null) {
@@ -83,7 +84,7 @@ public class SearchManager extends AbstractManager {
         TaskId currentId = taskData.getFirst();
         while (currentId.isValid()) {
             TaskInfo task = taskData.getTaskInfo(currentId);
-            if (filter.filter(task)) {
+            if (filter.isMatching(task)) {
                 resultSet.add(currentId);
             }
             currentId = taskData.getNext(currentId);
@@ -157,10 +158,9 @@ public class SearchManager extends AbstractManager {
         for (TaskId taskId : taskIds) {
             TaskInfo taskInfo = taskData.getTaskInfo(taskId);
             TaskInfoId taskInfoId = new TaskInfoId(taskInfo, taskId);
-            Collections.addAll(result, split(taskInfoId));
+            Collections.addAll(result, taskInfoId);
         }
 
-        sortTasks(result);
         TaskInfoId[] resultArray = new TaskInfoId[result.size()];
         result.toArray(resultArray);
         return resultArray;
@@ -170,7 +170,67 @@ public class SearchManager extends AbstractManager {
         lastSearchedTasks = getTaskInfoIdArray(taskIds);
     }
     
+    private TaskInfoId[] splitAll(TaskInfoId[] oldArray) {
+        List<TaskInfoId> splittedList = new ArrayList<TaskInfoId>();
+        
+        for (TaskInfoId task : oldArray) {
+            Collections.addAll(splittedList, split(task));
+        }
+        
+        TaskInfoId[] newArray = new TaskInfoId[splittedList.size()];
+        
+        splittedList.toArray(newArray);
+        return newArray;
+    }
+    
+    private TaskInfoId[] refilter(Filter[] filters, TaskInfoId[] taskInfoIds) {
+        List<TaskInfoId> filteredList = new ArrayList<TaskInfoId>();
+        for (int i = 0; i < taskInfoIds.length; i++) {
+            boolean isMatching = true;
+            for (int j = 0; j < filters.length; j++) {
+                if (!filters[j].isMatching(taskInfoIds[i].taskInfo)){
+                    isMatching = false;
+                    break;
+                }
+            }
+            if (isMatching)
+                filteredList.add(taskInfoIds[i]);
+        }
+        
+        TaskInfoId[] result = new TaskInfoId[filteredList.size()];
+        filteredList.toArray(result);
+        return result;
+    }
+    
     private SearchResult searchWithSuggestion(Filter[] filters) {
+        Set<TaskId> taskIds = findMatchingTasks(filters);
+        
+        updateSearchedTasks(taskIds);
+        
+        lastSearchedTasks = splitAll(lastSearchedTasks);
+        lastSearchedTasks = refilter(filters, lastSearchedTasks);
+        sortTasks(lastSearchedTasks);
+        
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
+                getIdArray(lastSearchedTasks), filters);
+        
+        List<String> suggestions = new ArrayList<String>();
+        for (int i = 0; i < filters.length; i++) {
+            if (filters[i].getType() == Filter.Type.FILTER_SUGGESTION) {
+                SuggestionFilter filter = (SuggestionFilter)filters[i];
+                suggestions.add(filter.getTopSuggestion());
+            }
+        }
+        
+        String[] suggestionArray = new String[suggestions.size()];
+        suggestions.toArray(suggestionArray);
+        result.setSuggestion(suggestionArray);
+        lastSearchedSuggestions = suggestionArray;
+        
+        return result;
+    }
+    
+    private SearchResult searchWithSuggestionWithoutSplit(Filter[] filters) {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         
         updateSearchedTasks(taskIds);
@@ -193,21 +253,14 @@ public class SearchManager extends AbstractManager {
         return result;
     }
     
-    /*public SearchResult searchWithoutUpdate(Filter[] filters) {
-        Set <TaskId> taskIds = findMatchingTasks(filters);
-        TaskInfoId[] infoIds = getTaskInfoIdArray(taskIds);
-        
-        SearchResult result = new SearchResult(Result.Type.SEARCH_SUCCESS,
-                getInfoArray(infoIds),
-                getIdArray(infoIds),
-                filters);
-        
-        return result;
-    }*/
-    
     private SearchResult searchAndUpdate(Filter[] filters) {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         updateSearchedTasks(taskIds);
+        
+        lastSearchedTasks = splitAll(lastSearchedTasks);
+        lastSearchedTasks = refilter(filters, lastSearchedTasks);
+        
+        sortTasks(lastSearchedTasks);
         
         SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
                 getIdArray(lastSearchedTasks), filters);
@@ -216,20 +269,15 @@ public class SearchManager extends AbstractManager {
         return result;
     }
     
-    private TaskInfo[] getInfoArray(TaskInfoId[] tasks) {
-        TaskInfo[] infoArray = new TaskInfo[tasks.length];
-        for (int i = 0; i < tasks.length; i++) {
-            infoArray[i] = tasks[i].taskInfo;
-        }
-        return infoArray;
-    }
-    
-    private TaskId[] getIdArray(TaskInfoId[] tasks) {
-        TaskId[] idArray = new TaskId[tasks.length];
-        for (int i = 0; i < tasks.length; i++) {
-            idArray[i] = tasks[i].taskId;
-        }
-        return idArray;
+    private SearchResult searchAndUpdateWithoutSplit(Filter[] filters) {
+        Set<TaskId> taskIds = findMatchingTasks(filters);
+        updateSearchedTasks(taskIds);
+        
+        SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
+                getIdArray(lastSearchedTasks), filters);
+        
+        lastSearchedSuggestions = null;
+        return result;
     }
     
     public Result searchTasks(Filter[] filters) {
@@ -251,6 +299,25 @@ public class SearchManager extends AbstractManager {
         }
     }
     
+    public Result searchTasksWithoutSplit(Filter[] filters) {
+        assert filters != null : "filters can't be null";
+        log.log(Level.FINER, "Conduct search: " + filters.length + " filters");
+        
+        SearchResult result = searchAndUpdateWithoutSplit(filters);
+        
+        if (result.getTaskIds().length == 0) {
+            Filter[] newFilters = 
+                    suggestionFinder.generateSuggestionFilters(filters);
+            if (newFilters == null) {
+                return result;
+            } else {
+                return searchWithSuggestionWithoutSplit(newFilters);
+            }
+        } else {
+            return result;
+        }
+    }
+    
     public SearchResult getLastSearchResult() {
         SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks),
                 getIdArray(lastSearchedTasks), null);
@@ -258,16 +325,49 @@ public class SearchManager extends AbstractManager {
 
         return result;
     }
+
+    private TaskInfo[] getInfoArray(TaskInfoId[] tasks) {
+        TaskInfo[] infoArray = new TaskInfo[tasks.length];
+        for (int i = 0; i < tasks.length; i++) {
+            infoArray[i] = tasks[i].taskInfo;
+        }
+        return infoArray;
+    }
     
-    public Result details(TaskId taskId) {
-        return new DetailsResult(taskData.getTaskInfo(taskId), taskId);
+    private TaskId[] getIdArray(TaskInfoId[] tasks) {
+        TaskId[] idArray = new TaskId[tasks.length];
+        for (int i = 0; i < tasks.length; i++) {
+            idArray[i] = tasks[i].taskId;
+        }
+        return idArray;
+    }
+    
+    public Result details(TaskIdSet taskIdSet) {
+        int size = taskIdSet.size();
+        TaskId[] taskIds = new TaskId[size];
+        TaskInfo[] taskInfos = new TaskInfo[size];
+        
+        int index = 0;
+        for (TaskId taskId : taskIdSet) {
+            taskIds[index] = taskId;
+            taskInfos[index] = taskData.getTaskInfo(taskId);
+            index++;
+        }
+        
+        return new DetailsResult(taskInfos, taskIds);
     }
 
     public TaskId getAbsoluteIndex(int relativeIndex) {
         if (relativeIndex > lastSearchedTasks.length) {
             throw new IndexOutOfBoundsException();
         }
-        return lastSearchedTasks[relativeIndex - 1].taskId;
+        
+        TaskId taskId = lastSearchedTasks[relativeIndex - 1].taskId;
+        if (taskData.taskExists(taskId)) {
+            return taskId;
+        } else {
+            return null;
+        }
     }
 
     public TaskInfo getTaskInfo(int relativeIndex) {
@@ -280,31 +380,4 @@ public class SearchManager extends AbstractManager {
     public TaskInfo getTaskInfo(TaskId taskId) {
         return taskData.getTaskInfo(taskId);
     }
-    
-    // TODO: Use this in a TargetedCommand search.
-    /* 
-    private void removeDuplicates() {
-        HashSet<TaskId> idSet = new HashSet<>();
-        LinkedList<TaskId> newIdList = new LinkedList<>();
-        LinkedList<TaskInfo> newTaskList = new LinkedList<>();
-        
-        for (int i = 0; i < taskIds.length; i++) {
-            if (!idSet.contains(taskIds[i])) {
-                idSet.add(taskIds[i]);
-                newIdList.offer(taskIds[0]);
-                newTaskList.offer(tasks[0]);
-            }
-        }
-
-        assert newIdList.size() == newTaskList.size();
-        taskIds = new TaskId[newIdList.size()];
-        tasks = new TaskInfo[newTaskList.size()];
-        for (int i = 0; i < taskIds.length; i++) {
-            taskIds[i] = newIdList.poll();
-            tasks[i] = newTaskList.poll();
-        }
-
-        assert newIdList.size() == 0;
-        assert newTaskList.size() == 0;
-    }*/
 }

@@ -18,6 +18,9 @@ import data.TaskId;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+/**
+ * A set of stubs for testing the Commands
+ */
 //@author A0065475X
 class StubManagerHolder extends ManagerHolder {
     private StubAddManager stubAddManager;
@@ -190,9 +193,18 @@ class StubSearchManager extends SearchManager {
         TaskId[] taskIds = new TaskId[0];
         return new SearchResult(tasks, taskIds, filters);
     }
+    
+    @Override
+    public Result searchTasksWithoutSplit(Filter[] filters) {
+        this.filters = filters;
+        
+        TaskInfo[] tasks = new TaskInfo[0];
+        TaskId[] taskIds = new TaskId[0];
+        return new SearchResult(tasks, taskIds, filters);
+    }
 
     @Override
-    public Result details(TaskId taskId) {
+    public Result details(TaskIdSet taskIdSet) {
         return null;
     }
 }
@@ -215,7 +227,7 @@ class StubStateManager extends StateManager {
     }
 
     @Override
-    public void beforeCommandExecutionUpdate() {
+    public void beforeCommandUpdate() {
         return;
     }
 

@@ -32,7 +32,7 @@ public class KeywordFilter implements Filter{
         return false;
     }
     
-    public boolean filter(TaskInfo task) {
+    public boolean isMatching(TaskInfo task) {
         for (String keyword : keywords) {
             if (!match(keyword, task.details) && !match(keyword, task.name)) {
                 return false;

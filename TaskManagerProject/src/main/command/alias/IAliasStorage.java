@@ -5,13 +5,16 @@ import java.util.function.BiFunction;
 import main.command.Command;
 import manager.ManagerHolder;
 
+/**
+ * The interface used for setting and retrieving aliases from AliasStorage.
+ */
 //@author A0065475X
 public interface IAliasStorage {
 
     public abstract BiFunction<String, ManagerHolder, Command> getDefaultCommand(
             String commandString);
 
-    public abstract String getCustomCommand(String cmdString);
+    public abstract String getCustomCommand(String commandString);
 
     /**
      * @param alias from this keyword (must be one word)
@@ -40,4 +43,8 @@ public interface IAliasStorage {
      */
     public abstract boolean isAlreadyBinded(String alias);
 
+    /**
+     * @return Get the entire list of custom aliases.
+     */
+    public abstract AliasValuePair[] getAllCustomAliases();
 }

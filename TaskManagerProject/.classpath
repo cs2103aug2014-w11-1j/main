@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/jline-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.json-api-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.json-1.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/jansi-1.11.jar"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="lib/jkeymaster.jar"/>
 	<classpathentry kind="lib" path="lib/jna.jar"/>
+=======
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+>>>>>>> e8cd19d4d3110eb36b898cd448b37888e58c9690
 	<classpathentry kind="output" path="bin"/>
 </classpath>

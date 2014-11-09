@@ -11,7 +11,7 @@ public class TagFilter implements Filter{
     
     Tag[] tags;
     
-    public boolean filter(TaskInfo task) 
+    public boolean isMatching(TaskInfo task) 
     {
         if (task.tags == null) {
             return false;

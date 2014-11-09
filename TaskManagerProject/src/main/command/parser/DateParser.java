@@ -5,13 +5,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import main.command.parser.ParsedDate.Frequency;
+
+//@author A0111862M
+/**
+ * Utility class for parsing dates from strings.
+ */
 public class DateParser {
     private static final int MIN_YEAR = 1000;
     private static Map<DateTimeFormatter, String> datePartialFormatPatterns;
@@ -19,10 +24,17 @@ public class DateParser {
     private static Map<String, String> dateWeekOfDayShortForms;
     private static LocalDate datePatternsLastUpdate;
 
-    static LocalDate parseDate(String dateString) {
+    /**
+     * Parses a string to a date.
+     *
+     * @param dateString
+     *            a string that is possibly a date
+     * @return the LocalDate corresponding to the string
+     */
+    static ParsedDate parseDate(String dateString) {
         buildDatePatternHashMap();
 
-        LocalDate d = parseRelativeDate(dateString);
+        ParsedDate d = parseRelativeDate(dateString);
         if (d == null) {
             d = parseAbsoluteDate(dateString);
         }
@@ -30,32 +42,53 @@ public class DateParser {
         return d;
     }
 
+    /**
+     * Checks if a string can be parsed into a date
+     *
+     * @param dateString
+     *            a string that is possibly a date
+     * @return true if the string can be parsed into a date, false otherwise
+     */
     static boolean isDate(String dateString) {
         return parseDate(dateString) != null;
     }
 
-    private static LocalDate parseRelativeDate(String dateString) {
-        // TODO weekdays (absolute?), +7d, -7d
+    /**
+     * Parses strings in a format relative to the current date.
+     */
+    private static ParsedDate parseRelativeDate(String dateString) {
         LocalDate parsedDate = null;
         dateString = dateString.toLowerCase();
 
         parsedDate = parseDateAsDayOfWeek(dateString);
         if (parsedDate != null) {
-            return parsedDate;
+            return new ParsedDate(parsedDate, Frequency.WEEK);
         }
 
         parsedDate = parseDateAsOccasion(dateString);
         if (parsedDate != null) {
-            return parsedDate;
+            return new ParsedDate(parsedDate, Frequency.YEAR);
         }
 
         parsedDate = parseDateAsPlusMinus(dateString);
         if (parsedDate == null) {
             parsedDate = parseDateAsRelativeToNow(dateString);
         }
-        return parsedDate;
+        if (parsedDate != null) {
+            return new ParsedDate(parsedDate);
+        }
+
+        return null;
     }
 
+    /**
+     * Parses strings in English relative to the current date, like "today",
+     * "yesterday", or "tomorrow".
+     *
+     * @param dateString
+     *            a possible relative date
+     * @return the date if valid, null otherwise
+     */
     private static LocalDate parseDateAsRelativeToNow(String dateString) {
         LocalDate parsedDate = null;
 
@@ -75,33 +108,69 @@ public class DateParser {
         return parsedDate;
     }
 
+    /**
+     * Parses strings of annual occasions such as Christmas to their respective
+     * dates.
+     *
+     * @param dateString
+     *            a possible occasion
+     * @return the date if valid, null otherwise
+     */
     private static LocalDate parseDateAsOccasion(String dateString) {
-        // TODO Auto-generated method stub
+        if (dateString.toLowerCase().equals("christmas")) {
+            return LocalDate.of(LocalDate.now().getYear(), 12, 25);
+        }
+        // TODO Occasions such as New Year's / Christmas.
         return null;
     }
 
+    /**
+     * Parses a string as a day of the week (e.g. monday, tuesday, etc).
+     *
+     * @param dateString
+     *            a string that is possibly a day of the week
+     * @return the closest date to today with that day of the week if the string
+     *         is valid, or null otherwise
+     */
     private static LocalDate parseDateAsDayOfWeek(String dateString) {
-        switch (dateString) {
-            case "mon" :
-            case "monday" :
-            case "tue" :
-            case "tuesday" :
-            case "wed" :
-            case "wednesday" :
-            case "thu" :
-            case "thursday" :
-            case "fri" :
-            case "friday" :
-            case "sat" :
-            case "saturday" :
-            case "sun" :
-            case "sunday" :
-                return getNextDayOfWeek(dateString);
+        buildWeekOfDayMap();
+
+        if (dateWeekOfDayShortForms.containsKey(dateString.toLowerCase())) {
+            dateString = dateWeekOfDayShortForms.get(dateString);
+        }
+        try {
+            dateString = dateString.toUpperCase();
+            int dayOfWeek = DayOfWeek.valueOf(dateString).getValue();
+
+            return LocalDate.now().with(ChronoField.DAY_OF_WEEK, dayOfWeek);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private static void buildWeekOfDayMap() {
+        if (dateWeekOfDayShortForms != null) {
+            return;
         }
 
-        return null;
+        dateWeekOfDayShortForms = new HashMap<>();
+        dateWeekOfDayShortForms.put("mon", "monday");
+        dateWeekOfDayShortForms.put("tue", "tuesday");
+        dateWeekOfDayShortForms.put("wed", "wednesday");
+        dateWeekOfDayShortForms.put("thu", "thursday");
+        dateWeekOfDayShortForms.put("fri", "friday");
+        dateWeekOfDayShortForms.put("sat", "saturday");
+        dateWeekOfDayShortForms.put("sun", "sunday");
     }
 
+    /**
+     * Parses string in the format: "+xd", or its minus variant. This refers to
+     * x number of days relative to the current date.
+     *
+     * @param dateString
+     *            a possible relative date
+     * @return the date if valid, null otherwise
+     */
     private static LocalDate parseDateAsPlusMinus(String dateString) {
         String modifier = null;
         if ((dateString.startsWith("+") || dateString.startsWith("-")) &&
@@ -116,34 +185,31 @@ public class DateParser {
         }
     }
 
-    private static LocalDate getNextDayOfWeek(String dateString) {
-        buildWeekOfDayMap();
-
-        dateString = dateString.toLowerCase();
-        if (dateWeekOfDayShortForms.containsKey(dateString)) {
-            dateString = dateWeekOfDayShortForms.get(dateString);
-        }
-        DayOfWeek dayOfWeek = DayOfWeek.valueOf(dateString.toUpperCase());
-        Temporal adjustedDay = TemporalAdjusters.next(dayOfWeek)
-                .adjustInto(LocalDate.now());
-        return LocalDate.from(adjustedDay);
-    }
-
-    private static LocalDate parseAbsoluteDate(String dateString) {
-        LocalDate parsedDate;
-
+    private static ParsedDate parseAbsoluteDate(String dateString) {
         // match full before partial in order to prevent matching more than one.
         LocalDate date = matchDatePatterns(dateFullFormatPatterns, dateString);
         if (date != null) {
-            parsedDate = date;
-        } else {
-            date = matchDatePatterns(datePartialFormatPatterns, dateString);
-            parsedDate = date;
+            return new ParsedDate(date);
         }
 
-        return parsedDate;
+        date = matchDatePatterns(datePartialFormatPatterns, dateString);
+        if (date != null) {
+            return new ParsedDate(date, Frequency.YEAR);
+        }
+
+        return null;
     }
 
+    /**
+     * Matches a string to a map of date formats.
+     *
+     * @param dateMap
+     *            the map of date formats
+     * @param dateString
+     *            the string to be matched
+     * @return the LocalDate corresponding to the string if valid, null
+     *         otherwise
+     */
     private static LocalDate matchDatePatterns(
             Map<DateTimeFormatter, String> dateMap, String dateString) {
         // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
@@ -171,21 +237,6 @@ public class DateParser {
         return null;
     }
 
-    private static void buildWeekOfDayMap() {
-        if (dateWeekOfDayShortForms != null) {
-            return;
-        }
-
-        dateWeekOfDayShortForms = new HashMap<String, String>();
-        dateWeekOfDayShortForms.put("mon", "monday");
-        dateWeekOfDayShortForms.put("tue", "tuesday");
-        dateWeekOfDayShortForms.put("wed", "wednesday");
-        dateWeekOfDayShortForms.put("thu", "thursday");
-        dateWeekOfDayShortForms.put("fri", "friday");
-        dateWeekOfDayShortForms.put("sat", "saturday");
-        dateWeekOfDayShortForms.put("sun", "sunday");
-    }
-
     private static void buildDatePatternHashMap() {
         // last update was on the same date
         if (datePatternsLastUpdate != null &&
@@ -193,7 +244,7 @@ public class DateParser {
             return;
         }
 
-        datePartialFormatPatterns = new HashMap<DateTimeFormatter, String>();
+        datePartialFormatPatterns = new HashMap<>();
 
         // 24 August
         mapPattern(datePartialFormatPatterns,
@@ -215,7 +266,7 @@ public class DateParser {
             return;
         }
 
-        dateFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
+        dateFullFormatPatterns = new HashMap<>();
 
         // 24 Aug 2014
         mapPattern(dateFullFormatPatterns, "d MMM y");
@@ -243,6 +294,10 @@ public class DateParser {
         map.put(DateTimeFormatter.ofPattern(pattern), missingField);
     }
 
+    /**
+     * Capitalises the first letter (alphabetic) of the string and returns it.
+     * (e.g. "12%ab" -> "12%Ab")
+     */
     private static String capitaliseFirstLetter(String dateString) {
         dateString = dateString.toUpperCase();
         for (int i = 0; i < dateString.length(); i++) {

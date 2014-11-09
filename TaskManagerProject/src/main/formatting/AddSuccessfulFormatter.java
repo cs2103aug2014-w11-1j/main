@@ -17,6 +17,6 @@ public class AddSuccessfulFormatter {
      * @return The formatted Message.
      */
     public String format(AddSuccessfulMessage message) {
-        return String.format(FORMAT_LINE, message.getTask().name);
+        return String.format(FORMAT_LINE, message.getTask().name) + System.lineSeparator();
     }
 }

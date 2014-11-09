@@ -9,6 +9,10 @@ import manager.result.SearchResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+/**
+ * In charge of getting updates for StateManager from the managers and
+ * the FileInputOutput classes.
+ */
 //@author A0119432L
 public class UpdateManager {
 
@@ -50,7 +54,7 @@ public class UpdateManager {
 		undoManager.updateUndoHistory();
 	}
 	
-	public void preExecutionCheck(){
+	public void beforeCommandUpdate(){
 		 boolean fileChanged = readFromFile();
 	        
         if (fileChanged) {

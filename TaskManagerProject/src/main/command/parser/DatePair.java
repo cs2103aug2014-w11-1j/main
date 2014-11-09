@@ -2,20 +2,29 @@ package main.command.parser;
 
 import java.time.LocalDate;
 
+import main.command.parser.ParsedDate.Frequency;
 
+//@author A0111862M
+/**
+ * Container class for a pair of dates and their respective frequencies.
+ */
 public class DatePair {
     private LocalDate firstDate;
+    private Frequency firstFrequency;
     private LocalDate secondDate;
+    private Frequency secondFrequency;
 
-    void add(LocalDate d) {
+    void add(ParsedDate d) {
         if (d == null || isFull()) {
             return;
         }
 
         if (!hasFirstDate()) {
-            firstDate = d;
+            firstDate = d.getDate();
+            firstFrequency = d.getFrequency();
         } else {
-            secondDate = d;
+            secondDate = d.getDate();
+            secondFrequency = d.getFrequency();
         }
     }
 
@@ -27,12 +36,22 @@ public class DatePair {
         return secondDate;
     }
 
-    void setFirstDate(LocalDate firstDate) {
-        this.firstDate = firstDate;
+    Frequency getFirstFrequency() {
+        return firstFrequency;
     }
 
-    void setSecondDate(LocalDate secondDate) {
-        this.secondDate = secondDate;
+    Frequency getSecondFrequency() {
+        return secondFrequency;
+    }
+
+    void setFirstDate(ParsedDate d) {
+        this.firstDate = d == null ? null : d.getDate();
+        this.firstFrequency = d == null ? null : d.getFrequency();
+    }
+
+    void setSecondDate(ParsedDate d) {
+        this.secondDate = d == null ? null : d.getDate();
+        this.secondFrequency = d == null ? null : d.getFrequency();
     }
 
     boolean hasSecondDate() {

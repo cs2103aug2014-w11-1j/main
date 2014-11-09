@@ -18,6 +18,7 @@ import main.message.FreeDaySearchMessage;
 import main.message.FreeTimeSearchMessage;
 import main.message.Message;
 import main.message.ReportMessage;
+import main.message.ViewAliasMessage;
 import main.modeinfo.EditModeInfo;
 import main.modeinfo.EmptyModeInfo;
 import main.modeinfo.ModeInfo;
@@ -39,8 +40,8 @@ import manager.result.Result;
 import manager.result.Result.Type;
 import manager.result.SearchResult;
 import manager.result.StartEditModeResult;
+import manager.result.ViewAliasResult;
 import taskline.TasklineLogger;
-import taskline.debug.Taskline;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
@@ -88,12 +89,10 @@ public class StateManager {
 
 	public boolean canAdd() {
 		return true;
-	    //return currentState == State.AVAILABLE;
 	}
 
 	public boolean canSearch() {
         return true;
-        //return currentState == State.AVAILABLE;
 	}
 
     public boolean canGetReport() {
@@ -102,17 +101,14 @@ public class StateManager {
 
 	public boolean canEdit() {
         return true;
-        //return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
 	}
 
 	public boolean canDelete() {
         return true;
-        //return currentState == State.AVAILABLE || currentState == State.EDIT_MODE;
 	}
 
 	public boolean canUndo() {
         return true;
-        //return currentState == State.AVAILABLE;
 	}
 
     public boolean canGoBack() {
@@ -197,10 +193,10 @@ public class StateManager {
     }
 
     /**
-     * This method is called just before every command execution.
+     * This method is called just before anything is done by the command.
      */
-    public void beforeCommandExecutionUpdate() {
-       updateManager.preExecutionCheck();
+    public void beforeCommandUpdate() {
+       updateManager.beforeCommandUpdate();
     }
 
     
@@ -412,7 +408,7 @@ public class StateManager {
             	return tagDeleteSuccessfulMessage;
             	
             case TAG_DELETE_FAILURE :
-            	return new EnumMessage(MessageType.ADD_TAG_FAILED);
+            	return new EnumMessage(MessageType.DELETE_TAG_FAILED);
 
             case SEARCH_SUCCESS : 
                 tryEnterSearchMode((SearchResult)result);
@@ -438,9 +434,14 @@ public class StateManager {
 
             case INVALID_ARGUMENT : 
                 return new EnumMessage(MessageType.INVALID_ARGUMENT);
+                
             case REPORT : 
             	ReportResult reportResult = (ReportResult) result;
-            	return new ReportMessage(reportResult.countTodayTask(), reportResult.countTmrTask(), reportResult.getUrgentTask());
+            	return new ReportMessage(reportResult.countTodayTasks(),
+            	        reportResult.countTmrTasks(),
+            	        reportResult.getUrgentTasks(),
+            	        reportResult.getNonUrgentTasks(),
+            	        reportResult.getMissedTasks());
                 
             case FREE_DAY : 
             	FreeDayResult freeDayResult = (FreeDayResult) result;
@@ -459,8 +460,8 @@ public class StateManager {
                 
             case DETAILS :
                 DetailsResult detailsResult = (DetailsResult)result;
-                return new DetailsMessage(detailsResult.getTask(),
-                        detailsResult.getTaskId());
+                return new DetailsMessage(detailsResult.getTasks(),
+                        detailsResult.getTaskIds());
                 
             case ALIAS_SUCCESS : {
                 AliasSetResult aliasResult = (AliasSetResult)result;
@@ -472,7 +473,7 @@ public class StateManager {
             case ALIAS_FAILURE : {
                 AliasSetResult aliasResult = (AliasSetResult)result;
                 return new AliasMessage(aliasResult.getAlias(), null, false,
-                        AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
+                        AliasMessage.AliasType.ALIAS_SET_FAILURE);
             }
                 
             case ALIAS_DELETE_SUCCESS : {
@@ -481,12 +482,17 @@ public class StateManager {
                         aliasResult.getValue(),
                         AliasMessage.AliasType.ALIAS_DELETE_SUCCESS);
             }
-                
+            
             case ALIAS_DELETE_FAILURE : {
                 AliasDeleteResult aliasResult = (AliasDeleteResult)result;
                 return new AliasMessage(aliasResult.getAlias(), 
                         aliasResult.getValue(),
                         AliasMessage.AliasType.ALIAS_DELETE_FAILURE);
+            }
+            
+            case VIEW_ALIAS_SUCCESS : {
+                ViewAliasResult aliasResult = (ViewAliasResult)result;
+                return new ViewAliasMessage(aliasResult.getAliases());
             }
 
             default:

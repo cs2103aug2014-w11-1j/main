@@ -11,6 +11,12 @@ import manager.result.Result;
 import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
+//@author A0111862M
+/**
+ * Command class for Add operations. Parses given command arguments into
+ * segments of a task and stores them, passing them onto the AddManager class
+ * when the Command is executed.
+ */
 public class AddCommand extends Command {
     private final AddManager addManager;
     private final TaskInfo taskToAdd;
@@ -19,16 +25,24 @@ public class AddCommand extends Command {
         super(managerHolder);
         addManager = managerHolder.getAddManager();
 
-    	taskToAdd = parse(args);
+        taskToAdd = parse(args);
     }
 
-    private TaskInfo parse(String args) {
+    /**
+     * Parses command arguments into different parts of a task and sets them
+     * into a TaskInfo object.
+     *
+     * @param cmdArgs
+     *            the arguments for the add command
+     * @return the TaskInfo object with the task parts set.
+     */
+    private TaskInfo parse(String cmdArgs) {
         TaskInfo task = TaskInfo.create();
 
-        task.name = CommandParser.parseName(args);
-        parseDateTimes(args, task);
-        task.tags = CommandParser.parseTags(args);
-        Priority p = CommandParser.parsePriority(args);
+        task.name = CommandParser.parseName(cmdArgs);
+        parseDateTimes(cmdArgs, task);
+        task.tags = CommandParser.parseTags(cmdArgs);
+        Priority p = CommandParser.parsePriority(cmdArgs);
         if (p != null) {
             task.priority = p;
         }
@@ -36,8 +50,21 @@ public class AddCommand extends Command {
         return task;
     }
 
-    private void parseDateTimes(String args, TaskInfo task) {
-        DateTimePair range = CommandParser.parseDateTimesInSequence(args);
+    /**
+     * Parses a command string into dates and times suitable for the add
+     * command.
+     * <p>
+     * If more than 2 pairs of dates and times are found, only the first two are
+     * used. All combinations are allowed aside from a date range without any
+     * time indicated.
+     *
+     * @param cmdArgs
+     *            the arguments possibly containing dates and times
+     * @param task
+     *            the task to set the dates and times into
+     */
+    private void parseDateTimes(String cmdArgs, TaskInfo task) {
+        DateTimePair range = CommandParser.parseDateTimesInSequence(cmdArgs);
         if (range.isEmpty()) {
             return;
         }
@@ -66,8 +93,8 @@ public class AddCommand extends Command {
 
         // one date, use the same for both
         if (range.hasFirstDate() != range.hasSecondDate()) {
-            task.startDate = task.endDate = range.hasFirstDate() ?
-                range.getFirstDate() : range.getSecondDate();
+            task.startDate = task.endDate = range.hasFirstDate() ? range
+                    .getFirstDate() : range.getSecondDate();
 
             // there can only be one date if there is only one time
             if (!range.hasSecondTime()) {
@@ -77,13 +104,13 @@ public class AddCommand extends Command {
 
         // no date, get the next possible date for the times
         if (!range.hasFirstDate() && !range.hasSecondDate()) {
-            task.startDate = task.endDate = getNextOccurrence(
-                range.getFirstTime(), LocalTime.now(), LocalDate.now());
+            task.startDate = task.endDate = getNextOccurrenceOfTime(
+                    range.getFirstTime(), LocalTime.now(), LocalDate.now());
             if (range.hasSecondTime()) {
-                task.endDate = getNextOccurrence(
-                    range.getSecondTime(), range.getFirstTime(), task.startDate);
+                task.endDate = getNextOccurrenceOfTime(range.getSecondTime(),
+                        range.getFirstTime(), task.startDate);
             }
-            
+
             // there can only be one date if there is only one time
             if (!range.hasSecondTime()) {
                 task.startDate = null;
@@ -91,7 +118,20 @@ public class AddCommand extends Command {
         }
     }
 
-    private LocalDate getNextOccurrence(LocalTime time, LocalTime timeFrom, LocalDate dateFrom) {
+    /**
+     * Returns the next occurrence of {@code time} from a reference datetime
+     * constructed from {@code timeFrom} and {@code dateFrom}.
+     *
+     * @param time
+     *            the required time
+     * @param timeFrom
+     *            the reference time
+     * @param dateFrom
+     *            the reference date
+     * @return the next occurrence of time from the reference datetime
+     */
+    private LocalDate getNextOccurrenceOfTime(LocalTime time,
+            LocalTime timeFrom, LocalDate dateFrom) {
         if (time.isAfter(timeFrom)) {
             return dateFrom;
         } else {
@@ -99,6 +139,7 @@ public class AddCommand extends Command {
         }
     }
 
+    // @author A0111862M-reused
     @Override
     protected boolean isValidArguments() {
         return (taskToAdd != null && taskToAdd.isValid());

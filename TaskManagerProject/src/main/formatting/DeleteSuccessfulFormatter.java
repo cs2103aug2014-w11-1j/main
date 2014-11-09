@@ -31,12 +31,12 @@ public class DeleteSuccessfulFormatter {
     
     private String formatSingleTask(DeleteSuccessfulMessage message) {
         assert message.getTask().length == 1;
-        return String.format(FORMAT_SINGLE, message.getTask()[0].name);
+        return String.format(FORMAT_SINGLE, message.getTask()[0].name) + System.lineSeparator();
     }
     
     private String formatMultiTask(DeleteSuccessfulMessage message) {
         assert message.getTask().length > 1;
-        return getMultiHeader(message) + getMultiTaskList(message);
+        return getMultiHeader(message) + getMultiTaskList(message) + System.lineSeparator();
     }
     
     private String getMultiHeader(DeleteSuccessfulMessage message) {
