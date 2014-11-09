@@ -8,6 +8,16 @@ import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 //@author A0113011L
+/**
+ * Formatter for WaitingMode.
+ * Example:
+ * Did you mean:
+ * 1) Complete taskA
+ * 2) complete taskB
+ * 
+ * @author Nathan
+ *
+ */
 public class WaitingModeFormatter {
     private final static String PROMPT = "Did you mean:";
     private final static String FORMAT_CHOICE = "%1$d) %2$s";
@@ -40,6 +50,13 @@ public class WaitingModeFormatter {
         return result.toString();
     }
     
+    /**
+     * Format the SearchModeInfo into a String.
+     * Note that the ModeInfo for Waiting reuses the one that is used in the
+     * Search.
+     * @param searchInfo The SearchModeInfo to be formatted.
+     * @return The formatting result.
+     */
     public String format(SearchModeInfo searchInfo) {
         TaskInfo[] tasks = searchInfo.getTasks();
         TaskId[] taskIds = searchInfo.getTaskIds();

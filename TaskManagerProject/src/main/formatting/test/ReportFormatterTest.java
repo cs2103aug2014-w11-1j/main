@@ -59,13 +59,13 @@ public class ReportFormatterTest {
         String expected = "You have 5 tasks today, and 3 tasks tomorrow." + System.lineSeparator() +
                 "Overdue tasks:" + System.lineSeparator() +
                 "Fri, 4 Nov 2011 ---" + System.lineSeparator() +
-                "1) [   08:42   ] mnop                                                          " + System.lineSeparator() + System.lineSeparator() +
+                "   [   08:42   ] \u001b[31mmnop                                                   \u001b[0m       " + System.lineSeparator() + System.lineSeparator() +
                 "High-priority tasks:" + System.lineSeparator() +
                 "Sat, 3 Dec 2011 ---" + System.lineSeparator() +
-                "1) [   10:50   ] abcd                                                          " + System.lineSeparator() +
-                "2) [   13:00   ] efgh                                                          " + System.lineSeparator() + System.lineSeparator() +
+                "   [   10:50   ] \u001b[31mabcd                                                   \u001b[0m       " + System.lineSeparator() +
+                "   [   13:00   ] \u001b[31mefgh                                                   \u001b[0m       " + System.lineSeparator() + System.lineSeparator() +
                 "Sun, 4 Dec 2011 ---" + System.lineSeparator() +
-                "3) [   12:00   ] ijkl                                                          " + System.lineSeparator() + System.lineSeparator();
+                "   [   12:00   ] \u001b[31mijkl                                                   \u001b[0m       " + System.lineSeparator() + System.lineSeparator();
         
         assertEquals(expected, result);
     }

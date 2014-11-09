@@ -82,11 +82,11 @@ public class IntegrationTest {
         
         input = "show";
         expected = "Tue, 14 Oct 2014 ---" + NEWL +
-                    "1) [   14:00   ] purple                                                 - [FE5]" + NEWL +
-                    "2) [14:00-16:00] violet                                                 - [7YA]" + NEWL +
+                    "1) [   14:00   ] \u001b[31mpurple                                                 \u001b[0m- [FE5]" + NEWL +
+                    "2) [14:00-16:00] \u001b[31mviolet                                                 \u001b[0m- [7YA]" + NEWL +
                     "Floating Tasks ---" + NEWL +
-                    "3)               green                                                  - [P1C]" + NEWL +
-                    "4)               orange                                                 - [0WF]" + NEWL;
+                    "3) [           ] green                                                  - [P1C]" + NEWL +
+                    "4) [           ] \u001b[33morange                                                 \u001b[0m- [0WF]" + NEWL;
         output = mainController.runCommand(input);
         assertSame(expected, output);
         
