@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import main.command.parser.ParsedDate.Frequency;
 
 //@author A0111862M
+/**
+ * Container class for a pair of dates and their respective frequencies.
+ */
 public class DatePair {
     private LocalDate firstDate;
     private Frequency firstFrequency;
