@@ -1,9 +1,9 @@
 package data.taskinfo;
 
+//@author A0065475X
 /**
  * Immutable class. Stores tag as a string.
  */
-//@author A0065475X
 public final class Tag {
 
     public final String tag;

@@ -5,10 +5,10 @@ import java.util.function.BiFunction;
 import main.command.Command;
 import manager.ManagerHolder;
 
+//@author A0065475X
 /**
  * The interface used for setting and retrieving aliases from AliasStorage.
  */
-//@author A0065475X
 public interface IAliasStorage {
 
     public abstract BiFunction<String, ManagerHolder, Command> getDefaultCommand(

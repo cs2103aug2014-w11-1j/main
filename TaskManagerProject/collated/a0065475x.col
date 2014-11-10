@@ -6,6 +6,10 @@
 	 * origin: src\data\ITaskData.java
 	 */
 
+/**
+ * Facade for TaskData - used by the managers for read/write operations to
+ * TaskData. (e.g. SearchManager)
+ */
 public interface ITaskData {
 
     public static final int NO_TASK = -1;
@@ -96,6 +100,10 @@ public interface ITaskData {
 	 * origin: src\data\ITaskDataFileInputOutput.java
 	 */
 
+/**
+ * Facade for TaskData - used by FileInputOutput to synchronise TaskData with
+ * an external file.
+ */
 public interface ITaskDataFileInputOutput {
 
     public abstract TaskId getFirst();
@@ -135,6 +143,9 @@ public interface ITaskDataFileInputOutput {
 	 * origin: src\data\ITaskDataUndo.java
 	 */
 
+/**
+ * Facade for TaskData - used by the undoManager to retrieve undo snapshots.
+ */
 public interface ITaskDataUndo {
 
     public static final int NO_TASK = -1;
@@ -179,6 +190,11 @@ public interface ITaskDataUndo {
 	 * origin: src\data\Task.java
 	 */
 
+/**
+ * The Task object that is stored in the TaskData class. Not available outside
+ * of TaskData.<br>
+ * In contrast, a TaskInfo object is available outside of TaskData.
+ */
 public class Task {
     private static final int NOT_FOUND = -1;
     private TaskInfo taskInfo;
@@ -450,6 +466,11 @@ public class Task {
 	 * origin: src\data\TaskData.java
 	 */
 
+/**
+ * Program memory for the tasks in the program.<br>
+ * It is the job of TaskData to ensure that the absolute index of each task<br>
+ * remains the same even after deletion / addition of tasks.
+ */
 public class TaskData implements ITaskData, ITaskDataFileInputOutput, ITaskDataUndo {
     private static final String ERROR_NULL_TASKID = "Tried to query/edit TaskData with null task Id.";
     private static final String ERROR_NULL_TASKINFO = "Tried to edit TaskData with null taskInfo.";
@@ -1021,6 +1042,10 @@ public class TaskData implements ITaskData, ITaskDataFileInputOutput, ITaskDataU
 	 * origin: src\data\TaskId.java
 	 */
 
+/**
+ * Absolute ID of a task.<br>
+ * Immutable
+ */
 public final class TaskId implements Comparable<TaskId> {
     
     private static final char CHAR_Z = 'Z';
@@ -1306,6 +1331,9 @@ public enum Status {
 	 * origin: src\data\taskinfo\Tag.java
 	 */
 
+/**
+ * Immutable class. Stores tag as a string.
+ */
 public final class Tag {
 
     public final String tag;
@@ -1355,6 +1383,10 @@ public final class Tag {
 	 * origin: src\data\taskinfo\TaskInfo.java
 	 */
 
+/**
+ * Carries all the information used by a task.<br>
+ * It acts simply as a struct. All of its attributes are public.
+ */
 public class TaskInfo {
 
     public String name;
@@ -2225,6 +2257,12 @@ public class TaskInfoTest {
 	 * origin: src\data\UndoSnapshot.java
 	 */
 
+/**
+ * A "Snapshot" container holding all the UndoTaskSnapshots after an action
+ * has been executed. (i.e. all the changes to TaskData in the last action)<br>
+ * It is used to reverse all modifications to TaskData at once.
+ * 
+ */
 public class UndoSnapshot {
     private ArrayList<UndoTaskSnapshot> taskSnapshotList;
     private final TaskData taskData;
@@ -2322,6 +2360,14 @@ public class UndoSnapshot {
 	 * origin: src\data\UndoTaskSnapshot.java
 	 */
 
+/**
+ * Immutable. Done by restricting access to taskInfo attribute<br>
+ * This class stores a snapshot of a task before a modification.<br>
+ * It is used to undo changes.<br>
+ * <br>
+ * Note: if taskInfo = NO_TASK, it means the task did not exist before the change.
+ * 
+ */
 public class UndoTaskSnapshot {
 
     public static TaskInfo NO_TASK = null;
@@ -2765,6 +2811,13 @@ public class InvalidFileFormatException extends Exception {
 	 * origin: src\io\IReaderWriter.java
 	 */
 
+/**
+ * A ReaderWriter class interface that is used by File IO to parse data from
+ * a (file) Reader into objects, and to convert objects into a String format in
+ * a (file) Writer to output to a file.<br>
+ * <br>
+ * Can parse TaskInfo objects and AliasValuePAir objects.
+ */
 public interface IReaderWriter {
 
     /**
@@ -2824,6 +2877,9 @@ public interface IReaderWriter {
 	 * origin: src\io\json\JsonAliasParser.java
 	 */
 
+/**
+ * the main Json Parser for Aliases.
+ */
 public class JsonAliasParser {
     private static final String JSON_ALIASES = "aliases";
     private static final String JSON_ALIAS = "alias";
@@ -2962,6 +3018,10 @@ public class JsonAliasParser {
 	 * origin: src\io\json\JsonItemParser.java
 	 */
 
+/**
+ * Used to parse the individual items used in the Json file. e.g. dates times
+ * priorities etc
+ */
 public class JsonItemParser {
     
     public static final String STRING_EMPTY = "";
@@ -3109,6 +3169,11 @@ public class JsonItemParser {
 	 * origin: src\io\json\JsonReaderWriter.java
 	 */
 
+/**
+ * A ReaderWriter that uses Json to parse aliases and tasks.<br>
+ * This class is mostly a facade. The main implementation is in
+ * JsonTaskInfoParser / JsonAliasParser. 
+ */
 public class JsonReaderWriter implements IReaderWriter {
     private static final Logger log = TasklineLogger.getLogger();
 
@@ -3199,6 +3264,9 @@ public class JsonReaderWriter implements IReaderWriter {
 	 * origin: src\io\json\JsonTaskInfoParser.java
 	 */
 
+/**
+ * the main Json Parser for Tasks.
+ */
 public class JsonTaskInfoParser {
 
     private static final String JSON_TASKS = "tasks";
@@ -3511,6 +3579,115 @@ public class IoTestSuite {
 }
 
 	// End of segment: src\io\test\IoTestSuite.java
+
+
+
+
+
+	/**
+	 * origin: src\io\test\JsonItemParserTest.java
+	 */
+
+public class JsonItemParserTest {
+
+    @Test
+    public void testDateTimeConversion() {
+        Duration duration;
+        String durationString;
+
+        duration = Duration.ofHours(15);
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
+        
+        duration = Duration.ofDays(10000);
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
+        
+        duration = Duration.ofSeconds(3);
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
+        
+        duration = Duration.ofSeconds(1200);
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
+        
+        duration = Duration.ofHours(0);
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
+        
+        duration = Duration.ofHours(24);
+        durationString = JsonItemParser.durationToString(duration);
+        assertEquals(duration, JsonItemParser.stringToDuration(durationString));
+
+        durationString = "test";
+        assertEquals(null, JsonItemParser.stringToDuration(durationString));
+
+        LocalTime time;
+        String timeString;
+        
+        time = LocalTime.of(5, 4, 3);
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
+        
+        time = LocalTime.of(0, 1, 1);
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
+        
+        time = LocalTime.of(1, 0, 1);
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
+        
+        time = LocalTime.of(1, 1, 0);
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
+        
+        time = LocalTime.of(0, 0, 0);
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
+        
+        time = LocalTime.of(23, 59, 59);
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
+        
+        time = LocalTime.of(11, 10, 3);
+        timeString = JsonItemParser.localTimeToString(time);
+        assertEquals(time, JsonItemParser.stringToLocalTime(timeString));
+
+        LocalDate date;
+        String dateString;
+        
+        date = LocalDate.of(2013, 12, 31);
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
+        
+        date = LocalDate.of(1990, 2, 2);
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
+        
+        date = LocalDate.of(2012, 2, 29);
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
+        
+        date = LocalDate.of(1, 1, 1);
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
+
+        date = LocalDate.of(3012, 7, 4);
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
+
+        date = LocalDate.of(1000, 7, 7);
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
+
+        date = LocalDate.now();
+        dateString = JsonItemParser.localDateToString(date);
+        assertEquals(date, JsonItemParser.stringToLocalDate(dateString));
+    }
+
+}
+
+	// End of segment: src\io\test\JsonItemParserTest.java
 
 
 
@@ -4014,6 +4191,14 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 	 * origin: src\main\command\alias\AliasValuePair.java
 	 */
 
+/**
+ * Contains an alias and the value it is mapped to.<br>
+ * e.g. if "hp" is mapped to "edit \$ priority high", then we have:<br>
+ * alias = "hp"<br>
+ * value = "edit \$ priority high"<br>
+ * <br>
+ * Immutable
+ */
 public class AliasValuePair {
     public final String alias;
     public final String value;
@@ -4034,6 +4219,9 @@ public class AliasValuePair {
 	 * origin: src\main\command\alias\IAliasStorage.java
 	 */
 
+/**
+ * The interface used for setting and retrieving aliases from AliasStorage.
+ */
 public interface IAliasStorage {
 
     public abstract BiFunction<String, ManagerHolder, Command> getDefaultCommand(
@@ -4083,6 +4271,10 @@ public interface IAliasStorage {
 	 * origin: src\main\command\alias\IAliasStorageFileInputOutput.java
 	 */
 
+/**
+ * The interface used by File IO to synchronise the aliases in memory with an
+ * external file.
+ */
 public interface IAliasStorageFileInputOutput {
 
     /**
@@ -4302,6 +4494,15 @@ public class BackCommand extends Command {
 	 * origin: src\main\command\Command.java
 	 */
 
+/**
+ * The base Command class.<br>
+ * All commands should extend this class.<br>
+ * Overwrite the isValidArguments(), isCommandAllowed() and executeAction() to
+ * implement the command's functionality.<br>
+ * <br>
+ * If you wish for the command to be executed on existing tasks, try extending
+ * TargetedCommand, which extends this class, instead.
+ */
 public abstract class Command {
     protected final StateManager stateManager;
     
@@ -4435,6 +4636,102 @@ public class CommandController {
 }
 
 	// End of segment: src\main\command\CommandController.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\DeleteCommand.java
+	 */
+
+public class DeleteCommand extends TargetedCommand {
+    private final DeleteManager deleteManager;
+
+    public DeleteCommand(String args, ManagerHolder managerHolder) {
+        super(managerHolder);
+        deleteManager = managerHolder.getDeleteManager();
+        
+        parse(args);
+    }
+
+    private void parse(String args) {
+        String remaining = tryParseIdsIntoSet(args);
+        if (remaining.length() > 0) {
+            targetTaskIdSet = null;
+        }
+        if (targetTaskIdSet == null) {
+            parseAsSearchString(args);
+        }
+    }
+    
+    @Override
+    protected boolean isValidArguments() {
+        return targetTaskIdSet != null;
+    }
+
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canDelete();
+    }
+
+    @Override
+    protected Result executeAction() {
+        Result result = deleteManager.deleteTask(targetTaskIdSet);
+        return result;
+    }
+
+}
+
+	// End of segment: src\main\command\DeleteCommand.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\DetailsCommand.java
+	 */
+
+public class DetailsCommand extends TargetedCommand {
+    private final SearchManager searchManager;
+
+    public DetailsCommand(String args, ManagerHolder managerHolder) {
+        super(managerHolder);
+        searchManager = managerHolder.getSearchManager();
+
+        parse(args);
+    }
+
+    private void parse(String args) {
+        String remaining = tryParseIdsIntoSet(args);
+        if (remaining.length() > 0) {
+            targetTaskIdSet = null;
+        }
+        if (targetTaskIdSet == null) {
+            parseAsSearchString(args);
+        }
+    }
+
+    @Override
+    protected boolean isValidArguments() {
+        return targetTaskIdSet != null;
+    }
+
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canSearch();
+    }
+
+    @Override
+    protected Result executeAction() {
+        Result result = searchManager.details(targetTaskIdSet);
+        return result;
+    }
+
+}
+
+	// End of segment: src\main\command\DetailsCommand.java
 
 
 
@@ -4872,6 +5169,76 @@ public class FreeDaySearchCommand extends Command {
 
 
 	/**
+	 * origin: src\main\command\FreeTimeSearchCommand.java
+	 */
+
+public class FreeTimeSearchCommand extends Command {
+
+	private FreeTimeSearchManager freeTimeSearchManager;
+	private LocalDate date;
+	
+	public FreeTimeSearchCommand(String args, ManagerHolder managerHolder) {
+		super(managerHolder);
+		this.freeTimeSearchManager = managerHolder.getFreeTimeSearchManager();
+		parse(args);
+	}
+	
+	private void parse(String args) {
+		DateTimePair dateTimePair = CommandParser.parseDateTimes(args);
+		
+		if (dateTimePair.getNumOfDates() == 1 && 
+		        dateTimePair.getNumOfTimes() == 0) {
+		    
+		    assert dateTimePair.getSecondDate() == null;
+		    date = dateTimePair.getFirstDate();
+		} else {
+		    date = null;
+		}
+	}
+
+	@Override
+	protected boolean isValidArguments() {
+	    return date != null;
+	}
+
+	@Override
+	protected boolean isCommandAllowed() {
+	    return stateManager.canSearch();
+	}
+
+	@Override
+	protected Result executeAction() {
+	    Result result = freeTimeSearchManager.searchFreeTimeSlot(date);
+	    return result;
+	}
+	
+}
+
+	// End of segment: src\main\command\FreeTimeSearchCommand.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\test\CommandParserTestSuite.java
+	 */
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    CommandParserTest.class,
+    DateTimeParserTest.class
+})
+public class CommandParserTestSuite {
+
+}
+	// End of segment: src\main\command\parser\test\CommandParserTestSuite.java
+
+
+
+
+
+	/**
 	 * origin: src\main\command\ReportCommand.java
 	 */
 
@@ -4911,6 +5278,13 @@ public class ReportCommand extends Command {
 	 * origin: src\main\command\TargetedCommand.java
 	 */
 
+/**
+ * Any command that "acts" on existing tasks should extend TargetedCommand.<br>
+ * TargetedCommand gives the functionality to parse task numbers, absolute task
+ * Ids, and to act on tasks by specifying keywords.
+ * (e.g. delete orange juice)
+ * Examples: edit, delete.
+ */
 public abstract class TargetedCommand extends Command {
 
     private static final char DELIMITER_WHITESPACE = ' ';
@@ -5172,6 +5546,10 @@ public abstract class TargetedCommand extends Command {
 	 * origin: src\main\command\TaskIdSet.java
 	 */
 
+/**
+ * A set of task IDs that is used for a command operation.
+ * 
+ */
 public class TaskIdSet implements Iterable<TaskId>{
     private ArrayList<TaskId> idList;
     
@@ -5793,6 +6171,9 @@ public class EditCommandTest {
 	 * origin: src\main\command\test\StubManagerHolder.java
 	 */
 
+/**
+ * A set of stubs for testing the Commands
+ */
 class StubManagerHolder extends ManagerHolder {
     private StubAddManager stubAddManager;
     private StubSearchManager stubSearchManager;
@@ -6273,9 +6654,48 @@ public class UndoCommand extends Command {
 
 
 	/**
+	 * origin: src\main\command\ViewAliasCommand.java
+	 */
+
+public class ViewAliasCommand extends Command {
+    private final AliasManager aliasManager;
+
+    public ViewAliasCommand(ManagerHolder managerHolder) {
+        super(managerHolder);
+        this.aliasManager = managerHolder.getAliasManager();
+    }
+
+    @Override
+    protected boolean isValidArguments() {
+        return true;
+    }
+
+    @Override
+    protected boolean isCommandAllowed() {
+        return true;
+    }
+
+    @Override
+    protected Result executeAction() {
+        Result result = aliasManager.viewAliases();
+        return result;
+    }
+
+}
+
+	// End of segment: src\main\command\ViewAliasCommand.java
+
+
+
+
+
+	/**
 	 * origin: src\main\formatting\AliasFormatter.java
 	 */
 
+/**
+ * Formatter for Alias Messages (success/failure, bind/unbind).
+ */
 public class AliasFormatter {
     private static final String MESSAGE_DELETE_FAIL =
             "Unable to unbind alias: %1$s" + System.lineSeparator() + 
@@ -6348,6 +6768,9 @@ public class AliasFormatter {
 	 * origin: src\main\formatting\FreeTimeSearchFormatter.java
 	 */
 
+/**
+ * Formatter for Free Time Messages
+ */
 public class FreeTimeSearchFormatter {
 
     private final static String FORMAT_TIME = "Time: From %1$s - %2$s";
@@ -6402,6 +6825,71 @@ public class FreeTimeSearchFormatter {
 }
 
 	// End of segment: src\main\formatting\FreeTimeSearchFormatter.java
+
+
+
+
+
+	/**
+	 * origin: src\main\formatting\test\FormatterTestSuite.java
+	 */
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    AddSuccessfulFormatterTest.class,
+    DeleteSuccessfulFormatterTest.class,
+    EditSuccessfulFormatterTest.class,
+    ReportFormatterTest.class,
+    SearchModeFormatterTest.class,
+    WaitingModeFormatterTest.class
+})
+public class FormatterTestSuite {
+}
+
+	// End of segment: src\main\formatting\test\FormatterTestSuite.java
+
+
+
+
+
+	/**
+	 * origin: src\main\formatting\ViewAliasFormatter.java
+	 */
+
+/**
+ * Formatter for ViewAliasMessage. (when the user uses the view alias command)
+ */
+public class ViewAliasFormatter {
+    private static final String ALIAS_HEADER = "Aliases currently binded:" +
+            System.lineSeparator();
+    private static final String ALIAS_FORMAT = "[%1$d]: %2$s --> %3$s";
+
+    public String format(ViewAliasMessage aliasMessage) {
+        AliasValuePair[] aliases = aliasMessage.getAliases();
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(ALIAS_HEADER);
+        
+        int index = 1;
+        for (AliasValuePair alias : aliases) {
+            sb.append(formatAlias(index, alias));
+            sb.append(System.lineSeparator());
+            
+            index++;
+        }
+        
+        return sb.toString();
+    }
+
+    private String formatAlias(int index, AliasValuePair aliasValuePair) {
+        return String.format(ALIAS_FORMAT, index, aliasValuePair.alias,
+                aliasValuePair.value);
+    }
+
+}
+
+	// End of segment: src\main\formatting\ViewAliasFormatter.java
 
 
 
@@ -6484,6 +6972,35 @@ public class AliasMessage implements Message {
 
 
 	/**
+	 * origin: src\main\message\ViewAliasMessage.java
+	 */
+
+public class ViewAliasMessage implements Message {
+
+    private AliasValuePair[] aliases;
+
+    public ViewAliasMessage(AliasValuePair[] aliases) {
+        this.aliases = aliases;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.VIEW_ALIAS;
+    }
+    
+    public AliasValuePair[] getAliases() {
+        return aliases;
+    }
+
+}
+
+	// End of segment: src\main\message\ViewAliasMessage.java
+
+
+
+
+
+	/**
 	 * origin: src\manager\datamanager\AbstractManager.java
 	 */
 
@@ -6549,6 +7066,42 @@ public class AliasManager extends AbstractManager {
 }
 
 	// End of segment: src\manager\datamanager\AliasManager.java
+
+
+
+
+
+	/**
+	 * origin: src\manager\datamanager\searchfilter\test\FilterTestSuite.java
+	 */
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    DateTimeFilterTest.class,
+    KeywordFilterTest.class,
+    SuggestionFilterTest.class
+})
+public class FilterTestSuite {
+}
+
+	// End of segment: src\manager\datamanager\searchfilter\test\FilterTestSuite.java
+
+
+
+
+
+	/**
+	 * origin: src\manager\datamanager\suggestion\test\SuggestionTestSuite.java
+	 */
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    EditDistanceTest.class
+})
+public class SuggestionTestSuite {
+}
+
+	// End of segment: src\manager\datamanager\suggestion\test\SuggestionTestSuite.java
 
 
 
@@ -7007,6 +7560,10 @@ public class UndoManager extends AbstractManager {
 	 * origin: src\manager\ManagerHolder.java
 	 */
 
+/**
+ * A class which packages all the managers. It is passed into a Command object
+ * to allow the command to act on the managers.
+ */
 public class ManagerHolder {
     private final StateManager stateManager;
     private final AddManager addManager;
@@ -7174,6 +7731,11 @@ public class AliasSetResult implements Result {
 	 * origin: src\manager\result\Result.java
 	 */
 
+/**
+ * The result returned from the manager to the command after an operation.<br>
+ * The result is used by the command to update the StateManager on the result
+ * of the command execution.
+ */
 public interface Result {
     public enum Type {
         ADD_SUCCESS,
@@ -7224,6 +7786,11 @@ public interface Result {
 	 * origin: src\manager\result\SimpleResult.java
 	 */
 
+/**
+ * A simple result that carries no additional information.<br>
+ * Only carries the result type.
+ * 
+ */
 public class SimpleResult implements Result {
     private final Type type;
     
@@ -7281,6 +7848,34 @@ public class UndoResult implements Result {
 
 
 	/**
+	 * origin: src\manager\result\ViewAliasResult.java
+	 */
+
+public class ViewAliasResult implements Result {
+    private final AliasValuePair[] aliasValuePairs;
+    
+    public ViewAliasResult(AliasValuePair[] aliasValuePairs) {
+        this.aliasValuePairs = Arrays.copyOf(aliasValuePairs,
+                aliasValuePairs.length);
+    }
+    
+    public AliasValuePair[] getAliases() {
+        return aliasValuePairs;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.VIEW_ALIAS_SUCCESS;
+    }
+}
+
+	// End of segment: src\manager\result\ViewAliasResult.java
+
+
+
+
+
+	/**
 	 * origin: src\manager\test\ManagerTestSuite.java
 	 */
 
@@ -7301,6 +7896,13 @@ public class ManagerTestSuite {
 	 * origin: src\taskline\debug\Taskline.java
 	 */
 
+/**
+ * Does the main initialization of the program structure.<br>
+ * <br>
+ * How to put a logger in your class:<br>
+ * private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
+ *
+ */
 public class Taskline {
 
     public static void main(String[] args) {
@@ -7367,6 +7969,10 @@ public class Taskline {
 	 * origin: src\taskline\Taskline.java
 	 */
 
+/**
+ * Does the main initialization of the program structure.
+ *
+ */
 public class Taskline {
 
     public static void main(String[] args) throws IOException {
@@ -7483,6 +8089,9 @@ public class TasklineLogger {
 	 * origin: src\test\crashtest\AbstractCrashTest.java
 	 */
 
+/**
+ * Carries the framework for a crash test.
+ */
 public abstract class AbstractCrashTest {
     
     private final int logQueueSize;
@@ -7715,6 +8324,13 @@ public abstract class AbstractCrashTest {
 	 * origin: src\test\crashtest\KeywordDictionary.java
 	 */
 
+/**
+ * A dictionary of commonly used keywords or strings used for the crash tester.
+ * <br>
+ * Keywords are sorted into categories (ListType). When you query the
+ * dictionary for a certain keyword type, it retrieves a random (seeded random)
+ * keyword from that list. 
+ */
 public class KeywordDictionary {
     
     private static final int RECURSE_PROBABILITY = 4;
@@ -8087,6 +8703,11 @@ class KeywordToken {
 	 * origin: src\test\crashtest\MultiInstanceCrashTest.java
 	 */
 
+/**
+ * The crash test configuration for a multi-instance crash test. Focus is on
+ * checking whether the other taskline functions properly when one of them is
+ * constantly adding and deleting tasks.
+ */
 public class MultiInstanceCrashTest extends AbstractCrashTest {
 
     public MultiInstanceCrashTest(
@@ -8229,6 +8850,11 @@ public class MultiInstanceCrashTest extends AbstractCrashTest {
 	 * origin: src\test\crashtest\SingleInstanceCrashTest.java
 	 */
 
+/**
+ * The crash test configuration for a single-instance crash test. Focus is on
+ * testing as many different types of input as possible, to see whether anything
+ * causes the program to crash.
+ */
 public class SingleInstanceCrashTest extends AbstractCrashTest {
 
     public SingleInstanceCrashTest(
@@ -8365,6 +8991,11 @@ public class SingleInstanceCrashTest extends AbstractCrashTest {
 	 * origin: src\test\crashtest\TasklineInstanceContainer.java
 	 */
 
+/**
+ * Carries either one or two instances of taskline. If it is created in
+ * multi-instance mode, it randomly chooses between the two tasklines based
+ * on the probability ratio (0<ratio<1) given.
+ */
 public class TasklineInstanceContainer {
     private final String fileName;
     private final String aliasFileName;
@@ -8478,6 +9109,10 @@ public class TasklineInstanceContainer {
 	 * origin: src\test\MainTestSuite.java
 	 */
 
+/**
+ * Runs all JUnit tests in the program.
+ * ALWAYS RUN THIS BEFORE COMMITING.
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     data.test.DataTestSuite.class,
@@ -8503,6 +9138,11 @@ public class MainTestSuite {
 	 * origin: src\test\MainTestSuiteAndCrashTest.java
 	 */
 
+/**
+ * Runs both the main test suite and the crash tester.<br>
+ * I usually run both separately because the crash tester can take a while.<br>
+ * But this is good for seeing total test coverage.
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     MainTestSuite.class,
@@ -8521,6 +9161,15 @@ public class MainTestSuiteAndCrashTest {
 	 * origin: src\test\MultiInstanceCrashTester.java
 	 */
 
+/**
+ * Two separate instance of taskline operating on the same file.<br>
+ * Used to check whether the file can be modified externally without crashing
+ * taskline.<br>
+ * It does this by creating two independent instances of Taskline which operate
+ * on the same files “testFile.txt” and “testAlias.txt” and sends random input
+ * to one of the two, picked randomly, to see if they are able to cause each
+ * other to crash.
+ */
 public class MultiInstanceCrashTester {
     private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
     private static final String TEST_FILENAME = "testTasks.txt";
@@ -8560,6 +9209,12 @@ public class MultiInstanceCrashTester {
 	 * origin: src\test\SingleInstanceCrashTester.java
 	 */
 
+/**
+ * The original crash tester. Tests a bunch of random input, together with some
+ * fixed input which have been known to crash the program before, to see if any
+ * of the input causes the program to crash (exception / assertion) or infinite
+ * loop.
+ */
 public class SingleInstanceCrashTester {
     private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
     private static final String TEST_FILENAME = "testTasks.txt";

@@ -2,12 +2,12 @@ package test.crashtest;
 
 import test.crashtest.KeywordDictionary.ListType;
 
+//@author A0065475X
 /**
  * The crash test configuration for a multi-instance crash test. Focus is on
  * checking whether the other taskline functions properly when one of them is
  * constantly adding and deleting tasks.
  */
-//@author A0065475X
 public class MultiInstanceCrashTest extends AbstractCrashTest {
 
     public MultiInstanceCrashTest(

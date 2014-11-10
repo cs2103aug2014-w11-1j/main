@@ -14,12 +14,12 @@ import main.command.alias.AliasValuePair;
 import taskline.TasklineLogger;
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 /**
  * A ReaderWriter that uses Json to parse aliases and tasks.<br>
  * This class is mostly a facade. The main implementation is in
  * JsonTaskInfoParser / JsonAliasParser. 
  */
-//@author A0065475X
 public class JsonReaderWriter implements IReaderWriter {
     private static final Logger log = TasklineLogger.getLogger();
 

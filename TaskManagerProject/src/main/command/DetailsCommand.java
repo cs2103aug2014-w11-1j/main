@@ -4,6 +4,7 @@ import manager.ManagerHolder;
 import manager.datamanager.SearchManager;
 import manager.result.Result;
 
+//@author A0065475X
 public class DetailsCommand extends TargetedCommand {
     private final SearchManager searchManager;
 

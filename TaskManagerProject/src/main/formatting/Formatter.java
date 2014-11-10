@@ -17,11 +17,10 @@ import main.modeinfo.ModeInfo;
 import main.modeinfo.SearchModeInfo;
 import main.response.Response;
 
+//@author A0113011L
 /**
  * Formatter. Responsible for formatting Response objects to String.
  */
-
-//@author A0113011L
 public class Formatter {
     private AddSuccessfulFormatter addSuccessfulFormatter;
     private DeleteSuccessfulFormatter deleteSuccessfulFormatter;

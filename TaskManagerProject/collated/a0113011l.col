@@ -6,6 +6,10 @@
 	 * origin: src\data\AutoCompleteDictionary.java
 	 */
 
+/**
+ * A dictionary that keeps an updated list of strings that can be
+ * auto-completed.
+ */
 public class AutoCompleteDictionary {
     
     SimpleCompletor completor;
@@ -29,6 +33,9 @@ public class AutoCompleteDictionary {
 	 * origin: src\main\formatting\AddSuccessfulFormatter.java
 	 */
 
+/**
+ * Formatter for AddSuccessfulMessage.
+ */
 public class AddSuccessfulFormatter {
     private final static String FORMAT_LINE = "Task %1$s added successfully." +
             System.lineSeparator();
@@ -53,6 +60,9 @@ public class AddSuccessfulFormatter {
 	 * origin: src\main\formatting\DeleteSuccessfulFormatter.java
 	 */
 
+/**
+ * Formatter for DeleteSuccessfulMessage.
+ */
 public class DeleteSuccessfulFormatter {
     private final static String FORMAT_SINGLE = "Task %1$s deleted." +
             System.lineSeparator();
@@ -112,6 +122,19 @@ public class DeleteSuccessfulFormatter {
 	 * origin: src\main\formatting\DetailsFormatter.java
 	 */
 
+/**
+ * <pre>
+ * Formatter for the DetailsMessage.
+ * Format example:
+ * Task [a9f]
+ *    Name: eat apples for dinner
+ *    Time: 17:30 (PM)
+ *    Date: Tuesday, 17 Feb 2015
+ *    Tags: taskline, food
+ *    Priority: High
+ *    Description: I will die if I don't eat my apples!
+ * </pre>
+ */
 public class DetailsFormatter {
     DetailsUtility detailsUtility;
 
@@ -162,6 +185,22 @@ public class DetailsFormatter {
 	 * origin: src\main\formatting\EditModeFormatter.java
 	 */
 
+/**
+ * <pre>
+ * A formatter for EditMode.
+ * 
+ * Example:
+ * You are now editing a9f.
+ * 
+ * Task [a9f]
+ *    Name: eat apples for dinner
+ *    Time: 17:30 (PM)
+ *    Date: Tuesday, 17 Feb 2015
+ *    Tags: taskline, food
+ *    Priority: High
+ *    Description: I will die if I don't eat my apples!
+ * </pre>
+ */
 public class EditModeFormatter {
     private final static String FORMAT_LINE = "You are now editing %1$s." + 
             System.lineSeparator();
@@ -202,6 +241,21 @@ public class EditModeFormatter {
 	 * origin: src\main\formatting\EditSuccessfulFormatter.java
 	 */
 
+/**
+ * <pre>
+ * Formatter for the EditSuccessfulMessage.
+ * Format example:
+ * Task name changed.
+ * 
+ * Task [a9f]
+ *    Name: eat apples for dinner
+ *    Time: 17:30 (PM)
+ *    Date: Tuesday, 17 Feb 2015
+ *    Tags: taskline, food
+ *    Priority: High
+ *    Description: I will die if I don't eat my apples!
+ * </pre>
+ */
 public class EditSuccessfulFormatter {
     private final static String CHANGED_NAME = "Task name changed.";
     private final static String CHANGED_TIME = "Time changed.";
@@ -287,6 +341,10 @@ public class EditSuccessfulFormatter {
 	 * origin: src\main\formatting\EmptyModeFormatter.java
 	 */
 
+/**
+ * A formatter for the EmptyModeInfo.
+ *
+ */
 public class EmptyModeFormatter {
 	
 	/**
@@ -309,6 +367,10 @@ public class EmptyModeFormatter {
 	 * origin: src\main\formatting\EnumFormatter.java
 	 */
 
+/**
+ * Formatter for EnumMessage.
+ *
+ */
 public class EnumFormatter {
     
     private final static String MESSAGE_INVALID_ARGUMENT = 
@@ -442,6 +504,9 @@ public class EnumFormatter {
 	 * origin: src\main\formatting\Formatter.java
 	 */
 
+/**
+ * Formatter. Responsible for formatting Response objects to String.
+ */
 public class Formatter {
     private AddSuccessfulFormatter addSuccessfulFormatter;
     private DeleteSuccessfulFormatter deleteSuccessfulFormatter;
@@ -642,6 +707,16 @@ public class Formatter {
 	 * origin: src\main\formatting\FreeDaySearchFormatter.java
 	 */
 
+/**
+ * <pre>
+ * Formatter for the FreeDayMessage.
+ * Example:
+ * You do not have any planned tasks on these days:
+ * - 27 Nov 2014
+ * - 30 Nov 2014
+ * - 1 Dec 2014
+ * </pre>
+ */
 public class FreeDaySearchFormatter {
     private final static String LINE_HEADER = 
             "You do not have any planned tasks on these days:" + 
@@ -717,6 +792,26 @@ public class FreeDaySearchFormatter {
 	 * origin: src\main\formatting\ReportFormatter.java
 	 */
 
+/**
+ * <pre>
+ * Formatter for the ReportMessage class.
+ * Example:
+ * [  Sunday, 9 Nov 2014, 17:17 (PM) ]
+ * You have 2 tasks today, and 1 tasks tomorrow.
+ * Overdue tasks:
+ * Fri, 7 Nov 2014 ---
+ *   [   11:00   ] Task1
+ *   [   17:00   ] Task2
+ *   
+ * High-priority tasks:
+ * Sun, 9 Nov 2014 ---
+ *   [12:00-14:00] Task3
+ * 
+ * Non-urgent tasks:
+ * Sun, 9 Nov 2014
+ *   [   15:00   ] Task4
+ * </pre>
+ */
 public class ReportFormatter {
     private final static String DATETIME_FORMAT_DATE = "EEEE, d MMM Y";
     private final static String DATETIME_FORMAT_TIME = "HH:mm (a)";
@@ -828,6 +923,20 @@ public class ReportFormatter {
 	 * origin: src\main\formatting\SearchModeFormatter.java
 	 */
 
+/**
+ * <pre>
+ * Formatter for SearchModeInfo.
+ * Example : 
+ * Thu, 15 Nov 2014 ---                        
+ * 1) [   11:20   ] Eat an apple today                                      - [f8g]
+ * Thu, 17 Nov 2014 ---                                
+ * 2) [12:20-13:30] Prepare apples for dinner                               - [fu5]
+ * 3) [   17:30   ] Eat apples for dinner                                   - [a9f]
+ * 4) [   21:10   ] Go to the supermarket and shop for some apples for p... - [gf4]
+ * Floating Tasks ---
+ * 5) [           ] Remember to eat an apple today                          - [a8d]
+ * </pre>
+ */
 public class SearchModeFormatter {
     private final static String LINE_SUGGESTION = "Did you mean: ";
     
@@ -1009,21 +1118,6 @@ public class EditSuccessfulFormatterTest {
 }
 
 	// End of segment: src\main\formatting\test\EditSuccessfulFormatterTest.java
-
-
-
-
-
-	/**
-	 * origin: src\main\formatting\test\EnumFormatterTest.java
-	 */
-
-public class EnumFormatterTest {
-
-
-}
-
-	// End of segment: src\main\formatting\test\EnumFormatterTest.java
 
 
 
@@ -1291,6 +1385,10 @@ public class WaitingModeFormatterTest {
 	 * origin: src\main\formatting\utility\ColorUtility.java
 	 */
 
+/**
+ * Utility to colorize text. Works by adding the corresponding ANSI escape 
+ * sequences.
+ */
 public class ColorUtility {
     public enum Color {
         BLACK(0),
@@ -1339,9 +1437,205 @@ public class ColorUtility {
 
 
 	/**
+	 * origin: src\main\formatting\utility\DetailsUtility.java
+	 */
+
+/**
+ * A utility class to format the details of a TaskInfo.
+ */
+public class DetailsUtility {
+    private final static String FORMAT_ID = "Task [%1$s]";
+    private final static String FORMAT_NAME = "Name: %1$s";
+    private final static String FORMAT_TIME = "Time: %1$s";
+    private final static String DATETIME_FORMAT_TIME = "HH:mm (a)";
+    private final static String FORMAT_DATE = "Date: %1$s";
+    private final static String DATETIME_FORMAT_DATE = "EEEE, d MMM Y";
+    private final static String FORMAT_TAGS = "Tags: %1$s";
+    private final static String FORMAT_PRIORITY = "Priority: %1$s";
+    private final static String FORMAT_DESCRIPTION = "Description: %1$s";
+    private final static String FORMAT_STATUS = "Status: %1$s";
+    
+    private final static String FORMAT_START_DATETIME = "Start: %1$s";
+    private final static String FORMAT_END_DATETIME = "End: %1$s";
+    private final static String DATETIME_FORMAT_DATETIME = "E, d MMM Y, HH:mm (a)";
+
+    private final static String ERROR_PRIORITY_NULL = "Priority is null.";
+    private final static String ERROR_STATUS_NULL = "Status is null.";
+
+    private String formatTime(LocalTime time) {
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(DATETIME_FORMAT_TIME);
+        String formattedTime = formatter.format(time);
+        return String.format(FORMAT_TIME, formattedTime);
+    }
+
+    private String formatDate(LocalDate date) {
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(DATETIME_FORMAT_DATE);
+        String formattedDate = formatter.format(date);
+        return String.format(FORMAT_DATE, formattedDate);
+    }
+    
+    private String formatStartDateTime(LocalDate date, LocalTime time) {
+        String formattedDateTime;
+        
+        if (time == null) {
+            formattedDateTime = formatDate(date);
+        } else {
+            LocalDateTime datetime = date.atTime(time);
+            
+            DateTimeFormatter formatter = 
+                    DateTimeFormatter.ofPattern(DATETIME_FORMAT_DATETIME);
+            formattedDateTime = formatter.format(datetime);
+        }
+        
+        return String.format(FORMAT_START_DATETIME, formattedDateTime);
+    }
+    
+    private String formatEndDateTime(LocalDate date, LocalTime time) {
+        String formattedDateTime;
+        
+        if (time == null) {
+            formattedDateTime = formatDate(date);
+        } else {
+            LocalDateTime datetime = date.atTime(time);
+            
+            DateTimeFormatter formatter = 
+                    DateTimeFormatter.ofPattern(DATETIME_FORMAT_DATETIME);
+            formattedDateTime = formatter.format(datetime);
+        }
+        
+        return String.format(FORMAT_END_DATETIME, formattedDateTime);
+    }
+
+    private String buildTagsString(Tag[] tags) {
+        StringBuilder builder = new StringBuilder("");
+        for (int i = 0; i < tags.length; i++) {
+            if (i > 0) {
+                builder.append(", ");
+            }
+            builder.append(tags[i].toString());
+        }
+        return builder.toString();
+    }
+
+    private String getPriorityString(Priority priority) {
+        assert priority != null : ERROR_PRIORITY_NULL;
+        String priorityString = "";
+        switch(priority) {
+            case HIGH :
+                priorityString = "High";
+                break;
+            case MEDIUM :
+                priorityString = "Medium";
+                break;
+            case LOW :
+                priorityString = "Low";
+                break;
+            case NONE :
+                priorityString = "None";
+        }
+        return priorityString;
+    }
+
+    private String getStatusString(Status status) {
+        assert status != null : ERROR_STATUS_NULL;
+
+        String statusString = "";
+        switch (status) {
+            case DONE :
+                statusString = "Done";
+                break;
+            case UNDONE :
+                statusString = "Not done";
+                break;
+        }
+        return statusString;
+    }
+
+    private String addIndentation(String s, int numberOfSpaces) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < numberOfSpaces; i++) {
+            builder.append(" ");
+        }
+        builder.append(s);
+        return builder.toString();
+    }
+    
+    boolean isEndOnly(TaskInfo task) {
+        return task.startDate == null && task.startTime == null;
+    }
+
+    /**
+     * Format a pair of TaskInfo and TaskId to an ArrayList of String, where
+     * each entry of the ArrayList corresponds to a line of output.
+     * @param task The TaskInfo to be formatted.
+     * @param taskId The TaskId to be formatted.
+     * @return The formatted task details.
+     */
+    public ArrayList<String> formatToArray(TaskInfo task, TaskId taskId) {
+        ArrayList<String> result = new ArrayList<String>();
+
+        result.add(String.format(FORMAT_ID, taskId.toString()));
+
+        String nameLine = String.format(FORMAT_NAME,  task.name);
+        result.add(addIndentation(nameLine, 3));
+
+        if (isEndOnly(task)) {
+            if (task.endTime != null) {
+                String timeLine = formatTime(task.endTime);
+                result.add(addIndentation(timeLine, 3));
+            }
+            if (task.endDate != null) {
+                String dateLine = formatDate(task.endDate);
+                result.add(addIndentation(dateLine, 3));
+            }
+        } else {
+            String startLine = formatStartDateTime(task.startDate, task.startTime);
+            String endLine = formatEndDateTime(task.endDate, task.endTime);
+            
+            result.add(addIndentation(startLine, 3));
+            result.add(addIndentation(endLine, 3));
+        }
+
+        if (task.tags != null) {
+            String tagsLine = String.format(FORMAT_TAGS,
+                    buildTagsString(task.tags));
+            result.add(addIndentation(tagsLine, 3));
+        }
+
+        String priorityLine = String.format(FORMAT_PRIORITY,
+                getPriorityString(task.priority));
+        result.add(addIndentation(priorityLine, 3));
+
+        String statusLine = String.format(FORMAT_STATUS, getStatusString(task.status));
+        result.add(addIndentation(statusLine, 3));
+
+        if (task.details != null) {
+            String descriptionLine = String.format(FORMAT_DESCRIPTION,
+                    task.details);
+            result.add(addIndentation(descriptionLine, 3));
+        }
+
+        return result;
+    }
+}
+
+	// End of segment: src\main\formatting\utility\DetailsUtility.java
+
+
+
+
+
+	/**
 	 * origin: src\main\formatting\utility\SummaryUtility.java
 	 */
 
+/**
+ * A utility to format a set of tasks in a condensed form, based on the 
+ * date of the task.
+ *
+ */
 public class SummaryUtility {
     private final static int WIDTH_LINE = 79;
     private final static int WIDTH_TIME = 14;
@@ -1633,11 +1927,13 @@ public class SummaryUtility {
 	 */
 
 /**
+ * <pre>
  * Formatter for WaitingMode.
  * Example:
  * Did you mean:
  * 1) Complete taskA
  * 2) complete taskB
+ * </pre>
  */
 public class WaitingModeFormatter {
     private final static String PROMPT = "Did you mean:";
@@ -1702,9 +1998,135 @@ public class WaitingModeFormatter {
 
 
 	/**
+	 * origin: src\main\message\DetailsMessage.java
+	 */
+
+public class DetailsMessage implements Message {
+
+    TaskInfo[] tasks;
+    TaskId[] taskIds;
+    
+    public DetailsMessage(TaskInfo[] tasks, TaskId[] taskIds) {
+        this.tasks = tasks;
+        this.taskIds = taskIds;
+    }
+    
+    public TaskInfo[] getTasks() {
+        return tasks;
+    }
+    
+    public TaskId[] getTaskIds() {
+        return taskIds;
+    }
+    
+    @Override
+    public Type getType() {
+        return Type.DETAILS;
+    }
+
+}
+
+	// End of segment: src\main\message\DetailsMessage.java
+
+
+
+
+
+	/**
+	 * origin: src\main\message\EnumMessage.java
+	 */
+
+/**
+ * For any message that does not need to contain any more information than its
+ * type.
+ */
+public class EnumMessage implements Message{
+    public enum MessageType {
+        EMPTY_STRING,
+        INVALID_ARGUMENT,
+        INVALID_COMMAND,
+        ADD_FAILED,
+        DELETE_FAILED,
+        EDIT_FAILED,
+        ADD_TAG_FAILED,
+        DELETE_TAG_FAILED,
+        SEARCH_SUCCESS,
+        SEARCH_FAILED,
+        EDIT_STARTED,
+        EDIT_ENDED,
+        UNDO_SUCCESS,
+        UNDO_FAILED,
+        REDO_SUCCESS,
+        REDO_FAILED,
+        SEARCH_ENDED,
+        EXIT
+    }    
+    MessageType messageType;
+    
+    public Type getType() {
+        return Type.ENUM_MESSAGE;
+    }
+    
+    public EnumMessage(MessageType messageType) {
+        this.messageType = messageType;
+    }
+    
+    public MessageType getMessageType() {
+        return messageType;
+    }
+    
+    public static EnumMessage emptyString() {
+        return new EnumMessage(MessageType.EMPTY_STRING);
+    }
+    
+    public static EnumMessage cannotExecuteCommand() {
+        return new EnumMessage(MessageType.INVALID_ARGUMENT);
+    }
+}
+
+	// End of segment: src\main\message\EnumMessage.java
+
+
+
+
+
+	/**
+	 * origin: src\main\message\Message.java
+	 */
+
+/**
+ * Carries information regarding the last command execution.
+ */
+public interface Message {
+    public enum Type {
+        ENUM_MESSAGE,
+        ADD_SUCCESSFUL,
+        EDIT_SUCCESSFUL,
+        DELETE_SUCCESSFUL,
+        FREE_DAY_SEARCH_SUCCESSFUL,
+        FREE_TIME_SEARCH_SUCCESSFUL,
+        EDIT_ALIAS,
+        VIEW_ALIAS,
+        DETAILS,
+        REPORT
+    }
+    
+    public Type getType();
+}
+
+	// End of segment: src\main\message\Message.java
+
+
+
+
+
+	/**
 	 * origin: src\main\modeinfo\EditModeInfo.java
 	 */
 
+/**
+ * The ModeInfo that is passed when the user is in the EditMode.
+ */
 public class EditModeInfo implements ModeInfo {
 
     private TaskId taskId;
@@ -1755,6 +2177,11 @@ public class EditModeInfo implements ModeInfo {
 	 * origin: src\main\modeinfo\EmptyModeInfo.java
 	 */
 
+/**
+ * A ModeInfo that is used when the user is in the normal mode, without
+ * any specific mode to print out.
+ *
+ */
 public class EmptyModeInfo implements ModeInfo {
 
 	/**
@@ -1776,6 +2203,10 @@ public class EmptyModeInfo implements ModeInfo {
 	 * origin: src\main\modeinfo\ModeInfo.java
 	 */
 
+/**
+ * An Interface to pass the current state of the program to the Formatter.
+ *
+ */
 public interface ModeInfo {
     public enum Type {
         EMPTY_MODE,
@@ -1801,6 +2232,9 @@ public interface ModeInfo {
 	 * origin: src\main\modeinfo\SearchModeInfo.java
 	 */
 
+/**
+ * The ModeInfo for the state when the program is in the search mode.
+ */
 public class SearchModeInfo implements ModeInfo {
 
     private String[] suggestions;
@@ -1867,6 +2301,11 @@ public class SearchModeInfo implements ModeInfo {
 	 * origin: src\main\response\Response.java
 	 */
 
+/**
+ * Carries a Message and a ModeInfo.<br>
+ * Message carries information about the last command execution.<br>
+ * ModeInfo carries information about the current state the program is in.
+ */
 public class Response {
 
     Message message;
@@ -1998,7 +2437,6 @@ public class DateTimeFilter implements Filter{
 	/**
 	 * origin: src\manager\datamanager\searchfilter\Filter.java
 	 */
-
 
 /**
  * A Filter interface. A Filter is used to search for tasks.
@@ -3521,6 +3959,197 @@ public class EditDistanceTest {
 }
 
 	// End of segment: src\manager\datamanager\suggestion\test\EditDistanceTest.java
+
+
+
+
+
+	/**
+	 * origin: src\manager\datamanager\test\SearchManagerTest.java
+	 */
+
+public class SearchManagerTest {
+
+    TaskInfo task1 = createTask("apple", getTime(3,0), getDate(11,16),getTime(9, 0), getDate(11, 16));
+    TaskInfo task2 = createTask("banana", getTime(5, 0), getDate(11, 16), getTime(12, 0), getDate(11, 17));
+    TaskInfo task3 = createTask("cheese", getTime(13, 0), getDate(11,15), getTime(19, 0), getDate(11, 15));
+    TaskInfo task4 = createTask("dip", null, null , getTime(11, 0), getDate(11, 16));
+    TaskInfo task5 = createTask("egg", getTime(19, 0), getDate(10, 30), getTime(1, 20), getDate(11,16));
+    TaskInfo task6 = createTask("fish", null, null, null, null);
+    TaskInfo task7 = createTask("gum", getTime(10, 0), getDate(11, 8), getTime(16, 0), getDate(11, 10));
+    TaskInfo task8 = createTask("ham", null, null, null, getDate(11, 3));
+
+    /**
+     * Test simple task within a day
+     */
+    @Test
+    public void test1(){ 
+        TaskData taskData = new TaskData();
+        SearchManager manager = new SearchManager(taskData);
+
+        taskData.add(task1);
+        taskData.add(task2);
+        taskData.add(task3);
+        taskData.add(task4);
+        taskData.add(task5);
+        taskData.add(task6);
+        taskData.add(task7);
+        taskData.add(task8);
+        
+        
+        Filter[] filters = new Filter[1];
+        filters[0] = new KeywordFilter(new String[]{"egg"});
+        SearchResult result = (SearchResult)manager.searchTasksWithoutSplit(filters);
+        
+        assertEquals(1, result.getTasks().length);
+        assertEquals("egg", result.getTasks()[0].name);
+    }
+
+    
+    private static TaskInfo createTask(String name,LocalTime startTime, LocalDate startDate,
+            LocalTime endTime, LocalDate endDate){
+        TaskInfo taskInfo = TaskInfo.create();
+        taskInfo.name = name;
+        taskInfo.startTime = startTime;
+        taskInfo.startDate = startDate;
+        taskInfo.endTime = endTime;
+        taskInfo.endDate = endDate;
+        return taskInfo;
+    }
+    
+    private static LocalTime getTime(int hour, int minute){
+        return LocalTime.of(hour, minute);
+    }
+
+    private static LocalDate getDate(int month, int day){
+        return LocalDate.of(2014, month, day);
+    }
+}
+
+	// End of segment: src\manager\datamanager\test\SearchManagerTest.java
+
+
+
+
+
+	/**
+	 * origin: src\manager\result\DetailsResult.java
+	 */
+
+public class DetailsResult implements Result {
+
+    private TaskInfo[] tasks;
+    private TaskId[] taskIds;
+    
+    public DetailsResult(TaskInfo[] tasks, TaskId[] taskIds) {
+        this.tasks = tasks;
+        this.taskIds = taskIds;
+    }
+    
+    public TaskInfo[] getTasks() {
+        return tasks;
+    }
+    
+    public TaskId[] getTaskIds() {
+        return taskIds;
+    }
+    
+    @Override
+    public Type getType() {
+        return Type.DETAILS;
+    }
+}
+
+	// End of segment: src\manager\result\DetailsResult.java
+
+
+
+
+
+	/**
+	 * origin: src\manager\result\SearchResult.java
+	 */
+
+public class SearchResult implements Result {
+
+    private TaskInfo[] tasks;
+    private TaskId[] taskIds;
+    private Filter[] filtersUsed;
+    private String[] suggestions;
+    
+    public SearchResult(TaskInfo[] tasks, TaskId[] taskIds,
+            Filter[] filtersUsed) {
+        this.tasks = tasks;
+        this.taskIds = taskIds;
+        this.filtersUsed = filtersUsed;
+    }
+    
+    public TaskId[] getTaskIds() {
+        assert tasks.length == taskIds.length;
+        return taskIds;
+    }
+    
+    public TaskInfo[] getTasks() {
+        assert tasks.length == taskIds.length;
+        return tasks;
+    }
+    
+    public Filter[] getFilters() {
+        return filtersUsed;
+    }
+    
+    public void setSuggestion(String[] suggestions) {
+        this.suggestions = suggestions;
+    }
+    
+    public String[] getSuggestions() {
+        return suggestions;
+    }
+    
+    @Override
+    public Type getType() {
+        return Type.SEARCH_SUCCESS;
+    }
+
+    /**
+     * @return true iff there is only one result in the search.
+     */
+    public boolean onlyOneSearchResult() {
+        assert tasks.length == taskIds.length;
+        
+        // TODO: This is a temporary fix for the minor bug.
+        // Does not cover all cases. Use removeDuplicates in searchManager instead.
+        if (taskIds.length == 0) {
+            return false;
+        }
+        
+        for (int i = 1; i < taskIds.length; i++) {
+            if (!taskIds[0].equals(taskIds[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Note: There must be exactly one search result.
+     * @return The taskId of the only search result.
+     */
+    public TaskId getOnlySearchResult() {
+        assert onlyOneSearchResult();
+        return taskIds[0];
+    }
+    
+    /**
+     * @return true iff there are no tasks in the search result.
+     */
+    public boolean noTasksFound() {
+        assert tasks.length == taskIds.length;
+        return taskIds.length == 0;
+    }
+}
+
+	// End of segment: src\manager\result\SearchResult.java
 
 
 

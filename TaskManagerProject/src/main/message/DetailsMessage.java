@@ -3,6 +3,7 @@ package main.message;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class DetailsMessage implements Message {
 
     TaskInfo[] tasks;

@@ -6,6 +6,7 @@ import java.io.Writer;
 import main.command.alias.AliasValuePair;
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 /**
  * A ReaderWriter class interface that is used by File IO to parse data from
  * a (file) Reader into objects, and to convert objects into a String format in
@@ -13,7 +14,6 @@ import data.taskinfo.TaskInfo;
  * <br>
  * Can parse TaskInfo objects and AliasValuePAir objects.
  */
-//@author A0065475X
 public interface IReaderWriter {
 
     /**

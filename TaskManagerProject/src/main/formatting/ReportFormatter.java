@@ -10,7 +10,9 @@ import main.message.ReportMessage;
 import data.taskinfo.TaskInfo;
 
 
+//@author A0113011L
 /**
+ * <pre>
  * Formatter for the ReportMessage class.
  * Example:
  * [  Sunday, 9 Nov 2014, 17:17 (PM) ]
@@ -27,10 +29,8 @@ import data.taskinfo.TaskInfo;
  * Non-urgent tasks:
  * Sun, 9 Nov 2014
  *   [   15:00   ] Task4
- *   
- *
+ * </pre>
  */
-//@author A0113011L
 public class ReportFormatter {
     private final static String DATETIME_FORMAT_DATE = "EEEE, d MMM Y";
     private final static String DATETIME_FORMAT_TIME = "HH:mm (a)";

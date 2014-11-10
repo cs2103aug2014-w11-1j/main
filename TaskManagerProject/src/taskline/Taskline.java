@@ -22,11 +22,11 @@ import ui.UIDisplay;
 import data.AutoCompleteDictionary;
 import data.TaskData;
 
+//@author A0065475X
 /**
  * Does the main initialization of the program structure.
  *
  */
-//@author A0065475X
 public class Taskline {
 
     public static void main(String[] args) throws IOException {

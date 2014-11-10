@@ -17,11 +17,11 @@ import javax.json.stream.JsonGenerator;
 import data.taskinfo.Priority;
 import data.taskinfo.Status;
 
+//@author A0065475X
 /**
  * Used to parse the individual items used in the Json file. e.g. dates times
  * priorities etc
  */
-//@author A0065475X
 public class JsonItemParser {
     
     public static final String STRING_EMPTY = "";

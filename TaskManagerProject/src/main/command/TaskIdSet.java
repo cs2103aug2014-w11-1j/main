@@ -5,11 +5,11 @@ import java.util.Iterator;
 
 import data.TaskId;
 
+//@author A0065475X
 /**
  * A set of task IDs that is used for a command operation.
  * 
  */
-//@author A0065475X
 public class TaskIdSet implements Iterable<TaskId>{
     private ArrayList<TaskId> idList;
     

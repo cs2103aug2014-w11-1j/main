@@ -2,10 +2,10 @@ package data;
 
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 /**
  * Facade for TaskData - used by the undoManager to retrieve undo snapshots.
  */
-//@author A0065475X
 public interface ITaskDataUndo {
 
     public static final int NO_TASK = -1;

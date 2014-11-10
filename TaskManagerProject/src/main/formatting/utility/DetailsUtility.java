@@ -12,6 +12,7 @@ import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 /**
  * A utility class to format the details of a TaskInfo.
  */

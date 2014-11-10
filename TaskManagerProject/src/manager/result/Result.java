@@ -1,11 +1,11 @@
 package manager.result;
 
+//@author A0065475X
 /**
  * The result returned from the manager to the command after an operation.<br>
  * The result is used by the command to update the StateManager on the result
  * of the command execution.
  */
-//@author A0065475X
 public interface Result {
     public enum Type {
         ADD_SUCCESS,

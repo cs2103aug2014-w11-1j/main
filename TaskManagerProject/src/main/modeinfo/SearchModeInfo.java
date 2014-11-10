@@ -3,11 +3,10 @@ package main.modeinfo;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 /**
  * The ModeInfo for the state when the program is in the search mode.
  */
-
-//@author A0113011L
 public class SearchModeInfo implements ModeInfo {
 
     private String[] suggestions;

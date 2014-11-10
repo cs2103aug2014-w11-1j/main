@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import main.formatting.utility.DetailsUtility;
 import main.modeinfo.EditModeInfo;
 
+//@author A0113011L
 /**
+ * <pre>
  * A formatter for EditMode.
  * 
  * Example:
@@ -18,11 +20,8 @@ import main.modeinfo.EditModeInfo;
  *    Tags: taskline, food
  *    Priority: High
  *    Description: I will die if I don't eat my apples!
- * 
- *
+ * </pre>
  */
-
-//@author A0113011L
 public class EditModeFormatter {
     private final static String FORMAT_LINE = "You are now editing %1$s." + 
             System.lineSeparator();

@@ -2,11 +2,10 @@ package main.formatting;
 
 import main.message.DeleteSuccessfulMessage;
 
+//@author A0113011L
 /**
  * Formatter for DeleteSuccessfulMessage.
  */
-
-//@author A0113011L
 public class DeleteSuccessfulFormatter {
     private final static String FORMAT_SINGLE = "Task %1$s deleted." +
             System.lineSeparator();

@@ -6,6 +6,7 @@ import java.util.Random;
 import test.crashtest.KeywordDictionary.ListType;
 import static test.crashtest.KeywordDictionary.ListType.*;
 
+//@author A0065475X
 /**
  * A dictionary of commonly used keywords or strings used for the crash tester.
  * <br>
@@ -13,7 +14,6 @@ import static test.crashtest.KeywordDictionary.ListType.*;
  * dictionary for a certain keyword type, it retrieves a random (seeded random)
  * keyword from that list. 
  */
-//@author A0065475X
 public class KeywordDictionary {
     
     private static final int RECURSE_PROBABILITY = 4;

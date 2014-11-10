@@ -13,11 +13,11 @@ import manager.datamanager.UndoManager;
 import manager.datamanager.freetimemanager.FreeTimeSearchManager;
 import data.TaskData;
 
+//@author A0065475X
 /**
  * A class which packages all the managers. It is passed into a Command object
  * to allow the command to act on the managers.
  */
-//@author A0065475X
 public class ManagerHolder {
     private final StateManager stateManager;
     private final AddManager addManager;

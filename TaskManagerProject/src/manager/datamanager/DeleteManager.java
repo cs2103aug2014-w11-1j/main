@@ -12,12 +12,11 @@ import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 
+//@author A0119432L
 /**
  * This is a delete manager that enables deletion of a task with specified
  * taskId inside the taskData.
  */
-
-//@author A0119432L
 public class DeleteManager extends AbstractManager {
 
     public DeleteManager(TaskData taskData) {

@@ -10,13 +10,12 @@ import data.TaskId;
 import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 /**
  * A utility to format a set of tasks in a condensed form, based on the 
  * date of the task.
  *
  */
-
-//@author A0113011L
 public class SummaryUtility {
     private final static int WIDTH_LINE = 79;
     private final static int WIDTH_TIME = 14;

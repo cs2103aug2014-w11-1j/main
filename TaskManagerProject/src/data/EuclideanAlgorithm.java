@@ -1,5 +1,6 @@
 package data;
 
+//@author A0065475X-unused
 /**
  * Not actually used in the program. Used once to compute the REVERSE_PRIME,
  * that's all.
@@ -8,7 +9,6 @@ package data;
  * returns the gcd of n and p.
  * returns m, q such that nm + pq = gcd(n,p).
  */
-//@author A0065475X-unused
 public class EuclideanAlgorithm {
     public int m;
     public int q;

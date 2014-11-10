@@ -2,6 +2,7 @@ package main.message;
 
 import main.command.alias.AliasValuePair;
 
+//@author A0065475X
 public class ViewAliasMessage implements Message {
 
     private AliasValuePair[] aliases;

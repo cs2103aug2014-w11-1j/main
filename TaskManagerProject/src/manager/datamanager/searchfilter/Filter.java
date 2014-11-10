@@ -3,7 +3,6 @@ package manager.datamanager.searchfilter;
 import data.taskinfo.TaskInfo;
 
 //@author A0113011L
-
 /**
  * A Filter interface. A Filter is used to search for tasks.
  *

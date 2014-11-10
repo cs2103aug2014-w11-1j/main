@@ -4,6 +4,9 @@ import main.message.AliasMessage;
 import main.message.AliasMessage.AliasType;
 
 //@author A0065475X
+/**
+ * Formatter for Alias Messages (success/failure, bind/unbind).
+ */
 public class AliasFormatter {
     private static final String MESSAGE_DELETE_FAIL =
             "Unable to unbind alias: %1$s" + System.lineSeparator() + 

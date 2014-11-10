@@ -18,12 +18,11 @@ import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 /**
  * This is a edit manager that enables editing a certain TaskInfo with specific
  * taskId in the taskData.
  */
-
-//@author A0119432L
 public class EditManager extends AbstractManager {
 
     private TaskIdSet editingTasks;

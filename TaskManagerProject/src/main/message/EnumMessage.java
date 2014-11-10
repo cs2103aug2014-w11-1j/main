@@ -1,5 +1,6 @@
 package main.message;
 
+//@author A0113011L
 /**
  * For any message that does not need to contain any more information than its
  * type.

@@ -8,7 +8,9 @@ import main.message.EditSuccessfulMessage.Field;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 /**
+ * <pre>
  * Formatter for the EditSuccessfulMessage.
  * Format example:
  * Task name changed.
@@ -20,11 +22,8 @@ import data.taskinfo.TaskInfo;
  *    Tags: taskline, food
  *    Priority: High
  *    Description: I will die if I don't eat my apples!
- *    
- *
+ * </pre>
  */
-
-//@author A0113011L
 public class EditSuccessfulFormatter {
     private final static String CHANGED_NAME = "Task name changed.";
     private final static String CHANGED_TIME = "Time changed.";
