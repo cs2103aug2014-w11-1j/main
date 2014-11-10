@@ -11,8 +11,6 @@ import data.taskinfo.TaskInfo;
 /**
  * This is an add manager that enables creating a new task with given
  * taskInfo in the TaskData.
- * @author BRUCE
- *
  */
 //@author A0119432L
 public class AddManager extends AbstractManager {

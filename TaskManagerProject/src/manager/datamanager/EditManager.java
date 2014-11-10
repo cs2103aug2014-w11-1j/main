@@ -21,8 +21,6 @@ import data.taskinfo.TaskInfo;
 /**
  * This is a edit manager that enables editing a certain TaskInfo with specific
  * taskId in the taskData.
- * @author BRUCE
- *
  */
 
 //@author A0119432L

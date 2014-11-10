@@ -15,10 +15,6 @@ import data.taskinfo.TaskInfo;
 
 
 //@author A0119432L
-/**
- * @author BRUCE
- *
- */
 public class FreeDaySearchManager extends AbstractManager {
 
 	private static final LocalTime END_OF_DAY = LocalTime.of(23, 59, 59);
