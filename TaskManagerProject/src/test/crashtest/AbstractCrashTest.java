@@ -6,10 +6,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import main.MainController;
 import test.crashtest.KeywordDictionary.ListType;
 
+//@author A0065475X
 /**
  * Carries the framework for a crash test.
  */
-//@author A0065475X
 public abstract class AbstractCrashTest {
     
     private final int logQueueSize;

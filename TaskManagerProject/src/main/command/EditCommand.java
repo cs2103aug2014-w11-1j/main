@@ -13,7 +13,6 @@ import data.taskinfo.Priority;
 import data.taskinfo.Status;
 import data.taskinfo.TaskInfo;
 
-
 //@author A0065475X
 public class EditCommand extends TargetedCommand {
     private static final String ARGUMENT_CLEAR = "clear";

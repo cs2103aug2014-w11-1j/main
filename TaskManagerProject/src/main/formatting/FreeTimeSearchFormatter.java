@@ -9,6 +9,9 @@ import main.message.FreeTimeSearchMessage;
 import manager.datamanager.freetimemanager.Interval;
 
 //@author A0065475X
+/**
+ * Formatter for Free Time Messages
+ */
 public class FreeTimeSearchFormatter {
 
     private final static String FORMAT_TIME = "Time: From %1$s - %2$s";

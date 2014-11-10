@@ -6,16 +6,17 @@ import java.util.ArrayList;
 
 import main.message.FreeDaySearchMessage;
 
+//@author A0113011L
 /**
+ * <pre>
  * Formatter for the FreeDayMessage.
  * Example:
  * You do not have any planned tasks on these days:
  * - 27 Nov 2014
  * - 30 Nov 2014
  * - 1 Dec 2014
- *
+ * </pre>
  */
-//@author A0113011L
 public class FreeDaySearchFormatter {
     private final static String LINE_HEADER = 
             "You do not have any planned tasks on these days:" + 

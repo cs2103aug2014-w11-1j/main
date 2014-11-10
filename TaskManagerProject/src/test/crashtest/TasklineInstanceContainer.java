@@ -9,12 +9,12 @@ import java.util.Random;
 import taskline.debug.Taskline;
 import main.MainController;
 
+//@author A0065475X
 /**
  * Carries either one or two instances of taskline. If it is created in
  * multi-instance mode, it randomly chooses between the two tasklines based
  * on the probability ratio (0<ratio<1) given.
  */
-//@author A0065475X
 public class TasklineInstanceContainer {
     private final String fileName;
     private final String aliasFileName;

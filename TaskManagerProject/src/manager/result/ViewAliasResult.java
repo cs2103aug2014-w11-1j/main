@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import main.command.alias.AliasValuePair;
 
+//@author A0065475X
 public class ViewAliasResult implements Result {
     private final AliasValuePair[] aliasValuePairs;
     

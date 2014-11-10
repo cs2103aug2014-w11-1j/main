@@ -8,6 +8,7 @@ import manager.ManagerHolder;
 import manager.datamanager.freetimemanager.FreeTimeSearchManager;
 import manager.result.Result;
 
+//@author A0065475X
 public class FreeTimeSearchCommand extends Command {
 
 	private FreeTimeSearchManager freeTimeSearchManager;

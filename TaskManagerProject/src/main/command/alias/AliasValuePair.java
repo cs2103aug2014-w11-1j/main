@@ -1,5 +1,6 @@
 package main.command.alias;
 
+//@author A0065475X
 /**
  * Contains an alias and the value it is mapped to.<br>
  * e.g. if "hp" is mapped to "edit \$ priority high", then we have:<br>
@@ -8,7 +9,6 @@ package main.command.alias;
  * <br>
  * Immutable
  */
-//@author A0065475X
 public class AliasValuePair {
     public final String alias;
     public final String value;

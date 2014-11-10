@@ -15,6 +15,7 @@ import org.junit.Test;
 import data.TaskData;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class SearchManagerTest {
 
     TaskInfo task1 = createTask("apple", getTime(3,0), getDate(11,16),getTime(9, 0), getDate(11, 16));

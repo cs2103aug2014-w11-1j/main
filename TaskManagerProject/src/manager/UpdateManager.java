@@ -9,11 +9,11 @@ import manager.result.SearchResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 /**
  * In charge of getting updates for StateManager from the managers and
  * the FileInputOutput classes.
  */
-//@author A0119432L
 public class UpdateManager {
 
     private final IFileInputOutput aliasFileInputOutput;

@@ -4,12 +4,12 @@ import main.message.EnumMessage;
 import main.message.Message;
 import main.modeinfo.ModeInfo;
 
+//@author A0113011L
 /**
  * Carries a Message and a ModeInfo.<br>
  * Message carries information about the last command execution.<br>
  * ModeInfo carries information about the current state the program is in.
  */
-//@author A0113011L
 public class Response {
 
     Message message;

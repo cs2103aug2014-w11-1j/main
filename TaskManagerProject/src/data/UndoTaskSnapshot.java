@@ -2,6 +2,7 @@ package data;
 
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 /**
  * Immutable. Done by restricting access to taskInfo attribute<br>
  * This class stores a snapshot of a task before a modification.<br>
@@ -10,7 +11,6 @@ import data.taskinfo.TaskInfo;
  * Note: if taskInfo = NO_TASK, it means the task did not exist before the change.
  * 
  */
-//@author A0065475X
 public class UndoTaskSnapshot {
 
     public static TaskInfo NO_TASK = null;

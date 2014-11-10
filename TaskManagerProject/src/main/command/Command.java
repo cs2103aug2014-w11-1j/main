@@ -7,6 +7,7 @@ import manager.StateManager;
 import manager.result.Result;
 import manager.result.SimpleResult;
 
+//@author A0065475X
 /**
  * The base Command class.<br>
  * All commands should extend this class.<br>
@@ -16,7 +17,6 @@ import manager.result.SimpleResult;
  * If you wish for the command to be executed on existing tasks, try extending
  * TargetedCommand, which extends this class, instead.
  */
-//@author A0065475X
 public abstract class Command {
     protected final StateManager stateManager;
     

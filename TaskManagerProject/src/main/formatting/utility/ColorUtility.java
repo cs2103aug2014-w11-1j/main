@@ -1,11 +1,10 @@
 package main.formatting.utility;
 
+//@author A0113011L
 /**
  * Utility to colorize text. Works by adding the corresponding ANSI escape 
  * sequences.
  */
-
-//@author A0113011L
 public class ColorUtility {
     public enum Color {
         BLACK(0),

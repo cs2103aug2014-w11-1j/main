@@ -1,11 +1,10 @@
 package main.modeinfo;
 
+//@author A0113011L
 /**
  * An Interface to pass the current state of the program to the Formatter.
  *
  */
-
-//@author A0113011L
 public interface ModeInfo {
     public enum Type {
         EMPTY_MODE,

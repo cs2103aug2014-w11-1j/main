@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 /**
  * A "Snapshot" container holding all the UndoTaskSnapshots after an action
  * has been executed. (i.e. all the changes to TaskData in the last action)<br>
  * It is used to reverse all modifications to TaskData at once.
  * 
  */
-//@author A0065475X
 public class UndoSnapshot {
     private ArrayList<UndoTaskSnapshot> taskSnapshotList;
     private final TaskData taskData;

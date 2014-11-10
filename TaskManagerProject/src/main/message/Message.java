@@ -1,5 +1,6 @@
 package main.message;
 
+//@author A0113011L
 /**
  * Carries information regarding the last command execution.
  */

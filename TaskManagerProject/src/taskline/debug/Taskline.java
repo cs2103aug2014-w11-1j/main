@@ -16,6 +16,7 @@ import ui.debug.UIDisplay;
 import data.AutoCompleteDictionary;
 import data.TaskData;
 
+//@author A0065475X
 /**
  * Does the main initialization of the program structure.<br>
  * <br>
@@ -23,7 +24,6 @@ import data.TaskData;
  * private static final Logger log = Logger.getLogger(Taskline.LOGGER_NAME);
  *
  */
-//@author A0065475X
 public class Taskline {
 
     public static void main(String[] args) {

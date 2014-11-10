@@ -3,7 +3,9 @@ package main.formatting;
 import main.formatting.utility.SummaryUtility;
 import main.modeinfo.SearchModeInfo;
 
+//@author A0113011L
 /**
+ * <pre>
  * Formatter for SearchModeInfo.
  * Example : 
  * Thu, 15 Nov 2014 ---                        
@@ -14,9 +16,8 @@ import main.modeinfo.SearchModeInfo;
  * 4) [   21:10   ] Go to the supermarket and shop for some apples for p... - [gf4]
  * Floating Tasks ---
  * 5) [           ] Remember to eat an apple today                          - [a8d]
+ * </pre>
  */
-
-//@author A0113011L
 public class SearchModeFormatter {
     private final static String LINE_SUGGESTION = "Did you mean: ";
     

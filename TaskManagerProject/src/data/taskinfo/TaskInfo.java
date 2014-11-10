@@ -7,11 +7,11 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+//@author A0065475X
 /**
  * Carries all the information used by a task.<br>
  * It acts simply as a struct. All of its attributes are public.
  */
-//@author A0065475X
 public class TaskInfo {
 
     public String name;

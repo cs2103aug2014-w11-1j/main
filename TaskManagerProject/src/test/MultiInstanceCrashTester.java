@@ -7,6 +7,7 @@ import test.crashtest.AbstractCrashTest;
 import test.crashtest.MultiInstanceCrashTest;
 import test.crashtest.TasklineInstanceContainer;
 
+//@author A0065475X
 /**
  * Two separate instance of taskline operating on the same file.<br>
  * Used to check whether the file can be modified externally without crashing
@@ -16,7 +17,6 @@ import test.crashtest.TasklineInstanceContainer;
  * to one of the two, picked randomly, to see if they are able to cause each
  * other to crash.
  */
-//@author A0065475X
 public class MultiInstanceCrashTester {
     private static final String TEST_ALIAS_FILENAME = "testAlias.txt";
     private static final String TEST_FILENAME = "testTasks.txt";

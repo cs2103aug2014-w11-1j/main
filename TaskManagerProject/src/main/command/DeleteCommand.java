@@ -4,6 +4,7 @@ import manager.ManagerHolder;
 import manager.datamanager.DeleteManager;
 import manager.result.Result;
 
+//@author A0065475X
 public class DeleteCommand extends TargetedCommand {
     private final DeleteManager deleteManager;
 

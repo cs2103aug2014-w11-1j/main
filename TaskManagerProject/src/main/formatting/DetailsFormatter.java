@@ -7,7 +7,9 @@ import main.message.DetailsMessage;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 /**
+ * <pre>
  * Formatter for the DetailsMessage.
  * Format example:
  * Task [a9f]
@@ -17,11 +19,8 @@ import data.taskinfo.TaskInfo;
  *    Tags: taskline, food
  *    Priority: High
  *    Description: I will die if I don't eat my apples!
- *    
- *
+ * </pre>
  */
-
-//@author A0113011L
 public class DetailsFormatter {
     DetailsUtility detailsUtility;
 

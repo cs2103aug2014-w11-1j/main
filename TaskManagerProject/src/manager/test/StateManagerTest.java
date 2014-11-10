@@ -16,6 +16,7 @@ import org.junit.Test;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0119432L
 public class StateManagerTest {
 	
     @Test

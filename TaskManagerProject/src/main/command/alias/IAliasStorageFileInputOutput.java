@@ -1,10 +1,10 @@
 package main.command.alias;
 
+//@author A0065475X
 /**
  * The interface used by File IO to synchronise the aliases in memory with an
  * external file.
  */
-//@author A0065475X
 public interface IAliasStorageFileInputOutput {
 
     /**

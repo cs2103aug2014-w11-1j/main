@@ -9,12 +9,12 @@ import data.taskinfo.Status;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+//@author A0065475X
 /**
  * The Task object that is stored in the TaskData class. Not available outside
  * of TaskData.<br>
  * In contrast, a TaskInfo object is available outside of TaskData.
  */
-//@author A0065475X
 public class Task {
     private static final int NOT_FOUND = -1;
     private TaskInfo taskInfo;

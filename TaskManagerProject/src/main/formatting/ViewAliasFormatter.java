@@ -3,6 +3,10 @@ package main.formatting;
 import main.command.alias.AliasValuePair;
 import main.message.ViewAliasMessage;
 
+//@author A0065475X
+/**
+ * Formatter for ViewAliasMessage. (when the user uses the view alias command)
+ */
 public class ViewAliasFormatter {
     private static final String ALIAS_HEADER = "Aliases currently binded:" +
             System.lineSeparator();

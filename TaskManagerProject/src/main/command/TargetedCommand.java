@@ -12,6 +12,7 @@ import manager.result.Result;
 import manager.result.SearchResult;
 import data.TaskId;
 
+//@author A0065475X
 /**
  * Any command that "acts" on existing tasks should extend TargetedCommand.<br>
  * TargetedCommand gives the functionality to parse task numbers, absolute task
@@ -19,7 +20,6 @@ import data.TaskId;
  * (e.g. delete orange juice)
  * Examples: edit, delete.
  */
-//@author A0065475X
 public abstract class TargetedCommand extends Command {
 
     private static final char DELIMITER_WHITESPACE = ' ';
