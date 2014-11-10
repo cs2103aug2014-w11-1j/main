@@ -20,6 +20,9 @@ import javax.json.stream.JsonParsingException;
 import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
+/**
+ * the main Json Parser for Tasks.
+ */
 //@author A0065475X
 public class JsonTaskInfoParser {
 
@@ -33,7 +36,13 @@ public class JsonTaskInfoParser {
     private static final String JSON_TAGS = "tags";
     private static final String JSON_PRIORITY = "priority";
     private static final String JSON_STATUS = "status";
+    /**
+     * @deprecated
+     */
     private static final String JSON_NUMBER_OF_TIMES = "numberOfTimes";
+    /**
+     * @deprecated
+     */
     private static final String JSON_REPEAT_INTERVAL = "repeatInterval";
 
     

@@ -21,6 +21,12 @@ import data.taskinfo.Priority;
 import data.taskinfo.Status;
 import data.taskinfo.Tag;
 
+//@author A0111862M
+/**
+ * Command class for Search operations. Parses given command arguments into
+ * segments of a task and stores them as a list of filters, passing them onto
+ * the SearchManager class when the Command is executed.
+ */
 public class SearchCommand extends Command {
     private final SearchManager searchManager;
     private final List<Filter> filterList;
@@ -33,37 +39,45 @@ public class SearchCommand extends Command {
         parse(args);
     }
 
-    private void parse(String args) {
-        assert args != null : "There should not be a null passed in.";
-        if (args.isEmpty()) {
+    /**
+     * Parses command arguments into different parts of a task and sets them
+     * into a list of filters stored in the SearchCommand.
+     *
+     * @param cmdArgs
+     *            the arguments for the search command
+     */
+    private void parse(String cmdArgs) {
+        assert cmdArgs != null : "There should not be a null passed in.";
+        if (cmdArgs.isEmpty()) {
             filterList.add(StatusFilter.makeDefault());
             return;
         }
 
-        // TODO set up a way to have a common repository of symbols, like DELIM
-        String taskName = CommandParser.parseName(args);
+        String taskName = CommandParser.parseName(cmdArgs);
         if (!taskName.isEmpty()) {
             String delim = " ";
             String[] keywords = taskName.split(delim);
             filterList.add(new KeywordFilter(keywords));
         }
 
-        List<LocalDateTime> dateRange = parseDateTimes(args);
-        if (dateRange != null) {
-            filterList.add(new DateTimeFilter(dateRange.get(0), dateRange.get(1)));
+        List<LocalDateTime> dateTimeRange = parseDateTimes(cmdArgs);
+        if (dateTimeRange != null) {
+            LocalDateTime startDateTime = dateTimeRange.get(0);
+            LocalDateTime endDateTime = dateTimeRange.get(1);
+            filterList.add(new DateTimeFilter(startDateTime, endDateTime));
         }
 
-        Tag[] tags = CommandParser.parseTags(args);
+        Tag[] tags = CommandParser.parseTags(cmdArgs);
         if (tags != null) {
             filterList.add(new TagFilter(tags));
         }
 
-        Priority[] priorities = CommandParser.parsePriorities(args);
+        Priority[] priorities = CommandParser.parsePriorities(cmdArgs);
         if (priorities != null) {
             filterList.add(new PriorityFilter(priorities));
         }
 
-        Status[] statuses = CommandParser.parseStatuses(args);
+        Status[] statuses = CommandParser.parseStatuses(cmdArgs);
         if (statuses != null) {
             filterList.add(new StatusFilter(statuses));
         } else {
@@ -71,6 +85,36 @@ public class SearchCommand extends Command {
         }
     }
 
+    /**
+     * Parses a command string into dates and times suitable for the search
+     * command.
+     * <p>
+     * If more than 2 pairs of dates and times are found, only the first two are
+     * used. Combinations are handled as shown below:
+     * <ul>
+     *  <li>1 date - Set the start and end date to that date, times to the start
+     *      and end of the day.</li>
+     *  <li>1 time - Set the start and end time to that time, dates to the
+     *      current date.</li>
+     *  <li>1 date and time - Set the end date and time to those.</li>
+     *  <li>1 date and 2 times - Set the start and end date to that date, times
+     *      to the start and end times accordingly.</li>
+     *  <li>2 dates and 1 time - Set the dates to the start and end dates
+     *      accordingly, set the start time to the start of the day, end time to
+     *      the end of the day, then the time to the start or end time according
+     *      to its position.</li>
+     *  <li>2 dates and times each - Set the start and end dates and times
+     *      according to the positions.</li>
+     * </ul>
+     *
+     * @param cmdArgs
+     *            the arguments possibly containing dates and times
+     * @param task
+     *            the task to set the dates and times into
+     * @return a list of LocalDateTime, the first element indicating the start
+     *            datetime, the second indicating the end datetime; or null if
+     *            no dates or times are found
+     */
     private List<LocalDateTime> parseDateTimes(String args) {
         DateTimePair range = CommandParser.parseDateTimesInSequence(args);
         if (range.isEmpty()) {
@@ -113,6 +157,7 @@ public class SearchCommand extends Command {
         return dtRange;
     }
 
+    //@author A0111862M-reused
     @Override
     protected boolean isValidArguments() {
         return true;
@@ -123,6 +168,7 @@ public class SearchCommand extends Command {
         return stateManager.canSearch();
     }
 
+    //@author A0111862M
     @Override
     protected Result executeAction() {
         Filter[] filters = filterList.toArray(new Filter[filterList.size()]);

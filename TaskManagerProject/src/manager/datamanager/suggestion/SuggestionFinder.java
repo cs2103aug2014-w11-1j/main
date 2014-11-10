@@ -18,8 +18,14 @@ import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 //@author A0113011L
+/**
+ * A class that is used to find keyword suggestions.
+ * 
+ * It will first find the keyword with the minimum edit distance.
+ * If there is a tie, it will find the keyword with the most occurrences.
+ *
+ */
 public class SuggestionFinder {
-    private final static int LIMIT_DISTANCE = 5;
     
     private final static Comparator<KeywordSuggestion> COMPARE_MATCH =
             new Comparator<KeywordSuggestion>() {
@@ -76,7 +82,8 @@ public class SuggestionFinder {
         return string.length() * 2 / 5;
     }
     
-    Set<KeywordSuggestion> findKeywords(String filterString, String string) {
+    private Set<KeywordSuggestion> findKeywords(String filterString, 
+            String string) {
         Set<KeywordSuggestion> keywords = new HashSet<KeywordSuggestion>();
         if (string != null) {
             Pattern pattern = Pattern.compile("[A-Za-z0-9]+");
@@ -96,7 +103,8 @@ public class SuggestionFinder {
         return keywords;
     }
     
-    Set<KeywordSuggestion> findKeywords(String filterString, TaskInfo taskInfo) {
+    private Set<KeywordSuggestion> findKeywords(String filterString, 
+            TaskInfo taskInfo) {
         Set<KeywordSuggestion> keywordsInName = 
                 findKeywords(filterString, taskInfo.name);
         Set<KeywordSuggestion> keywordsInDetails = 
@@ -125,7 +133,7 @@ public class SuggestionFinder {
         KeywordFilter filter = new KeywordFilter(keywordArray);
         while (currentId.isValid()) {
             TaskInfo task = taskData.getTaskInfo(currentId);
-            if (filter.filter(task)) {
+            if (filter.isMatching(task)) {
                 int numberOfMatches = keyword.getNumberOfMatches();
                 numberOfMatches++;
                 keyword.setNumberOfMatches(numberOfMatches);
@@ -134,7 +142,8 @@ public class SuggestionFinder {
         }
     }
     
-    private List<KeywordSuggestion> sortKeywords(Set<KeywordSuggestion> keywords) {
+    private List<KeywordSuggestion> sortKeywords(
+            Set<KeywordSuggestion> keywords) {
         List<KeywordSuggestion> keywordList = 
                 new ArrayList<KeywordSuggestion>(keywords);
         
@@ -178,6 +187,11 @@ public class SuggestionFinder {
         return newFilterList;
     }
     
+    /**
+     * Generate SuggestionFilter based on the Filter[] given.
+     * @param filters
+     * @return The SuggestionFilter[].
+     */
     public Filter[] generateSuggestionFilters(Filter[] filters) {
         List<Filter> newFilters = new ArrayList<Filter>();
         for (int i = 0; i < filters.length; i++) {

@@ -11,6 +11,10 @@ import ui.input.InputOperation;
 import ui.input.InputString;
 
 //@author A0113011L
+/**
+ * A class that is used to read user's input.
+ *
+ */
 public class UserInputReader {
     private ConsoleReader reader;
     enum Mode {
@@ -46,6 +50,11 @@ public class UserInputReader {
         currentMode = Mode.INPUT_MODE;
     }
     
+    /**
+     * Reads an input from the user.
+     * @return The input from the user.
+     * @throws IOException
+     */
     public Input getInput() throws IOException {
         switchMode(currentMode);
         Input result = null;

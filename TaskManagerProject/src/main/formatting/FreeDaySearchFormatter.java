@@ -6,6 +6,15 @@ import java.util.ArrayList;
 
 import main.message.FreeDaySearchMessage;
 
+/**
+ * Formatter for the FreeDayMessage.
+ * Example:
+ * You do not have any planned tasks on these days:
+ * - 27 Nov 2014
+ * - 30 Nov 2014
+ * - 1 Dec 2014
+ *
+ */
 //@author A0113011L
 public class FreeDaySearchFormatter {
     private final static String LINE_HEADER = 
@@ -38,6 +47,11 @@ public class FreeDaySearchFormatter {
                 formatShortDate(startDate), formatShortDate(endDate));
     }
     
+    /**
+     * Format the FreeDaySearchMessage into a String.
+     * @param message The message to be formatted.
+     * @return The formatted message.
+     */
     public String format(FreeDaySearchMessage message) {
         StringBuilder result = new StringBuilder();
         
@@ -50,6 +64,7 @@ public class FreeDaySearchFormatter {
             result.append(LINE_HEADER);
             LocalDate current = message.getSearchStartDate();
             
+            assert !current.isAfter(message.getSearchEndDate());
             do {
                 if (current.compareTo(message.getFirstBusyDate()) < 0) {
                     result.append(String.format(LINE_DATE, formatDate(current)));

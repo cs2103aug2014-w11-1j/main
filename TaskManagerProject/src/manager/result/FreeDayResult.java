@@ -9,9 +9,7 @@ import java.util.ArrayList;
  * the date of last task
  * firstTaskDate represents the first date that is not free,
  * LastTaskEndDate represents the end date of the latest task.
- * The free days are [now, firstTaskDate -1], {freeDate}, [lastTaskEndDate + 1, future] 
- * @author BRUCE
- *
+ * The free days are [now, firstTaskDate -1], {freeDate}, [lastTaskEndDate + 1, future]
  */
 //@author A0119432L
 public class FreeDayResult implements Result{

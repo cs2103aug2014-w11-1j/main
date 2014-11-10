@@ -4,7 +4,10 @@ import java.time.LocalDate;
 
 import main.command.parser.ParsedDate.Frequency;
 
-
+//@author A0111862M
+/**
+ * Container class for a pair of dates and their respective frequencies.
+ */
 public class DatePair {
     private LocalDate firstDate;
     private Frequency firstFrequency;
@@ -42,13 +45,13 @@ public class DatePair {
     }
 
     void setFirstDate(ParsedDate d) {
-        this.firstDate = d.getDate();
-        this.firstFrequency = d.getFrequency();
+        this.firstDate = d == null ? null : d.getDate();
+        this.firstFrequency = d == null ? null : d.getFrequency();
     }
 
     void setSecondDate(ParsedDate d) {
-        this.secondDate = d.getDate();
-        this.secondFrequency = d.getFrequency();
+        this.secondDate = d == null ? null : d.getDate();
+        this.secondFrequency = d == null ? null : d.getFrequency();
     }
 
     boolean hasSecondDate() {

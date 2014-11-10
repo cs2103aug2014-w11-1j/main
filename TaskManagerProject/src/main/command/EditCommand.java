@@ -27,13 +27,16 @@ public class EditCommand extends TargetedCommand {
     private static final String ARGUMENT_NAME = "name";
     private static final String ARGUMENT_DATETIME = "datetime";
     private static final String ARGUMENT_STATUS = "status";
-    
+    private static final String ARGUMENT_ADD = "add";
+    private static final String ARGUMENT_DELETE = "del";
+    private static final String ARGUMENT_DELETE_2 = "delete";
+
     private final EditManager editManager;
     private TaskInfo taskToEdit;
     private Operation specialOperation = Operation.NONE;
     private Info infoToClear = null;
     private final ParseType parseType;
-    
+
     private enum Operation {
         NONE,
         EDIT_MODE,
@@ -41,7 +44,7 @@ public class EditCommand extends TargetedCommand {
         TAG_DELETE,
         CLEAR_INFO
     }
-    
+
     public enum Info {
         DATE,
         TIME,
@@ -51,7 +54,7 @@ public class EditCommand extends TargetedCommand {
         DESCRIPTION,
         TAGS
     }
-    
+
     public enum ParseType {
         NORMAL,
         MARK,
@@ -72,7 +75,7 @@ public class EditCommand extends TargetedCommand {
         parse(args);
     }
 
-    
+
     public EditCommand(String args, ManagerHolder managerHolder, ParseType parseType) {
         super(managerHolder);
         editManager = managerHolder.getEditManager();
@@ -104,7 +107,7 @@ public class EditCommand extends TargetedCommand {
         while (!args.isEmpty() && (taskInfo == null || keywords.length() == 0)) {
             String[] split = args.split(" ", 2);
             keywords.append(split[0]).append(" ");
-            
+
             if (split.length > 1) {
                 args = split[1];
                 taskInfo = parseCommandParams(args);
@@ -144,10 +147,10 @@ public class EditCommand extends TargetedCommand {
                         parseType.name());
         }
     }
-    
+
     private TaskInfo parseMarkParams(String args) {
         TaskInfo taskInfo = TaskInfo.createEmpty();
-        
+
         args = args.trim();
         if (args.length() == 0) {
             taskInfo.status = Status.DONE;
@@ -156,10 +159,10 @@ public class EditCommand extends TargetedCommand {
 
         return parseEditParams(ARGUMENT_STATUS + " " + args);
     }
-    
+
     private TaskInfo parseUnmarkParams(String args) {
         TaskInfo taskInfo = TaskInfo.createEmpty();
-        
+
         args = args.trim();
         if (args.length() == 0) {
             taskInfo.status = Status.UNDONE;
@@ -167,22 +170,22 @@ public class EditCommand extends TargetedCommand {
         }
         return null;
     }
-    
+
     private TaskInfo parseStatusParams(String args) {
         return parseEditParams(ARGUMENT_STATUS + " " + args);
     }
-    
+
     private TaskInfo parseRescheduleParams(String args) {
         return parseEditParams(ARGUMENT_DATETIME + " " + args);
     }
-    
+
     private TaskInfo parsePriorityParams(String args) {
         return parseEditParams(ARGUMENT_PRIORITY + " " + args);
     }
-    
+
     private TaskInfo parseUrgentParams(String args) {
         TaskInfo taskInfo = TaskInfo.createEmpty();
-        
+
         args = args.trim();
         if (args.length() == 0) {
             taskInfo.priority = Priority.HIGH;
@@ -196,45 +199,56 @@ public class EditCommand extends TargetedCommand {
     }
 
     //@author A0111862M
-    private TaskInfo parseEditParams(String args) {
-        Scanner sc = new Scanner(args);
-        if (!sc.hasNext()) {
-            tryChangeToStartEditModeCommand();
+    /**
+     * Parses command arguments into different parts of a task and sets them
+     * into a TaskInfo object.
+     * <p>
+     * The first token in the arguments should indicate the type of argument.
+     * The argument is then parsed and set accordingly. A lack of the first
+     * token will try to initiate edit mode. If the arguments cannot be parsed,
+     * a null is returned.
+     *
+     * @param cmdArgs
+     *            the arguments for the edit command
+     * @return the TaskInfo with the task part set in or null if arguments are
+     *         invalid
+     */
+    private TaskInfo parseEditParams(String cmdArgs) {
+        Scanner sc = new Scanner(cmdArgs);
+        String editType = null;
+        String editParam = null;
+
+        try {
+            editType = sc.next();
+            editParam = sc.nextLine().trim();
+        } catch (NoSuchElementException e) {
+            if (editType == null) {
+                tryChangeToStartEditModeCommand();
+            }
             sc.close();
             return null;
         }
-        String editType = sc.next();
-        if (!sc.hasNext()) {
-            sc.close();
-            return null;
-        }
-        String editParam = "";
 
         TaskInfo editTask = TaskInfo.createEmpty();
 
         switch (editType.toLowerCase()) {
             case ARGUMENT_NAME :
-                editParam = CommandParser.parseName(sc.nextLine());
-                editTask.name = editParam;
+                editTask.name = CommandParser.stripIgnoreSymbols(editParam);
                 break;
             case ARGUMENT_DESCRIPTION :
             case ARGUMENT_DESCRIPTION_2 :
-                editParam = sc.nextLine().trim();
-                editTask.details = CommandParser.parseName(editParam);
+                editTask.details = CommandParser.stripIgnoreSymbols(editParam);
                 break;
             case ARGUMENT_DATE :
             case ARGUMENT_TIME :
             case ARGUMENT_DATETIME :
-                editParam = sc.nextLine().trim();
                 parseDateTimes(editParam, editTask);
                 break;
             case ARGUMENT_TAG :
             case ARGUMENT_TAG_2 :
-                editParam = sc.nextLine().trim();
                 parseTags(editParam, editTask);
                 break;
             case ARGUMENT_PRIORITY :
-                editParam = sc.nextLine().trim();
                 Priority p = CommandParser.parsePriority("+" + editParam);
                 if (p != null) {
                     editTask.priority = p;
@@ -243,7 +257,6 @@ public class EditCommand extends TargetedCommand {
                 }
                 break;
             case ARGUMENT_STATUS :
-                editParam = sc.nextLine().trim();
                 Status s = CommandParser.parseStatus(editParam);
                 if (s != null) {
                     editTask.status = s;
@@ -251,8 +264,8 @@ public class EditCommand extends TargetedCommand {
                     editTask = null;
                 }
                 break;
+            //@author A0065475X
             case ARGUMENT_CLEAR :
-                editParam = sc.nextLine().trim();
                 if (clearInfo(editParam)) {
                     setSpecialOperation(Operation.CLEAR_INFO);
                     editTask = TaskInfo.createEmpty();
@@ -260,6 +273,7 @@ public class EditCommand extends TargetedCommand {
                     editTask = null;
                 }
                 break;
+            //@author A0111862M
             default :
                 editTask = null;
         }
@@ -278,8 +292,27 @@ public class EditCommand extends TargetedCommand {
     }
 
     //@author A0111862M
-    private void parseDateTimes(String editParam, TaskInfo editTask) {
-        DateTimePair dtPair = CommandParser.parseDateTimes(editParam);
+    /**
+     * Parses a command string into dates and times suitable for the edit
+     * command.
+     * <p>
+     * If more than 2 pairs of dates and times are found, only the first two are
+     * used. Combinations are handled as shown below:
+     * <ul>
+     *  <li>1 date and/or time - Set the end date and/or time accordingly.</li>
+     *  <li>2 dates/times and 1 of the other - Fill in the remainder with the 1
+     *      found.</li>
+     *  <li>2 dates and times each - Set the start and end dates and times
+     *      according to the positions.</li>
+     * </ul>
+     *
+     * @param cmdArgs
+     *            the arguments possibly containing dates and times
+     * @param task
+     *            the task to set the dates and times into
+     */
+    private void parseDateTimes(String cmdArgs, TaskInfo task) {
+        DateTimePair dtPair = CommandParser.parseDateTimes(cmdArgs);
         if (dtPair.isEmpty()) {
             return;
         }
@@ -287,46 +320,55 @@ public class EditCommand extends TargetedCommand {
         // either a single date and/or time
         if (!dtPair.hasSecondDate() && !dtPair.hasSecondTime()) {
             if (dtPair.hasFirstDate()) {
-                editTask.endDate = dtPair.getFirstDate();
+                task.endDate = dtPair.getFirstDate();
             }
             if (dtPair.hasFirstTime()) {
-                editTask.endTime = dtPair.getFirstTime();
+                task.endTime = dtPair.getFirstTime();
             }
         } else {
             // set everything first
-            editTask.startDate = dtPair.getFirstDate();
-            editTask.startTime = dtPair.getFirstTime();
-            editTask.endDate = dtPair.getSecondDate();
-            editTask.endTime = dtPair.getSecondTime();
+            task.startDate = dtPair.getFirstDate();
+            task.startTime = dtPair.getFirstTime();
+            task.endDate = dtPair.getSecondDate();
+            task.endTime = dtPair.getSecondTime();
 
             // handle the case where one value has to be filled in
             if (!dtPair.hasSecondDate()) {
-                editTask.endDate = editTask.startDate;
+                task.endDate = task.startDate;
             }
             if (!dtPair.hasSecondTime()) {
-                editTask.endTime = editTask.startTime;
+                task.endTime = task.startTime;
             }
         }
     }
 
-    //@author A0111862M
-    private void parseTags(String editParam, TaskInfo editTask) {
-        if (editParam.isEmpty()) {
+    /**
+     * Parses a tag add / delete operation and tag(s) from {@code tagEditArgs}
+     * and sets them into {@code task}. Also sets the tag add / delete flag for
+     * the EditCommand as needed.
+     *
+     * @param tagEditArgs
+     *            the operation to be done to the tags with the tag(s)
+     * @param task
+     *            the task to set the tags into
+     */
+    private void parseTags(String tagEditArgs, TaskInfo task) {
+        if (tagEditArgs.isEmpty()) {
             return;
         }
 
-        Scanner sc = new Scanner(editParam);
+        Scanner sc = new Scanner(tagEditArgs);
         String changeType = sc.next();
 
         // ensure it still has a tag to add / delete
         if (sc.hasNext()) {
-            String changeTypeLower = changeType.toLowerCase();
-            
-            if (changeTypeLower.equals("add")) {
+            changeType = changeType.toLowerCase();
+
+            if (changeType.equals(ARGUMENT_ADD)) {
                 setSpecialOperation(Operation.TAG_ADD);
             }
-            if (changeTypeLower.equals("del") ||
-                    changeTypeLower.equals("delete")){
+            if (changeType.equals(ARGUMENT_DELETE) ||
+                    changeType.equals(ARGUMENT_DELETE_2)){
                 setSpecialOperation(Operation.TAG_DELETE);
             }
         }
@@ -339,12 +381,12 @@ public class EditCommand extends TargetedCommand {
                 String tag = sc.next();
                 tags.append("#").append(tag).append(" ");
             }
-            editTask.tags = CommandParser.parseTags(tags.toString());
+            task.tags = CommandParser.parseTags(tags.toString());
         }
 
         sc.close();
     }
-    
+
     //@author A0065475X
     private boolean clearInfo(String info) {
         info = info.trim();
@@ -373,10 +415,10 @@ public class EditCommand extends TargetedCommand {
                 infoToClear = Info.STATUS;
                 break;
         }
-        
+
         return (infoToClear != null);
     }
-    
+
     private void setSpecialOperation(Operation operation) {
         specialOperation = operation;
     }
@@ -389,7 +431,7 @@ public class EditCommand extends TargetedCommand {
     protected boolean isValidArguments() {
         if (specialOperation != Operation.EDIT_MODE &&
                 specialOperation != Operation.CLEAR_INFO) {
-            
+
             if (taskToEdit == null || taskToEdit.isEmpty()) {
                 return false;
             }
@@ -405,7 +447,7 @@ public class EditCommand extends TargetedCommand {
     @Override
     protected Result executeAction() {
         Result result;
-        
+
         switch (specialOperation) {
             case EDIT_MODE :
                 assert taskToEdit == null;
@@ -432,7 +474,7 @@ public class EditCommand extends TargetedCommand {
                 throw new UnsupportedOperationException("Invalid operation: " +
                         specialOperation.name());
         }
-        
+
         return result;
     }
 

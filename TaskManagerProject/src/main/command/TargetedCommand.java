@@ -28,6 +28,7 @@ public abstract class TargetedCommand extends Command {
     private static final String DELIMITER_DASH_STRING = "-";
 
     private final SearchManager searchManager;
+    
     protected TaskIdSet targetTaskIdSet;
     protected KeywordFilter keywordFilter;
 
@@ -51,52 +52,9 @@ public abstract class TargetedCommand extends Command {
     }
 
     /**
-     * This is used to execute the command using a keyword filter instead
-     * of a target TaskIdSet. (aka delete by name)
-     * @return
-     */
-    private Response keywordFilterExecute() {
-        if (isCommandAllowed() && stateManager.canSearch()) {
-            Filter[] filters = new Filter[]{keywordFilter};
-            keywordFilter = null;
-
-            Result result = searchManager.searchTasksWithoutSplit(filters);
-            Response response = null;
-            if (onlyOneSearchResult(result)) {
-                response = executeOnSearchResult(result);
-            } else {
-                response = stateManager.updateAndStoreCommand(result, this);
-            }
-            return response;
-
-        } else {
-            return updateCannotExecuteCommand();
-        }
-    }
-
-    private boolean onlyOneSearchResult(Result result) {
-        if (result.getType() != Result.Type.SEARCH_SUCCESS) {
-            return false;
-        }
-        SearchResult searchResult = (SearchResult)result;
-        return searchResult.onlyOneSearchResult();
-    }
-
-    private Response executeOnSearchResult(Result result) {
-        assert result.getType() == Result.Type.SEARCH_SUCCESS;
-        SearchResult searchResult = (SearchResult)result;
-
-        targetTaskIdSet = new TaskIdSet();
-        targetTaskIdSet.add(searchResult.getOnlySearchResult());
-        keywordFilter = null;
-
-        return execute();
-    }
-
-    /**
      * Add target taskIds to a stored TargetedCommand, so that the command
-     * will be executed on this taskIds.
-     * @param taskIds taskIds to be added.
+     * will be executed on these taskIds.
+     * @param taskIds the taskIds to be added.
      */
     public void setTargets(TaskIdSet taskIdSet){
         this.targetTaskIdSet = taskIdSet;
@@ -143,7 +101,7 @@ public abstract class TargetedCommand extends Command {
      * @return a TaskId object corresponding to the relative or absolute id.<br>
      * null if it is unsuccessful. (e.g. not in search mode for relative ids).
      */
-    protected TaskId parseTaskId(String args) {
+    private TaskId parseTaskId(String args) {
         assert args != null : "There should not be a null passed in.";
         if (args.isEmpty()) {
             return null;
@@ -269,5 +227,46 @@ public abstract class TargetedCommand extends Command {
         }
     }
 
+    /**
+     * This is used to execute the command using a keyword filter instead
+     * of a target TaskIdSet. (aka delete by name)
+     * @return
+     */
+    private Response keywordFilterExecute() {
+        if (isCommandAllowed() && stateManager.canSearch()) {
+            Filter[] filters = new Filter[]{keywordFilter};
+            keywordFilter = null;
 
+            Result result = searchManager.searchTasksWithoutSplit(filters);
+            Response response = null;
+            if (onlyOneSearchResult(result)) {
+                response = executeOnSearchResult(result);
+            } else {
+                response = stateManager.updateAndStoreCommand(result, this);
+            }
+            return response;
+
+        } else {
+            return updateCannotExecuteCommand();
+        }
+    }
+
+    private boolean onlyOneSearchResult(Result result) {
+        if (result.getType() != Result.Type.SEARCH_SUCCESS) {
+            return false;
+        }
+        SearchResult searchResult = (SearchResult)result;
+        return searchResult.onlyOneSearchResult();
+    }
+
+    private Response executeOnSearchResult(Result result) {
+        assert result.getType() == Result.Type.SEARCH_SUCCESS;
+        SearchResult searchResult = (SearchResult)result;
+
+        targetTaskIdSet = new TaskIdSet();
+        targetTaskIdSet.add(searchResult.getOnlySearchResult());
+        keywordFilter = null;
+
+        return execute();
+    }
 }

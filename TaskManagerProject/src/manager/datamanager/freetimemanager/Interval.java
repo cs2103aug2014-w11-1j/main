@@ -1,7 +1,6 @@
 package manager.datamanager.freetimemanager;
 
 import java.time.LocalTime;
-import java.time.temporal.TemporalUnit;
 
 //@author A0119432L
 public class Interval {

@@ -34,6 +34,11 @@ public class SearchModeFormatter {
         return builder.toString();
     }
     
+    /**
+     * Format the SearchModeInfo to a String.
+     * @param modeInfo
+     * @return
+     */
     public String format(SearchModeInfo modeInfo) {
         StringBuilder result = new StringBuilder();
         if (modeInfo.getTasks().length != 0 && modeInfo.getSuggestions() != null) {
@@ -41,7 +46,7 @@ public class SearchModeFormatter {
             result.append(System.lineSeparator());
         }
         result.append(summaryUtility.format(modeInfo.getTasks(), 
-                modeInfo.getTaskIds()));
+                modeInfo.getTaskIds(), true));
         result.append(System.lineSeparator());
         return result.toString();
     }

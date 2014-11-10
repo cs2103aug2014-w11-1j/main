@@ -6,15 +6,11 @@ import io.IFileInputOutput;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 
-import taskline.TasklineLogger;
-
 //@author A0065475X
 public class FileInputOutputTest {
-    private static final Logger log = TasklineLogger.getLogger();
 
     @Test
     public void test() {

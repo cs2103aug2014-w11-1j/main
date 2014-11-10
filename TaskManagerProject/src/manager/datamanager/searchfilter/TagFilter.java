@@ -4,6 +4,11 @@ import data.taskinfo.Tag;
 import data.taskinfo.TaskInfo;
 
 //@author A0113011L
+/**
+ * A Filter that is used to search for tasks by tags.
+ *
+ * A task matches this filter if it has all of the tags.
+ */
 public class TagFilter implements Filter{
     public Type getType() {
         return Type.FILTER_TAG;
@@ -11,7 +16,7 @@ public class TagFilter implements Filter{
     
     Tag[] tags;
     
-    public boolean filter(TaskInfo task) 
+    public boolean isMatching(TaskInfo task) 
     {
         if (task.tags == null) {
             return false;

@@ -66,8 +66,8 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
      * @see main.command.alias.IAliasStorage#getCustomCommand(java.lang.String)
      */
     @Override
-    public String getCustomCommand(String cmdString) {
-        return customMap.get(cmdString);
+    public String getCustomCommand(String commandString) {
+        return customMap.get(commandString);
     }
 
     /* (non-Javadoc)
@@ -182,6 +182,12 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         return true;
     }
 
+    /**
+     * Returns the default command that is executed when the command string fits
+     * none of the other commands.
+     * @param input the first token of the input string.
+     * @return an ArgumentCommand, which is the default command.
+     */
     private BiFunction<String, ManagerHolder, Command> defaultMakeCommand(
             String input) {
 
@@ -189,6 +195,10 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
                 new ArgumentCommand(input + " " + args, managerHolder);
     }
 
+    
+    /**
+     * Initialise all the default commands in taskline here.
+     */
     private void initialiseDefaultCommands() {
 
         defineDefaultCommands(
@@ -197,7 +207,7 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
 
         defineDefaultCommands(
                 (args, managerHolder) -> new SearchCommand(args, managerHolder),
-                "show", "search", "ls", "view");
+                "show", "search", "list", "view", "tasks");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new EditCommand(args, managerHolder),
@@ -253,12 +263,12 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new FreeDaySearchCommand(args, managerHolder),
-                "freeday", "freedate");
+                "freeday", "freedays", "freedate", "freedates");
 
         defineDefaultCommands(
                 (args, managerHolder) ->
                 new FreeTimeSearchCommand(args, managerHolder),
-                "freetime");
+                "freetime", "freeslot");
 
         defineDefaultCommands(
                 (args, managerHolder) -> new DeleteCommand(args, managerHolder),
@@ -303,6 +313,8 @@ public class AliasStorage implements IAliasStorage, IAliasStorageFileInputOutput
             String... commandStrings) {
 
         for (String commandString : commandStrings) {
+            assert !commandString.contains(" ") : "Error in command: [" +
+                    commandString + "] - Command cannot have multiple words.";
             defaultMap.put(commandString, commandFunction);
         }
     }

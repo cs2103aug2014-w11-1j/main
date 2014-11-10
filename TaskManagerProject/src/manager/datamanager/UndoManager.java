@@ -2,7 +2,6 @@ package manager.datamanager;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.concurrent.Callable;
 
 import manager.result.Result;
 import manager.result.SimpleResult;
@@ -26,11 +25,20 @@ public class UndoManager extends AbstractManager {
         redoHistory = new LinkedList<>();
     }
 
+    /**
+     * Clears both the undo and redo history.
+     */
     public void clearHistory() {
         undoHistory.clear();
         redoHistory.clear();
     }
     
+    /**
+     * Whenever you call this, the UndoManager retrieves a snapshot of the
+     * latest updates to taskData from taskData.<br>
+     * If there has been a change since the last retrieval, undoManager adds
+     * the change to the undo stack and clears the redo history.
+     */
     public void updateUndoHistory() {
         UndoSnapshot undoSnapshot = taskDataUndo.retrieveUndoSnapshot();
         if (undoSnapshot.hasChanges()) {
@@ -43,6 +51,13 @@ public class UndoManager extends AbstractManager {
         }
     }
 
+    /**
+     * Call to execute an undo command.
+     * @param times You can execute a multi-undo. e.g. undo(5) executes 5 undos.
+     * Use undo(1) for normal usage.
+     * @return a result stating whether the undo was a success or failure.<br>
+     * An undo can fail when there is nothing to undo.
+     */
     public Result undo(int times) {
         assert times >= 1;
         if (undoHistory.isEmpty()) {
@@ -57,6 +72,13 @@ public class UndoManager extends AbstractManager {
         return new UndoResult(Result.Type.UNDO_SUCCESS, taskIds, times);
     }
 
+    /**
+     * Call to execute a redo command.
+     * @param times You can execute a multi-redo. e.g. redo(5) executes 5 redos.
+     * Use redo(1) for normal usage.
+     * @return a result stating whether the redo was a success or failure.<br>
+     * A redo can fail if there is nothing to redo.
+     */
     public Result redo(int times) {
         assert times >= 1;
         if (redoHistory.isEmpty()) {
@@ -92,6 +114,26 @@ public class UndoManager extends AbstractManager {
 
         return new UndoResult(Result.Type.REDO_SUCCESS, taskIds, 1);
     }
+    
+    private TaskId[] executeUndo() {
+        UndoSnapshot undoSnapshot = undoHistory.pop();
+        
+        TaskId[] taskIds = undoSnapshot.getChangedList();
+        undoSnapshot.applySnapshotChange();
+        
+        retrieveRedoSnapshot();
+        return taskIds;
+    }
+
+    private TaskId[] executeRedo() {
+        UndoSnapshot redoSnapshot = redoHistory.pop();
+
+        TaskId[] taskIds = redoSnapshot.getChangedList();        
+        redoSnapshot.applySnapshotChange();
+        
+        retrieveUndoSnapshot();
+        return taskIds;
+    }
 
     private TaskId[] multipleExecute(int times, Operation function) {
         
@@ -108,29 +150,6 @@ public class UndoManager extends AbstractManager {
         return taskIds;
     }
     
-    private TaskId[] executeUndo() {
-        UndoSnapshot undoSnapshot = undoHistory.pop();
-        
-        TaskId[] taskIds = undoSnapshot.getChangedList();
-        undoSnapshot.applySnapshotChange();
-        
-        retrieveRedoSnapshot();
-        return taskIds;
-    }
-
-    
-    private TaskId[] executeRedo() {
-        UndoSnapshot redoSnapshot = redoHistory.pop();
-
-        TaskId[] taskIds = redoSnapshot.getChangedList();        
-        redoSnapshot.applySnapshotChange();
-        
-        retrieveUndoSnapshot();
-        return taskIds;
-    }
-    
-    
-    
     private void clearRedoHistory() {
         redoHistory.clear();
     }
@@ -146,6 +165,9 @@ public class UndoManager extends AbstractManager {
         redoHistory.push(redoSnapshot);
     }
     
+    /**
+     * Functional interface.
+     */
     interface Operation {
         public abstract TaskId[] execute();
     }

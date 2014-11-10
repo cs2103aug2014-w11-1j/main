@@ -15,9 +15,9 @@ public class UIDisplay {
     private UserOutputWriter userOutputWriter;
     
     private final MainController mainController;
-    
-    
-    public UIDisplay(MainController mainController, ArgumentCompletor completor) {
+
+
+    public UIDisplay(MainController mainController, ArgumentCompletor completor)  {
         this.mainController = mainController;
         try {
             ConsoleReader reader = new ConsoleReader();
@@ -49,6 +49,9 @@ public class UIDisplay {
         }
     }
     
+    /**
+     * Process an input.
+     */
     public void processInput(Input input) throws IOException {
         switch (input.getType()) {
             case INPUT_STRING :

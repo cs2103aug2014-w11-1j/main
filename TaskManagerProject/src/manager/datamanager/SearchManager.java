@@ -25,6 +25,11 @@ import data.TaskId;
 import data.taskinfo.TaskInfo;
 
 //@author A0113011L
+/**
+ * A manager that handle the Search Command.
+ * It is also used to enable the referencing of tasks by its relative ID.
+ *
+ */
 public class SearchManager extends AbstractManager {
     private static final Logger log = TasklineLogger.getLogger();
 
@@ -84,7 +89,7 @@ public class SearchManager extends AbstractManager {
         TaskId currentId = taskData.getFirst();
         while (currentId.isValid()) {
             TaskInfo task = taskData.getTaskInfo(currentId);
-            if (filter.filter(task)) {
+            if (filter.isMatching(task)) {
                 resultSet.add(currentId);
             }
             currentId = taskData.getNext(currentId);
@@ -116,7 +121,7 @@ public class SearchManager extends AbstractManager {
         return resultSet;
     }
     
-    TaskInfoId[] split(TaskInfoId task) {
+    private TaskInfoId[] split(TaskInfoId task) {
         List<TaskInfoId> result = new ArrayList<TaskInfoId>();
         if (task.taskInfo.getStartTime() == null) {
             result.add(task);
@@ -153,7 +158,7 @@ public class SearchManager extends AbstractManager {
         return resultArray;
     }
     
-    TaskInfoId[] getTaskInfoIdArray(Set<TaskId> taskIds) {
+    private TaskInfoId[] getTaskInfoIdArray(Set<TaskId> taskIds) {
         List<TaskInfoId> result = new ArrayList<TaskInfoId>();
         for (TaskId taskId : taskIds) {
             TaskInfo taskInfo = taskData.getTaskInfo(taskId);
@@ -183,12 +188,32 @@ public class SearchManager extends AbstractManager {
         return newArray;
     }
     
+    private TaskInfoId[] refilter(Filter[] filters, TaskInfoId[] taskInfoIds) {
+        List<TaskInfoId> filteredList = new ArrayList<TaskInfoId>();
+        for (int i = 0; i < taskInfoIds.length; i++) {
+            boolean isMatching = true;
+            for (int j = 0; j < filters.length; j++) {
+                if (!filters[j].isMatching(taskInfoIds[i].taskInfo)){
+                    isMatching = false;
+                    break;
+                }
+            }
+            if (isMatching)
+                filteredList.add(taskInfoIds[i]);
+        }
+        
+        TaskInfoId[] result = new TaskInfoId[filteredList.size()];
+        filteredList.toArray(result);
+        return result;
+    }
+    
     private SearchResult searchWithSuggestion(Filter[] filters) {
         Set<TaskId> taskIds = findMatchingTasks(filters);
         
         updateSearchedTasks(taskIds);
         
         lastSearchedTasks = splitAll(lastSearchedTasks);
+        lastSearchedTasks = refilter(filters, lastSearchedTasks);
         sortTasks(lastSearchedTasks);
         
         SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks), 
@@ -238,6 +263,7 @@ public class SearchManager extends AbstractManager {
         updateSearchedTasks(taskIds);
         
         lastSearchedTasks = splitAll(lastSearchedTasks);
+        lastSearchedTasks = refilter(filters, lastSearchedTasks);
         
         sortTasks(lastSearchedTasks);
         
@@ -259,6 +285,14 @@ public class SearchManager extends AbstractManager {
         return result;
     }
     
+    /**
+     * Search for tasks based on a set of filters.
+     * If a TaskInfo spans more than one day, it will be split into multiple
+     * TaskInfo spanning one day each.
+     * 
+     * @param filters The filters that is used in the search.
+     * @return A SearchResult that contains the tasks that match the filters.
+     */
     public Result searchTasks(Filter[] filters) {
         assert filters != null : "filters can't be null";
         log.log(Level.FINER, "Conduct search: " + filters.length + " filters");
@@ -278,6 +312,13 @@ public class SearchManager extends AbstractManager {
         }
     }
     
+    /**
+     * Search for tasks based on a set of filters.
+     * In contrast with searchTasks, this method does not split TaskInfo.
+     * 
+     * @param filters The filters that is used in the search.
+     * @return A SearchResult that contains the tasks that match the filters.
+     */
     public Result searchTasksWithoutSplit(Filter[] filters) {
         assert filters != null : "filters can't be null";
         log.log(Level.FINER, "Conduct search: " + filters.length + " filters");
@@ -290,13 +331,17 @@ public class SearchManager extends AbstractManager {
             if (newFilters == null) {
                 return result;
             } else {
-                return searchWithSuggestion(newFilters);
+                return searchWithSuggestionWithoutSplit(newFilters);
             }
         } else {
             return result;
         }
     }
     
+    /**
+     * Get the SearchResult of the last search operation.
+     * @return The last SearchResult
+     */
     public SearchResult getLastSearchResult() {
         SearchResult result = new SearchResult(getInfoArray(lastSearchedTasks),
                 getIdArray(lastSearchedTasks), null);
@@ -321,6 +366,12 @@ public class SearchManager extends AbstractManager {
         return idArray;
     }
     
+    /**
+     * Get the DetailsResult of the TaskIdSet.
+     * @param taskIdSet The TaskIdSet that contains the TaskId of the tasks that
+     * we want to search for.
+     * @return The DetailsResult.
+     */
     public Result details(TaskIdSet taskIdSet) {
         int size = taskIdSet.size();
         TaskId[] taskIds = new TaskId[size];
@@ -336,6 +387,11 @@ public class SearchManager extends AbstractManager {
         return new DetailsResult(taskInfos, taskIds);
     }
 
+    /**
+     * Convert a relative index to an absolute index.
+     * @param relativeIndex A relative index of a task.
+     * @return The corresponding absolute index of the relative index.
+     */
     public TaskId getAbsoluteIndex(int relativeIndex) {
         if (relativeIndex > lastSearchedTasks.length) {
             throw new IndexOutOfBoundsException();
@@ -349,6 +405,11 @@ public class SearchManager extends AbstractManager {
         }
     }
 
+    /**
+     * Get a TaskInfo, given its relative index.
+     * @param relativeIndex The index.
+     * @return The TaskInfo.
+     */
     public TaskInfo getTaskInfo(int relativeIndex) {
         if (relativeIndex >= lastSearchedTasks.length) {
             throw new IndexOutOfBoundsException();
@@ -356,6 +417,11 @@ public class SearchManager extends AbstractManager {
         return lastSearchedTasks[relativeIndex - 1].taskInfo;
     }
 
+    /**
+     * Get a TaskInfo, given its absolute index.
+     * @param taskId The absolute index.
+     * @return The TaskInfo.
+     */
     public TaskInfo getTaskInfo(TaskId taskId) {
         return taskData.getTaskInfo(taskId);
     }

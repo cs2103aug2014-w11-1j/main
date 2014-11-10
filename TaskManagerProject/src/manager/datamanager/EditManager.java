@@ -21,8 +21,6 @@ import data.taskinfo.TaskInfo;
 /**
  * This is a edit manager that enables editing a certain TaskInfo with specific
  * taskId in the taskData.
- * @author BRUCE
- *
  */
 
 //@author A0119432L
@@ -34,6 +32,12 @@ public class EditManager extends AbstractManager {
         super(taskData);
     }
 
+    /**
+     * enable batch edit functionality
+     * @param taskInfo taskInfo of editing content
+     * @param taskIdSet task Ids that are to change
+     * @return result of changing task
+     */
     public Result editTask(TaskInfo taskInfo, TaskIdSet taskIdSet) {
 
         boolean allSuccessful = true;
@@ -86,6 +90,12 @@ public class EditManager extends AbstractManager {
         return editingTasks;
     }
     
+    /**
+     * To clear certain info from a given set of task Ids
+     * @param taskIdSet set of task Ids that are to change
+     * @param infoToClear info to clear
+     * @return
+     */
     public Result clearInfo(TaskIdSet taskIdSet, EditCommand.Info infoToClear) {
         boolean allSuccessful = true;
         List<TaskId> taskIdList = new ArrayList<TaskId>();
@@ -192,6 +202,11 @@ public class EditManager extends AbstractManager {
         return true;
     }
 
+    /**
+     * THis is to start editing mode and note the editing id set
+     * @param taskIdSet
+     * @return
+     */
     public Result startEditMode(TaskIdSet taskIdSet) {
         editingTasks = taskIdSet;
         return new StartEditModeResult(taskIdSet);
@@ -202,6 +217,12 @@ public class EditManager extends AbstractManager {
         return new SimpleResult(Result.Type.EDIT_MODE_END);
     }
 
+    /**
+     * This is to add tags to multiple tasks
+     * @param tags tags list to add
+     * @param taskIdSet set of tasks to add tags
+     * @return result of adding tags
+     */
     public Result addTaskTags(Tag[] tags, TaskIdSet taskIdSet){
         boolean allSuccessful = true;
         
@@ -216,7 +237,7 @@ public class EditManager extends AbstractManager {
 
             boolean isSuccessful = taskData.taskExists(taskId);
             for (Tag tag : tags) {
-                boolean isTagSuccess = taskData.addTag(taskId, tag);
+                taskData.addTag(taskId, tag);
             }
 
             taskIdList.add(taskId);
@@ -243,6 +264,12 @@ public class EditManager extends AbstractManager {
         }
     }
 
+    /**
+     * This is to delete tags to multiple tasks
+     * @param tags tags list to delete
+     * @param taskIdSet set of tasks to delete tags
+     * @return result of deleting tags
+     */
     public Result deleteTaskTags(Tag[] tags, TaskIdSet taskIdSet){
 
         boolean allSuccessful = true;
@@ -322,6 +349,13 @@ public class EditManager extends AbstractManager {
     }
 
 
+    
+    /**
+     * This is to merge the time between origin taskInfo and modifying taskInfo
+     * @param originTask original taskInfo
+     * @param modifTask modifying taskInfo
+     * @return Modified task
+     */
     private TaskInfo mergeTasksTime(TaskInfo originTask, TaskInfo modifTask){
     	TaskInfo mergedTask = new TaskInfo(originTask);
     	if ((modifTask.startDate == null) && (modifTask.startTime == null)

@@ -3,7 +3,7 @@ package data;
 import data.taskinfo.TaskInfo;
 
 /**
- * Facade for task data - used by the undoManager
+ * Facade for TaskData - used by the undoManager to retrieve undo snapshots.
  */
 //@author A0065475X
 public interface ITaskDataUndo {

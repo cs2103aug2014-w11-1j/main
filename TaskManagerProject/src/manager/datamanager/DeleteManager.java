@@ -15,8 +15,6 @@ import data.taskinfo.TaskInfo;
 /**
  * This is a delete manager that enables deletion of a task with specified
  * taskId inside the taskData.
- * @author BRUCE
- *
  */
 
 //@author A0119432L

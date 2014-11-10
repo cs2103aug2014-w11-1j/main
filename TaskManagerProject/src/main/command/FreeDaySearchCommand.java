@@ -32,6 +32,15 @@ public class FreeDaySearchCommand extends Command {
         if (dateTimePair.hasFirstTime() != dateTimePair.hasSecondTime()) {
             return false;
         }
+        if (dateTimePair.getFirstDate().isAfter(dateTimePair.getSecondDate())) {
+            return false;
+        }
+        if (dateTimePair.hasFirstTime()) {
+            if (dateTimePair.getFirstTime().isAfter(dateTimePair.getSecondTime())) {
+                return false;
+            }
+        }
+        
         return true;
     }
 

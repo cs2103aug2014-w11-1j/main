@@ -1,6 +1,13 @@
 package manager.datamanager.suggestion;
 
 //@author A0113011L
+/**
+ * A class that represent a keyword suggestion.
+ * 
+ * It stores the keyword itself, the edit distance, and the number of 
+ * occurrences.
+ *
+ */
 public class KeywordSuggestion {
     private String keyword;
     private int distance;

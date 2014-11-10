@@ -58,6 +58,8 @@ public class Taskline {
         
         UIDisplay uiDisplay = new UIDisplay(mainController, argumentCompletor);
 
+        startCommandLoop(uiDisplay);
+        TasklineLogger.closeLoggerFileHandler();
         startCommandLoopWithLogger(uiDisplay);
     }
 

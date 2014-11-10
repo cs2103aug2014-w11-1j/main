@@ -16,6 +16,7 @@ import taskline.TasklineLogger;
 //@author A0111862M
 /**
  * The main controller that links the UI to the rest of the program.
+ * Controls the main logic of the program - the command execution process.
  */
 public class MainController {
     private static final Logger log = TasklineLogger.getLogger();

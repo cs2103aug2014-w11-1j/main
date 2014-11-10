@@ -9,6 +9,10 @@ import manager.result.SearchResult;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+/**
+ * In charge of getting updates for StateManager from the managers and
+ * the FileInputOutput classes.
+ */
 //@author A0119432L
 public class UpdateManager {
 
@@ -32,6 +36,10 @@ public class UpdateManager {
 		searchManager.searchTasks(filters);
 	}
 	
+	/**
+	 * This is to get the current search info within search mode
+	 * @return current search info
+	 */
 	public SearchModeInfo getSearchModeInfo(){
 		SearchResult redoSearchResult = searchManager.getLastSearchResult();
         TaskInfo[] tasks = redoSearchResult.getTasks();

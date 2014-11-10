@@ -3,7 +3,8 @@ package data;
 import java.util.Random;
 
 /**
- * Immutable.
+ * Absolute ID of a task.<br>
+ * Immutable
  */
 //@author A0065475X
 public final class TaskId implements Comparable<TaskId> {
@@ -28,8 +29,6 @@ public final class TaskId implements Comparable<TaskId> {
     private static final int TRANSLATE_REVERSE_PRIME = 16823;
     private static final int TRANSLATE_SHIFT = new Random().nextInt();
     public static final int MAX_ID = 20280;
-    
-    private static final int INVALID_ID = -1;
     
     public final int id;
 
