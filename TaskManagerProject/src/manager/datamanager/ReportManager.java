@@ -15,6 +15,12 @@ import data.taskinfo.Status;
 import data.taskinfo.TaskInfo;
 
 //@author A0119432L
+/**
+ * manager to handle report functionality, telling users how many missed task,
+ * today task, tomorrow task and urgent task that happen within today and 
+ * tomorrow.
+ *
+ */
 public class ReportManager extends AbstractManager{
 
 	private ArrayList<TaskInfo> taskList;
@@ -35,6 +41,11 @@ public class ReportManager extends AbstractManager{
                 urgentTasks, nonUrgentTasks, missedTasks);
     }
     
+    /**
+     * This is to get the actual date of a task, avoiding the mis-count of midnight
+     * @param task task to check
+     * @return actual date of task
+     */
     private LocalDate getActualDate(TaskInfo task) {
         if (task.endTime == null) {
             return task.endDate;
@@ -128,6 +139,12 @@ public class ReportManager extends AbstractManager{
         return task.getEndDate().isBefore(date);
     }
 
+    /**
+     * This is to get the urgent task from the task list of today and tomorrow
+     * @param todayList tasks that happen today
+     * @param tomorrowList tasks that happen tomorrow
+     * @return urgent task list 
+     */
     private ArrayList<TaskInfo> getUrgentTasksFrom(
             ArrayList<TaskInfo> todayList, ArrayList<TaskInfo> tomorrowList) {
         ArrayList<TaskInfo> list = new ArrayList<>();
@@ -144,6 +161,12 @@ public class ReportManager extends AbstractManager{
         return list;
     }
 
+    /**
+     * This is to get the non urgent task from the task list of today and tomorrow
+     * @param todayList tasks that happen today
+     * @param tomorrowList tasks that happen tomorrow
+     * @return non urgent task list 
+     */
     private ArrayList<TaskInfo> getNonUrgentTasksFrom(
             ArrayList<TaskInfo> todayList, ArrayList<TaskInfo> tomorrowList) {
         

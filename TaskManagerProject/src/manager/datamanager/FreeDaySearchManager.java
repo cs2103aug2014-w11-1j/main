@@ -15,6 +15,10 @@ import data.taskinfo.TaskInfo;
 
 
 //@author A0119432L
+/**
+ * @author BRUCE
+ *
+ */
 public class FreeDaySearchManager extends AbstractManager {
 
 	private static final LocalTime END_OF_DAY = LocalTime.of(23, 59, 59);
@@ -23,10 +27,18 @@ public class FreeDaySearchManager extends AbstractManager {
     private ArrayList<TaskInfo> taskList;
 	private int size;
 
+	/** 
+	 * Constructor
+	 * @param taskData
+	 */
 	public FreeDaySearchManager(TaskData taskData) {
 		super(taskData);
 	}
 
+	/**
+	 * Get the taskInfos of tasks that consist of date, which are not floating
+	 * @return ArrayList of taskInfos
+	 */
 	private ArrayList<TaskInfo> TaskListWithDate() {
 		ArrayList<TaskInfo> taskListWithDate = new ArrayList<TaskInfo>();
 		TaskId taskId = taskData.getFirst();
@@ -41,6 +53,9 @@ public class FreeDaySearchManager extends AbstractManager {
 		return taskListWithDate;
 	}
 
+	/**
+	 * this is to initialize and update the task list for the sake of searching
+	 */
 	private void updateTaskList() {
 		taskList = TaskListWithDate();
 		sortTask();
@@ -52,6 +67,16 @@ public class FreeDaySearchManager extends AbstractManager {
 		taskList = null;   
 	}
 	
+	
+	/**
+	 * Search for those days that are free from start time 
+	 * to end time between start date and end date 
+	 * @param startTime start time of spare interval
+	 * @param startDate start date of searching period
+	 * @param endTime end time of spare intervaal
+	 * @param endDate end date of searching period
+	 * @return a result containing those free days
+	 */
 	public Result searchFreeDay(LocalTime startTime, LocalDate startDate,
 			LocalTime endTime, LocalDate endDate) {
 	    
@@ -81,7 +106,7 @@ public class FreeDaySearchManager extends AbstractManager {
 				if (checkDate == null) {
 					checkDate = lastContainingDate(task, startTime, endTime);
 				} else {
-					uodateFreeDay(startTime, startDate, endTime, endDate,
+					updateFreeDay(startTime, startDate, endTime, endDate,
 							checkDate, freeDays, task);
 					checkDate = lastContainingDate(task, startTime, endTime)
 							.isBefore(checkDate) ? checkDate : lastContainingDate(task, startTime, endTime);
@@ -95,12 +120,31 @@ public class FreeDaySearchManager extends AbstractManager {
 		return new FreeDayResult(freeDays, firstStartDate, checkDate, startDate, endDate);
 	}
 
+	/**
+	 * to check two time date pair whether one come before the other 
+	 * @param startTime  time of first task
+	 * @param startDate  date of first task
+	 * @param endTime  time of second task
+	 * @param endDate  date of second task
+	 * @return a boolean representing whether first task appears before second task
+	 */
 	private boolean startBeforeEnd(LocalTime startTime, LocalDate startDate,
             LocalTime endTime, LocalDate endDate) {
         return !endDate.isBefore(startDate) && !endTime.isBefore(startTime);
     }
 
-    private void uodateFreeDay(LocalTime startTime, LocalDate startDate,
+	
+	/**
+	 * This function is to update the free day list by adding new free days 
+	 * @param startTime
+	 * @param startDate
+	 * @param endTime
+	 * @param endDate
+	 * @param checkDate
+	 * @param freeDays
+	 * @param task
+	 */
+    private void updateFreeDay(LocalTime startTime, LocalDate startDate,
 			LocalTime endTime, LocalDate endDate, LocalDate checkDate,
 			ArrayList<LocalDate> freeDays, TaskInfo task) {
 		if (firstContainingDate(task, startTime, endTime).isAfter(
@@ -118,6 +162,15 @@ public class FreeDaySearchManager extends AbstractManager {
 		}
 	}
 
+    /**
+     * This is to check whether a task happens in the specific time slot
+     * @param startTime start time of spare interval
+     * @param startDate start date of searching period
+     * @param endTime end time of spare interval
+     * @param endDate end date of searching period
+     * @param task task to check
+     * @return a boolean whether task happens in the specific time slot
+     */
 	private boolean isMatchTimeSlot(LocalTime startTime, LocalDate startDate,
 			LocalTime endTime, LocalDate endDate, TaskInfo task) {
 	    
@@ -195,6 +248,12 @@ public class FreeDaySearchManager extends AbstractManager {
 		return true;
 	}
 
+	/**
+	 * This is to find the list of tasks that appears in a specific time slot
+	 * @param startTime start time of time slot
+	 * @param endTime end time of time slot
+	 * @return list of tasks
+	 */
 	private ArrayList<TaskInfo> findTaskContainingTimeSlot(LocalTime startTime,
 			LocalTime endTime) {
 		ArrayList<TaskInfo> matchingTask = new ArrayList<TaskInfo>();
