@@ -3,54 +3,54 @@
   associations="true" dependencies="false" nesting-relationships="true">  
   <class id="1" language="java" name="ui.UserOutputWriter" project="TaskManagerProject" 
     file="/TaskManagerProject/src/ui/UserOutputWriter.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="539" y="303"/>    
+    <position height="-1" width="-1" x="465" y="307"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
   <class id="2" language="java" name="ui.UserInputReader" project="TaskManagerProject" 
     file="/TaskManagerProject/src/ui/UserInputReader.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="138" y="303"/>    
+    <position height="-1" width="-1" x="194" y="307"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
   <class id="3" language="java" name="ui.UIDisplay" project="TaskManagerProject" 
     file="/TaskManagerProject/src/ui/UIDisplay.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="332" y="303"/>    
+    <position height="-1" width="-1" x="332" y="307"/>    
     <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
   <association id="4">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="5" name="userInputReader">        
-        <position height="18" width="88" x="734" y="341"/>      
+      <attribute id="5" name="userOutputWriter">        
+        <position height="18" width="91" x="691" y="267"/>      
       </attribute>      
       <multiplicity id="6" minimum="0" maximum="1">        
-        <position height="16" width="23" x="201" y="306"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="7">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="8" name="userOutputWriter">        
-        <position height="18" width="91" x="765" y="263"/>      
-      </attribute>      
-      <multiplicity id="9" minimum="0" maximum="1">        
-        <position height="16" width="23" x="444" y="306"/>      
+        <position height="16" width="23" x="370" y="310"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <association id="7">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="8" name="userInputReader">        
+        <position height="18" width="88" x="790" y="339"/>      
+      </attribute>      
+      <multiplicity id="9" minimum="0" maximum="1">        
+        <position height="16" width="23" x="257" y="304"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    

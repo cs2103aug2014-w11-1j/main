@@ -4,68 +4,56 @@
   <class id="1" language="java" name="manager.datamanager.searchfilter.PriorityFilter" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/searchfilter/PriorityFilter.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="534" y="213"/>    
+    <position height="-1" width="-1" x="386" y="215"/>    
     <display autosize="false" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="false" private="false" static="true"/>    
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
   <class id="2" language="java" name="manager.datamanager.searchfilter.TagFilter" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/searchfilter/TagFilter.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="368" y="213"/>    
+    <position height="-1" width="-1" x="386" y="151"/>    
     <display autosize="false" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="manager.datamanager.searchfilter.DateTimeFilter" project="TaskManagerProject" 
-    file="/TaskManagerProject/src/manager/datamanager/searchfilter/DateTimeFilter.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="368" y="328"/>    
-    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
-      visibility="true">      
-      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="4" language="java" name="manager.datamanager.searchfilter.KeywordFilter" project="TaskManagerProject" 
+  <class id="3" language="java" name="manager.datamanager.searchfilter.KeywordFilter" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/searchfilter/KeywordFilter.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="199" y="213"/>    
+    <position height="-1" width="-1" x="386" y="95"/>    
     <display autosize="false" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <interface id="5" language="java" name="manager.datamanager.searchfilter.Filter" project="TaskManagerProject" 
+  <interface id="4" language="java" name="manager.datamanager.searchfilter.Filter" project="TaskManagerProject" 
     file="/TaskManagerProject/src/manager/datamanager/searchfilter/Filter.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="368" y="91"/>    
+    <position height="-1" width="-1" x="166" y="95"/>    
     <display autosize="false" stereotype="false" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="false" package="false" protected="false" private="false" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </interface>  
+  <realization id="5">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="4"/>  
+  </realization>  
   <realization id="6">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="5"/>  
+    <bendpoint x="282" y="214"/>    
+    <bendpoint x="282" y="94"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
   </realization>  
   <realization id="7">    
-    <bendpoint x="629" y="329"/>    
-    <bendpoint x="629" y="92"/>    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="5"/>  
-  </realization>  
-  <realization id="8">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="5"/>  
-  </realization>  
-  <realization id="9">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="5"/>  
+    <bendpoint x="282" y="150"/>    
+    <bendpoint x="282" y="94"/>    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
   </realization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    
