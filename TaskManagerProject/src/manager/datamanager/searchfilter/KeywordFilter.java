@@ -6,6 +6,14 @@ import java.util.regex.Pattern;
 import data.taskinfo.TaskInfo;
 
 //@author A0113011L
+/**
+ * A filter that matches tasks based on keywords.
+ * 
+ * A Task matches a keyword if the keyword is a word in either the name
+ * or the description.
+ * 
+ * A Task matches the filter if it matches every single keyword in the filter.
+ */
 public class KeywordFilter implements Filter{
     public Type getType() {
         return Type.FILTER_KEYWORD;
@@ -32,6 +40,9 @@ public class KeywordFilter implements Filter{
         return false;
     }
     
+    /**
+     * Check whether the task matches the filter.
+     */
     public boolean isMatching(TaskInfo task) {
         for (String keyword : keywords) {
             if (!match(keyword, task.details) && !match(keyword, task.name)) {
@@ -41,6 +52,10 @@ public class KeywordFilter implements Filter{
         return true;
     }
     
+    /**
+     * Return the keywords of this filter.
+     * @return
+     */
     public String[] getKeywords() {
         return keywords;
     }

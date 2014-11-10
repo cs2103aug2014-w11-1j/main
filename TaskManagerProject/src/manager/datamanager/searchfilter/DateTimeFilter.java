@@ -6,15 +6,26 @@ import java.time.LocalTime;
 import data.taskinfo.TaskInfo;
 
 //@author A0113011L
+/**
+ * Filter for searching tasks based on time.
+ */
 public class DateTimeFilter implements Filter{
     LocalDateTime minTime;
     LocalDateTime maxTime;
     
+    /**
+     * Constructor for a DateTimeFilter.
+     * @param minTime The lower bound of the search.
+     * @param maxTime The upper bound of the search.
+     */
     public DateTimeFilter(LocalDateTime minTime, LocalDateTime maxTime) {
         this.minTime = minTime;
         this.maxTime = maxTime;
     }
     
+    /**
+     * Get the type of this Filter, which is FILTER_DATETIME.
+     */
     public Type getType() {
         return Type.FILTER_DATETIME;
     }
@@ -45,6 +56,9 @@ public class DateTimeFilter implements Filter{
         return false;
     }
     
+    /**
+     * Check whether the task matches the filter.
+     */
     public boolean isMatching(TaskInfo task) {
         if (task.endTime == null && task.endDate == null) {
             return isMatchingFloating();

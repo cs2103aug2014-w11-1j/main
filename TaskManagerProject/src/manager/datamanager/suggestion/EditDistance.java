@@ -1,6 +1,17 @@
 package manager.datamanager.suggestion;
 
 //@author A0113011L
+/**
+ * A class that is used to calculate the edit distance between two Strings.
+ * 
+ * The edit distance calculated is the Levenshtein distance.
+ * It is defined as the minimum number of moves needed to change the first 
+ * string to the second string, where each move one of :
+ * - Removing a character to the string
+ * - Adding a character to the string
+ * - Changing a character in the string to another character.
+ * 
+ */
 public class EditDistance {
     private int dpTable[][];
     private boolean calculated[][];
@@ -55,6 +66,13 @@ public class EditDistance {
         assert isMatching(indexOne, indexTwo);
         return calculate(indexOne - 1, indexTwo - 1);
     }
+    
+    /**
+     * Create a EditDistance object that calculates the edit distance between
+     * stringOne and stringTwo.
+     * @param stringOne The first string.
+     * @param stringTwo The second string.
+     */
     public EditDistance(String stringOne, String stringTwo) {
         assert stringOne != null;
         assert stringTwo != null;
@@ -65,6 +83,10 @@ public class EditDistance {
         this.stringTwo = stringTwo;
     }
     
+    /**
+     * Get the edit distance between stringOne and stringTwo.
+     * @return The edit distance.
+     */
     public int getDistance() {
         return calculate(stringOne.length(), stringTwo.length());
     }

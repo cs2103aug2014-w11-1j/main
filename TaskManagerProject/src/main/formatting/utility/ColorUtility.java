@@ -1,5 +1,11 @@
 package main.formatting.utility;
 
+/**
+ * Utility to colorize text. Works by adding the corresponding ANSI escape 
+ * sequences.
+ */
+
+//@author A0113011L
 public class ColorUtility {
     public enum Color {
         BLACK(0),
@@ -24,6 +30,12 @@ public class ColorUtility {
     private final static String PREFIX = "\u001b[3%1$dm";
     private final static String SUFFIX = "\u001b[0m";
     
+    /**
+     * Adds the corresponding ANSI escape sequence to colorize the string.
+     * @param s The string to be colorized.
+     * @param color The color to be appliaed on the s.
+     * @return The colorized String.
+     */
     public String colorize(String s, Color color) {
         if (color == Color.WHITE)
             return s;
