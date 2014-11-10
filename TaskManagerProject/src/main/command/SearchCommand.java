@@ -157,7 +157,6 @@ public class SearchCommand extends Command {
         return dtRange;
     }
 
-    //@author A0111862M-reused
     @Override
     protected boolean isValidArguments() {
         return true;
@@ -168,7 +167,6 @@ public class SearchCommand extends Command {
         return stateManager.canSearch();
     }
 
-    //@author A0111862M
     @Override
     protected Result executeAction() {
         Filter[] filters = filterList.toArray(new Filter[filterList.size()]);

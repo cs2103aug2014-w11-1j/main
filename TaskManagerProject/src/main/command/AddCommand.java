@@ -139,7 +139,6 @@ public class AddCommand extends Command {
         }
     }
 
-    // @author A0111862M-reused
     @Override
     protected boolean isValidArguments() {
         return (taskToAdd != null && taskToAdd.isValid());
