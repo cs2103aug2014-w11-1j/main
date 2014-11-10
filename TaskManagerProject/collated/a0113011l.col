@@ -2482,13 +2482,16 @@ public interface Filter {
  * A Filter that matches floating tasks.
  *
  */
-public class FloatingFilter {
+public class FloatingFilter implements Filter {
 
+    @Override
     public Type getType(){
         return Type.FILTER_FLOATING;
     }
-    public boolean filter(TaskInfo task) {
-        return task.endDate == null && task.startDate == null 
+
+    @Override
+    public boolean isMatching(TaskInfo task) {
+        return task.endDate == null && task.startDate == null
                 && task.endTime == null && task.startTime == null;
     }
 }
