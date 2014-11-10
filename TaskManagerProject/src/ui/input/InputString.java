@@ -2,6 +2,9 @@ package ui.input;
 
 
 //@author A0113011L
+/**
+ * Represents a String input from the user.
+ */
 public class InputString implements Input {
 
     private String inputString;

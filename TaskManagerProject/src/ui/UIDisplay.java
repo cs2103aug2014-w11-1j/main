@@ -49,6 +49,9 @@ public class UIDisplay {
         }
     }
     
+    /**
+     * Process an input.
+     */
     public void processInput(Input input) throws IOException {
         switch (input.getType()) {
             case INPUT_STRING :

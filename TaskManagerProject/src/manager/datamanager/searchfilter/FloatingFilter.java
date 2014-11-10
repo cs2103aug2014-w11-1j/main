@@ -3,6 +3,11 @@ package manager.datamanager.searchfilter;
 import manager.datamanager.searchfilter.Filter.Type;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
+/**
+ * A Filter that matches floating tasks.
+ *
+ */
 public class FloatingFilter {
 
     public Type getType(){

@@ -3,6 +3,10 @@ package ui.input;
 import ui.input.Input.Type;
 
 //@author A0113011L
+/**
+ * Represents an operation from the user, for example scrolling.
+ *
+ */
 public class InputOperation implements Input {
     public enum Operation {
         SCROLL_UP,

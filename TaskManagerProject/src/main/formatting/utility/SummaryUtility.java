@@ -10,6 +10,13 @@ import data.TaskId;
 import data.taskinfo.Priority;
 import data.taskinfo.TaskInfo;
 
+/**
+ * A utility to format a set of tasks in a condensed form, based on the 
+ * date of the task.
+ *
+ */
+
+//@author A0113011L
 public class SummaryUtility {
     private final static int WIDTH_LINE = 79;
     private final static int WIDTH_TIME = 14;
@@ -271,6 +278,17 @@ public class SummaryUtility {
         return result.toString();
     }
     
+    /**
+     * Format an array of tasks to the summary form.
+     * 
+     * All TaskInfo shouldn't span more than one day. If the TaskInfo spans more
+     * than one day, please split the TaskInfo into multiple TaskInfo 
+     * beforehand.
+     * @param tasks The tasks to be shown.
+     * @param taskIds The TaskId of the tasks to be shown
+     * @param isNumbered true if the format is numbered, false if it is not.
+     * @return The formatted TaskInfo[] as a String.
+     */
     public String format(TaskInfo[] tasks, TaskId[] taskIds, 
             boolean isNumbered) {
         ArrayList<String> formattedTaskArray = 

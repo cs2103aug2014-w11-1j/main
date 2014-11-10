@@ -5,7 +5,14 @@ import java.util.regex.Pattern;
 
 import data.taskinfo.TaskInfo;
 
-//@author A0113011L
+//@author A0113011L 
+/**
+ * A filter that is used to simulate suggestions.
+ * 
+ * A task matches this filter if at least one of the keywords is inside the
+ * task's details or name.
+ *
+ */
 public class SuggestionFilter implements Filter {
     String keywords[];
     
@@ -28,6 +35,10 @@ public class SuggestionFilter implements Filter {
         return false;
     }
     
+    /**
+     * Get the first suggestion in the suggestion list.
+     * @return The first suggestion.
+     */
     public String getTopSuggestion() {
         if (keywords.length == 0) {
             return null;
@@ -41,6 +52,9 @@ public class SuggestionFilter implements Filter {
         return Type.FILTER_SUGGESTION;
     }
 
+    /**
+     * Check whether the task matches the filter.
+     */
     @Override
     public boolean isMatching(TaskInfo task) {
         for (String keyword : keywords) {

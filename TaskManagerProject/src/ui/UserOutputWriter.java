@@ -10,6 +10,10 @@ import jline.ConsoleReader;
 
 
 //@author A0113011L
+/**
+ * A class that is responsible to write the output to the console.
+ *
+ */
 public class UserOutputWriter {
     List<String> lines;
     List<Integer> headers;
