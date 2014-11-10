@@ -19,6 +19,7 @@ import taskline.debug.Taskline;
  * Integration test. No longer used because the outputs changed too often.<br>
  * Now we use the CrashTester instead to check whether the program crashes
  * when certain inputs are used.
+ * @deprecated
  */
 public class IntegrationTest {
     private static final String NEWL = "\r\n";
