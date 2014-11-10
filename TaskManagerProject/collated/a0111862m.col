@@ -1,0 +1,3295 @@
+//@author: a0111862m
+
+
+
+	/**
+	 * origin: src\main\command\AddCommand.java
+	 */
+
+/**
+ * Command class for Add operations. Parses given command arguments into
+ * segments of a task and stores them, passing them onto the AddManager class
+ * when the Command is executed.
+ */
+public class AddCommand extends Command {
+    private final AddManager addManager;
+    private final TaskInfo taskToAdd;
+
+    public AddCommand(String args, ManagerHolder managerHolder) {
+        super(managerHolder);
+        addManager = managerHolder.getAddManager();
+
+        taskToAdd = parse(args);
+    }
+
+    /**
+     * Parses command arguments into different parts of a task and sets them
+     * into a TaskInfo object.
+     *
+     * @param cmdArgs
+     *            the arguments for the add command
+     * @return the TaskInfo object with the task parts set.
+     */
+    private TaskInfo parse(String cmdArgs) {
+        TaskInfo task = TaskInfo.create();
+
+        task.name = CommandParser.parseName(cmdArgs);
+        parseDateTimes(cmdArgs, task);
+        task.tags = CommandParser.parseTags(cmdArgs);
+        Priority p = CommandParser.parsePriority(cmdArgs);
+        if (p != null) {
+            task.priority = p;
+        }
+
+        return task;
+    }
+
+    /**
+     * Parses a command string into dates and times suitable for the add
+     * command.
+     * <p>
+     * If more than 2 pairs of dates and times are found, only the first two are
+     * used. All combinations are allowed aside from a date range without any
+     * time indicated.
+     *
+     * @param cmdArgs
+     *            the arguments possibly containing dates and times
+     * @param task
+     *            the task to set the dates and times into
+     */
+    private void parseDateTimes(String cmdArgs, TaskInfo task) {
+        DateTimePair range = CommandParser.parseDateTimesInSequence(cmdArgs);
+        if (range.isEmpty()) {
+            return;
+        }
+        if (range.getNumOfDates() == 2 && range.getNumOfTimes() == 0) {
+            return;
+        }
+
+        // store times first
+        if (!range.hasSecondTime()) {
+            task.endTime = range.getFirstTime();
+        } else {
+            task.startTime = range.getFirstTime();
+            task.endTime = range.getSecondTime();
+        }
+
+        // two dates, use them accordingly
+        if (range.hasFirstDate() && range.hasSecondDate()) {
+            task.startDate = range.getFirstDate();
+            task.endDate = range.getSecondDate();
+
+            // only 1 time: duplicate first time.
+            if (!range.hasSecondTime()) {
+                task.startTime = range.getFirstTime();
+            }
+        }
+
+        // one date, use the same for both
+        if (range.hasFirstDate() != range.hasSecondDate()) {
+            task.startDate = task.endDate = range.hasFirstDate() ? range
+                    .getFirstDate() : range.getSecondDate();
+
+            // there can only be one date if there is only one time
+            if (!range.hasSecondTime()) {
+                task.startDate = null;
+            }
+        }
+
+        // no date, get the next possible date for the times
+        if (!range.hasFirstDate() && !range.hasSecondDate()) {
+            task.startDate = task.endDate = getNextOccurrenceOfTime(
+                    range.getFirstTime(), LocalTime.now(), LocalDate.now());
+            if (range.hasSecondTime()) {
+                task.endDate = getNextOccurrenceOfTime(range.getSecondTime(),
+                        range.getFirstTime(), task.startDate);
+            }
+
+            // there can only be one date if there is only one time
+            if (!range.hasSecondTime()) {
+                task.startDate = null;
+            }
+        }
+    }
+
+    /**
+     * Returns the next occurrence of {@code time} from a reference datetime
+     * constructed from {@code timeFrom} and {@code dateFrom}.
+     *
+     * @param time
+     *            the required time
+     * @param timeFrom
+     *            the reference time
+     * @param dateFrom
+     *            the reference date
+     * @return the next occurrence of time from the reference datetime
+     */
+    private LocalDate getNextOccurrenceOfTime(LocalTime time,
+            LocalTime timeFrom, LocalDate dateFrom) {
+        if (time.isAfter(timeFrom)) {
+            return dateFrom;
+        } else {
+            return dateFrom.plusDays(1);
+        }
+    }
+
+    @Override
+    protected boolean isValidArguments() {
+        return (taskToAdd != null && taskToAdd.isValid());
+    }
+
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canAdd();
+    }
+
+    @Override
+    protected Result executeAction() {
+        Result result = addManager.addTask(taskToAdd);
+        return result;
+    }
+
+}
+
+	// End of segment: src\main\command\AddCommand.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\alias\AliasController.java
+	 */
+
+public class AliasController {
+    private static final String SYMBOL_DELIM = " ";
+
+    private final IAliasStorage aliasStorage;
+    private final IFileInputOutput aliasFileInputOutput;
+
+    public AliasController(IAliasStorage aliasStorage,
+            IFileInputOutput aliasFileInputOutput) {
+        this.aliasStorage = aliasStorage;
+        this.aliasFileInputOutput = aliasFileInputOutput;
+    }
+
+	// End of segment: src\main\command\alias\AliasController.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\alias\AliasController.java
+	 */
+
+    public String replaceAlias(String commandString) {
+        commandString = cleanCmdString(commandString);
+        beforeAliasCheck();
+
+        if (commandString.isEmpty()) {
+            return commandString;
+        }
+
+        commandString = tryReplaceWithCustom(commandString);
+        return commandString;
+    }
+
+	// End of segment: src\main\command\alias\AliasController.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\alias\AliasController.java
+	 */
+
+    private void beforeAliasCheck() {
+        aliasFileInputOutput.read();
+    }
+
+	// End of segment: src\main\command\alias\AliasController.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\alias\AliasController.java
+	 */
+
+    private static String cleanCmdString(String cmdString) {
+        return stripExtraDelims(cmdString).trim();
+    }
+
+	// End of segment: src\main\command\alias\AliasController.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\alias\AliasController.java
+	 */
+
+    private static String stripExtraDelims(String s) {
+        String doubleDelim = SYMBOL_DELIM + SYMBOL_DELIM;
+        while (s.contains(doubleDelim)) {
+            s = s.replace(doubleDelim, SYMBOL_DELIM);
+        }
+        return s;
+    }
+}
+
+	// End of segment: src\main\command\alias\AliasController.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\EditCommand.java
+	 */
+
+    /**
+     * Parses command arguments into different parts of a task and sets them
+     * into a TaskInfo object.
+     * <p>
+     * The first token in the arguments should indicate the type of argument.
+     * The argument is then parsed and set accordingly. A lack of the first
+     * token will try to initiate edit mode. If the arguments cannot be parsed,
+     * a null is returned.
+     *
+     * @param cmdArgs
+     *            the arguments for the edit command
+     * @return the TaskInfo with the task part set in or null if arguments are
+     *         invalid
+     */
+    private TaskInfo parseEditParams(String cmdArgs) {
+        Scanner sc = new Scanner(cmdArgs);
+        String editType = null;
+        String editParam = null;
+
+        try {
+            editType = sc.next();
+            editParam = sc.nextLine().trim();
+        } catch (NoSuchElementException e) {
+            if (editType == null) {
+                tryChangeToStartEditModeCommand();
+            }
+            sc.close();
+            return null;
+        }
+
+        TaskInfo editTask = TaskInfo.createEmpty();
+
+        switch (editType.toLowerCase()) {
+            case ARGUMENT_NAME :
+                editTask.name = CommandParser.stripIgnoreSymbols(editParam);
+                break;
+            case ARGUMENT_DESCRIPTION :
+            case ARGUMENT_DESCRIPTION_2 :
+                editTask.details = CommandParser.stripIgnoreSymbols(editParam);
+                break;
+            case ARGUMENT_DATE :
+            case ARGUMENT_TIME :
+            case ARGUMENT_DATETIME :
+                parseDateTimes(editParam, editTask);
+                break;
+            case ARGUMENT_TAG :
+            case ARGUMENT_TAG_2 :
+                parseTags(editParam, editTask);
+                break;
+            case ARGUMENT_PRIORITY :
+                Priority p = CommandParser.parsePriority("+" + editParam);
+                if (p != null) {
+                    editTask.priority = p;
+                } else {
+                    editTask = null;
+                }
+                break;
+            case ARGUMENT_STATUS :
+                Status s = CommandParser.parseStatus(editParam);
+                if (s != null) {
+                    editTask.status = s;
+                } else {
+                    editTask = null;
+                }
+                break;
+	// End of segment: src\main\command\EditCommand.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\EditCommand.java
+	 */
+
+            default :
+                editTask = null;
+        }
+
+        sc.close();
+
+        return editTask;
+    }
+
+
+	// End of segment: src\main\command\EditCommand.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\EditCommand.java
+	 */
+
+    /**
+     * Parses a command string into dates and times suitable for the edit
+     * command.
+     * <p>
+     * If more than 2 pairs of dates and times are found, only the first two are
+     * used. Combinations are handled as shown below:
+     * <ul>
+     *  <li>1 date and/or time - Set the end date and/or time accordingly.</li>
+     *  <li>2 dates/times and 1 of the other - Fill in the remainder with the 1
+     *      found.</li>
+     *  <li>2 dates and times each - Set the start and end dates and times
+     *      according to the positions.</li>
+     * </ul>
+     *
+     * @param cmdArgs
+     *            the arguments possibly containing dates and times
+     * @param task
+     *            the task to set the dates and times into
+     */
+    private void parseDateTimes(String cmdArgs, TaskInfo task) {
+        DateTimePair dtPair = CommandParser.parseDateTimes(cmdArgs);
+        if (dtPair.isEmpty()) {
+            return;
+        }
+
+        // either a single date and/or time
+        if (!dtPair.hasSecondDate() && !dtPair.hasSecondTime()) {
+            if (dtPair.hasFirstDate()) {
+                task.endDate = dtPair.getFirstDate();
+            }
+            if (dtPair.hasFirstTime()) {
+                task.endTime = dtPair.getFirstTime();
+            }
+        } else {
+            // set everything first
+            task.startDate = dtPair.getFirstDate();
+            task.startTime = dtPair.getFirstTime();
+            task.endDate = dtPair.getSecondDate();
+            task.endTime = dtPair.getSecondTime();
+
+            // handle the case where one value has to be filled in
+            if (!dtPair.hasSecondDate()) {
+                task.endDate = task.startDate;
+            }
+            if (!dtPair.hasSecondTime()) {
+                task.endTime = task.startTime;
+            }
+        }
+    }
+
+    /**
+     * Parses a tag add / delete operation and tag(s) from {@code tagEditArgs}
+     * and sets them into {@code task}. Also sets the tag add / delete flag for
+     * the EditCommand as needed.
+     *
+     * @param tagEditArgs
+     *            the operation to be done to the tags with the tag(s)
+     * @param task
+     *            the task to set the tags into
+     */
+    private void parseTags(String tagEditArgs, TaskInfo task) {
+        if (tagEditArgs.isEmpty()) {
+            return;
+        }
+
+        Scanner sc = new Scanner(tagEditArgs);
+        String changeType = sc.next();
+
+        // ensure it still has a tag to add / delete
+        if (sc.hasNext()) {
+            changeType = changeType.toLowerCase();
+
+            if (changeType.equals(ARGUMENT_ADD)) {
+                setSpecialOperation(Operation.TAG_ADD);
+            }
+            if (changeType.equals(ARGUMENT_DELETE) ||
+                    changeType.equals(ARGUMENT_DELETE_2)){
+                setSpecialOperation(Operation.TAG_DELETE);
+            }
+        }
+
+        // ensure it is adding / deleting tags
+        if (specialOperation == Operation.TAG_ADD ||
+                specialOperation == Operation.TAG_DELETE) {
+            StringBuilder tags = new StringBuilder();
+            while (sc.hasNext()) {
+                String tag = sc.next();
+                tags.append("#").append(tag).append(" ");
+            }
+            task.tags = CommandParser.parseTags(tags.toString());
+        }
+
+        sc.close();
+    }
+
+	// End of segment: src\main\command\EditCommand.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\CommandParser.java
+	 */
+
+/**
+ * Utility class for Command classes to parse parts of tasks from strings.
+ */
+public class CommandParser {
+    private final static String SYMBOL_DELIM = " ";
+    private final static String SYMBOL_IGNORE = "\"";
+    private final static String SYMBOL_TAG = "#";
+    private final static String SYMBOL_PRIORITY = "+";
+
+    /**
+     * Parses a string into one suitable for a task name, removing all tags,
+     * dates, times, priorities, and statuses.
+     *
+     * @param args
+     *            the string to be parsed into a task name
+     * @return the parsed task name
+     */
+    public static String parseName(String args) {
+        String name = parseNameRecurse(args);
+        String cleanedName = cleanCmdString(name).trim();
+        return cleanedName;
+    }
+
+    /**
+     * Parses a string into one suitable for a task name recursively, splitting
+     * it into segments based on parts that should be parsed directly as the
+     * task name (ignored segments).
+     *
+     * @param args
+     *            the string to be parsed into a task name
+     * @return the parsed part of the task name
+     */
+    private static String parseNameRecurse(String args) {
+        if (hasIgnoredSegment(args)) {
+            String ignoredSegment = getFirstIgnoredSegment(args);
+            int startIgnoreIdx = args.indexOf(ignoredSegment);
+            int endIgnoreIdx = startIgnoreIdx + ignoredSegment.length();
+
+            // recursively parse non-ignored segments
+            String front = args.substring(0, startIgnoreIdx).trim();
+            front = parseNameRecurse(front);
+            String back = args.substring(endIgnoreIdx).trim();
+            back = parseNameRecurse(back);
+
+            // remove SYMBOL_IGNORE from both sides
+            String cleanedIgnoredSegment =
+                    ignoredSegment.substring(1, ignoredSegment.length() - 1);
+            return front + " " + cleanedIgnoredSegment + " " + back;
+        } else {
+            // check if any sequence of tokens should not be in the task name
+            String[] tokens = args.split(SYMBOL_DELIM);
+            BitSet toRemove = new BitSet(); // indices to be removed
+
+            for (int i = 0; i < tokens.length; i++) {
+                for (int j = tokens.length; j > i; j--) {
+                    String[] curTokens = Arrays.copyOfRange(tokens, i, j);
+                    String curSubstring = String.join(SYMBOL_DELIM, curTokens);
+
+                    if (!isKeyword(curSubstring)) {
+                        toRemove.set(i, j);
+                        break;
+                    }
+                }
+            }
+
+            // join the tokens that should be kept
+            StringBuilder cleanedName = new StringBuilder();
+            for (int i = toRemove.nextClearBit(0); i < tokens.length;
+                    i = toRemove.nextClearBit(i + 1)) {
+                cleanedName.append(tokens[i]);
+                cleanedName.append(SYMBOL_DELIM);
+            }
+            return cleanedName.toString().trim();
+        }
+    }
+
+    /**
+     * Checks if a string is a keyword, i.e., cannot be parsed into a priority,
+     * tag, status, date, or time.
+     *
+     * @param substring
+     *            the string to be checked
+     * @return false if the string can be parsed into one of those parts,
+     *         true otherwise
+     */
+    private static boolean isKeyword(String substring) {
+        boolean isNotKeyword = isPriority(substring) || isTag(substring) ||
+                isStatus(substring) || DateTimeParser.isDate(substring) ||
+                DateTimeParser.isTime(substring);
+        return !isNotKeyword;
+    }
+
+    /**
+     * Extracts the first ignored segment (surrounded by SYMBOL_IGNORE) from
+     * a string.
+     *
+     * @param args
+     *            the string to extract from
+     * @return null if no ignored segment exists, otherwise, the first ignored
+     *         segment (substring)
+     */
+    private static String getFirstIgnoredSegment(String args) {
+        int startIdx = args.indexOf(SYMBOL_IGNORE);
+        int endIdx = args.indexOf(SYMBOL_IGNORE, startIdx + 1);
+
+        if (endIdx != -1) {
+            String ignoredSegment = args.substring(startIdx, endIdx + 1);
+            return ignoredSegment;
+        }
+
+        return null;
+    }
+
+    private static boolean hasIgnoredSegment(String args) {
+        return getFirstIgnoredSegment(args) != null;
+    }
+
+    /**
+     * Parses dates and times from {@code args} into a DateTimePair.
+     * This method parses the dates and times in sequence, so
+     * "5 Nov to 6 Nov 3pm" will be parsed with 3pm in the second time instead
+     * of the first.
+     *
+     * @param args
+     *            the string possibly containing dates and times
+     * @return a DateTimePair representing the dates and times found
+     */
+    public static DateTimePair parseDateTimesInSequence(String args) {
+        args = stripIgnoredSegments(args);
+        return DateTimeParser.parseDateTimesInSequence(args);
+    }
+
+    /**
+     * Parses dates and times from {@code args} into a DateTimePair.
+     * This method does not parses the dates and times in sequence, so
+     * "5 Nov to 6 Nov 3pm" will be parsed with 3pm in the first time instead of
+     * the second.
+     *
+     * @param args
+     *            the string possibly containing dates and times
+     * @return a DateTimePair representing the dates and times found
+     */
+    public static DateTimePair parseDateTimes(String args) {
+        args = stripIgnoredSegments(args);
+        return DateTimeParser.parseDateTimes(args);
+    }
+
+    /**
+     * Parses tags from {@code args} into an array of {@code Tag}s.
+     *
+     * @param args
+     *            the string possibly containing tags
+     * @return an array of Tags found, null if no Tag was found
+     */
+    public static Tag[] parseTags(String args) {
+        args = stripIgnoredSegments(args);
+        args = cleanCmdString(args);
+        String[] words = args.split(SYMBOL_DELIM);
+
+        List<Tag> tagList = new ArrayList<Tag>();
+        for (String word : words) {
+            if (isTag(word)) {
+                // remove the SYMBOL_TAG first
+                word = removeFirstChar(word);
+                tagList.add(new Tag(word));
+            }
+        }
+        Tag[] tags = tagList.toArray(new Tag[tagList.size()]);
+
+        return tags.length == 0 ? null : tags;
+    }
+
+    /**
+     * Checks if {@code possibleTag} is a tag.
+     *
+     * @param possibleTag
+     *            the string is that possibly a tag
+     * @return true if possibleTag is a tag, false otherwise
+     */
+    private static boolean isTag(String possibleTag) {
+        return possibleTag.startsWith(SYMBOL_TAG) &&
+                possibleTag.length() > 1 &&
+                !possibleTag.contains(SYMBOL_DELIM);
+    }
+
+    /**
+     * Parses priorities from {@code args} into an array of {@code Priority}s.
+     *
+     * @param args
+     *            the string possibly containing priorities
+     * @return an array of priorities found, null if no Priority was found
+     */
+    public static Priority[] parsePriorities(String args) {
+        args = stripIgnoredSegments(args);
+        args = cleanCmdString(args);
+        String[] words = args.split(SYMBOL_DELIM);
+
+        List<Priority> pList = new ArrayList<Priority>();
+        for (String word : words) {
+            if (isPriority(word)) {
+                pList.add(matchPriority(word));
+            }
+        }
+        Priority[] priorities = pList.toArray(new Priority[pList.size()]);
+
+        return priorities.length == 0 ? null : priorities;
+    }
+
+    /**
+     * Parses the first priority found in {@code args}.
+     *
+     * @param args
+     *            the string possibly containing a priority
+     * @return the first priority found, null if no priorities found
+     */
+    public static Priority parsePriority(String args) {
+        Priority[] priorities = parsePriorities(args);
+        return priorities == null ? null : priorities[0];
+    }
+
+    /**
+     * Checks if {@code possiblePriority} is a priority.
+     *
+     * @param possiblePriority
+     *            the string that is possibly a priority
+     * @return true is possiblePriority is a priority, false otherwise
+     */
+    private static boolean isPriority(String possiblePriority) {
+        boolean isPriority = matchPriority(possiblePriority) != null;
+        return isPriority;
+    }
+
+    /**
+     * Tries to convert {@code possiblePriority} into a priority.
+     *
+     * @param possiblePriority
+     *            the string that is possibly a priority
+     * @return the priority converted or null if invalid
+     */
+    private static Priority matchPriority(String possiblePriority) {
+        Priority p = null;
+
+        if (possiblePriority.startsWith(SYMBOL_PRIORITY) &&
+                !possiblePriority.contains(SYMBOL_DELIM)) {
+            String type = removeFirstChar(possiblePriority);
+            try {
+                p = Priority.valueOf(type.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // do nothing
+            }
+        }
+
+        return p;
+    }
+
+    /**
+     * Parses statuses from {@code args} into an array of {@code Status}es.
+     *
+     * @param args
+     *            the string possibly containing statuses
+     * @return an array of Statuses found, null if no status was found
+     */
+    public static Status[] parseStatuses(String args) {
+        args = stripIgnoredSegments(args);
+        args = cleanCmdString(args);
+        String[] words = args.split(SYMBOL_DELIM);
+
+        List<Status> sList = new ArrayList<Status>();
+        for (String word : words) {
+            if (isStatus(word)) {
+                sList.add(parseStatus(word));
+            }
+        }
+
+        return sList.isEmpty() ? null :
+            sList.toArray(new Status[sList.size()]);
+    }
+
+    /**
+     * Tries to convert {@code possibleStatus} into a status.
+     *
+     * @param possibleStatus
+     *            the string that is possibly a status
+     * @return the status converted or null if invalid
+     */
+    public static Status parseStatus(String possibleStatus) {
+        try {
+            return Status.valueOf(possibleStatus.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Checks if {@code possibleStatus} is a status.
+     *
+     * @param possibleStatus
+     *            the string is that possibly a status
+     * @return true if possibleStatus is a status, false otherwise
+     */
+    private static boolean isStatus(String possibleStatus) {
+        return parseStatus(possibleStatus) != null;
+    }
+
+    /**
+     * Removes the first character from a string and returns it
+     */
+    private static String removeFirstChar(String s) {
+        return s.substring(1);
+    }
+
+    /**
+     * Cleans a command string to make it suitable for parsing.
+     */
+    private static String cleanCmdString(String cmdString) {
+        return stripExtraDelims(cmdString).trim();
+    }
+
+    /**
+     * Strips occurrences of double delimiters from a string and returns it.
+     */
+    private static String stripExtraDelims(String s) {
+        String doubleDelim = SYMBOL_DELIM + SYMBOL_DELIM;
+        while (s.contains(doubleDelim)) {
+            s = s.replace(doubleDelim, SYMBOL_DELIM);
+        }
+        return s;
+    }
+
+    /**
+     * Strips pairs of ignore symbols from a string.
+     *
+     * @param args
+     *            the string possibly containing ignore symbols
+     * @return the string with pairs of ignore symbols stripped
+     */
+    public static String stripIgnoreSymbols(String args) {
+        if (hasIgnoredSegment(args)) {
+            String ignoredSegment = getFirstIgnoredSegment(args);
+            int startIgnoreIdx = args.indexOf(ignoredSegment);
+            int endIgnoreIdx = startIgnoreIdx + ignoredSegment.length();
+
+            // recursively parse non-ignored segments
+            String front = args.substring(0, startIgnoreIdx).trim();
+            String back = args.substring(endIgnoreIdx).trim();
+            back = stripIgnoreSymbols(back);
+
+            // remove SYMBOL_IGNORE from both sides
+            String cleanedIgnoredSegment =
+                    ignoredSegment.substring(1, ignoredSegment.length() - 1);
+            return (front + " " + cleanedIgnoredSegment + " " + back).trim();
+        }
+        return args.trim();
+    }
+
+    /**
+     * Strips ignored segments from a string.
+     *
+     * @param s
+     *            the string to strip ignored segments from
+     * @return the string with ignored segments stripped
+     */
+    private static String stripIgnoredSegments(String s) {
+        StringBuilder sB = new StringBuilder(s);
+
+        boolean shouldCheckFurther;
+        do {
+            int startIgnoreIdx = sB.indexOf(SYMBOL_IGNORE);
+            int endIgnoreIdx = sB.indexOf(SYMBOL_IGNORE, startIgnoreIdx + 1);
+
+            shouldCheckFurther = endIgnoreIdx > startIgnoreIdx;
+            if (shouldCheckFurther) {
+                sB.delete(startIgnoreIdx, endIgnoreIdx + 1);
+            }
+        } while (shouldCheckFurther);
+
+        return sB.toString();
+    }
+}
+
+	// End of segment: src\main\command\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\DatePair.java
+	 */
+
+/**
+ * Container class for a pair of dates and their respective frequencies.
+ */
+public class DatePair {
+    private LocalDate firstDate;
+    private Frequency firstFrequency;
+    private LocalDate secondDate;
+    private Frequency secondFrequency;
+
+    void add(ParsedDate d) {
+        if (d == null || isFull()) {
+            return;
+        }
+
+        if (!hasFirstDate()) {
+            firstDate = d.getDate();
+            firstFrequency = d.getFrequency();
+        } else {
+            secondDate = d.getDate();
+            secondFrequency = d.getFrequency();
+        }
+    }
+
+    LocalDate getFirstDate() {
+        return firstDate;
+    }
+
+    LocalDate getSecondDate() {
+        return secondDate;
+    }
+
+    Frequency getFirstFrequency() {
+        return firstFrequency;
+    }
+
+    Frequency getSecondFrequency() {
+        return secondFrequency;
+    }
+
+    void setFirstDate(ParsedDate d) {
+        this.firstDate = d == null ? null : d.getDate();
+        this.firstFrequency = d == null ? null : d.getFrequency();
+    }
+
+    void setSecondDate(ParsedDate d) {
+        this.secondDate = d == null ? null : d.getDate();
+        this.secondFrequency = d == null ? null : d.getFrequency();
+    }
+
+    boolean hasSecondDate() {
+        return secondDate != null;
+    }
+
+    boolean hasFirstDate() {
+        return firstDate != null;
+    }
+
+    boolean areDatesSame() {
+        return hasFirstDate() ? firstDate.equals(secondDate) : false;
+    }
+
+    boolean isFull() {
+        return hasFirstDate() && hasSecondDate();
+    }
+}
+
+	// End of segment: src\main\command\parser\DatePair.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\DateParser.java
+	 */
+
+/**
+ * Utility class for parsing dates from strings.
+ */
+public class DateParser {
+    private static final int MIN_YEAR = 1000;
+    private static Map<DateTimeFormatter, String> datePartialFormatPatterns;
+    private static Map<DateTimeFormatter, String> dateFullFormatPatterns;
+    private static Map<String, String> dateWeekOfDayShortForms;
+    private static LocalDate datePatternsLastUpdate;
+
+    /**
+     * Parses a string to a date.
+     *
+     * @param dateString
+     *            a string that is possibly a date
+     * @return the LocalDate corresponding to the string
+     */
+    static ParsedDate parseDate(String dateString) {
+        buildDatePatternHashMap();
+
+        ParsedDate d = parseRelativeDate(dateString);
+        if (d == null) {
+            d = parseAbsoluteDate(dateString);
+        }
+
+        return d;
+    }
+
+    /**
+     * Checks if a string can be parsed into a date
+     *
+     * @param dateString
+     *            a string that is possibly a date
+     * @return true if the string can be parsed into a date, false otherwise
+     */
+    static boolean isDate(String dateString) {
+        return parseDate(dateString) != null;
+    }
+
+    /**
+     * Parses strings in a format relative to the current date.
+     */
+    private static ParsedDate parseRelativeDate(String dateString) {
+        LocalDate parsedDate = null;
+        dateString = dateString.toLowerCase();
+
+        parsedDate = parseDateAsDayOfWeek(dateString);
+        if (parsedDate != null) {
+            return new ParsedDate(parsedDate, Frequency.WEEK);
+        }
+
+        parsedDate = parseDateAsOccasion(dateString);
+        if (parsedDate != null) {
+            return new ParsedDate(parsedDate, Frequency.YEAR);
+        }
+
+        parsedDate = parseDateAsPlusMinus(dateString);
+        if (parsedDate == null) {
+            parsedDate = parseDateAsRelativeToNow(dateString);
+        }
+        if (parsedDate != null) {
+            return new ParsedDate(parsedDate);
+        }
+
+        return null;
+    }
+
+    /**
+     * Parses strings in English relative to the current date, like "today",
+     * "yesterday", or "tomorrow".
+     *
+     * @param dateString
+     *            a possible relative date
+     * @return the date if valid, null otherwise
+     */
+    private static LocalDate parseDateAsRelativeToNow(String dateString) {
+        LocalDate parsedDate = null;
+
+        switch (dateString) {
+            case "yesterday" :
+                parsedDate = LocalDate.now().minusDays(1);
+                break;
+            case "today" :
+            case "now" :
+                parsedDate = LocalDate.now();
+                break;
+            case "tomorrow" :
+                parsedDate = LocalDate.now().plusDays(1);
+                break;
+        }
+
+        return parsedDate;
+    }
+
+    /**
+     * Parses strings of annual occasions such as Christmas to their respective
+     * dates.
+     *
+     * @param dateString
+     *            a possible occasion
+     * @return the date if valid, null otherwise
+     */
+    private static LocalDate parseDateAsOccasion(String dateString) {
+        if (dateString.toLowerCase().equals("christmas")) {
+            return LocalDate.of(LocalDate.now().getYear(), 12, 25);
+        }
+        // TODO Occasions such as New Year's / Christmas.
+        return null;
+    }
+
+    /**
+     * Parses a string as a day of the week (e.g. monday, tuesday, etc).
+     *
+     * @param dateString
+     *            a string that is possibly a day of the week
+     * @return the closest date to today with that day of the week if the string
+     *         is valid, or null otherwise
+     */
+    private static LocalDate parseDateAsDayOfWeek(String dateString) {
+        buildWeekOfDayMap();
+
+        if (dateWeekOfDayShortForms.containsKey(dateString.toLowerCase())) {
+            dateString = dateWeekOfDayShortForms.get(dateString);
+        }
+        try {
+            dateString = dateString.toUpperCase();
+            int dayOfWeek = DayOfWeek.valueOf(dateString).getValue();
+
+            return LocalDate.now().with(ChronoField.DAY_OF_WEEK, dayOfWeek);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private static void buildWeekOfDayMap() {
+        if (dateWeekOfDayShortForms != null) {
+            return;
+        }
+
+        dateWeekOfDayShortForms = new HashMap<>();
+        dateWeekOfDayShortForms.put("mon", "monday");
+        dateWeekOfDayShortForms.put("tue", "tuesday");
+        dateWeekOfDayShortForms.put("wed", "wednesday");
+        dateWeekOfDayShortForms.put("thu", "thursday");
+        dateWeekOfDayShortForms.put("fri", "friday");
+        dateWeekOfDayShortForms.put("sat", "saturday");
+        dateWeekOfDayShortForms.put("sun", "sunday");
+    }
+
+    /**
+     * Parses string in the format: "+xd", or its minus variant. This refers to
+     * x number of days relative to the current date.
+     *
+     * @param dateString
+     *            a possible relative date
+     * @return the date if valid, null otherwise
+     */
+    private static LocalDate parseDateAsPlusMinus(String dateString) {
+        String modifier = null;
+        if ((dateString.startsWith("+") || dateString.startsWith("-")) &&
+                dateString.endsWith("d")) {
+            modifier = dateString.substring(0, dateString.length() - 1);
+        }
+        try {
+            int modifierInt = Integer.parseInt(modifier);
+            return LocalDate.now().plusDays(modifierInt);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private static ParsedDate parseAbsoluteDate(String dateString) {
+        // match full before partial in order to prevent matching more than one.
+        LocalDate date = matchDatePatterns(dateFullFormatPatterns, dateString);
+        if (date != null) {
+            return new ParsedDate(date);
+        }
+
+        date = matchDatePatterns(datePartialFormatPatterns, dateString);
+        if (date != null) {
+            return new ParsedDate(date, Frequency.YEAR);
+        }
+
+        return null;
+    }
+
+    /**
+     * Matches a string to a map of date formats.
+     *
+     * @param dateMap
+     *            the map of date formats
+     * @param dateString
+     *            the string to be matched
+     * @return the LocalDate corresponding to the string if valid, null
+     *         otherwise
+     */
+    private static LocalDate matchDatePatterns(
+            Map<DateTimeFormatter, String> dateMap, String dateString) {
+        // change String to titlecase (e.g. sep -> Sep; parse is case sensitive)
+        dateString = capitaliseFirstLetter(dateString);
+
+        Iterator<Entry<DateTimeFormatter, String>> i =
+            dateMap.entrySet().iterator();
+        while (i.hasNext()) {
+            Entry<DateTimeFormatter, String> formatPattern = i.next();
+
+            DateTimeFormatter format = formatPattern.getKey();
+            String missingField = formatPattern.getValue();
+
+            try {
+                String test = dateString + missingField;
+                LocalDate d = LocalDate.parse(test, format);
+                if (d.getYear() > MIN_YEAR) {
+                    return d;
+                }
+            } catch (DateTimeParseException e) {
+                // do nothing
+            }
+        }
+
+        return null;
+    }
+
+    private static void buildDatePatternHashMap() {
+        // last update was on the same date
+        if (datePatternsLastUpdate != null &&
+                datePatternsLastUpdate.equals(LocalDate.now())) {
+            return;
+        }
+
+        datePartialFormatPatterns = new HashMap<>();
+
+        // 24 August
+        mapPattern(datePartialFormatPatterns,
+                "d MMMM" + "y", String.valueOf(LocalDate.now().getYear()));
+        // 24 Aug
+        mapPattern(datePartialFormatPatterns,
+                "d MMM" + "y", String.valueOf(LocalDate.now().getYear()));
+        // 24Aug
+        mapPattern(datePartialFormatPatterns,
+                "dMMM" + "y", String.valueOf(LocalDate.now().getYear()));
+        // 24/8, 24/08, 04/08, 04/8
+        mapPattern(datePartialFormatPatterns,
+                "d/M" + "/y", "/" + String.valueOf(LocalDateTime.now().getYear()));
+
+        datePatternsLastUpdate = LocalDate.now();
+
+        // partial / full divider, full only needs to be built once
+        if (dateFullFormatPatterns != null) {
+            return;
+        }
+
+        dateFullFormatPatterns = new HashMap<>();
+
+        // 24 Aug 2014
+        mapPattern(dateFullFormatPatterns, "d MMM y");
+        // 24Aug2014
+        mapPattern(dateFullFormatPatterns, "dMMMy");
+        // 24 Aug 14
+        mapPattern(dateFullFormatPatterns, "d MMM yy");
+        // 24Aug14
+        mapPattern(dateFullFormatPatterns, "dMMMyy");
+        // 24 August 2014
+        mapPattern(dateFullFormatPatterns, "d MMMM y");
+        // 24/8/2014, 24/08/2014, 04/08/2014, 04/8/2014
+        mapPattern(dateFullFormatPatterns, "d/M/y");
+        // 24/8/14, 24/08/14, 04/08/14, 04/8/14
+        mapPattern(dateFullFormatPatterns, "d/M/yy");
+    }
+
+    private static void mapPattern(Map<DateTimeFormatter, String> map,
+            String pattern) {
+        map.put(DateTimeFormatter.ofPattern(pattern), "");
+    }
+
+    private static void mapPattern(Map<DateTimeFormatter, String> map,
+            String pattern, String missingField) {
+        map.put(DateTimeFormatter.ofPattern(pattern), missingField);
+    }
+
+    /**
+     * Capitalises the first letter (alphabetic) of the string and returns it.
+     * (e.g. "12%ab" -> "12%Ab")
+     */
+    private static String capitaliseFirstLetter(String dateString) {
+        dateString = dateString.toUpperCase();
+        for (int i = 0; i < dateString.length(); i++) {
+            if (Character.isAlphabetic(dateString.charAt(i))) {
+                dateString = dateString.substring(0, i + 1) +
+                        dateString.substring(i + 1).toLowerCase();
+                break;
+            }
+        }
+        return dateString;
+    }
+}
+
+	// End of segment: src\main\command\parser\DateParser.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\DateTimePair.java
+	 */
+
+/**
+ * Container class for a DatePair and a TimePair, with DateModifiers for both
+ * sets of date and time.
+ */
+public class DateTimePair {
+    private DateModifier firstModifier;
+    private DateModifier secondModifier;
+
+    protected DatePair dates;
+    protected TimePair times;
+
+
+    DateTimePair() {
+        dates = new DatePair();
+        times = new TimePair();
+    }
+
+    void add(ParsedDate d) {
+        if (isFull()) {
+            return;
+        }
+
+        dates.add(d);
+    }
+
+    void add(LocalTime t) {
+        if (isFull()) {
+            return;
+        }
+
+        times.add(t);
+    }
+
+    void add(DateModifier modifier) {
+        if (secondModifier != null) {
+            return;
+        }
+
+        if (hasSecondDate() || hasSecondTime()) {
+            secondModifier = modifier;
+        } else {
+            firstModifier = modifier;
+        }
+    }
+
+    boolean isFull() {
+        return dates.isFull() && times.isFull();
+    }
+
+    public LocalDate getFirstDate() {
+        if (!hasFirstDate()) {
+            return null;
+        }
+
+        modifyDates();
+
+        return dates.getFirstDate();
+    }
+
+    public LocalDate getSecondDate() {
+        if (!hasSecondDate()) {
+            return null;
+        }
+
+        modifyDates();
+
+        return dates.getSecondDate();
+    }
+
+    /**
+     * Modifies the two dates based on the two date modifiers, shifting them
+     * backwards, forwards, etc, by a quantity determined by their frequencies.
+     */
+    private void modifyDates() {
+        if (hasFirstDate()) {
+            LocalDate date = modifyDate(dates.getFirstDate(), LocalDate.now(),
+                    dates.getFirstFrequency(), firstModifier);
+            dates.setFirstDate(new ParsedDate(date));
+        }
+
+        if (hasSecondDate()) {
+            // base off first date only if second date has no (forced) modifier
+            // (e.g. from next wed to thu)
+            LocalDate fromDate = hasFirstDate() && secondModifier == null ?
+                    dates.getFirstDate() : LocalDate.now();
+
+            LocalDate date = modifyDate(dates.getSecondDate(), fromDate,
+                    dates.getSecondFrequency(), secondModifier);
+            dates.setSecondDate(new ParsedDate(date));
+        }
+    }
+
+    /**
+     * Modifies {@code date} based on a {@code frequency} and {@code modifier},
+     * with {@code fromDate} as a reference point.
+     *
+     * @param date
+     *            the date to modify
+     * @param fromDate
+     *            the date to modify from as a reference
+     * @param frequency
+     *            the frequency the date occurs at
+     * @param modifier
+     *            the modification to be applied to the date
+     * @return the modified date
+     */
+    private static LocalDate modifyDate(LocalDate date, LocalDate fromDate,
+            Frequency frequency, DateModifier modifier) {
+
+        if (frequency == null) {
+            return date; // can't modify it if it happens only once
+        }
+
+        if (modifier == null) {
+            return getNextOccurrence(date, fromDate, frequency.getField());
+        } else {
+            return modifyDate(date, fromDate, frequency.getField(), modifier);
+        }
+    }
+
+    private static LocalDate modifyDate(LocalDate date, LocalDate fromDate,
+            ChronoField field, DateModifier modifier) {
+
+        // synchronises the two dates first, assuming they share the same field
+        date = date.with(field, fromDate.get(field));
+
+        // then apply the modification
+        switch (modifier) {
+            case PREVIOUS :
+                return date.minus(1, field.getBaseUnit());
+            case THIS :
+                return date;
+            case NEXT :
+                return date.plus(1, field.getBaseUnit());
+        }
+
+        return date;
+    }
+
+    /**
+     * Gets the next occurrence of {@code date}, starting from {@code fromDate}.
+     * The {@code field} is used to ensure a uniform increase.
+     *
+     * @param date
+     *            the date to get the next occurrence of
+     * @param fromDate
+     *            the date to use as a starting point
+     * @param field
+     *            the frequency the date occurs at
+     * @return the next occurrence of the date
+     */
+    private static LocalDate getNextOccurrence(LocalDate date,
+            LocalDate fromDate, ChronoField field) {
+
+        // synchronises the two dates first, assuming they share the same field
+        date = date.with(field, fromDate.get(field));
+
+        while (!fromDate.isBefore(date)) {
+            date = date.plus(1, field.getBaseUnit());
+        }
+
+        return date;
+    }
+
+    public LocalTime getFirstTime() {
+        return times.getFirstTime();
+    }
+
+    public LocalTime getSecondTime() {
+        return times.getSecondTime();
+    }
+
+    /**
+     * @return the number of dates filled in
+     */
+    public int getNumOfDates() {
+        int first = hasFirstDate() ? 1 : 0;
+        int second = hasSecondDate() ? 1 : 0;
+        return first + second;
+    }
+
+    /**
+     * @return the number of times filled in
+     */
+    public int getNumOfTimes() {
+        int first = hasFirstTime() ? 1 : 0;
+        int second = hasSecondTime() ? 1 : 0;
+        return first + second;
+    }
+
+    public boolean hasFirstDate() {
+        return dates.hasFirstDate();
+    }
+
+    public boolean hasSecondDate() {
+        return dates.hasSecondDate();
+    }
+
+    public boolean hasFirstTime() {
+        return times.hasFirstTime();
+    }
+
+    public boolean hasSecondTime() {
+        return times.hasSecondTime();
+    }
+
+    public boolean isEmpty() {
+        return !hasFirstDate() && !hasFirstTime();
+    }
+}
+
+	// End of segment: src\main\command\parser\DateTimePair.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\DateTimeParser.java
+	 */
+
+/**
+ * Utility class for parsing dates and times from strings, uses DateParser and
+ * TimeParser for the actual date and time parsing.
+ */
+public class DateTimeParser {
+    // enum for modifying dates when applicable (e.g. last/this/next christmas)
+    enum DateModifier {
+        THIS, NEXT, PREVIOUS
+    }
+
+    private static final String SYMBOL_DELIM = " ";
+    private static Set<String> prepositions;
+    private static HashMap<String, DateModifier> modifierMap;
+
+    /**
+     * Parses dates and times from {@code args} into a DateTimePair.
+     * This method parses the dates and times in sequence, so
+     * "5 Nov to 6 Nov 3pm" will be parsed with 3pm in the second time instead
+     * of the first.
+     *
+     * @param dateTimeString
+     *            the string possibly containing dates and times
+     * @return a DateTimePair representing the dates and times found
+     */
+    public static DateTimePair parseDateTimesInSequence(String dateTimeString) {
+        return parseDateTimes(dateTimeString, true);
+    }
+
+    /**
+     * Parses dates and times from {@code args} into a DateTimePair.
+     * This method does not parses the dates and times in sequence, so
+     * "5 Nov to 6 Nov 3pm" will be parsed with 3pm in the first time instead of
+     * the second.
+     *
+     * @param dateTimeString
+     *            the string possibly containing dates and times
+     * @return a DateTimePair representing the dates and times found
+     */
+    public static DateTimePair parseDateTimes(String dateTimeString) {
+        return parseDateTimes(dateTimeString, false);
+    }
+
+    /**
+     * Parses dates and times from {@code dateTimeString} into a DateTimePair.
+     * This method parses the dates and times in sequence according to the value
+     * of the {@code isInSequence} flag.
+     *
+     * @param dateTimeString
+     *            the string possibly containing dates and times
+     * @param isInSequence
+     *            whether to parse in sequence or not
+     * @return a DateTimePair representing the dates and times found
+     */
+    private static DateTimePair parseDateTimes(
+            String dateTimeString, boolean isInSequence) {
+
+        String[] tokens = dateTimeString.split(SYMBOL_DELIM);
+        DateTimePair dtPair = isInSequence ?
+                new DateTimeSequence() : new DateTimePair();
+
+        // substrings starting from the largest possible to the smallest
+        // possible to ensure the full date / time is recognised.
+        for (int fromIdx = 0; fromIdx < tokens.length; fromIdx++) {
+            for (int toIdx = tokens.length; toIdx > fromIdx; toIdx--) {
+                if (dtPair.isFull()) {
+                    break;
+                }
+
+                String[] curTokens = Arrays.copyOfRange(tokens, fromIdx, toIdx);
+                String curSubstring = String.join(SYMBOL_DELIM, curTokens);
+
+                curSubstring = removePrepositions(curSubstring);
+                DateModifier modifier = getDateModifier(curSubstring);
+                if (modifier != null) {
+                    curSubstring = removeFirstWord(curSubstring);
+                }
+
+                ParsedDate d = parseDate(curSubstring);
+                LocalTime t = parseTime(curSubstring);
+
+                boolean hasFound = d != null || t != null;
+                if (d != null) {
+                    dtPair.add(d);
+                }
+                if (t != null) {
+                    dtPair.add(t);
+                }
+
+                if (hasFound) {
+                    if (modifier != null) {
+                        dtPair.add(modifier);
+                    }
+
+                    // skip ahead by the number of tokens in the date/time found
+                    fromIdx = toIdx - 1;
+                    break;
+                }
+            }
+        }
+
+        return dtPair;
+    }
+
+    private static ParsedDate parseDate(String dateString) {
+        return DateParser.parseDate(dateString);
+    }
+
+    private static LocalTime parseTime(String timeString) {
+        return TimeParser.parseTime(timeString);
+    }
+
+    public static boolean isDate(String dateString) {
+        dateString = cleanDateTimeString(dateString);
+        return DateParser.isDate(dateString);
+    }
+
+    public static boolean isTime(String timeString) {
+        timeString = cleanDateTimeString(timeString);
+        return TimeParser.isTime(timeString);
+    }
+
+    /**
+     * Removes possible prepositions and a date modifier from
+     * {@code dateTimeString}.
+     *
+     * @param dateTimeString a string to be parsed
+     * @return the string with prepositions and date modifier removed
+     */
+    private static String cleanDateTimeString(String dateTimeString) {
+        dateTimeString = removePrepositions(dateTimeString);
+        if (getDateModifier(dateTimeString) != null) {
+            dateTimeString = removeFirstWord(dateTimeString);
+        }
+        return dateTimeString;
+    }
+
+    /**
+     * Gets a date modifier that corresponds to the string passed in.
+     *
+     * @param possibleDateModifier
+     *            a possible date modifier
+     * @return the date modifier if it exists
+     */
+    private static DateModifier getDateModifier(String possibleDateModifier) {
+        buildModifierMap();
+
+        String possibleModifier = possibleDateModifier.split(SYMBOL_DELIM)[0];
+        return modifierMap.get(possibleModifier.toLowerCase());
+    }
+
+    private static void buildModifierMap() {
+        if (modifierMap != null) {
+            return;
+        }
+
+        modifierMap = new HashMap<>();
+
+        modifierMap.put("this", DateModifier.THIS);
+        modifierMap.put("next", DateModifier.NEXT);
+        modifierMap.put("previous", DateModifier.PREVIOUS);
+        modifierMap.put("last", DateModifier.PREVIOUS);
+    }
+
+    /**
+     * Removes the first word (token) from a string.
+     *
+     * @param string the string to remove the first word from
+     * @return the string with the first word removed or the string if empty
+     */
+    private static String removeFirstWord(String string) {
+        assert string != null;
+
+        if (!string.isEmpty()) {
+            String[] split = string.split(SYMBOL_DELIM, 2);
+            return split.length > 1 ? split[1] : split[0];
+        } else {
+            return string;
+        }
+    }
+
+    /**
+     * Removes prepositions from the front of a string.
+     *
+     * @param phrase the phrase to be parsed
+     * @return the phrase with any prepositions in front removed
+     */
+    private static String removePrepositions(String phrase) {
+        buildPrepositionSet();
+
+        int lastFoundPreposition = 0;
+        String[] tokens = phrase.toLowerCase().split(SYMBOL_DELIM);
+
+        // find last preposition (e.g. "at around 3pm" -> index 1, "around")
+        while (tokens.length > lastFoundPreposition &&
+                prepositions.contains(tokens[lastFoundPreposition])) {
+            ++lastFoundPreposition;
+        }
+
+        if (lastFoundPreposition == 0) {
+            return phrase;
+        } else {
+            tokens = Arrays.copyOfRange(
+                    tokens, lastFoundPreposition, tokens.length);
+            return String.join(SYMBOL_DELIM, tokens).trim();
+        }
+    }
+
+    private static void buildPrepositionSet() {
+        if (prepositions != null) {
+            return;
+        }
+
+        String[] prepositionArr = {"about", "after", "around", "at", "before",
+                "between", "by", "for", "from", "in", "near", "on", "past",
+                "round", "since", "till", "to", "until", "within"};
+        prepositions = new HashSet<>(Arrays.asList(prepositionArr));
+    }
+
+}
+
+	// End of segment: src\main\command\parser\DateTimeParser.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\DateTimeSequence.java
+	 */
+
+/**
+ * Container class for a DatePair and a TimePair, with DateModifiers for both
+ * sets of date and time.
+ * <p>
+ * Also adds dates and times in sequence, so adding 2 dates, and then a time
+ * will allocate the time to the second slot instead of the first.
+ */
+public class DateTimeSequence extends DateTimePair {
+    private int count;
+    private int max;
+
+    DateTimeSequence() {
+        super();
+        count = 0;
+        max = 4;
+    }
+
+    @Override
+    void add(ParsedDate d) {
+        if (isFull()) {
+            return;
+        }
+
+        // two dates in a row
+        if (hasFirstDate() && !hasFirstTime()) {
+            max = 3;
+        }
+
+        if (!hasFirstDate() && !hasSecondTime()) {
+            dates.setFirstDate(d);
+        } else {
+            dates.setSecondDate(d);
+        }
+
+        count++;
+
+        avoidDuplicates();
+    }
+
+    @Override
+    void add(LocalTime t) {
+        if (isFull()) {
+            return;
+        }
+
+        // two times in a row
+        if (hasFirstTime() && !hasFirstDate()) {
+            max = 3;
+        }
+
+        if (!hasFirstTime() && !hasSecondDate()) {
+            times.setFirstTime(t);
+        } else {
+            times.setSecondTime(t);
+        }
+
+        count++;
+
+        avoidDuplicates();
+    }
+
+    @Override
+    boolean isFull() {
+        return count == max;
+    }
+
+    private boolean arePairsSame() {
+        boolean areDatesSame = dates.areDatesSame();
+        boolean areTimesSame = times.areTimesSame();
+
+        return areDatesSame && areTimesSame;
+    }
+
+    private void avoidDuplicates() {
+        // avoid duplicate start / end datetimes
+        if (isFull() && arePairsSame()) {
+            dates.setSecondDate(null);
+            times.setSecondTime(null);
+        }
+    }
+}
+
+	// End of segment: src\main\command\parser\DateTimeSequence.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\ParsedDate.java
+	 */
+
+/**
+ * Container class for a LocalDate and a Frequency.
+ */
+public class ParsedDate {
+    // the frequency of a date (e.g. Christmas happens once a YEAR).
+    enum Frequency {
+        WEEK(ChronoField.ALIGNED_WEEK_OF_YEAR),
+        YEAR(ChronoField.YEAR);
+
+        private ChronoField field;
+
+        Frequency(ChronoField field) {
+            this.field = field;
+        }
+
+        ChronoField getField(){
+            return field;
+        }
+    }
+
+    private LocalDate date;
+    private Frequency frequency;
+
+    ParsedDate(LocalDate date) {
+        this.date = date;
+    }
+
+    ParsedDate(LocalDate date, Frequency frequency) {
+        this(date);
+        this.frequency = frequency;
+    }
+
+    LocalDate getDate() {
+        return date;
+    }
+
+    Frequency getFrequency() {
+        return frequency;
+    }
+}
+
+	// End of segment: src\main\command\parser\ParsedDate.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\test\CommandParserTest.java
+	 */
+
+public class CommandParserTest {
+    private static final String TERM_1 = "test";
+    private static final String TERM_2 = "testytest";
+    private static final String TERM_3 = "test-testy-test";
+    private static final String TERM_4 = "blue";
+    private static final String TERM_5 = "tag";
+    private static final String TERM_6 = "yellow";
+    private static final String TERM_7 = "tag#red";
+
+    private static final String IGNORE = "\"";
+    private static final String TAG = "#";
+    private static final String PRIORITY = "+";
+
+    private static final String PRI_LOW = "low";
+    private static final String PRI_MED = "mEdium";
+    private static final String PRI_HIGH = "HIGH";
+
+    private static final String STA_DONE = "done";
+    private static final String STA_UNDONE = "undone";
+
+    private enum TimeTest {
+        ABS_12_HOURS_LONG_1  ("9:46 AM"),
+        ABS_12_HOURS_SHORT_1 ("9 AM"),
+        ABS_24_HOURS_LONG_1  ("9:46"),
+        ABS_12_HOURS_LONG_2  ("3:16 PM"),
+        ABS_12_HOURS_SHORT_2 ("3 PM"),
+        ABS_24_HOURS_LONG_2  ("15:16"),
+        REL_PLUS_HOURS       ("+3h"),
+        REL_MINUS_HOURS      ("-3h"),
+        REL_NOW              ("now");
+
+        private final String type;
+        TimeTest(String type) {
+            this.type = type;
+        }
+    }
+
+    private enum DateTest {
+        ABS_D_MMMM_1      ("24 August"),
+        ABS_DMMM_1        ("24Aug"),
+        ABS_DMMMY_1       ("24Aug2014"),
+        ABS_DMMMYY_1      ("24Aug14"),
+        ABS_D_M_YY_1      ("24/8/14"),
+        ABS_D_MMMM_2      ("13 september"),
+        ABS_DMMM_2        ("13sep"),
+        ABS_DMMMY_2       ("13sep2014"),
+        ABS_DMMMYY_2      ("13sep14"),
+        ABS_D_M_YY_2      ("13/9/14"),
+        REL_WEEKDAY_SHORT ("tues"),
+        REL_WEEKDAY_LONG  ("Tuesday"),
+        REL_TODAY         ("today"),
+        REL_YESTERDAY     ("Yesterday"),
+        REL_TOMORROW      ("tomorROW"),
+        REL_PLUS_DAYS     ("+3d"),
+        REL_MINUS_DAYS    ("-3d"),
+        REL_NOW           ("now");
+
+        private final String type;
+        DateTest(String type) {
+            this.type = type;
+        }
+    }
+
+
+    @Test
+    public void testParseName() {
+        String test1 = mergeStrings(TERM_1, IGNORE+TERM_2+IGNORE, TAG+TERM_7,
+                TERM_3, IGNORE, TAG+TERM_4, IGNORE, PRIORITY+PRI_HIGH,
+                PRIORITY+TERM_5, TimeTest.ABS_12_HOURS_LONG_1.type,
+                DateTest.ABS_DMMMY_1.type, STA_DONE);
+        String name1 = CommandParser.parseName(test1);
+        assertEquals(mergeStrings(TERM_1, TERM_2, TERM_3, TAG+TERM_4,
+                PRIORITY+TERM_5), name1);
+    }
+
+    @Test
+    public void testStripIgnoreSymbols() {
+        String test1 = mergeStrings(TERM_1, IGNORE+TERM_2+IGNORE, TAG+TERM_7,
+                TERM_3, IGNORE, TAG+TERM_4, IGNORE, PRIORITY+PRI_HIGH, IGNORE,
+                PRIORITY+TERM_5, TimeTest.ABS_12_HOURS_LONG_1.type,
+                DateTest.ABS_DMMMY_1.type, STA_DONE);
+        test1 = CommandParser.stripIgnoreSymbols(test1);
+        assertEquals(mergeStrings(TERM_1, TERM_2, TAG+TERM_7,
+                TERM_3, " "+TAG+TERM_4+" ", PRIORITY+PRI_HIGH, IGNORE,
+                PRIORITY+TERM_5, TimeTest.ABS_12_HOURS_LONG_1.type,
+                DateTest.ABS_DMMMY_1.type, STA_DONE), test1);
+    }
+
+    @Test
+    public void testParseTags() {
+        String test1 = mergeStrings(TERM_1, TERM_2, PRI_MED, TAG);
+        String test2 = mergeStrings(TERM_1, TERM_2, PRI_MED, TAG+TERM_6);
+        String test3 = mergeStrings(TAG+TERM_3, TERM_7, PRI_HIGH, TERM_1);
+        String test4 = mergeStrings(TERM_1, TAG+TERM_5, TAG+TERM_7, PRI_MED);
+
+        // no tag, tag symbol on its own
+        Tag[] tags = CommandParser.parseTags(test1);
+        assertNull(tags);
+
+        // single tag, at end
+        tags = CommandParser.parseTags(test2);
+        StringBuilder result = new StringBuilder();
+        for (Tag t : tags) {
+            result.append(t.toString()).append(' ');
+        }
+        assertEquals(TERM_6, result.toString().trim());
+
+        // single tag, elsewhere
+        tags = CommandParser.parseTags(test3);
+        result = new StringBuilder();
+        for (Tag t : tags) {
+            result.append(t.toString()).append(' ');
+        }
+        assertEquals(TERM_3, result.toString().trim());
+
+        // multiple tags
+        tags = CommandParser.parseTags(test4);
+        result = new StringBuilder();
+        for (Tag t : tags) {
+            result.append(t.toString()).append(' ');
+        }
+        assertEquals(TERM_5 + ' ' + TERM_7, result.toString().trim());
+    }
+
+    @Test
+    public void testParsePriority() {
+        String test1 = mergeStrings(TERM_1, TERM_2, PRIORITY+PRI_LOW, TAG+TERM_6);
+        String test2 = mergeStrings(TAG+TERM_3, TERM_7, PRIORITY+PRI_HIGH, TERM_1);
+        String test3 = mergeStrings(TERM_1, TAG+TERM_5, TAG+TERM_7, PRIORITY+PRI_MED);
+        String test4 = mergeStrings(TERM_1, TAG+TERM_7, TERM_3);
+        String test5 = mergeStrings(TERM_1, PRIORITY+PRI_HIGH, TAG+TERM_7, PRIORITY+PRI_MED);
+        String test6 = mergeStrings(IGNORE+PRIORITY+PRI_HIGH+IGNORE, TAG+TERM_7, PRIORITY+PRI_MED);
+
+        // low priority
+        Priority priority = CommandParser.parsePriority(test1);
+        assertEquals(Priority.LOW, priority);
+
+        // high priority
+        priority = CommandParser.parsePriority(test2);
+        assertEquals(Priority.HIGH, priority);
+
+        // med priority
+        priority = CommandParser.parsePriority(test3);
+        assertEquals(Priority.MEDIUM, priority);
+
+        // no priority - take default (null for now)
+        priority = CommandParser.parsePriority(test4);
+        assertNull(priority);
+
+        // multiple priority - should take the first
+        priority = CommandParser.parsePriority(test5);
+        assertEquals(Priority.HIGH, priority);
+
+        // two priorities with ignore on first - take second only
+        priority = CommandParser.parsePriority(test6);
+        assertEquals(Priority.MEDIUM, priority);
+    }
+
+    @Test
+    public void testParseStatus() {
+        String test1 = mergeStrings(TERM_1, TERM_2, TAG+TERM_6);
+        String test2 = mergeStrings(TAG+TERM_3, TERM_7, STA_DONE, TERM_1);
+        String test3 = mergeStrings(TERM_1, STA_UNDONE, TAG+TERM_7, STA_DONE);
+
+        // no status
+        Status[] statuses = CommandParser.parseStatuses(test1);
+        assertNull(statuses);
+
+        // single status
+        statuses = CommandParser.parseStatuses(test2);
+        assertEquals(Status.DONE, statuses[0]);
+
+        // multiple statuses
+        statuses = CommandParser.parseStatuses(test3);
+        assertEquals(Status.UNDONE, statuses[0]);
+        assertEquals(Status.DONE, statuses[1]);
+    }
+
+    private String mergeStrings(String... strings) {
+        StringBuilder sB = new StringBuilder();
+        for (String s : strings) {
+            sB.append(s).append(' ');
+        }
+        return sB.toString().trim();
+    }
+
+}
+
+	// End of segment: src\main\command\parser\test\CommandParserTest.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\test\DateTimeParserTest.java
+	 */
+
+public class DateTimeParserTest {
+    @Test
+    public void testParseDateTimePairsSequence() {
+        LocalDate d1 = LocalDate.of(2014, 10, 17);
+        LocalDate d2 = LocalDate.of(2014, 10, 18);
+        LocalTime t1 = LocalTime.of(15, 0);
+        LocalTime t2 = LocalTime.of(18, 0);
+
+        String testNull = "";
+        String testT = "3 PM";
+        String testTT = "3 PM 6 PM";
+        String testD = "17/10/14";
+        String testDT = "17/10/14 3 PM";
+        String testDTT = "17/10/14 3 PM 6 PM";
+        String testTDT = "3 PM 17/10/14 6 PM";
+        String testTTD = "3 PM 6 PM 17/10/14";
+        String testDD = "17/10/14 18/10/14";
+        String testTDD = "3 PM 17/10/14 18/10/14";
+        String testDTD = "17/10/14  3 PM 18/10/14";
+        String testDDT = "17/10/14 18/10/14 6 PM";
+        String testTDTD = "3 PM 17/10/14 6 PM 18/10/14";
+        String testTDTDT = "3 PM 17/10/14 6 PM 18/10/14 9 PM";
+
+        DateTimePair dtPair = DateTimeParser.parseDateTimesInSequence(testNull);
+        assertTrue(dtPair.isEmpty());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testT);
+        assertEquals(null, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testTT);
+        assertEquals(null, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(null, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testDTT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testTDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testTTD);
+        assertEquals(null, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d1, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testDD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(null, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testTDD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testDTD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testDDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(null, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testTDTD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimesInSequence(testTDTDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+    }
+
+    @Test
+    public void testParseDateTimePairs() {
+        LocalDate d1 = LocalDate.of(2014, 10, 17);
+        LocalDate d2 = LocalDate.of(2014, 10, 18);
+        LocalTime t1 = LocalTime.of(15, 0);
+        LocalTime t2 = LocalTime.of(18, 0);
+
+        String testNull = "";
+        String testT = "3 PM";
+        String testTT = "3 PM 6 PM";
+        String testD = "17/10/14";
+        String testDT = "17/10/14 3 PM";
+        String testDTT = "17/10/14 3 PM 6 PM";
+        String testTDT = "3 PM 17/10/14 6 PM";
+        String testTTD = "3 PM 6 PM 17/10/14";
+        String testDD = "17/10/14 18/10/14";
+        String testTDD = "3 PM 17/10/14 18/10/14";
+        String testDTD = "17/10/14  3 PM 18/10/14";
+        String testDDT = "17/10/14 18/10/14 6 PM";
+        String testTDTD = "3 PM 17/10/14 6 PM 18/10/14";
+        String testTDTDT = "3 PM 17/10/14 6 PM 18/10/14 9 PM";
+
+        DateTimePair dtPair = DateTimeParser.parseDateTimes(testNull);
+        assertTrue(dtPair.isEmpty());
+
+        dtPair = DateTimeParser.parseDateTimes(testT);
+        assertEquals(null, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testTT);
+        assertEquals(null, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(null, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testDTT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testTDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testTTD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(null, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testDD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(null, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testTDD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testDTD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testDDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t2, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(null, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testTDTD);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+
+        dtPair = DateTimeParser.parseDateTimes(testTDTDT);
+        assertEquals(d1, dtPair.getFirstDate());
+        assertEquals(t1, dtPair.getFirstTime());
+        assertEquals(d2, dtPair.getSecondDate());
+        assertEquals(t2, dtPair.getSecondTime());
+    }
+
+    @Test
+    public void testIsDateTime() {
+        String date = "3 Nov";
+        String time = "11:00";
+        String preposition = "on ";
+        String modifier = "this ";
+
+        assertTrue(DateTimeParser.isDate(date));
+        assertFalse(DateTimeParser.isDate(time));
+
+        assertTrue(DateTimeParser.isTime(time));
+        assertFalse(DateTimeParser.isTime(date));
+
+        assertTrue(DateTimeParser.isDate(preposition + date));
+        assertTrue(DateTimeParser.isTime(modifier + time));
+        assertTrue(DateTimeParser.isDate(preposition + modifier + date));
+    }
+
+    @Test
+    public void testDateModifiers() {
+        String testPrevious = "last 3 Nov";
+        String testThis = "this 3 Nov";
+        String testNext = "next 3 Nov";
+
+        int year = LocalDate.now().getYear();
+
+        DateTimePair dtPair = DateTimeParser.parseDateTimes(testPrevious);
+        assertEquals(year - 1, dtPair.getFirstDate().getYear());
+
+        dtPair = DateTimeParser.parseDateTimes(testThis);
+        assertEquals(year, dtPair.getFirstDate().getYear());
+
+        dtPair = DateTimeParser.parseDateTimes(testNext);
+        assertEquals(year + 1, dtPair.getFirstDate().getYear());
+    }
+
+    @Test
+    public void testPrepositions() {
+        String test1 = "on 3 Nov";
+        String test2 = "from about around 3 Nov";
+        LocalDate expectedDate = LocalDate.of(LocalDate.now().getYear(), 11, 3);
+        if (LocalDate.now().isAfter(expectedDate)) {
+            expectedDate = expectedDate.plusYears(1);
+        }
+
+        // single preposition
+        assertDate(expectedDate, test1);
+
+        // multiple preposition
+        assertDate(expectedDate, test2);
+    }
+
+    @Test
+    public void testRelativeDates() {
+        LocalDate today = LocalDate.now();
+
+        String testDayOfWeek = "wed";
+        String testDayOfWeekFull = "wednesday";
+        LocalDate expectedDate = today.with(TemporalAdjusters.next(DayOfWeek.WEDNESDAY));
+        assertDate(expectedDate, testDayOfWeek);
+        assertDate(expectedDate, testDayOfWeekFull);
+
+        String testOccasion = "christmas";
+        expectedDate = LocalDate.of(today.getYear(), 12, 25);
+        if (today.isAfter(expectedDate)) {
+            expectedDate = expectedDate.plusYears(1);
+        }
+        assertDate(expectedDate, testOccasion);
+
+        String testPlus = "+5d";
+        expectedDate = today.plusDays(5);
+        assertDate(expectedDate, testPlus);
+
+        String testIncompletePlus = "+5";
+        assertDate(null, testIncompletePlus);
+
+        String testMinus = "-5d";
+        expectedDate = today.minusDays(5);
+        assertDate(expectedDate, testMinus);
+
+        String testToday = "today";
+        assertDate(today, testToday);
+
+        String testYesterday = "yesterday";
+        assertDate(today.minusDays(1), testYesterday);
+
+        String testTomorrow = "tomorrow";
+        assertDate(today.plusDays(1), testTomorrow);
+    }
+
+    private static void assertDate(LocalDate expectedDate, String testDate) {
+        DateTimePair dtPair = DateTimeParser.parseDateTimes(testDate);
+        assertEquals(expectedDate, dtPair.getFirstDate());
+    }
+
+    @Test
+    public void testRelativeTimes() {
+        LocalTime now = LocalTime.now();
+
+        String plusHour = "+5h";
+        String plusMin = "+5m";
+        // String plusSec = "+5s";
+
+        assertTime(now.plusHours(5), plusHour);
+        assertTime(now.plusMinutes(5), plusMin);
+        // assertTime(now.plusSeconds(5), plusSec);
+
+        String testIncompletePlus = "+5";
+        assertTime(null, testIncompletePlus);
+
+        String minusHour = "-5h";
+        String minusMin = "-5m";
+        // String minusSec = "-5s";
+
+        assertTime(now.minusHours(5), minusHour);
+        assertTime(now.minusMinutes(5), minusMin);
+        // assertTime(now.minusSeconds(5), minusSec);
+    }
+
+    private static void assertTime(LocalTime expectedTime, String testTime) {
+        DateTimePair dtPair = DateTimeParser.parseDateTimes(testTime);
+        if (expectedTime == null) {
+            assertEquals(expectedTime, dtPair.getFirstTime());
+        } else {
+            assertEquals(expectedTime.getHour(), dtPair.getFirstTime().getHour());
+            assertEquals(expectedTime.getMinute(), dtPair.getFirstTime().getMinute());
+            // assertEquals(expectedTime.getSecond(), dtPair.getFirstTime().getSecond());
+        }
+    }
+}
+
+	// End of segment: src\main\command\parser\test\DateTimeParserTest.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\TimePair.java
+	 */
+
+/**
+ * Container class for a pair of times.
+ */
+public class TimePair {
+    private LocalTime firstTime;
+    private LocalTime secondTime;
+
+    void add(LocalTime t) {
+        if (t == null || isFull()) {
+            return;
+        }
+
+        if (!hasFirstTime()) {
+            firstTime = t;
+        } else {
+            secondTime = t;
+        }
+    }
+
+    LocalTime getFirstTime() {
+        return firstTime;
+    }
+
+    LocalTime getSecondTime() {
+        return secondTime;
+    }
+
+    void setFirstTime(LocalTime firstTime) {
+        this.firstTime = firstTime;
+    }
+
+    void setSecondTime(LocalTime secondTime) {
+        this.secondTime = secondTime;
+    }
+
+    boolean hasFirstTime() {
+        return firstTime != null;
+    }
+
+    boolean hasSecondTime() {
+        return secondTime != null;
+    }
+
+    boolean areTimesSame() {
+        return hasFirstTime() ? firstTime.equals(secondTime) : false;
+    }
+
+    boolean isFull() {
+        return hasFirstTime() && hasSecondTime();
+    }
+}
+
+	// End of segment: src\main\command\parser\TimePair.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\parser\TimeParser.java
+	 */
+
+/**
+ * Utility class for parsing times from strings.
+ */
+public class TimeParser {
+    private static Map<DateTimeFormatter, String> timeFullFormatPatterns;
+
+    /**
+     * Parses a string to a time.
+     *
+     * @param timeString
+     *            a string that is possibly a time
+     * @return the LocalTime corresponding to the string
+     */
+    static LocalTime parseTime(String timeString) {
+        buildTimePatternHashMap();
+
+        LocalTime t = parseRelativeTime(timeString);
+        if (t == null) {
+            t = parseAbsoluteTime(timeString);
+        }
+
+        return t;
+    }
+
+    /**
+     * Checks if a string can be parsed into a time
+     *
+     * @param timeString
+     *            a string that is possibly a time
+     * @return true if the string can be parsed into a time, false otherwise
+     */
+    static boolean isTime(String timeString) {
+        return parseTime(timeString) != null;
+    }
+
+    /**
+     * Parses strings in a format relative to the current time.
+     */
+    private static LocalTime parseRelativeTime(String timeString) {
+        if (timeString.equalsIgnoreCase("now")) {
+            return LocalTime.now();
+        } else {
+            return parseRelativeTimeAsPlusMinus(timeString);
+        }
+    }
+
+    /**
+     * Parses string in the formats: "+xh", "+xm", or "+xs", or their minus
+     * variants. These refer to x number of hours, minutes, or seconds relative
+     * to the current time.
+     *
+     * @param timeString
+     *            a possible relative time
+     * @return the time if valid, null otherwise
+     */
+    private static LocalTime parseRelativeTimeAsPlusMinus(String timeString) {
+        timeString = timeString.toLowerCase();
+        String number = null;
+        String unit = null;
+        if ((timeString.startsWith("+") || timeString.startsWith("-")) &&
+                (timeString.endsWith("s") || timeString.endsWith("m") ||
+                        timeString.endsWith("h"))) {
+            number = timeString.substring(0, timeString.length() - 1);
+            unit = timeString.substring(timeString.length() - 1);
+        }
+        try {
+            int modifierInt = Integer.parseInt(number);
+            LocalTime now = LocalTime.now();
+            switch (unit) {
+                case "s" :
+                    return now.plusSeconds(modifierInt);
+                case "m" :
+                    return now.plusMinutes(modifierInt);
+                case "h" :
+                    return now.plusHours(modifierInt);
+                default :
+                    return null;
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    private static LocalTime parseAbsoluteTime(String timeString) {
+        LocalTime time = matchTimePatterns(timeFullFormatPatterns, timeString);
+        return time;
+    }
+
+    /**
+     * Matches a string to a map of time formats.
+     *
+     * @param timeMap
+     *            the map of time formats
+     * @param timeString
+     *            the string to be matched
+     * @return the LocalTime corresponding to the string if valid, null
+     *         otherwise
+     */
+    private static LocalTime matchTimePatterns(
+            Map<DateTimeFormatter, String> timeMap, String timeString) {
+        // 3 pm -> 3 PM
+        timeString = timeString.toUpperCase();
+
+        Iterator<Entry<DateTimeFormatter, String>> i =
+                timeMap.entrySet().iterator();
+            while (i.hasNext()) {
+                Entry<DateTimeFormatter, String> formatPattern = i.next();
+
+                DateTimeFormatter format = formatPattern.getKey();
+                String missingField = formatPattern.getValue();
+
+                try {
+                    return LocalTime.parse(timeString + missingField, format);
+                } catch (DateTimeParseException e) {
+                    // do nothing
+                }
+            }
+
+        return null;
+    }
+
+
+    private static void buildTimePatternHashMap() {
+        if (timeFullFormatPatterns != null) {
+            return;
+        }
+        timeFullFormatPatterns = new HashMap<DateTimeFormatter, String>();
+
+        // 15:46
+        mapPattern(timeFullFormatPatterns, "H:m");
+        // 3:46 PM
+        mapPattern(timeFullFormatPatterns, "h:m a");
+        // 3:46PM
+        mapPattern(timeFullFormatPatterns, "h:m a");
+        // 3 PM
+        mapPattern(timeFullFormatPatterns, "h a");
+        // 3PM
+        mapPattern(timeFullFormatPatterns, "ha");
+    }
+
+    private static void mapPattern(Map<DateTimeFormatter, String> map,
+            String pattern) {
+        map.put(DateTimeFormatter.ofPattern(pattern), "");
+    }
+}
+
+	// End of segment: src\main\command\parser\TimeParser.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\RedoCommand.java
+	 */
+
+public class RedoCommand extends Command {
+    private final UndoManager undoManager;
+    int times;
+
+    public RedoCommand(String args, ManagerHolder managerHolder) {
+        super(managerHolder);
+        undoManager = managerHolder.getUndoManager();
+
+        parse(args);
+    }
+
+    private void parse(String args) {
+        if (args.isEmpty()) {
+            times = 1;
+        } else {
+            try {
+                times = Integer.parseInt(args);
+            } catch (NumberFormatException e) {
+                times = -1;
+            }
+        }
+    }
+
+    @Override
+    protected boolean isValidArguments() {
+        return times >= 1;
+    }
+
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canUndo();
+    }
+
+    @Override
+    protected Result executeAction() {
+        Result result = undoManager.redo(times);
+        return result;
+    }
+
+}
+
+	// End of segment: src\main\command\RedoCommand.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\SearchCommand.java
+	 */
+
+/**
+ * Command class for Search operations. Parses given command arguments into
+ * segments of a task and stores them as a list of filters, passing them onto
+ * the SearchManager class when the Command is executed.
+ */
+public class SearchCommand extends Command {
+    private final SearchManager searchManager;
+    private final List<Filter> filterList;
+
+    public SearchCommand(String args, ManagerHolder managerHolder) {
+        super(managerHolder);
+        searchManager = managerHolder.getSearchManager();
+
+        filterList = new ArrayList<Filter>();
+        parse(args);
+    }
+
+    /**
+     * Parses command arguments into different parts of a task and sets them
+     * into a list of filters stored in the SearchCommand.
+     *
+     * @param cmdArgs
+     *            the arguments for the search command
+     */
+    private void parse(String cmdArgs) {
+        assert cmdArgs != null : "There should not be a null passed in.";
+        if (cmdArgs.isEmpty()) {
+            filterList.add(StatusFilter.makeDefault());
+            return;
+        }
+
+        String taskName = CommandParser.parseName(cmdArgs);
+        if (!taskName.isEmpty()) {
+            String delim = " ";
+            String[] keywords = taskName.split(delim);
+            filterList.add(new KeywordFilter(keywords));
+        }
+
+        List<LocalDateTime> dateTimeRange = parseDateTimes(cmdArgs);
+        if (dateTimeRange != null) {
+            LocalDateTime startDateTime = dateTimeRange.get(0);
+            LocalDateTime endDateTime = dateTimeRange.get(1);
+            filterList.add(new DateTimeFilter(startDateTime, endDateTime));
+        }
+
+        Tag[] tags = CommandParser.parseTags(cmdArgs);
+        if (tags != null) {
+            filterList.add(new TagFilter(tags));
+        }
+
+        Priority[] priorities = CommandParser.parsePriorities(cmdArgs);
+        if (priorities != null) {
+            filterList.add(new PriorityFilter(priorities));
+        }
+
+        Status[] statuses = CommandParser.parseStatuses(cmdArgs);
+        if (statuses != null) {
+            filterList.add(new StatusFilter(statuses));
+        } else {
+            filterList.add(StatusFilter.makeDefault());
+        }
+    }
+
+    /**
+     * Parses a command string into dates and times suitable for the search
+     * command.
+     * <p>
+     * If more than 2 pairs of dates and times are found, only the first two are
+     * used. Combinations are handled as shown below:
+     * <ul>
+     *  <li>1 date - Set the start and end date to that date, times to the start
+     *      and end of the day.</li>
+     *  <li>1 time - Set the start and end time to that time, dates to the
+     *      current date.</li>
+     *  <li>1 date and time - Set the end date and time to those.</li>
+     *  <li>1 date and 2 times - Set the start and end date to that date, times
+     *      to the start and end times accordingly.</li>
+     *  <li>2 dates and 1 time - Set the dates to the start and end dates
+     *      accordingly, set the start time to the start of the day, end time to
+     *      the end of the day, then the time to the start or end time according
+     *      to its position.</li>
+     *  <li>2 dates and times each - Set the start and end dates and times
+     *      according to the positions.</li>
+     * </ul>
+     *
+     * @param cmdArgs
+     *            the arguments possibly containing dates and times
+     * @param task
+     *            the task to set the dates and times into
+     * @return a list of LocalDateTime, the first element indicating the start
+     *            datetime, the second indicating the end datetime; or null if
+     *            no dates or times are found
+     */
+    private List<LocalDateTime> parseDateTimes(String args) {
+        DateTimePair range = CommandParser.parseDateTimesInSequence(args);
+        if (range.isEmpty()) {
+            return null;
+        }
+
+        LocalDate startDate = range.getFirstDate();
+        LocalTime startTime = range.getFirstTime();
+        LocalDate endDate = range.getSecondDate();
+        LocalTime endTime = range.getSecondTime();
+
+        if (!range.hasFirstDate()) {
+            if (range.hasSecondDate()) {
+                startDate = endDate;
+            } else {
+                startDate = LocalDate.now();
+            }
+        }
+
+        if (!range.hasSecondTime()) {
+            if (range.hasFirstTime() && !range.hasSecondDate()) {
+                endTime = startTime;
+            } else {
+                endTime = LocalTime.MAX;
+            }
+        }
+
+        if (!range.hasSecondDate()) {
+            endDate = startDate;
+        }
+
+        if (!range.hasFirstTime()) {
+            startTime = LocalTime.MIN;
+        }
+
+        List<LocalDateTime> dtRange = new ArrayList<LocalDateTime>();
+        dtRange.add(LocalDateTime.of(startDate, startTime));
+        dtRange.add(LocalDateTime.of(endDate, endTime));
+
+        return dtRange;
+    }
+
+    @Override
+    protected boolean isValidArguments() {
+        return true;
+    }
+
+    @Override
+    protected boolean isCommandAllowed() {
+        return stateManager.canSearch();
+    }
+
+    @Override
+    protected Result executeAction() {
+        Filter[] filters = filterList.toArray(new Filter[filterList.size()]);
+        Result result = searchManager.searchTasks(filters);
+        return result;
+    }
+
+}
+
+	// End of segment: src\main\command\SearchCommand.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\test\AddCommandTest.java
+	 */
+
+public class AddCommandTest {
+
+    private static final String TIME_STR_EARLY = "9:46 AM";
+    private static final String TIME_STR_LATE = "3:16 PM";
+
+    private static final LocalTime TIME_EARLY = LocalTime.of(9, 46);
+    private static final LocalTime TIME_LATE = LocalTime.of(15, 16);
+
+    private static final String DATE_STR_EARLY = "24/8/14";
+    private static final String DATE_STR_LATE = "13/9/14";
+
+    private static final LocalDate DATE_EARLY = LocalDate.of(2014, 8, 24);
+    private static final LocalDate DATE_LATE = LocalDate.of(2014, 9, 13);
+
+    private static final String TAG = "#";
+    private static final String IGNORE = "\"";
+    private static final String PRIORITY = "+";
+    private static final String PRI_HIGH = "HIGH";
+    private static final String PRI_LOW = "low";
+
+    @Test
+    public void testParseTask() {
+        // terms, ignored terms (1 tag, 1 priority), 2 tags, 1 priority, 1 date, 1 time
+        String termA = "a";
+        String termB = "bc";
+        String termC = "dEF";
+
+        String test = mergeStrings(new String[]{TAG+termA, IGNORE + termB + IGNORE,
+                TAG+termC, termC, IGNORE, TAG+termA, PRIORITY+PRI_HIGH, IGNORE,
+                PRIORITY+termA, PRIORITY+PRI_LOW, TIME_STR_EARLY, DATE_STR_EARLY});
+        TaskInfo task = getTaskInfo(test);
+
+        assertEquals(mergeStrings(new String[]{termB, termC, TAG+termA,
+                PRIORITY+PRI_HIGH, PRIORITY+termA}), task.name);
+
+        assertEquals(null, task.startDate);
+        assertEquals(DATE_EARLY, task.endDate);
+        assertEquals(null, task.startTime);
+        assertEquals(TIME_EARLY, task.endTime);
+
+        StringBuilder tagString = new StringBuilder();
+        for (Tag tag : task.tags) {
+            tagString.append(tag.toString()).append(' ');
+        }
+
+        assertEquals(mergeStrings(new String[]{termA, termC}),
+                tagString.toString().trim());
+
+        assertEquals(Priority.LOW, task.priority);
+    }
+
+    /**
+     * Test for AddCommand-specific parsing of dates and times.
+     *
+     * Tests for validity of conversion from String to a pair of
+     * LocalDate and LocalTime are handled in DateParserTest instead.
+     */
+    @Test
+    public void testDateTimeParsing() {
+        TaskInfo task;
+        LocalTime tNow = LocalTime.now();
+        LocalDate dNow = LocalDate.now();
+
+        // String naming: [d|t[...[d|t]]][A|B|C... type]
+
+        // boundary case; partition: empty string
+        String none = "";
+        task = getTaskInfoWithoutName(none);
+
+        assertEquals(null, task.startDate);
+        assertEquals(null, task.endDate);
+        assertEquals(null, task.startTime);
+        assertEquals(null, task.endTime);
+
+        // boundary case; partition: more dates than times
+        String d = DATE_STR_EARLY;
+        task = getTaskInfoWithoutName(d);
+
+        assertEquals(null, task.startDate);
+        assertEquals(DATE_EARLY, task.endDate);
+        assertEquals(null, task.startTime);
+        assertEquals(null, task.endTime);
+
+        // boundary case; partition: no date, one time
+        String t = TIME_STR_EARLY;
+        task = getTaskInfoWithoutName(t);
+
+        assertEquals(null, task.startDate);
+        if (tNow.isBefore(TIME_EARLY)) {
+            assertEquals(dNow, task.endDate);
+        } else {
+            assertEquals(dNow.plusDays(1), task.endDate);
+        }
+        assertEquals(null, task.startTime);
+        assertEquals(TIME_EARLY, task.endTime);
+
+        // boundary case; partition: no date, two times, EARLY -> LATE
+        String ttA = mergeStrings(new String[]{
+                TIME_STR_EARLY, TIME_STR_LATE});
+        task = getTaskInfoWithoutName(ttA);
+
+        if (tNow.isBefore(TIME_EARLY)) {
+            assertEquals(dNow, task.startDate);
+            assertEquals(dNow, task.endDate);
+        } else {
+            assertEquals(dNow.plusDays(1), task.startDate);
+            assertEquals(dNow.plusDays(1), task.endDate);
+        }
+        assertEquals(TIME_EARLY, task.startTime);
+        assertEquals(TIME_LATE, task.endTime);
+
+        // boundary case; partition: no date, two times, LATE -> EARLY
+        String ttB = mergeStrings(new String[]{
+                TIME_STR_LATE, TIME_STR_EARLY});
+        task = getTaskInfoWithoutName(ttB);
+
+        if (tNow.isBefore(TIME_LATE)) {
+            assertEquals(dNow, task.startDate);
+            assertEquals(dNow.plusDays(1), task.endDate);
+        } else {
+            assertEquals(dNow.plusDays(1), task.startDate);
+            assertEquals(dNow.plusDays(2), task.endDate);
+        }
+        assertEquals(TIME_LATE, task.startTime);
+        assertEquals(TIME_EARLY, task.endTime);
+
+        // boundary case; partition: one date, one time
+        String dt = mergeStrings(new String[]{
+                DATE_STR_EARLY, TIME_STR_EARLY});
+
+        task = getTaskInfoWithoutName(dt);
+
+        assertEquals(null, task.startDate);
+        assertEquals(DATE_EARLY, task.endDate);
+        assertEquals(null, task.startTime);
+        assertEquals(TIME_EARLY, task.endTime);
+
+        // boundary case; partition: one date, two times
+        String dtt = mergeStrings(new String[]{
+                DATE_STR_EARLY, TIME_STR_EARLY, TIME_STR_LATE});
+
+        task = getTaskInfoWithoutName(dtt);
+
+        assertEquals(DATE_EARLY, task.startDate);
+        assertEquals(DATE_EARLY, task.endDate);
+        assertEquals(TIME_EARLY, task.startTime);
+        assertEquals(TIME_LATE, task.endTime);
+
+        // boundary case; partition: two date, two times
+        String dtdt = mergeStrings(new String[]{
+                DATE_STR_EARLY, TIME_STR_EARLY,
+                DATE_STR_LATE, TIME_STR_LATE});
+
+        task = getTaskInfoWithoutName(dtdt);
+
+        assertEquals(DATE_EARLY, task.startDate);
+        assertEquals(DATE_LATE, task.endDate);
+        assertEquals(TIME_EARLY, task.startTime);
+        assertEquals(TIME_LATE, task.endTime);
+    }
+
+    /**
+     * Test for AddCommand-specific parsing of priority.
+     *
+     * Tests for validity of conversion from String to a priority
+     * are handled in CommandParserTest instead.
+     */
+    @Test
+    public void testPriorityParsing() {
+        TaskInfo task;
+
+        // boundary case; partition: has priority
+        String yesP = PRIORITY + PRI_HIGH;
+        task = getTaskInfoWithoutName(yesP);
+
+        assertEquals(Priority.HIGH, task.priority);
+
+        //// boundary case; partition: has no priority
+        String noP = "";
+        task = getTaskInfoWithoutName(noP);
+        assertEquals(task.priority, Priority.NONE);
+    }
+
+    private TaskInfo getTaskInfo(String test) {
+        StubManagerHolder mHolder = new StubManagerHolder();
+        AddCommand cmd = new AddCommand(test, mHolder);
+        cmd.execute();
+        return mHolder.getAddManager().taskInfo;
+    }
+
+    private TaskInfo getTaskInfoWithoutName(String test) {
+        StubManagerHolder mHolder = new StubManagerHolder();
+        AddCommand cmd = new AddCommand(". " + test, mHolder);
+        cmd.execute();
+        return mHolder.getAddManager().taskInfo;
+    }
+
+    private String mergeStrings(String[] strings) {
+        StringBuilder sB = new StringBuilder();
+        for (String s : strings) {
+            sB.append(s).append(' ');
+        }
+        return sB.toString().trim();
+    }
+}
+	// End of segment: src\main\command\test\AddCommandTest.java
+
+
+
+
+
+	/**
+	 * origin: src\main\command\test\SearchCommandTest.java
+	 */
+
+public class SearchCommandTest {
+
+    @Test
+    public void testKeywordParsing() {
+        KeywordFilter f;
+
+        // empty name
+        String emptyTestString = "";
+        f = getKeywordFilter(emptyTestString);
+
+        assertNull(f);
+
+        // normal name
+        String[] testStringArr = new String[]{"ab", "CDF"};
+        String testString = mergeStrings(testStringArr);
+        f = getKeywordFilter(testString);
+        assertNotNull(f);
+        assertTrue(areArraysEqual(testStringArr, f.getKeywords()));
+
+
+        // inverted commas
+        testStringArr = new String[]{"orange"};
+        testString = "\"orange\"";
+        f = getKeywordFilter(testString);
+        assertNotNull(f);
+        assertTrue(areArraysEqual(testStringArr, f.getKeywords()));
+
+
+        // inverted commas with space in between
+        testStringArr = new String[]{"orange", "purple"};
+        testString = "\"orange purple\"";
+        f = getKeywordFilter(testString);
+        assertNotNull(f);
+        assertTrue(areArraysEqual(testStringArr, f.getKeywords()));
+
+
+        // inverted commas surrounding date
+        testStringArr = new String[]{"3", "PM"};
+        testString = "\"3 PM \"";
+        f = getKeywordFilter(testString);
+        assertNotNull(f);
+        assertTrue(areArraysEqual(testStringArr, f.getKeywords()));
+    }
+
+    @Test
+    public void testDateTimeParsing() {
+        DateTimeFilter f;
+
+        // String naming: d|t[...d|t]
+
+        LocalDate d1 = LocalDate.of(2014, 10, 17);
+        LocalDate d2 = LocalDate.of(2014, 10, 18);
+        LocalDate dNow = LocalDate.now();
+        LocalTime t1 = LocalTime.of(15, 0);
+        LocalTime t2 = LocalTime.of(18, 0);
+        LocalTime tMin = LocalTime.MIN;
+        LocalTime tMax = LocalTime.MAX;
+
+        String none = "";
+        f = getDateTimeFilter(none);
+        assertNull(f);
+
+        String t = "3 PM";
+        f = getDateTimeFilter(t);
+        assertDateTimeFilter(f, dNow, t1, dNow, t1);
+
+        String tt = "3 PM 6 PM";
+        f = getDateTimeFilter(tt);
+        assertDateTimeFilter(f, dNow, t1, dNow, t2);
+
+        String d = "17/10/14";
+        f = getDateTimeFilter(d);
+        assertDateTimeFilter(f, d1, tMin, d1, tMax);
+
+        String dt = "17/10/14 3 PM";
+        f = getDateTimeFilter(dt);
+        assertDateTimeFilter(f, d1, t1, d1, t1);
+
+        String dtt = "17/10/14 3 PM 6 PM";
+        f = getDateTimeFilter(dtt);
+        assertDateTimeFilter(f, d1, t1, d1, t2);
+
+        String tdt = "3 PM 17/10/14 6 PM";
+        f = getDateTimeFilter(tdt);
+        assertDateTimeFilter(f, d1, t1, d1, t2);
+
+        String ttd = "3 PM 6 PM 17/10/14";
+        f = getDateTimeFilter(ttd);
+        assertDateTimeFilter(f, d1, t1, d1, t2);
+
+        String dd = "17/10/14 18/10/14";
+        f = getDateTimeFilter(dd);
+        assertDateTimeFilter(f, d1, tMin, d2, tMax);
+
+        String tdd = "3 PM 17/10/14 18/10/14";
+        f = getDateTimeFilter(tdd);
+        assertDateTimeFilter(f, d1, t1, d2, tMax);
+
+        String dtd = "17/10/14  3 PM 18/10/14";
+        f = getDateTimeFilter(dtd);
+        assertDateTimeFilter(f, d1, t1, d2, tMax);
+
+        String ddt = "17/10/14 18/10/14 6 PM";
+        f = getDateTimeFilter(ddt);
+        assertDateTimeFilter(f, d1, tMin, d2, t2);
+
+        String tdtd = "3 PM 17/10/14 6 PM 18/10/14";
+        f = getDateTimeFilter(tdtd);
+        assertDateTimeFilter(f, d1, t1, d2, t2);
+    }
+
+    /**
+     * Checks through asserts if the given DateTimeFilter is valid within
+     * the dates and times passed in through boundary checking.
+     *
+     * @param f
+     *            is the given DateTimeFilter.
+     * @param minDate
+     *            is the minimum valid date.
+     * @param minTime
+     *            is the minimum valid time.
+     * @param maxDate
+     *            is the maximum valid date.
+     * @param maxTime
+     *            is the maximum valid time.
+     */
+    private void assertDateTimeFilter(DateTimeFilter f, LocalDate minDate,
+            LocalTime minTime, LocalDate maxDate, LocalTime maxTime) {
+        assertNotNull(f);
+
+        TaskInfo task = TaskInfo.create();
+
+        // boundary case; partition: valid, lower bound
+        task.endDate = minDate;
+        task.endTime = minTime;
+
+        assertTrue(f.isMatching(task));
+
+        // boundary case; partition: valid, upper bound
+        task.endDate = maxDate;
+        task.endTime = maxTime;
+
+        assertTrue(f.isMatching(task));
+
+        // boundary case; partition: invalid, lower bound
+        task.endDate = LocalDateTime.of(minDate, minTime)
+                .minusNanos(1).toLocalDate();
+        task.endTime = LocalDateTime.of(minDate, minTime)
+                .minusNanos(1).toLocalTime();
+
+        assertFalse(f.isMatching(task));
+
+        // boundary case; partition: invalid, upper bound
+        task.endDate = LocalDateTime.of(maxDate, maxTime)
+                .plusNanos(1).toLocalDate();
+        task.endTime = LocalDateTime.of(maxDate, maxTime)
+                .plusNanos(1).toLocalTime();
+
+        assertFalse(f.isMatching(task));
+    }
+
+    private KeywordFilter getKeywordFilter(String test) {
+        Filter[] filters = getFilters(test);
+        for (Filter f : filters) {
+            if (f instanceof KeywordFilter) {
+                return (KeywordFilter) f;
+            }
+        }
+        return null;
+    }
+
+    private DateTimeFilter getDateTimeFilter(String test) {
+        Filter[] filters = getFilters(test);
+        for (Filter f : filters) {
+            if (f instanceof DateTimeFilter) {
+                return (DateTimeFilter) f;
+            }
+        }
+        return null;
+    }
+
+    private Filter[] getFilters(String test) {
+        StubManagerHolder mHolder = new StubManagerHolder();
+        SearchCommand cmd = new SearchCommand(test, mHolder);
+        cmd.execute();
+        return mHolder.getSearchManager().filters;
+    }
+
+    /**
+     * Checks if two arrays are equals, regardless of ordering of elements.
+     *
+     * @param arr1
+     *            is the first array.
+     * @param arr2
+     *            is the second array.
+     * @return true if the arrays are equal without considering ordering.
+     */
+    private boolean areArraysEqual(Object[] arr1, Object[] arr2) {
+        arr1 = arr1.clone();
+        arr2 = arr2.clone();
+        Arrays.sort(arr1);
+        Arrays.sort(arr2);
+        return Arrays.equals(arr1, arr2);
+    }
+
+    private String mergeStrings(String[] strings) {
+        StringBuilder sB = new StringBuilder();
+        for (String s : strings) {
+            sB.append(s).append(' ');
+        }
+        return sB.toString().trim();
+    }
+}
+
+	// End of segment: src\main\command\test\SearchCommandTest.java
+
+
+
+
+
+	/**
+	 * origin: src\main\MainController.java
+	 */
+
+/**
+ * The main controller that links the UI to the rest of the program.
+ * Controls the main logic of the program - the command execution process.
+ */
+public class MainController {
+    private static final Logger log = TasklineLogger.getLogger();
+
+    private final ManagerHolder managerHolder;
+    private final IAliasStorage aliasStorage;
+    private final IFileInputOutput aliasFileInputOutput;
+    private boolean readyToExit;
+
+    public MainController(ManagerHolder managerHolder,
+            IAliasStorage aliasStorage, IFileInputOutput aliasFileInputOutput) {
+        this.managerHolder = managerHolder;
+        this.aliasStorage = aliasStorage;
+        this.aliasFileInputOutput = aliasFileInputOutput;
+    }
+
+    public String runCommand(String commandString) {
+        if (commandString.trim().isEmpty()) {
+            return "";
+        }
+
+        CommandController commandController = new CommandController(
+                managerHolder, aliasStorage, aliasFileInputOutput);
+        Command curCommand = commandController.getCommand(commandString);
+        log.log(Level.FINE, "Execute Command: " + curCommand.getClass().getName());
+        Response curResponse = curCommand.execute();
+
+        if (curResponse.isExitResponse()) {
+            setReadyToExit();
+        }
+        Formatter formatter = new Formatter();
+        return formatter.format(curResponse);
+    }
+
+    public boolean isReadyToExit() {
+        return readyToExit;
+    }
+
+    private void setReadyToExit() {
+        readyToExit = true;
+    }
+}
+
+	// End of segment: src\main\MainController.java
+
+
+
+
+
