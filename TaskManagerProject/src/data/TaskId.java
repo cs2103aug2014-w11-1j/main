@@ -30,8 +30,6 @@ public final class TaskId implements Comparable<TaskId> {
     private static final int TRANSLATE_SHIFT = new Random().nextInt();
     public static final int MAX_ID = 20280;
     
-    private static final int INVALID_ID = -1;
-    
     public final int id;
 
     public TaskId(int id) {

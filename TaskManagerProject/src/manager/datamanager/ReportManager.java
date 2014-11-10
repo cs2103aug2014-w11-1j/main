@@ -3,9 +3,7 @@ package manager.datamanager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
 
-import manager.datamanager.SearchManager.TaskInfoId;
 import manager.result.ReportResult;
 import manager.result.Result;
 import data.TaskData;

@@ -36,7 +36,13 @@ public class JsonTaskInfoParser {
     private static final String JSON_TAGS = "tags";
     private static final String JSON_PRIORITY = "priority";
     private static final String JSON_STATUS = "status";
+    /**
+     * @deprecated
+     */
     private static final String JSON_NUMBER_OF_TIMES = "numberOfTimes";
+    /**
+     * @deprecated
+     */
     private static final String JSON_REPEAT_INTERVAL = "repeatInterval";
 
     

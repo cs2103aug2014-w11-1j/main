@@ -253,6 +253,7 @@ public class UndoManagerTest {
             assertEquals(taskName, actualName);
             current = taskData.getNext(current);
         }
+        assertSize(taskData, taskNames.length);
         
         assertFalse(current.isValid());
     }

@@ -25,7 +25,6 @@ public class FreeDaySearchManager extends AbstractManager {
     private static final LocalTime START_OF_DAY = LocalTime.of(0, 0);
     
     private ArrayList<TaskInfo> taskList;
-	private int size;
 
 	/** 
 	 * Constructor
@@ -59,7 +58,6 @@ public class FreeDaySearchManager extends AbstractManager {
 	private void updateTaskList() {
 		taskList = TaskListWithDate();
 		sortTask();
-		size = taskList.size();
 	}
 
 	private void clearMemory() {
@@ -73,7 +71,7 @@ public class FreeDaySearchManager extends AbstractManager {
 	 * to end time between start date and end date 
 	 * @param startTime start time of spare interval
 	 * @param startDate start date of searching period
-	 * @param endTime end time of spare intervaal
+	 * @param endTime end time of spare interval
 	 * @param endDate end date of searching period
 	 * @return a result containing those free days
 	 */
@@ -196,13 +194,6 @@ public class FreeDaySearchManager extends AbstractManager {
         LocalTime endTime = END_OF_DAY;
 	    
 	    return searchFreeDay(startTime, startDate, endTime, endDate) ;
-	}
-
-	private boolean isMatchDay(LocalDate startDate, LocalDate endDate,
-			TaskInfo task) {
-		return task.getEndDate().isAfter(LocalDate.now()) 
-				&& (task.getEndDate().isAfter(startDate))
-				&& (getTaskStartDate(task).isBefore(endDate));
 	}
 
 	private void sortTask() {

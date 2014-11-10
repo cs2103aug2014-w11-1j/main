@@ -1,6 +1,5 @@
 package manager.result;
 
-import manager.result.Result.Type;
 
 //@author A0065475X
 public class AliasSetResult implements Result {

@@ -6,16 +6,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import main.command.alias.AliasValuePair;
 import main.command.alias.IAliasStorageFileInputOutput;
-import taskline.TasklineLogger;
 import data.AutoCompleteDictionary;
 
 //@author A0065475X
 public class AliasFileInputOutput implements IFileInputOutput {
-    private static final Logger log = TasklineLogger.getLogger();
     
     private final AutoCompleteDictionary autoCompleteDictionary;
     private final IAliasStorageFileInputOutput aliasStorage;

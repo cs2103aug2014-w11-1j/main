@@ -19,7 +19,6 @@ import data.taskinfo.TaskInfo;
 
 //@author A0113011L
 public class SuggestionFinder {
-    private final static int LIMIT_DISTANCE = 5;
     
     private final static Comparator<KeywordSuggestion> COMPARE_MATCH =
             new Comparator<KeywordSuggestion>() {

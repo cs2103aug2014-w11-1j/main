@@ -239,7 +239,7 @@ public class EditManager extends AbstractManager {
 
             boolean isSuccessful = taskData.taskExists(taskId);
             for (Tag tag : tags) {
-                boolean isTagSuccess = taskData.addTag(taskId, tag);
+                taskData.addTag(taskId, tag);
             }
 
             taskIdList.add(taskId);

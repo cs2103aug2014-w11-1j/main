@@ -26,7 +26,6 @@ public class MultiInstanceCrashTest extends AbstractCrashTest {
         ListType[] clear = {ListType.CLEAR};
 
         ListType[] dateTime = {ListType.DATETIME};
-        ListType[] comma = {ListType.COMMA};
         
         ListType[] editKeywords = {ListType.EDITKEYWORD};
         ListType[] validTargets = {ListType.VALIDNUMBER, ListType.NONE,

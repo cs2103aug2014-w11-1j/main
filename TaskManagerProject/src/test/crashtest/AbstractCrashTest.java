@@ -59,7 +59,7 @@ public abstract class AbstractCrashTest {
         knownCrashTest();
         fuzzyTest();
         
-        System.out.println("Crash Test successful - Unique strings: " +
+        System.out.println("Crash Test successful - Unique inputs: " +
                         testedStrings.size() + " out of " + totalStrings);
         success = true;
     }
@@ -192,7 +192,7 @@ public abstract class AbstractCrashTest {
         
         if (totalStrings%100 == 0) {
             System.out.println("Tested: " + testedStrings.size() + " / " +
-                    totalStrings);
+                    totalStrings + " tested");
         }
         
         try {

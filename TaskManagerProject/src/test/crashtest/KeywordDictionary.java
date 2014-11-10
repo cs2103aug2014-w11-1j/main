@@ -126,7 +126,7 @@ public class KeywordDictionary {
         addToList(AGAIN, "13 am", DATETIME);
         addToList(AGAIN, "13 pm", DATETIME);
         addToList(AGAIN, "1300", DATETIME, NUMBER);
-        addToList(AGAIN, "1300h", DATETIME. NUMBER);
+        addToList(AGAIN, "1300h", DATETIME, NUMBER);
         addToList(AGAIN, "12-am", DATETIME);
         addToList(AGAIN, "12-14pm", DATETIME);
         addToList(AGAIN, "tuesday", DATETIME);
