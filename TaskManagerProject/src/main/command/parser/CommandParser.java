@@ -18,6 +18,7 @@ public class CommandParser {
     private final static String SYMBOL_IGNORE = "\"";
     private final static String SYMBOL_TAG = "#";
     private final static String SYMBOL_PRIORITY = "+";
+    private final static String FLOATING = "floating";
 
     /**
      * Parses a string into one suitable for a task name, removing all tags,
@@ -98,8 +99,12 @@ public class CommandParser {
     private static boolean isKeyword(String substring) {
         boolean isNotKeyword = isPriority(substring) || isTag(substring) ||
                 isStatus(substring) || DateTimeParser.isDate(substring) ||
-                DateTimeParser.isTime(substring);
+                DateTimeParser.isTime(substring) || isFloating(substring);
         return !isNotKeyword;
+    }
+
+    private static boolean isFloating(String substring) {
+        return substring.equalsIgnoreCase(FLOATING);
     }
 
     /**
