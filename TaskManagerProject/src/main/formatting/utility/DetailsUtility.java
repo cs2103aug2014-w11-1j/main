@@ -14,7 +14,6 @@ import data.taskinfo.TaskInfo;
 
 /**
  * A utility class to format the details of a TaskInfo.
- * @author nathanajah
  */
 public class DetailsUtility {
     private final static String FORMAT_ID = "Task [%1$s]";

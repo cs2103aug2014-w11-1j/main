@@ -13,7 +13,6 @@ import main.message.FreeDaySearchMessage;
  * - 27 Nov 2014
  * - 30 Nov 2014
  * - 1 Dec 2014
- * @author Nathan
  *
  */
 //@author A0113011L

@@ -28,7 +28,6 @@ import data.taskinfo.TaskInfo;
  * Sun, 9 Nov 2014
  *   [   15:00   ] Task4
  *   
- * @author Nathan
  *
  */
 //@author A0113011L

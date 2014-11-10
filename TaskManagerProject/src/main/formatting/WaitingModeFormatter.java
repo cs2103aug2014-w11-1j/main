@@ -14,9 +14,6 @@ import data.taskinfo.TaskInfo;
  * Did you mean:
  * 1) Complete taskA
  * 2) complete taskB
- * 
- * @author Nathan
- *
  */
 public class WaitingModeFormatter {
     private final static String PROMPT = "Did you mean:";

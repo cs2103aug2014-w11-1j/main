@@ -6,7 +6,6 @@ package manager.datamanager.suggestion;
  * 
  * It stores the keyword itself, the edit distance, and the number of 
  * occurrences.
- * @author Nathan
  *
  */
 public class KeywordSuggestion {
