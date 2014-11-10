@@ -27,7 +27,7 @@ import data.TaskData;
 public class Taskline {
 
     public static void main(String[] args) {
-        TasklineLogger.setupLogger();
+        TasklineLogger.setupLogger(args);
 
         String fileName = "tasks.txt";
         String aliasFileName = "alias.txt";

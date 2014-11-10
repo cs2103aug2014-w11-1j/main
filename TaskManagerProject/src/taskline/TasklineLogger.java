@@ -11,12 +11,14 @@ import java.util.logging.SimpleFormatter;
 
 //@author A0065475X
 public class TasklineLogger {
+    private static final Level LOG_LEVEL_DEFAULT = Level.FINE;
     private static final String LOGGER_FILENAME = "taskline.log";
     private static String LOGGER_NAME = "Taskline";
 
     private static FileHandler loggerFileHandler;
 
-    public static void setupLogger() {
+    public static void setupLogger(String[] args) {
+        Level logLevel = toLogLevel(args);
         Logger log = Logger.getLogger(LOGGER_NAME);
         log.setUseParentHandlers(false);
 
@@ -29,7 +31,7 @@ public class TasklineLogger {
             loggerFileHandler.setFormatter(formatter);
 
             log.addHandler(loggerFileHandler);
-            log.setLevel(Level.FINEST);
+            log.setLevel(logLevel);
 
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -48,5 +50,18 @@ public class TasklineLogger {
     
     public static Logger getLogger() {
         return Logger.getLogger(LOGGER_NAME);
+    }
+    
+    public static Level toLogLevel(String[] args) {
+        if (args.length == 0) {
+            return LOG_LEVEL_DEFAULT;
+        }
+        String levelString = args[0];
+        try {
+            Level level = Level.parse(levelString);
+            return level;
+        } catch (IllegalArgumentException e) {
+            return LOG_LEVEL_DEFAULT;
+        }
     }
 }
