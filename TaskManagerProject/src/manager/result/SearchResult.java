@@ -4,6 +4,7 @@ import manager.datamanager.searchfilter.Filter;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class SearchResult implements Result {
 
     private TaskInfo[] tasks;
