@@ -13,9 +13,9 @@ import main.response.Response;
 import manager.ManagerHolder;
 import taskline.TasklineLogger;
 
+//@author A0111862M
 /**
- *
- * @author You Jun
+ * The main controller that links the UI to the rest of the program.
  */
 public class MainController {
     private static final Logger log = TasklineLogger.getLogger();

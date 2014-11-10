@@ -4,6 +4,7 @@ import manager.ManagerHolder;
 import manager.datamanager.UndoManager;
 import manager.result.Result;
 
+//@author A0111862M
 public class RedoCommand extends Command {
     private final UndoManager undoManager;
     int times;
@@ -11,10 +12,10 @@ public class RedoCommand extends Command {
     public RedoCommand(String args, ManagerHolder managerHolder) {
         super(managerHolder);
         undoManager = managerHolder.getUndoManager();
-        
+
         parse(args);
     }
-    
+
     private void parse(String args) {
         if (args.isEmpty()) {
             times = 1;
