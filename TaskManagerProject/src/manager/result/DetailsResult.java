@@ -3,6 +3,7 @@ package manager.result;
 import data.TaskId;
 import data.taskinfo.TaskInfo;
 
+//@author A0113011L
 public class DetailsResult implements Result {
 
     private TaskInfo[] tasks;

@@ -6,6 +6,14 @@
 	 * origin: src\data\EuclideanAlgorithm.java
 	 */
 
+/**
+ * Not actually used in the program. Used once to compute the REVERSE_PRIME,
+ * that's all.
+ * 
+ * Input n, p
+ * returns the gcd of n and p.
+ * returns m, q such that nm + pq = gcd(n,p).
+ */
 public class EuclideanAlgorithm {
     public int m;
     public int q;
