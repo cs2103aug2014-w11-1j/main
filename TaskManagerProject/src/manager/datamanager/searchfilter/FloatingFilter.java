@@ -1,6 +1,5 @@
 package manager.datamanager.searchfilter;
 
-import manager.datamanager.searchfilter.Filter.Type;
 import data.taskinfo.TaskInfo;
 
 //@author A0113011L
@@ -8,13 +7,16 @@ import data.taskinfo.TaskInfo;
  * A Filter that matches floating tasks.
  *
  */
-public class FloatingFilter {
+public class FloatingFilter implements Filter {
 
+    @Override
     public Type getType(){
         return Type.FILTER_FLOATING;
     }
-    public boolean filter(TaskInfo task) {
-        return task.endDate == null && task.startDate == null 
+
+    @Override
+    public boolean isMatching(TaskInfo task) {
+        return task.endDate == null && task.startDate == null
                 && task.endTime == null && task.startTime == null;
     }
 }

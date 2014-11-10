@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import main.command.parser.CommandParser;
@@ -12,6 +13,7 @@ import manager.ManagerHolder;
 import manager.datamanager.SearchManager;
 import manager.datamanager.searchfilter.DateTimeFilter;
 import manager.datamanager.searchfilter.Filter;
+import manager.datamanager.searchfilter.FloatingFilter;
 import manager.datamanager.searchfilter.KeywordFilter;
 import manager.datamanager.searchfilter.PriorityFilter;
 import manager.datamanager.searchfilter.StatusFilter;
@@ -35,7 +37,7 @@ public class SearchCommand extends Command {
         super(managerHolder);
         searchManager = managerHolder.getSearchManager();
 
-        filterList = new ArrayList<Filter>();
+        filterList = new ArrayList<>();
         parse(args);
     }
 
@@ -67,6 +69,10 @@ public class SearchCommand extends Command {
             filterList.add(new DateTimeFilter(startDateTime, endDateTime));
         }
 
+        if (isFloatingSearch(cmdArgs)) {
+            filterList.add(new FloatingFilter());
+        }
+
         Tag[] tags = CommandParser.parseTags(cmdArgs);
         if (tags != null) {
             filterList.add(new TagFilter(tags));
@@ -83,6 +89,19 @@ public class SearchCommand extends Command {
         } else {
             filterList.add(StatusFilter.makeDefault());
         }
+    }
+
+    /**
+     * Check if a search is looking for floating tasks.
+     *
+     * @param cmdArgs
+     *            the arguments possibly containing a request to search for
+     *            floating tasks
+     * @return true if the search is looking for floating task, false otherwise
+     */
+    private boolean isFloatingSearch(String cmdArgs) {
+        String[] split = cmdArgs.toLowerCase().split(" ");
+        return Arrays.asList(split).indexOf("floating") != -1;
     }
 
     /**
