@@ -460,6 +460,7 @@ public class CommandParser {
     private final static String SYMBOL_IGNORE = "\"";
     private final static String SYMBOL_TAG = "#";
     private final static String SYMBOL_PRIORITY = "+";
+    private final static String FLOATING = "floating";
 
     /**
      * Parses a string into one suitable for a task name, removing all tags,
@@ -540,8 +541,12 @@ public class CommandParser {
     private static boolean isKeyword(String substring) {
         boolean isNotKeyword = isPriority(substring) || isTag(substring) ||
                 isStatus(substring) || DateTimeParser.isDate(substring) ||
-                DateTimeParser.isTime(substring);
+                DateTimeParser.isTime(substring) || isFloating(substring);
         return !isNotKeyword;
+    }
+
+    private static boolean isFloating(String substring) {
+        return substring.equalsIgnoreCase(FLOATING);
     }
 
     /**
@@ -2651,7 +2656,7 @@ public class SearchCommand extends Command {
         super(managerHolder);
         searchManager = managerHolder.getSearchManager();
 
-        filterList = new ArrayList<Filter>();
+        filterList = new ArrayList<>();
         parse(args);
     }
 
@@ -2683,6 +2688,10 @@ public class SearchCommand extends Command {
             filterList.add(new DateTimeFilter(startDateTime, endDateTime));
         }
 
+        if (isFloatingSearch(cmdArgs)) {
+            filterList.add(new FloatingFilter());
+        }
+
         Tag[] tags = CommandParser.parseTags(cmdArgs);
         if (tags != null) {
             filterList.add(new TagFilter(tags));
@@ -2699,6 +2708,19 @@ public class SearchCommand extends Command {
         } else {
             filterList.add(StatusFilter.makeDefault());
         }
+    }
+
+    /**
+     * Check if a search is looking for floating tasks.
+     *
+     * @param cmdArgs
+     *            the arguments possibly containing a request to search for
+     *            floating tasks
+     * @return true if the search is looking for floating task, false otherwise
+     */
+    private boolean isFloatingSearch(String cmdArgs) {
+        String[] split = cmdArgs.toLowerCase().split(" ");
+        return Arrays.asList(split).indexOf("floating") != -1;
     }
 
     /**
